@@ -1,10 +1,23 @@
 # Theatre.js changelog
 
+## 0.2.1
+
+- New features
+  - Studio:
+    - Customizable accent color via `studio.initialize({accentHex})`. Sequencer snap crosshair uses the derived accent.
+    - `showPropsOf` fieldsets hide the linked object's root compound row; clicking the fieldset title opens that source object in the details pane.
+    - Image prop chips match color inputs — rounded-rect preview, trash left of the swatch, click anywhere on the chip to pick a file; empty chips use a square checkerboard.
+  - Three.js Package:
+    - Unit-interval material scalars (`opacity`, `roughness`, `metalness`, `transmission`, and similar 0–1 factors) now use a 0–1 Studio range instead of 0–Infinity.
+- Bug fixes
+  - Studio:
+    - Select menus stay attached to their trigger while the details pane scrolls (listen on overflow ancestors inside the shadow root rather than `window`).
+
 ## 0.2.0
 
 - New features
   - Studio:
-    - UI revamp — shared design tokens and restyled details-pane controls (number chips/sliders, toggles, strings, selects, color fields), opaque panes without blur/shadows, bordered surfaces, and keyframe edit popovers that match the chip chrome. Collapsed vector compounds show compact labeled mini-chips; accent colors derive from a single hex token, overridable via `studio.initialize({accentHex})`.
+    - UI revamp — shared design tokens and restyled details-pane controls (number chips/sliders, toggles, strings, selects, color fields), opaque panes without blur/shadows, bordered surfaces, and keyframe edit popovers that match the chip chrome. Collapsed vector compounds show compact labeled mini-chips; accent colors derive from a single hex token.
     - Custom tween names on sequencer connector bars (Name / Edit / Clear via context menu); labels persist in project state and show in-bar with ellipsis + hover tooltip.
     - Outline sheet objects use a dirty-state circle instead of the Package icon — hollow when matching loaded JSON state, filled when any static override or sequence track has diverged.
     - Details pane prop context menu: "Revert to saved value" (and "Revert all to saved value" for compounds) when a prop has diverged from the JSON state passed to `getProject()`.
