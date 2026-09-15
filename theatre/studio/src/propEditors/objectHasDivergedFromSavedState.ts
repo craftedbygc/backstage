@@ -3,8 +3,27 @@ import type {SheetAhistoricState} from '@unseenco/theatre-core/projects/store/st
 import type {SheetState_Historic} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
+import type {SerializableMap} from '@unseenco/theatre-shared/utils/types'
 import {val} from '@unseenco/theatre-dataverse'
 import getStudio from '@unseenco/theatre-studio/getStudio'
+
+/** Treat empty override objects as equivalent to missing entries. */
+function normalizeStaticOverrideEntry(
+  value: SerializableMap | undefined,
+): SerializableMap | undefined {
+  if (value === undefined) {
+    return undefined
+  }
+  if (
+    typeof value === 'object' &&
+    value !== null &&
+    !Array.isArray(value) &&
+    Object.keys(value).length === 0
+  ) {
+    return undefined
+  }
+  return value
+}
 
 export function objectStaticOverridesDiffer(
   currentSheet: SheetState_Historic | undefined,
@@ -13,8 +32,12 @@ export function objectStaticOverridesDiffer(
 ): boolean {
   if (
     !deepEqual(
-      currentSheet?.staticOverrides?.byObject?.[objectKey],
-      onDiskSheet?.staticOverrides?.byObject?.[objectKey],
+      normalizeStaticOverrideEntry(
+        currentSheet?.staticOverrides?.byObject?.[objectKey],
+      ),
+      normalizeStaticOverrideEntry(
+        onDiskSheet?.staticOverrides?.byObject?.[objectKey],
+      ),
     )
   ) {
     return true
@@ -28,12 +51,16 @@ export function objectStaticOverridesDiffer(
   for (const variantId of variantIds) {
     if (
       !deepEqual(
-        currentSheet?.staticOverridesByVariant?.[variantId]?.byObject?.[
-          objectKey
-        ],
-        onDiskSheet?.staticOverridesByVariant?.[variantId]?.byObject?.[
-          objectKey
-        ],
+        normalizeStaticOverrideEntry(
+          currentSheet?.staticOverridesByVariant?.[variantId]?.byObject?.[
+            objectKey
+          ],
+        ),
+        normalizeStaticOverrideEntry(
+          onDiskSheet?.staticOverridesByVariant?.[variantId]?.byObject?.[
+            objectKey
+          ],
+        ),
       )
     ) {
       return true
