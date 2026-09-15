@@ -22,9 +22,26 @@ import projectState from './state.json'
 const project = getProject('My Project', {state: projectState})
 ```
 
+Optional project config:
+
+```ts
+const project = getProject('My Project', {
+  state: projectState,
+  numberPrecision: 2, // Studio number formatting (default 3)
+})
+```
+
+See [Prop types — number precision](./prop-types.md#number-precision).
+
 ### Unsaved changes indicator
 
-When loaded state diverges from the JSON you passed in `getProject({ state })`, Studio shows an **unsaved** indicator on the outline toggle. Export again before deploying so production matches what you authored.
+When in-memory state diverges from the JSON you passed to `getProject({ state })`, Studio surfaces it in several places:
+
+- **Outline toolbar** — orange warning badge on the outline toggle; tooltip points to dirty rows.
+- **Outline rows** — objects show a **dirty circle** (hollow when matching loaded JSON, filled when static overrides or sequence tracks diverge).
+- **Details Panel** — diverged props can be reverted via context menu (**Revert to saved value** / **Revert all to saved value** on compounds).
+
+Export again before deploying so production matches what you authored. Details: [Studio — saved vs in-memory state](./studio.md#saved-vs-in-memory-state).
 
 ### Assets base URL
 

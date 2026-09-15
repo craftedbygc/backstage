@@ -29,6 +29,10 @@ const cancel = project.sheet('Button', 'Cancel')
 
 `submit.sequence.play()` does not affect `cancel`.
 
+## Sequence variants
+
+One sheet can host multiple timelines (`default`, `mobile`, …) with independent keyframe data. See [Sheet sequence variants](./sheet-variants.md).
+
 ## Sheet-level props
 
 Use **`sheet.props(config)`** for parameters that belong to the sheet rather than a scene object—for example global background mode, layout constants, or values shared across sequence variants.

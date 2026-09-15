@@ -20,6 +20,29 @@ const obj2 = sheet.object('obj', {bar: 0}, {reconfigure: true})
 // obj === obj2; foo is gone, bar exists
 ```
 
+The same effect on an existing handle:
+
+```ts
+obj.reconfigure({bar: 0, baz: 1}, {static: ['baz']})
+```
+
+Historic statics and sequence tracks for **removed** prop paths are stripped.
+
+## Adding props
+
+Use **`addProps()`** when you need new top-level props without replacing the whole config (unlike `reconfigure`):
+
+```ts
+const obj = sheet.object('Box', {x: 0})
+obj.addProps({y: 0}) // throws if `y` already exists
+```
+
+Existing props and their saved statics/tracks are preserved.
+
+## Linking another object’s props in Studio
+
+**`showPropsOf`** embeds other objects’ props in this object’s Details Panel (UI-only). See [Linking props with showPropsOf](./show-props-of.md).
+
 ## Detaching
 
 ```ts

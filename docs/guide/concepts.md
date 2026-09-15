@@ -37,6 +37,10 @@ const cancel = project.sheet('Button', 'cancel')
 submit.sequence.play() // does not affect cancel
 ```
 
+### Sequence variants
+
+The same sheet can switch between independent timelines (for example mobile vs desktop). See [Sheet sequence variants](./manual/sheet-variants.md).
+
 ### Sheet-level props
 
 Some values belong to the sheet, not a visible object (global fog, layout toggles, shared parameters). Use **`sheet.props(config)`** instead of inventing a dummy object. Sheet props do not appear in `sheet.getObjects()` and share one hidden carrier object in the outline.
