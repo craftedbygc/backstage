@@ -1,8 +1,58 @@
 import {defineConfig} from 'vitepress'
 
+const guideSidebar = [
+  {text: 'Overview', link: '/guide/'},
+  {text: 'Concepts', link: '/guide/concepts'},
+  {
+    text: 'Getting started',
+    collapsed: false,
+    items: [
+      {text: 'Overview', link: '/guide/getting-started/'},
+      {text: 'With THREE.js', link: '/guide/getting-started/with-three-js'},
+      {text: 'With HTML / SVG', link: '/guide/getting-started/with-html-svg'},
+      {
+        text: 'With React Three Fiber',
+        link: '/guide/getting-started/with-react-three-fiber',
+      },
+    ],
+  },
+  {
+    text: 'Manual',
+    collapsed: false,
+    items: [
+      {text: 'Overview', link: '/guide/manual/'},
+      {text: 'Projects', link: '/guide/manual/projects'},
+      {text: 'Sheets', link: '/guide/manual/sheets'},
+      {text: 'Sheet objects', link: '/guide/manual/objects'},
+      {text: 'Prop types', link: '/guide/manual/prop-types'},
+      {text: 'Sequences', link: '/guide/manual/sequences'},
+      {text: 'Assets', link: '/guide/manual/assets'},
+      {text: 'Audio', link: '/guide/manual/audio'},
+      {text: 'Studio', link: '/guide/manual/studio'},
+      {
+        text: 'Keyboard & mouse',
+        link: '/guide/manual/keyboard-shortcuts',
+      },
+      {
+        text: 'Authoring extensions',
+        link: '/guide/manual/authoring-extensions',
+      },
+      {text: 'Advanced', link: '/guide/manual/advanced'},
+    ],
+  },
+  {
+    text: 'Extensions',
+    collapsed: false,
+    items: [
+      {text: 'Overview', link: '/guide/extensions/'},
+      {text: 'Three.js', link: '/guide/extensions/threejs'},
+    ],
+  },
+]
+
 export default defineConfig({
   title: 'Theatre.js',
-  description: 'API reference for Theatre.js packages',
+  description: 'Guides and API reference for Theatre.js',
   /** Production and preview deploys live under /docs/ on the unified Netlify site. */
   base: '/docs/',
   cleanUrls: true,
@@ -10,9 +60,11 @@ export default defineConfig({
   themeConfig: {
     nav: [
       {text: 'Home', link: '/'},
+      {text: 'Guide', link: '/guide/'},
       {text: 'API reference', link: '/api/'},
     ],
     sidebar: {
+      '/guide/': [{text: 'Guide', items: guideSidebar}],
       '/api/': [
         {
           text: 'API reference',
