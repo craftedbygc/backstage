@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 import type {ObjectAddressKey, SheetId} from '@unseenco/theatre-shared/utils/ids'
-import {setupTestSheet} from '@unseenco/theatre-shared/testUtils'
-import {getProject} from '@unseenco/theatre-core'
-import {privateAPI} from '@unseenco/theatre-core/privateAPIs'
-import getStudio from '@unseenco/theatre-studio/getStudio'
+import {
+  setupTestProject,
+  setupTestSheet,
+} from '@unseenco/theatre-shared/testUtils'
 import globals from '@unseenco/theatre-shared/globals'
 import type {ProjectState_Historic} from '@unseenco/theatre-core/projects/store/storeTypes'
 import {
@@ -54,13 +54,7 @@ describe('projectHasDivergedFromSavedState', () => {
       revisionHistory: ['dom-saved-state-demo'],
     }
 
-    const projectPublic = getProject('Dom-like project ' + Date.now(), {
-      state: savedProjectState,
-    })
-    await projectPublic.ready
-    const project = privateAPI(projectPublic)
-
-    const studio = getStudio()!
+    const {project, studio} = await setupTestProject(savedProjectState)
     studio.transaction(({drafts}) => {
       drafts.historic.coreByProject[project.address.projectId] = {
         ...savedProjectState,

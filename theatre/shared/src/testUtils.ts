@@ -60,3 +60,15 @@ export async function setupTestSheet(sheetState: SheetState_Historic) {
     studio,
   }
 }
+
+export async function setupTestProject(projectState: ProjectState_Historic) {
+  const projectPublic = getProject('Test Project ' + lastProjectN++, {
+    state: projectState,
+  })
+  await projectPublic.ready
+  return {
+    project: privateAPI(projectPublic),
+    projectPublic,
+    studio,
+  }
+}

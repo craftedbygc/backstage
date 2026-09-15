@@ -23,7 +23,7 @@ import {transportStripHeight} from '@unseenco/theatre-studio/panels/SequenceEdit
 import type {Studio} from '@unseenco/theatre-studio/Studio'
 import type {UnknownValidCompoundProps} from '@unseenco/theatre-core/propTypes/internals'
 import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
-import {DEFAULT_SEQUENCE_VARIANT} from '@unseenco/theatre-core/sequences/sequenceVariants'
+import {DEFAULT_SEQUENCE_VARIANT} from '@unseenco/theatre-studio/utils/sequenceVariantHelpers'
 import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
 
 /**
