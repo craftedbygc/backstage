@@ -1,3 +1,4 @@
+import {types} from '@unseenco/theatre-core'
 import {autoAddCamera, autoAddObject} from '@unseenco/theatre-threejs'
 import {
   BoxGeometry,
@@ -183,7 +184,17 @@ async function createSpheresScene(sheet, width, height) {
   emptyObject.name = 'Empty Object'
   emptyObject.position.set(0, 6, -8)
   scene.add(emptyObject)
-  autoAddObject(emptyObject, sheet)
+  autoAddObject(emptyObject, sheet, {
+    additionalConfig: {
+      devtools: {
+        sessionGain: types.number(0, {
+          range: [0, 1],
+          nudgeMultiplier: 0.01,
+        }),
+      },
+    },
+    transient: ['devtools.sessionGain'],
+  })
 
   // Random-color DataTexture so we can verify autoAddObject does not
   // wipe procedural maps that have no URL-backed asset id.

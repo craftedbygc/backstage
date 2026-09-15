@@ -3,8 +3,12 @@ import type {Material, Mesh, Object3D} from 'three'
 import {autoAddMaterial} from './autoAddMaterial'
 import {buildMaterialProps} from './buildMaterialProps'
 import {buildTransformProps} from './buildTransformProps'
-import type {ExcludeInput} from './config'
-import {resolveAutoAddObjectOptions} from './config'
+import type {ExcludeInput, PropPathInput} from './config'
+import {getTheatreThreejsConfig, resolveAutoAddObjectOptions} from './config'
+import {
+  buildSheetObjectPathOptions,
+  mergePropPathInputs,
+} from './propPathOptions'
 import {
   getMaterialEntry,
   mergeShowPropsOf,
@@ -22,6 +26,18 @@ export type AutoAddObjectOptions = {
   include?: ExcludeInput
   additionalConfig?: Record<string, unknown>
   trackMaterial?: boolean
+  /**
+   * Prop paths excluded from exported project state (merged with
+   * `configureTheatreThreejs` defaults). Texture props from material parsing
+   * are always transient. Use flat keys (`'visible'`, `'map'`) or dot paths
+   * (`'transform.position'`, `'material.color'`).
+   */
+  transient?: PropPathInput
+  /**
+   * Prop paths saved to state but not sequenced (merged with
+   * `configureTheatreThreejs` defaults).
+   */
+  static?: PropPathInput
 }
 
 function getMeshMaterial(object: Object3D): Material | Material[] | undefined {
@@ -47,6 +63,8 @@ function splitEmbeddedMaterial(args: {
   transformOnlyConfig: Record<string, unknown>
   exclude?: AutoAddObjectOptions['exclude']
   include?: AutoAddObjectOptions['include']
+  transient?: PropPathInput
+  static?: PropPathInput
 }): ISheetObject {
   const {
     material,
@@ -56,18 +74,27 @@ function splitEmbeddedMaterial(args: {
     transformOnlyConfig,
     exclude,
     include,
+    transient,
+    static: staticPropPaths,
   } = args
 
   const materialSheetObject = autoAddMaterial(material, sheet, {
     objectKey: resolveSharedMaterialObjectKey(material),
     exclude,
     include,
+    transient,
+    static: staticPropPaths,
   })
 
   binding.applyMaterial = undefined
+  const pathDefaults = getTheatreThreejsConfig().autoAddObject ?? {}
+  const hostPathOptions = buildSheetObjectPathOptions(transformOnlyConfig, {
+    transient: mergePropPathInputs(pathDefaults.transient, transient),
+    static: mergePropPathInputs(pathDefaults.static, staticPropPaths),
+  })
   hostSheetObject.reconfigure(
     transformOnlyConfig as Parameters<ISheetObject['reconfigure']>[0],
-    {transient: []},
+    hostPathOptions,
   )
   mergeShowPropsOf(hostSheetObject, materialSheetObject)
 
@@ -94,6 +121,12 @@ export function autoAddObject<T extends Object3D>(
 
   const objectKey = resolveObjectKey(object, options)
   const resolved = resolveAutoAddObjectOptions(options)
+  const defaults = getTheatreThreejsConfig().autoAddObject ?? {}
+  const userTransientPaths = mergePropPathInputs(
+    defaults.transient,
+    options.transient,
+  )
+  const userStaticPaths = mergePropPathInputs(defaults.static, options.static)
   const meshMaterial = getMeshMaterial(object)
   const wantsMaterial = resolved.trackMaterial ?? meshMaterial !== undefined
 
@@ -126,6 +159,8 @@ export function autoAddObject<T extends Object3D>(
           existing.transformOnlyConfig ?? transformOnlyConfig,
         exclude: options.exclude,
         include: options.include,
+        transient: options.transient,
+        static: options.static,
       })
     } else {
       embedMaterial = true
@@ -148,10 +183,15 @@ export function autoAddObject<T extends Object3D>(
     }
   }
 
+  const pathOptions = buildSheetObjectPathOptions(config, {
+    transient: [...transientPaths, ...userTransientPaths],
+    static: userStaticPaths,
+  })
+
   const sheetObject = sheet.object(
     objectKey,
     config as Parameters<ISheet['object']>[1],
-    transientPaths.length > 0 ? {transient: transientPaths} : undefined,
+    pathOptions,
   )
 
   sheetObject.onValuesChange((values) => {
