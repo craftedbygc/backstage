@@ -1,0 +1,18 @@
+# Theatre.js documentation (API reference). Use a dedicated Netlify site for docs —
+# the playground is configured separately via /netlify.toml at the repo root.
+#
+# Netlify UI → Site configuration → Build & deploy → Build settings:
+#   • Base directory: docs
+#   • Publish directory: leave blank (this file sets publish below)
+#
+# Yarn install runs from the monorepo root (parent of base directory).
+
+[build]
+  command = "cd .. && corepack enable && yarn install --immutable && yarn workspace @unseenco/theatre-docs run build"
+  publish = ".vitepress/dist"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[context.deploy-preview]
+  ignore = "false"

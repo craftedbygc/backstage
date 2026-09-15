@@ -1,0 +1,16 @@
+{
+  "name": "@unseenco/theatre-docs",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "generate:api": "node ./scripts/generate-api-reference.mjs",
+    "dev": "yarn generate:api && vitepress dev",
+    "build": "yarn generate:api && vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.3",
+    "vue": "^3.5.13"
+  }
+}
