@@ -1,5 +1,6 @@
 import {types} from '@unseenco/theatre-core'
 import {autoAddCamera, autoAddObject} from '@unseenco/theatre-threejs'
+import noiseTextureUrl from './textures/noise.jpg?url'
 import {
   BoxGeometry,
   CatmullRomCurve3,
@@ -216,7 +217,7 @@ async function createSpheresScene(sheet, width, height) {
   mesh.name = 'Hero Sphere'
   scene.add(mesh)
 
-  const texture = await new TextureLoader().loadAsync('./textures/noise.jpg')
+  const texture = await new TextureLoader().loadAsync(noiseTextureUrl)
 
   const shaderMaterial = new ShaderMaterial({
     uniforms: {
