@@ -1,8 +1,12 @@
 import type {ISheet, ISheetObject} from '@unseenco/theatre-core'
 import type {Material} from 'three'
 import {buildMaterialProps} from './buildMaterialProps'
-import type {ExcludeInput} from './config'
-import {resolveAutoAddObjectOptions} from './config'
+import type {ExcludeInput, PropPathInput} from './config'
+import {getTheatreThreejsConfig, resolveAutoAddObjectOptions} from './config'
+import {
+  buildSheetObjectPathOptions,
+  mergePropPathInputs,
+} from './propPathOptions'
 import {getMaterialEntry, setMaterialEntry} from './materialRegistry'
 
 export type AutoAddMaterialExcludeConfig = {
@@ -21,6 +25,8 @@ export type AutoAddMaterialOptions = {
   exclude?: AutoAddMaterialExcludeInput
   include?: AutoAddMaterialExcludeInput
   additionalConfig?: Record<string, unknown>
+  transient?: PropPathInput
+  static?: PropPathInput
 }
 
 function toExcludeInput(
@@ -81,10 +87,19 @@ export function autoAddMaterial(
   }
 
   const objectKey = resolveObjectKey(material, options)
+  const pathDefaults = getTheatreThreejsConfig().autoAddObject ?? {}
   const resolved = resolveAutoAddObjectOptions({
     exclude: toExcludeInput(options.exclude),
     include: toExcludeInput(options.include),
   })
+  const userTransientPaths = mergePropPathInputs(
+    pathDefaults.transient,
+    options.transient,
+  )
+  const userStaticPaths = mergePropPathInputs(
+    pathDefaults.static,
+    options.static,
+  )
 
   const {
     config: materialConfig,
@@ -107,10 +122,15 @@ export function autoAddMaterial(
     ...options.additionalConfig,
   }
 
+  const pathOptions = buildSheetObjectPathOptions(config, {
+    transient: [...transientPaths, ...userTransientPaths],
+    static: userStaticPaths,
+  })
+
   const sheetObject = sheet.object(
     objectKey,
     config as Parameters<ISheet['object']>[1],
-    transientPaths.length > 0 ? {transient: transientPaths} : undefined,
+    pathOptions,
   )
 
   sheetObject.onValuesChange((values) => {

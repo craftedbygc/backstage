@@ -7,10 +7,15 @@ export type ExcludeConfig = {
 /** A flat list applies to transform, material props, and uniforms. */
 export type ExcludeInput = readonly string[] | ExcludeConfig
 
+/** Same shape as {@link ExcludeInput}; paths are expanded when passed to `sheet.object()`. */
+export type PropPathInput = ExcludeInput
+
 export type AutoAddObjectDefaults = {
   exclude?: ExcludeInput
   include?: ExcludeInput
   trackMaterial?: boolean
+  transient?: PropPathInput
+  static?: PropPathInput
 }
 
 export type TheatreThreejsConfig = {

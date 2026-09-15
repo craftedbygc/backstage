@@ -33,6 +33,7 @@ export type {
   AutoAddObjectDefaults,
   ExcludeConfig,
   ExcludeInput,
+  PropPathInput,
   TheatreThreejsConfig,
 } from './config'
 

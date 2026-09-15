@@ -5,6 +5,7 @@ import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
 import {setupTestSheet} from '@unseenco/theatre-shared/testUtils'
 import {getPropConfigByPath} from '@unseenco/theatre-shared/propTypes/utils'
 import {objectHasDivergedFromSavedState} from './objectHasDivergedFromSavedState'
+import {revertPropToSavedState} from './revertPropToSavedState'
 
 const emptySheetState = {
   staticOverrides: {byObject: {}},
@@ -44,6 +45,27 @@ describe('objectHasDivergedFromSavedState', () => {
     })
 
     expect(objectHasDivergedFromSavedState(obj)).toBe(true)
+  })
+
+  test('returns false after reverting a prop that has no saved json override', async () => {
+    const {studio, obj, objPublicAPI} = await setupTestSheet(emptySheetState)
+    const pathToProp = ['position', 'x']
+    const propConfig = getPropConfigByPath(
+      obj.template.staticConfig,
+      pathToProp,
+    )!
+
+    studio.transaction(({set}) => {
+      set(objPublicAPI.props.position.x, 42)
+    })
+
+    expect(objectHasDivergedFromSavedState(obj)).toBe(true)
+
+    studio.transaction(({stateEditors}) => {
+      revertPropToSavedState(stateEditors, obj, pathToProp, propConfig)
+    })
+
+    expect(objectHasDivergedFromSavedState(obj)).toBe(false)
   })
 
   test('returns true when a sequence track is added for the object', async () => {
