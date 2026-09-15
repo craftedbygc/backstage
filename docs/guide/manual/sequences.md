@@ -12,6 +12,10 @@ For compound props, right-click the group → **Sequence all**.
 
 Use **Make static** to remove a prop from the timeline (deletes its keyframes).
 
+## Custom tween labels
+
+Right-click a **connector bar** between keyframes in the Sequence Editor → **Name** to assign a custom tween name. Labels persist in project state, show on the bar (ellipsis + hover tooltip), and can be cleared from the same menu.
+
 ## Keyframes
 
 - Click the diamond on a track to add a keyframe at the playhead.

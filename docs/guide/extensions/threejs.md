@@ -17,8 +17,10 @@ import studio from '@unseenco/theatre-studio'
 import extension from '@unseenco/theatre-threejs/extension'
 
 studio.initialize()
-studio.extend(extension)
+studio.extend(extension({renderer, studio, scenes: [{name: 'Main', scene, camera}]}))
 ```
+
+Breaking change from upstream Theatre: **`buildExtension()` lives on `/extension`**, not the package root ([0.1.8 changelog](https://github.com/craftedbygc/theatre/blob/main/CHANGELOG.md)).
 
 ## autoAddObject
 
@@ -30,22 +32,74 @@ import {autoAddObject, configureTheatreThreejs} from '@unseenco/theatre-threejs'
 configureTheatreThreejs({
   autoAddObject: {
     exclude: ['matrixAutoUpdate'],
-    transient: ['material.map'],
+    transient: ['material.map'], // session-only texture slots
+    static: ['renderOrder'],
   },
 })
 
 const sheetObject = autoAddObject(mesh, sheet, {
   name: 'Hero mesh',
+  // Merged with configureTheatreThreejs() defaults (dot or array paths)
   transient: ['someSessionFlag'],
   static: ['renderOrder'],
 })
 ```
 
 - **`transient`** / **`static`** — same semantics as `sheet.object()` ([Objects](../manual/objects.md)).
-- **`autoAddMaterial`** — track a shared material on its own object.
-- **`autoAddCamera`** — camera props and orbit helpers.
+- Unit-interval material scalars (`opacity`, `roughness`, `metalness`, …) use a **0–1** Studio range.
 
-When two meshes share one `Material`, material props move to a **Shared Materials** object (see `packages/threejs/AGENTS.md`).
+## autoAddMaterial
+
+Track a shared `Material` on its own sheet object (material props only—no mesh transform):
+
+```ts
+import {autoAddMaterial} from '@unseenco/theatre-threejs'
+
+autoAddMaterial(material, sheet, {name: 'Glass'})
+```
+
+Call this before `autoAddObject()` when you want explicit control over the material object key.
+
+## Shared materials
+
+When a **second** `autoAddObject()` uses the same `Material` instance as an earlier mesh:
+
+1. Material props move to a dedicated object under **`Shared Materials / <name>`**.
+2. Both meshes link that object via **`showPropsOf`** ([showPropsOf](../manual/show-props-of.md)).
+3. The first mesh stops applying material props locally.
+
+Unnamed materials warn and fall back to a UUID-based key. Pass **`trackMaterial: false`** on `autoAddObject()` to keep material props on the mesh, or call **`autoAddMaterial()`** first to own the shared object.
+
+Playground: **`/shared/three-basic-vanilla-devtools/`** (instanced grid + shared materials).
+
+## autoAddCamera
+
+Registers camera transform and lens props (`focalLength`, `near`, `far`, `zoom`) plus a viewport hitbox for orbit-mode picking.
+
+## Scenes and orbit mode
+
+`buildExtension()` config can register callbacks before persisted state restores:
+
+```ts
+studio.extend(
+  extension({
+    renderer,
+    studio,
+    scenes: [{name: 'Main', scene, camera}],
+    onSceneSwitch: (name) => console.log('active scene', name),
+    onOrbitModeSwitch: (orbit) => console.log('orbit mode', orbit),
+  }),
+)
+
+// Later, from the returned API:
+api.switchScene('Main') // or index
+api.getActiveSceneName()
+api.isOrbitMode()
+const off = api.onSceneSwitch((name) => {})
+off() // unsubscribe
+```
+
+Multi-scene setups hide sheets that only contain objects in **inactive** scenes from the outline (updates on scene switch).
 
 ## Selection sync
 

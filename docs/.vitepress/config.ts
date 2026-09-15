@@ -23,7 +23,15 @@ const guideSidebar = [
       {text: 'Overview', link: '/guide/manual/'},
       {text: 'Projects', link: '/guide/manual/projects'},
       {text: 'Sheets', link: '/guide/manual/sheets'},
+      {
+        text: 'Sheet sequence variants',
+        link: '/guide/manual/sheet-variants',
+      },
       {text: 'Sheet objects', link: '/guide/manual/objects'},
+      {
+        text: 'Linking props (showPropsOf)',
+        link: '/guide/manual/show-props-of',
+      },
       {text: 'Prop types', link: '/guide/manual/prop-types'},
       {text: 'Sequences', link: '/guide/manual/sequences'},
       {text: 'Assets', link: '/guide/manual/assets'},
@@ -32,6 +40,10 @@ const guideSidebar = [
       {
         text: 'Keyboard & mouse',
         link: '/guide/manual/keyboard-shortcuts',
+      },
+      {
+        text: 'Runtime lifecycle',
+        link: '/guide/manual/runtime-lifecycle',
       },
       {
         text: 'Authoring extensions',

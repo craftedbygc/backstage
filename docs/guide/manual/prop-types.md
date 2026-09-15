@@ -18,6 +18,26 @@ sheet.object('key', {
 
 `range` guides the Studio UI; it is not a runtime clamp unless you enforce it in `onValuesChange`.
 
+## Number precision
+
+Studio number inputs round and format using a resolved **precision** (decimal places):
+
+- **Project default** — pass `numberPrecision` to `getProject()` (default **3**).
+- **Per prop** — `types.number(default, {precision: 2})` overrides the project default for that prop.
+
+```ts
+const project = getProject('My Project', {numberPrecision: 2})
+
+sheet.object('Fine', {
+  // Uses project default (2 here)
+  coarse: types.number(0),
+  // Overrides to 4 decimals in Studio
+  exact: types.number(0, {precision: 4}),
+})
+```
+
+See [Projects](./projects.md) for where project config lives.
+
 ## Common types
 
 | Type | Purpose |
