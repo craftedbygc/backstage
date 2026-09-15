@@ -4,7 +4,7 @@ Static documentation for the Theatre.js monorepo, built with [VitePress](https:/
 
 ## Why VitePress
 
-We chose **VitePress** over Starlight (Astro) because the monorepo already uses Vite for the playground, VitePress keeps the docs toolchain small (Vue + Vite only), and it handles a mix of hand-written Markdown (future guides) plus large generated API trees without an extra framework layer. Starlight is excellent for content-heavy sites; for API-first docs with incremental human-written pages, VitePress is the lighter fit.
+We chose **VitePress** over Starlight (Astro) because the monorepo already uses Vite for the playground, VitePress keeps the docs toolchain small (Vue + Vite only), and it handles a mix of hand-written Markdown (`docs/guide/`) plus large generated API trees without an extra framework layer. Starlight is excellent for content-heavy sites; for API-first docs with incremental human-written pages, VitePress is the lighter fit.
 
 ## API reference generation
 
