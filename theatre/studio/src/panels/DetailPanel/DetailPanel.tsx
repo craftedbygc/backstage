@@ -200,8 +200,29 @@ const DetailPanelContent: React.FC<{}> = () => {
     const sheet = selection.find(isSheet)
 
     if (obj) {
-      const sheetProps = getSheetPropsObject(obj.sheet)
-      const isSheetPropsSelection = isSheetPropsObjectKey(obj.address.objectKey)
+      if (isSheetPropsObjectKey(obj.address.objectKey)) {
+        return (
+          <Container
+            data-testid="DetailPanel-Sheet"
+            pin={showDetailsPanel}
+            $docked={isDocked}
+            ref={setContainerElt}
+            style={containerStyle}
+            onMouseEnter={() => {
+              if (!isDocked) isDetailPanelHoveredB.set(true)
+            }}
+            onMouseLeave={() => {
+              if (!isDocked) isDetailPanelHoveredB.set(false)
+            }}
+          >
+            {resizeHandle}
+            <Body $docked={isDocked} $noHeader>
+              <SheetDetails sheetPropsObject={obj} />
+            </Body>
+          </Container>
+        )
+      }
+
       return (
         <Container
           data-testid="DetailPanel-Object"
@@ -218,19 +239,7 @@ const DetailPanelContent: React.FC<{}> = () => {
         >
           {resizeHandle}
           <Body $docked={isDocked} $noHeader>
-            {isSheetPropsSelection ? (
-              <SheetDetails
-                sheetPropsObject={obj}
-                showSectionHeader={false}
-              />
-            ) : (
-              <>
-                {sheetProps ? (
-                  <SheetDetails sheetPropsObject={sheetProps} />
-                ) : null}
-                <ObjectDetails objects={[obj]} />
-              </>
-            )}
+            <ObjectDetails objects={[obj]} />
           </Body>
         </Container>
       )
@@ -255,10 +264,7 @@ const DetailPanelContent: React.FC<{}> = () => {
           >
             {resizeHandle}
             <Body $docked={isDocked} $noHeader>
-              <SheetDetails
-                sheetPropsObject={sheetProps}
-                showSectionHeader={false}
-              />
+              <SheetDetails sheetPropsObject={sheetProps} />
             </Body>
           </Container>
         )
