@@ -1,4 +1,8 @@
-import {getOutlineSelection} from '@unseenco/theatre-studio/selectors'
+import {
+  getOutlineSelection,
+  getSheetPropsObject,
+} from '@unseenco/theatre-studio/selectors'
+import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
 import {usePrism, useVal} from '@unseenco/theatre-react'
 import React, {
   createContext,
@@ -8,13 +12,18 @@ import React, {
   useState,
 } from 'react'
 import styled, {css} from 'styled-components'
-import {isProject, isSheetObject} from '@unseenco/theatre-shared/instanceTypes'
+import {
+  isProject,
+  isSheet,
+  isSheetObject,
+} from '@unseenco/theatre-shared/instanceTypes'
 import {
   panelZIndexes,
   TitleBar_Piece,
 } from '@unseenco/theatre-studio/panels/BasePanel/common'
 import {pointerEventsAutoInNormalMode} from '@unseenco/theatre-studio/css'
 import ObjectDetails from './ObjectDetails'
+import SheetDetails from './SheetDetails'
 import ProjectDetails from './ProjectDetails'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import useHotspot from '@unseenco/theatre-studio/uiComponents/useHotspot'
@@ -188,8 +197,32 @@ const DetailPanelContent: React.FC<{}> = () => {
   return usePrism(() => {
     const selection = getOutlineSelection()
     const obj = selection.find(isSheetObject)
+    const sheet = selection.find(isSheet)
 
     if (obj) {
+      if (isSheetPropsObjectKey(obj.address.objectKey)) {
+        return (
+          <Container
+            data-testid="DetailPanel-Sheet"
+            pin={showDetailsPanel}
+            $docked={isDocked}
+            ref={setContainerElt}
+            style={containerStyle}
+            onMouseEnter={() => {
+              if (!isDocked) isDetailPanelHoveredB.set(true)
+            }}
+            onMouseLeave={() => {
+              if (!isDocked) isDetailPanelHoveredB.set(false)
+            }}
+          >
+            {resizeHandle}
+            <Body $docked={isDocked} $noHeader>
+              <SheetDetails sheetPropsObject={obj} />
+            </Body>
+          </Container>
+        )
+      }
+
       return (
         <Container
           data-testid="DetailPanel-Object"
@@ -210,6 +243,32 @@ const DetailPanelContent: React.FC<{}> = () => {
           </Body>
         </Container>
       )
+    }
+
+    if (sheet) {
+      const sheetProps = getSheetPropsObject(sheet)
+      if (sheetProps) {
+        return (
+          <Container
+            data-testid="DetailPanel-Sheet"
+            pin={showDetailsPanel}
+            $docked={isDocked}
+            ref={setContainerElt}
+            style={containerStyle}
+            onMouseEnter={() => {
+              if (!isDocked) isDetailPanelHoveredB.set(true)
+            }}
+            onMouseLeave={() => {
+              if (!isDocked) isDetailPanelHoveredB.set(false)
+            }}
+          >
+            {resizeHandle}
+            <Body $docked={isDocked} $noHeader>
+              <SheetDetails sheetPropsObject={sheetProps} />
+            </Body>
+          </Container>
+        )
+      }
     }
     const project = selection.find(isProject)
     if (project) {

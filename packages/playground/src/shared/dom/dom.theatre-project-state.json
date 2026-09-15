@@ -16,7 +16,7 @@
             },
             "test": "Loaded from JSON"
           },
-          "global": {
+          "__theatre_sheet_props__": {
             "background": {
               "type": "black"
             }

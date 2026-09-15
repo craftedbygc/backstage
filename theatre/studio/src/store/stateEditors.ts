@@ -30,6 +30,7 @@ import type {
 } from '@unseenco/theatre-shared/utils/addresses'
 import {commonRootOfPathsToProps} from '@unseenco/theatre-shared/utils/addresses'
 import {encodePathToProp} from '@unseenco/theatre-shared/utils/addresses'
+import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
 import type {
   StudioSheetItemKey,
   KeyframeId,
@@ -78,6 +79,15 @@ import type SheetTemplate from '@unseenco/theatre-core/sheets/SheetTemplate'
 import type SheetObjectTemplate from '@unseenco/theatre-core/sheetObjects/SheetObjectTemplate'
 import type {PropTypeConfig} from '@unseenco/theatre-core/propTypes'
 import {pointableSetUtil} from '@unseenco/theatre-shared/utils/PointableSet'
+
+function effectiveSequenceVariantForObjectKey(
+  objectKey: ObjectAddressKey,
+  sequenceVariant: SequenceVariantId = DEFAULT_SEQUENCE_VARIANT,
+): SequenceVariantId {
+  return isSheetPropsObjectKey(objectKey)
+    ? DEFAULT_SEQUENCE_VARIANT
+    : sequenceVariant
+}
 
 export const setDrafts__onlyMeantToBeCalledByTransaction = (
   drafts: undefined | Drafts,
@@ -238,6 +248,9 @@ namespace stateEditors {
                 objectKey: ObjectAddressKey
               },
             ) {
+              if (isSheetPropsObjectKey(p.objectKey)) {
+                return
+              }
               const coreSheetState =
                 stateEditors.coreByProject.historic.sheetsById._ensure(p)
               coreSheetState.variantObjectOverrides ??= {}
@@ -833,10 +846,15 @@ namespace stateEditors {
               sequenceVariant?: SequenceVariantId
             },
           ) {
+            const variantId = effectiveSequenceVariantForObjectKey(
+              p.objectKey,
+              p.sequenceVariant,
+            )
             const s =
-              stateEditors.coreByProject.historic.sheetsById.sequence._ensure(
-                p,
-              ).tracksByObject
+              stateEditors.coreByProject.historic.sheetsById.sequence._ensure({
+                ...p,
+                sequenceVariant: variantId,
+              }).tracksByObject
 
             s[p.objectKey] ??= {trackData: {}, trackIdByPropPath: {}}
 
@@ -849,7 +867,10 @@ namespace stateEditors {
             },
             config: PropTypeConfig,
           ) {
-            const variantId = p.sequenceVariant ?? DEFAULT_SEQUENCE_VARIANT
+            const variantId = effectiveSequenceVariantForObjectKey(
+              p.objectKey,
+              p.sequenceVariant,
+            )
             const sheetState =
               stateEditors.coreByProject.historic.sheetsById._ensure(p)
             const pathEncoded = encodePathToProp(p.pathToProp)
@@ -883,7 +904,10 @@ namespace stateEditors {
               sequenceVariant?: SequenceVariantId
             },
           ) {
-            const variantId = p.sequenceVariant ?? DEFAULT_SEQUENCE_VARIANT
+            const variantId = effectiveSequenceVariantForObjectKey(
+              p.objectKey,
+              p.sequenceVariant,
+            )
             const sheetState =
               stateEditors.coreByProject.historic.sheetsById._ensure(p)
             const encodedPropPath = encodePathToProp(p.pathToProp)
@@ -1296,7 +1320,10 @@ namespace stateEditors {
             ) {
               const sheetState =
                 stateEditors.coreByProject.historic.sheetsById._ensure(p)
-              const variantId = p.sequenceVariant ?? DEFAULT_SEQUENCE_VARIANT
+              const variantId = effectiveSequenceVariantForObjectKey(
+                p.objectKey,
+                p.sequenceVariant,
+              )
               const byObject = ensureVariantStaticOverridesByObjectInSheet(
                 sheetState,
                 variantId,

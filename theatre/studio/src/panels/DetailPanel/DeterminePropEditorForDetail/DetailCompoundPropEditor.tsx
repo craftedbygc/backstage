@@ -29,6 +29,10 @@ import memoizeFn from '@unseenco/theatre-shared/utils/memoizeFn'
 import {collapsedMap} from './collapsedMap'
 import useChordial from '@unseenco/theatre-studio/uiComponents/chordial/useChodrial'
 import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {
+  isSheetPropsObjectKey,
+  sheetObjectPropsTooltipNamespace,
+} from '@unseenco/theatre-shared/utils/sheetProps'
 
 const Container = styled.div`
   --step: 12px;
@@ -228,7 +232,9 @@ function DetailCompoundPropEditor<
   )
   // Root folder shows the object path (was the detail panel title bar).
   const label: string = isRootProps
-    ? `${obj.sheet.address.sheetId} : ${activeVariant} → ${obj.address.objectKey}`
+    ? isSheetPropsObjectKey(obj.address.objectKey)
+      ? obj.sheet.address.sheetId
+      : `${obj.sheet.address.sheetId} : ${activeVariant} → ${obj.address.objectKey}`
     : propName || 'Props'
 
   const lastSubPropIsComposite = compositeSubs.length > 0
@@ -269,7 +275,10 @@ function DetailCompoundPropEditor<
 
   const {targetRef} = useChordial(() => {
     const title = [
-      obj.address.objectKey,
+      sheetObjectPropsTooltipNamespace(
+        obj.address.objectKey,
+        obj.sheet.address.sheetId,
+      ),
       'props',
       ...getPointerParts(pointerToProp).path,
     ].join('.')

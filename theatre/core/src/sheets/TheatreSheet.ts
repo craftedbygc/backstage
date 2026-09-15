@@ -20,6 +20,10 @@ import type {
   UnknownValidCompoundProps,
 } from '@unseenco/theatre-core/propTypes/internals'
 import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
+import {
+  isSheetPropsObjectKey,
+  SHEET_PROPS_OBJECT_KEY,
+} from '@unseenco/theatre-shared/utils/sheetProps'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import {notify} from '@unseenco/theatre-shared/notify'
 import type {
@@ -75,6 +79,11 @@ export type ISheetObjectOptions = {
   static?: readonly StaticPropPath[]
   __actions__THIS_API_IS_UNSTABLE_AND_WILL_CHANGE_IN_THE_NEXT_VERSION?: SheetObjectActionsConfig
 }
+
+export type ISheetPropsOptions = Omit<
+  ISheetObjectOptions,
+  'visible' | 'showPropsOf'
+>
 
 export interface ISheet {
   /**
@@ -159,6 +168,18 @@ export interface ISheet {
     key: string,
     props: Props,
     options?: ISheetObjectOptions,
+  ): ISheetObject<Props>
+
+  /**
+   * Declares props scoped to the sheet (not a scene object). The returned handle
+   * behaves like a sheet object for `props`, `value`, `onValuesChange`, and
+   * Studio editing, but is hidden from {@link ISheet.getObjects} and the outline.
+   *
+   * Sheet props are shared across all sequence variants (static and sequenced).
+   */
+  props<Props extends UnknownShorthandCompoundProps>(
+    config: Props,
+    options?: ISheetPropsOptions,
   ): ISheetObject<Props>
 
   /**
@@ -296,6 +317,12 @@ export default class TheatreSheet implements ISheet {
       `sheet.object`,
     )
 
+    if (isSheetPropsObjectKey(sanitizedPath)) {
+      throw new InvalidArgumentError(
+        `The key "${sanitizedPath}" is reserved for sheet-level props. Use sheet.props() instead of sheet.object().`,
+      )
+    }
+
     const existingObject = internal.getObject(sanitizedPath as ObjectAddressKey)
 
     /**
@@ -413,6 +440,87 @@ export default class TheatreSheet implements ISheet {
     }
   }
 
+  props<Props extends UnknownShorthandCompoundProps>(
+    config: Props,
+    opts?: ISheetPropsOptions,
+  ): ISheetObject<Props> {
+    const internal = privateAPI(this)
+    const objectKey = SHEET_PROPS_OBJECT_KEY
+    const existingObject = internal.getSheetPropsObject()
+
+    const nativeObject = null
+    const actions =
+      opts?.__actions__THIS_API_IS_UNSTABLE_AND_WILL_CHANGE_IN_THE_NEXT_VERSION
+
+    if (existingObject) {
+      if (process.env.NODE_ENV !== 'production') {
+        const prevConfig = getUnsanitizedObjectProps(existingObject)
+        if (prevConfig) {
+          if (!deepEqual(config, prevConfig)) {
+            if (opts?.reconfigure === true) {
+              const sanitizedConfig = compound(config)
+              existingObject.template.reconfigure(sanitizedConfig)
+              if (opts.transient !== undefined) {
+                existingObject.template.setTransientPropPaths(
+                  opts.transient,
+                  sanitizedConfig,
+                )
+              }
+              if (opts.static !== undefined) {
+                existingObject.template.setStaticPropPaths(
+                  opts.static,
+                  sanitizedConfig,
+                )
+              }
+              setUnsanitizedObjectProps(existingObject, config)
+              return existingObject.publicApi as $IntentionalAny
+            } else {
+              throw new Error(
+                `You seem to have called sheet.props(config) twice, with different values for \`config\`. ` +
+                  `Use the same config on repeat calls, or pass \`{reconfigure: true}\` to change the schema.`,
+              )
+            }
+          }
+        }
+      }
+
+      if (actions) {
+        existingObject.template._temp_setActions(actions)
+      }
+
+      if (opts?.transient !== undefined) {
+        existingObject.template.setTransientPropPaths(
+          opts.transient,
+          existingObject.template.staticConfig,
+        )
+      }
+
+      if (opts?.static !== undefined) {
+        existingObject.template.setStaticPropPaths(
+          opts.static,
+          existingObject.template.staticConfig,
+        )
+      }
+
+      return existingObject.publicApi as $IntentionalAny
+    }
+
+    const sanitizedConfig = compound(config)
+    const object = internal.createObject(
+      objectKey,
+      nativeObject,
+      sanitizedConfig,
+      actions,
+      false,
+      opts?.transient,
+      opts?.static,
+    )
+    if (process.env.NODE_ENV !== 'production') {
+      setUnsanitizedObjectProps(object, config)
+    }
+    return object.publicApi as $IntentionalAny
+  }
+
   get sequence(): TheatreSequence {
     return privateAPI(this).getSequence().publicApi
   }
@@ -443,6 +551,12 @@ export default class TheatreSheet implements ISheet {
       key,
       `sheet.deleteObject("${key}")`,
     ) as ObjectAddressKey
+
+    if (isSheetPropsObjectKey(sanitizedPath)) {
+      throw new InvalidArgumentError(
+        `Sheet props cannot be detached. They are removed when the sheet instance is unloaded.`,
+      )
+    }
 
     const obj = internal.getObject(sanitizedPath)
     if (!obj) {

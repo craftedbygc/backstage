@@ -14,6 +14,10 @@ import type {
   ObjectAddressKey,
   SheetInstanceId,
 } from '@unseenco/theatre-shared/utils/ids'
+import {
+  isSheetPropsObjectKey,
+  SHEET_PROPS_OBJECT_KEY,
+} from '@unseenco/theatre-shared/utils/sheetProps'
 import type {
   TransientPropPath,
   StaticPropPath,
@@ -125,8 +129,13 @@ export default class Sheet {
 
   getObjects(): SheetObject[] {
     return Object.values(this._objects.get()).filter(
-      (obj): obj is SheetObject => !!obj,
+      (obj): obj is SheetObject =>
+        !!obj && !isSheetPropsObjectKey(obj.address.objectKey),
     )
+  }
+
+  getSheetPropsObject(): SheetObject | undefined {
+    return this.getObject(SHEET_PROPS_OBJECT_KEY)
   }
 
   deleteObject(objectKey: ObjectAddressKey) {

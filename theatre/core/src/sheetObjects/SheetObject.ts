@@ -42,7 +42,9 @@ import {cloneDeep} from 'lodash-es'
 import type {ILogger, IUtilContext} from '@unseenco/theatre-shared/logger'
 import {pointerToSequenceTrackData} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
+import {DEFAULT_SEQUENCE_VARIANT} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import {onChange} from '@unseenco/theatre-core/coreExports'
+import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
 
 /**
  * Internally, the sheet's actual configured value is not a specific type, since we
@@ -195,7 +197,10 @@ export default class SheetObject implements PointerToPrismProvider {
          * of the same SheetObject, we can read it from the template.
          */
         const activeVariant = val(this.sheet.effectiveActiveSequenceVariantD)
-        const statics = val(this.template.getStaticValues(activeVariant))
+        const staticVariant = isSheetPropsObjectKey(this.address.objectKey)
+          ? DEFAULT_SEQUENCE_VARIANT
+          : activeVariant
+        const statics = val(this.template.getStaticValues(staticVariant))
 
         // Similar to above, we need a separate but stable WeakMap to cache the result of merging the static values
         const withStaticsCache = prism.memo(
@@ -311,11 +316,14 @@ export default class SheetObject implements PointerToPrismProvider {
   getSequencedValues(): Prism<Pointer<SheetObjectPropsValue>> {
     return prism(() => {
       const activeVariant = val(this.sheet.effectiveActiveSequenceVariantD)
+      const sequenceVariant = isSheetPropsObjectKey(this.address.objectKey)
+        ? DEFAULT_SEQUENCE_VARIANT
+        : activeVariant
 
       const tracksToProcessD = prism.memo(
         'tracksToProcess',
-        () => this.template.getArrayOfValidSequenceTracks(activeVariant),
-        [activeVariant],
+        () => this.template.getArrayOfValidSequenceTracks(sequenceVariant),
+        [sequenceVariant],
       )
 
       const tracksToProcess = val(tracksToProcessD)

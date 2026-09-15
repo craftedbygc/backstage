@@ -6,6 +6,7 @@ import {val} from '@unseenco/theatre-dataverse'
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
 import type {ProjectId} from '@unseenco/theatre-shared/utils/ids'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
+import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import {
   formatOutlineNamespacePathKey,
@@ -40,6 +41,9 @@ export function isSheetVisibleInOutline(sheet: Sheet): boolean {
 }
 
 export function isSheetObjectVisibleInOutline(object: SheetObject): boolean {
+  if (isSheetPropsObjectKey(object.address.objectKey)) {
+    return false
+  }
   return object.template.isVisibleInOutline()
 }
 

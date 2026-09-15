@@ -53,6 +53,7 @@ import type {
   TransientPropPath,
   StaticPropPath,
 } from '@unseenco/theatre-shared/utils/transientPropPaths'
+import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
 import {
   isPathUnderTransientPrefix,
   normalizeTransientPropPaths,
@@ -459,6 +460,12 @@ export default class SheetObjectTemplate {
             trackId: SequenceTrackId
             trackVariant: SequenceVariantId
           }> => {
+            const effectiveSequenceVariant = isSheetPropsObjectKey(
+              this.address.objectKey,
+            )
+              ? DEFAULT_SEQUENCE_VARIANT
+              : sequenceVariant
+
             const pointerToSheetState =
               this.project.pointers.historic.sheetsById[this.address.sheetId]
 
@@ -472,26 +479,26 @@ export default class SheetObjectTemplate {
             )
 
             const variantTrackIdByPropPath =
-              sequenceVariant === DEFAULT_SEQUENCE_VARIANT
+              effectiveSequenceVariant === DEFAULT_SEQUENCE_VARIANT
                 ? undefined
                 : valTrackIdByPropPathForObject(
                     pointerToSheetState,
-                    sequenceVariant,
+                    effectiveSequenceVariant,
                     this.address.objectKey,
                   )
 
             const mergedTrackMap = mergeSequenceTrackMaps(
               defaultTrackIdByPropPath,
               variantTrackIdByPropPath,
-              sequenceVariant,
+              effectiveSequenceVariant,
             )
 
             const unsequencedPropPaths =
-              sequenceVariant === DEFAULT_SEQUENCE_VARIANT
+              effectiveSequenceVariant === DEFAULT_SEQUENCE_VARIANT
                 ? undefined
                 : valUnsequencedPropPathsForObject(
                     pointerToSheetState,
-                    sequenceVariant,
+                    effectiveSequenceVariant,
                     this.address.objectKey,
                   )
             const unsequencedPropPathSet = unsequencedPropPaths
