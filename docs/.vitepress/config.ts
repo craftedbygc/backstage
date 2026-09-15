@@ -3,6 +3,8 @@ import {defineConfig} from 'vitepress'
 export default defineConfig({
   title: 'Theatre.js',
   description: 'API reference for Theatre.js packages',
+  /** Production and preview deploys live under /docs/ on the unified Netlify site. */
+  base: '/docs/',
   cleanUrls: true,
   srcExclude: ['README.md'],
   themeConfig: {

@@ -31,25 +31,46 @@ From the **repository root** (after `yarn`):
 yarn docs:dev
 ```
 
-Open the URL VitePress prints (typically `http://localhost:5173`).
+Open the URL VitePress prints. With `base: '/docs/'`, the site is served under **`/docs/`** (e.g. `http://localhost:5173/docs/`).
 
-Production build:
+Production build (docs only):
 
 ```bash
 yarn docs:build
-yarn workspace @unseenco/theatre-docs run preview   # optional
+yarn workspace @unseenco/theatre-docs run preview   # optional; preview also uses /docs/
 ```
 
 The first run compiles `theatre` and `@unseenco/theatre-threejs` declarations and may take a minute.
 
+### Playground base path
+
+The playground dev server (`yarn playground`) keeps Vite `base: '/'` so demos stay at paths like `/shared/dom/`. Production builds set `base: '/playground/'` so the same demos work on Netlify at `/playground/shared/dom/`.
+
+## Unified site build (Netlify)
+
+One Netlify site serves both docs and playground from the **`deploy/`** output:
+
+```bash
+yarn build:site
+```
+
+This runs VitePress into `deploy/docs/` and the playground MPA into `deploy/playground/`, plus a minimal `deploy/index.html` linking to both.
+
 ## Netlify deploy previews
 
-Use a **separate** Netlify site from the playground (`/netlify.toml` at repo root).
+Configuration lives in **`/netlify.toml`** at the repository root (not `docs/netlify.toml`).
 
 | Setting | Value |
 | --- | --- |
-| Base directory | `docs` |
-| Build command | (from `docs/netlify.toml`) |
-| Publish directory | `.vitepress/dist` (relative to base) |
+| Base directory | *(blank — repo root)* |
+| Build command | *(from root `netlify.toml`)* |
+| Publish directory | `deploy` *(from root `netlify.toml`)* |
 
-Deploy previews run `yarn install` at the monorepo root, then `yarn workspace @unseenco/theatre-docs run build`, which regenerates API Markdown and runs `vitepress build`.
+The build runs `yarn build:site` after `yarn install`. Deploy previews rebuild on every push to the PR branch (`[context.deploy-preview] ignore = "false"`).
+
+Example paths on a deploy preview:
+
+- `/` — landing links
+- `/docs/` — API documentation
+- `/playground/` — playground home
+- `/playground/shared/dom/` — DOM demo
