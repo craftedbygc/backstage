@@ -6,8 +6,8 @@ Theatre.js is a motion design library for the web. This site hosts **generated A
 
 | Package | Description |
 | --- | --- |
-| [@unseenco/theatre-core](./generated/api-reference/theatre-core.md) | Runtime animation library (ships in production bundles). |
-| [@unseenco/theatre-studio](./generated/api-reference/theatre-studio.md) | Visual editor (development only). |
-| [@unseenco/theatre-threejs](./generated/api-reference/theatre-threejs.md) | Three.js helpers; Studio extension is imported from `@unseenco/theatre-threejs/extension`. |
+| [@unseenco/theatre-core](./api/theatre-core.md) | Runtime animation library (ships in production bundles). |
+| [@unseenco/theatre-studio](./api/theatre-studio.md) | Visual editor (development only). |
+| [@unseenco/theatre-threejs](./api/theatre-threejs.md) | Three.js helpers; Studio extension is imported from `@unseenco/theatre-threejs/extension`. |
 
-[Browse full API reference →](./generated/api-reference/)
+[Browse full API reference →](./api/)

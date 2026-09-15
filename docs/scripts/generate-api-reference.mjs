@@ -1,6 +1,6 @@
 /**
  * Builds api-extractor doc models for Theatre public packages and runs
- * @microsoft/api-documenter to emit Markdown under docs/generated/api-reference/.
+ * @microsoft/api-documenter to emit Markdown under docs/api/ (served at /docs/api/).
  */
 import {execSync} from 'node:child_process'
 import path from 'node:path'
@@ -29,7 +29,7 @@ run('yarn workspace @unseenco/theatre-threejs run build:ts')
 run('yarn workspace @unseenco/theatre-threejs run build:api-json')
 
 const apiJsonDir = path.join(root, '.temp', 'api')
-const outputDir = path.join(docsDir, 'generated', 'api-reference')
+const outputDir = path.join(docsDir, 'api')
 
 console.log(`Running api-documenter → ${outputDir}`)
 run(

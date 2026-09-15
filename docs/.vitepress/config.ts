@@ -10,25 +10,25 @@ export default defineConfig({
   themeConfig: {
     nav: [
       {text: 'Home', link: '/'},
-      {text: 'API reference', link: '/generated/api-reference/'},
+      {text: 'API reference', link: '/api/'},
     ],
     sidebar: {
-      '/generated/api-reference/': [
+      '/api/': [
         {
           text: 'API reference',
           items: [
-            {text: 'Overview', link: '/generated/api-reference/'},
+            {text: 'Overview', link: '/api/'},
             {
               text: '@unseenco/theatre-core',
-              link: '/generated/api-reference/theatre-core',
+              link: '/api/theatre-core',
             },
             {
               text: '@unseenco/theatre-studio',
-              link: '/generated/api-reference/theatre-studio',
+              link: '/api/theatre-studio',
             },
             {
               text: '@unseenco/theatre-threejs',
-              link: '/generated/api-reference/theatre-threejs',
+              link: '/api/theatre-threejs',
             },
           ],
         },
