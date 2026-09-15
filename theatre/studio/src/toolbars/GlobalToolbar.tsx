@@ -33,6 +33,8 @@ import {
   DOCKED_TOOLBAR_PADDING_X,
   DOCKED_TOOLBAR_PADDING_Y,
 } from '@unseenco/theatre-studio/UIRoot/dockedLayoutConstants'
+import {studioHasDivergedFromSavedState} from '@unseenco/theatre-studio/propEditors/projectHasDivergedFromSavedState'
+import {DIVERGED_FROM_SAVED_STATE_TITLE} from '@unseenco/theatre-studio/propEditors/SavedStateDiamondWrapper'
 
 const Container = styled.div<{$docked: boolean}>`
   pointer-events: none;
@@ -108,8 +110,12 @@ const GlobalToolbar: React.FC = () => {
           state.loadingState.type === 'browserStateIsNotBasedOnDiskState',
       )
   }, [])
+  const hasUnsavedChanges = usePrism(() => studioHasDivergedFromSavedState(), [])
   const [triggerTooltip, triggerButtonRef] = useTooltip(
-    {enabled: conflicts.length > 0, enterDelay: conflicts.length > 0 ? 0 : 200},
+    {
+      enabled: conflicts.length > 0 || hasUnsavedChanges,
+      enterDelay: conflicts.length > 0 || hasUnsavedChanges ? 0 : 200,
+    },
     () =>
       conflicts.length > 0 ? (
         <ErrorTooltip>
@@ -117,6 +123,13 @@ const GlobalToolbar: React.FC = () => {
             ? `There is a state conflict in project "${conflicts[0].projectId}". Select the project in the outline below in order to fix it.`
             : `There are ${conflicts.length} projects that have state conflicts. They are highlighted in the outline below. `}
         </ErrorTooltip>
+      ) : hasUnsavedChanges ? (
+        <BasicTooltip>
+          <>
+            {DIVERGED_FROM_SAVED_STATE_TITLE}. Open the outline to see which
+            objects have unsaved changes.
+          </>
+        </BasicTooltip>
       ) : (
         <BasicTooltip>
           <>Outline</>
@@ -154,7 +167,14 @@ const GlobalToolbar: React.FC = () => {
           pinHintIcon={<DoubleChevronRight />}
           unpinHintIcon={<DoubleChevronLeft />}
           pinned={outlinePinned}
-        />
+        >
+          {hasUnsavedChanges ? (
+            <HasUpdatesBadge
+              type="warning"
+              data-testid="OutlinePanel-UnsavedIndicator"
+            />
+          ) : null}
+        </PinButton>
         {conflicts.length > 0 ? (
           <NumberOfConflictsIndicator>
             {conflicts.length}

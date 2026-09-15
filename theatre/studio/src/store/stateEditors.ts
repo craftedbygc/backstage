@@ -1351,6 +1351,10 @@ namespace stateEditors {
               if (!existingStaticOverrides) return
 
               removePathFromObject(existingStaticOverrides, p.pathToProp)
+
+              if (Object.keys(existingStaticOverrides).length === 0) {
+                delete byObject[p.objectKey]
+              }
             }
           }
         }
@@ -1398,6 +1402,13 @@ namespace stateEditors {
                   .staticOverrides.byObject[p.objectKey]
               if (!existingOverrides) return
               removePathFromObject(existingOverrides, p.pathToProp)
+
+              const byObject =
+                stateEditors.coreByProject.ahistoric.sheetsById._ensure(p)
+                  .staticOverrides.byObject
+              if (Object.keys(existingOverrides).length === 0) {
+                delete byObject[p.objectKey]
+              }
             }
           }
         }
