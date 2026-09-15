@@ -111,13 +111,10 @@ const GlobalToolbar: React.FC = () => {
       )
   }, [])
   const hasUnsavedChanges = usePrism(() => studioHasDivergedFromSavedState(), [])
-  const showUnsavedChangesIndicator =
-    hasUnsavedChanges && conflicts.length === 0
   const [triggerTooltip, triggerButtonRef] = useTooltip(
     {
-      enabled: conflicts.length > 0 || showUnsavedChangesIndicator,
-      enterDelay:
-        conflicts.length > 0 || showUnsavedChangesIndicator ? 0 : 200,
+      enabled: conflicts.length > 0 || hasUnsavedChanges,
+      enterDelay: conflicts.length > 0 || hasUnsavedChanges ? 0 : 200,
     },
     () =>
       conflicts.length > 0 ? (
@@ -126,7 +123,7 @@ const GlobalToolbar: React.FC = () => {
             ? `There is a state conflict in project "${conflicts[0].projectId}". Select the project in the outline below in order to fix it.`
             : `There are ${conflicts.length} projects that have state conflicts. They are highlighted in the outline below. `}
         </ErrorTooltip>
-      ) : showUnsavedChangesIndicator ? (
+      ) : hasUnsavedChanges ? (
         <BasicTooltip>
           <>
             {DIVERGED_FROM_SAVED_STATE_TITLE}. Open the outline to see which
@@ -171,8 +168,11 @@ const GlobalToolbar: React.FC = () => {
           unpinHintIcon={<DoubleChevronLeft />}
           pinned={outlinePinned}
         >
-          {showUnsavedChangesIndicator ? (
-            <HasUpdatesBadge type="warning" />
+          {hasUnsavedChanges ? (
+            <HasUpdatesBadge
+              type="warning"
+              data-testid="OutlinePanel-UnsavedIndicator"
+            />
           ) : null}
         </PinButton>
         {conflicts.length > 0 ? (
