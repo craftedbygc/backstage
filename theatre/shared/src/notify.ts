@@ -70,6 +70,7 @@ const createHandler =
       : undefined
   }
 
+/** User-facing notification helpers (success, warning, info, error) used by Theatre.js runtimes. */
 export const notify: Notifiers = {
   warning: createHandler('warning'),
   success: createHandler('success'),

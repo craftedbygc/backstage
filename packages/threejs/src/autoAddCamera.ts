@@ -5,15 +5,18 @@ import {attachCameraSelectionHitbox} from './cameraHitbox'
 import {buildTransformProps} from './buildTransformProps'
 import {registerObjectLink} from './objectRegistry'
 
+/** Per-category keys excluded when auto-adding a camera. */
 export type AutoAddCameraExcludeConfig = {
   transform?: readonly string[]
   camera?: readonly string[]
 }
 
+/** Flat list or category map of props to skip when auto-adding a camera. */
 export type AutoAddCameraExcludeInput =
   | readonly string[]
   | AutoAddCameraExcludeConfig
 
+/** Options for {@link autoAddCamera}. */
 export type AutoAddCameraOptions = {
   objectKey?: string
   namespace?: string
@@ -77,6 +80,14 @@ function ensureCameraInScene(camera: Camera, scene?: Scene): void {
   scene.add(camera)
 }
 
+/**
+ * Registers a Three.js `Camera` on a Theatre sheet with transform and lens props.
+ *
+ * @param camera - Camera to bind
+ * @param sheet - Theatre sheet that owns the new object
+ * @param options - Object key, scene attachment, excludes, etc.
+ * @returns The Theatre sheet object handle
+ */
 export function autoAddCamera(
   camera: Camera,
   sheet: ISheet,

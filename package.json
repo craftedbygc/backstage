@@ -6,10 +6,14 @@
     "packages/*",
     "examples/*",
     "theatre",
-    "compat-tests"
+    "compat-tests",
+    "docs"
   ],
   "scripts": {
     "cli": "node -r esbuild-register devEnv/cli.ts",
+    "docs:dev": "yarn workspace @unseenco/theatre-docs run dev",
+    "docs:build": "yarn workspace @unseenco/theatre-docs run build",
+    "build:site": "node -r esbuild-register devEnv/build-site.ts",
     "playground": "yarn workspace playground run serve",
     "test:e2e": "yarn workspace playground run test",
     "test:e2e:ci": "yarn workspace playground run test:ci",

@@ -21,6 +21,10 @@ import {getCoreTicker} from './coreTicker'
 import type {IRafDriver} from './rafDrivers'
 import {privateAPI} from './privateAPIs'
 export {notify} from '@unseenco/theatre-shared/notify'
+/**
+ * Prop type factories (`number`, `rgba`, `compound`, etc.) for {@link ISheet.object} definitions.
+ * (api-extractor does not attach this comment to the synthesized `types` namespace node.)
+ */
 export {types}
 export {createRafDriver} from './rafDrivers'
 export type {IRafDriver} from './rafDrivers'

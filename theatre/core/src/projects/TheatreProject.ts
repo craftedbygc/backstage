@@ -24,6 +24,7 @@ export type ISheetOptions = {
   visible?: boolean
 }
 
+/** Options passed to {@link getProject} when creating or attaching to a project. */
 export type IProjectConfig = {
   /**
    * The state of the project, as [exported](https://www.theatrejs.com/docs/latest/manual/projects#state) by the studio.
@@ -60,6 +61,7 @@ export type IProjectConfig = {
  * A Theatre.js project
  */
 export interface IProject {
+  /** Discriminator for Theatre.js public project instances. */
   readonly type: 'Theatre_Project_PublicAPI'
   /**
    * If `@unseenco/theatre-studio` is used, this promise would resolve when studio has loaded
@@ -89,6 +91,14 @@ export interface IProject {
    * **Docs: https://www.theatrejs.com/docs/latest/manual/sheets**
    */
   sheet(sheetId: string, instanceIdOrOpts?: string | ISheetOptions): ISheet
+  /**
+   * Creates a Sheet under the project (overload with explicit `instanceId`).
+   *
+   * @param sheetId - Sheets are identified by their `sheetId`, which must be a string longer than 3 characters
+   * @param instanceId - Instance id when creating multiple instances of the same sheet
+   * @param opts - Optionally provide `{ visible: false }` to hide the sheet from the Studio outline panel
+   * @returns The newly created Sheet
+   */
   sheet(sheetId: string, instanceId: string, opts?: ISheetOptions): ISheet
 
   /**

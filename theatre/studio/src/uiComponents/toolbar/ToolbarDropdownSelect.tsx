@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 const Container = styled.div``
 
+/** Studio toolbar dropdown control for extension authors building custom toolsets. */
 const ToolbarDropdownSelect: React.FC<{
   value: string
   options: Array<{label: string; value: string; icon: React.ReactElement}>

@@ -58,6 +58,7 @@ export interface IScrubApi {
   set<T>(pointer: Pointer<T>, value: T): void
 }
 
+/** History-compatible scrub session for batched prop edits (e.g. drag-scrubbing in the Studio). */
 export interface IScrub {
   /**
    * Clears all the ops in the scrub, but keeps the scrub open so you can call

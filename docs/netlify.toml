@@ -1,0 +1,7 @@
+# DEPRECATED — use /netlify.toml at the repository root instead.
+#
+# Docs and playground deploy together to one Netlify site:
+#   • /docs/       — this VitePress site (base: '/docs/')
+#   • /playground/ — packages/playground Vite build (base: '/playground/' in production)
+#
+# See docs/README.md for Netlify UI settings.

@@ -9,6 +9,7 @@ import {
 } from './propPathOptions'
 import {getMaterialEntry, setMaterialEntry} from './materialRegistry'
 
+/** Material prop/uniform keys to exclude when auto-adding a material-only object. */
 export type AutoAddMaterialExcludeConfig = {
   material?: readonly string[]
   uniforms?: readonly string[]
@@ -19,6 +20,7 @@ export type AutoAddMaterialExcludeInput =
   | readonly string[]
   | AutoAddMaterialExcludeConfig
 
+/** Options for {@link autoAddMaterial}. */
 export type AutoAddMaterialOptions = {
   objectKey?: string
   namespace?: string

@@ -1,18 +1,17 @@
-# Deploy the Theatre.js playground as a static site.
+# Unified static site: VitePress API docs at /docs/ and playground MPA at /playground/.
 # Each PR gets a Netlify Deploy Preview; merges to main update production.
 #
 # Netlify UI (Site configuration → Build & deploy → Build settings):
-#   • Base directory: "packages/playground" (or leave blank and use publish below as-is)
-#   • Publish directory: leave BLANK — this file sets it
+#   • Base directory: leave blank (repository root)
+#   • Build command / Publish directory: leave blank — this file sets them
 #
-# Publish is relative to the base directory. With base = packages/playground, use "build"
-# (Vite writes to packages/playground/build). Yarn install runs from monorepo root.
+# Do not use docs/netlify.toml; a single site is configured here.
 
 [build]
-  command = "cd ../.. && corepack enable && yarn install --immutable && yarn workspace playground run build"
-  publish = "build"
+  command = "corepack enable && yarn install --immutable && yarn build:site"
+  publish = "deploy"
   # Diff the full repo (no path filter). Do not append " .." — git treats that as revision
-  # range syntax, so theatre-only PRs look unchanged when the base directory is packages/playground.
+  # range syntax and can make PRs look unchanged.
   ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF"
 
 # Deploy previews must always build: PRs need a preview URL even when the ignore diff above

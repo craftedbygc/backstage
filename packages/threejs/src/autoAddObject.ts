@@ -19,6 +19,7 @@ import type {MaterialBinding} from './materialRegistry'
 import {registerObjectLink} from './objectRegistry'
 import type {TransientPropPath} from '@unseenco/theatre-shared/utils/transientPropPaths'
 
+/** Options for {@link autoAddObject}. */
 export type AutoAddObjectOptions = {
   objectKey?: string
   namespace?: string
@@ -106,6 +107,14 @@ function splitEmbeddedMaterial(args: {
   return materialSheetObject
 }
 
+/**
+ * Registers a Three.js `Object3D` on a Theatre sheet with auto-parsed transform and material props.
+ *
+ * @param object - Mesh or other object to bind
+ * @param sheet - Theatre sheet that owns the new object
+ * @param options - Object key, excludes, material tracking, etc.
+ * @returns The Theatre sheet object handle
+ */
 export function autoAddObject<T extends Object3D>(
   object: T,
   sheet: ISheet,

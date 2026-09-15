@@ -24,7 +24,9 @@ interface IAttachAudioArgs {
   destinationNode?: AudioNode
 }
 
+/** Public API for a sheet's animation sequence (playback, playhead, and audio). */
 export interface ISequence {
+  /** Discriminator for Theatre.js public sequence instances. */
   readonly type: 'Theatre_Sequence_PublicAPI'
 
   /**

@@ -43,6 +43,7 @@ export type SheetObjectAction = (object: ISheetObject) => void
 
 export type SheetObjectActionsConfig = Record<string, SheetObjectAction>
 
+/** Options for {@link ISheet.object} beyond prop definitions (visibility, showPropsOf, etc.). */
 export type ISheetObjectOptions = {
   reconfigure?: boolean
   /**
@@ -85,6 +86,7 @@ export type ISheetPropsOptions = Omit<
   'visible' | 'showPropsOf'
 >
 
+/** Public API for a Theatre.js sheet (objects, sequence, and runtime lifecycle). */
 export interface ISheet {
   /**
    * All sheets have `sheet.type === 'Theatre_Sheet_PublicAPI'`

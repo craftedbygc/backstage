@@ -38,13 +38,16 @@ const config = defineConfig(async ({command}) => {
     return Object.fromEntries(names.map((name, index) => [name, paths[index]]))
   })()
 
+  /** Dev server uses `/`; production builds use `/playground/` for unified Netlify deploy. */
+  const base = dev ? '/' : '/playground/'
+
   return {
+    base,
     root: srcDir,
     plugins: [react()],
     appType: 'mpa',
     server: {
       port: 8082,
-      // base: '/playground/',
     },
 
     assetsInclude: ['**/*.gltf', '**/*.glb'],

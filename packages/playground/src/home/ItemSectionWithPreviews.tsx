@@ -28,7 +28,9 @@ export const ItemSectionWithPreviews = (props: {
       {!collapsed && (
         <ItemListContainer>
           {modules.map((moduleName) => {
-            const href = `/${groupName}/${moduleName}/`
+            const href = `${
+              import.meta.env.BASE_URL
+            }${groupName}/${moduleName}/`
             return (
               <ItemContainer key={`li-${moduleName}`}>
                 <ItemLink href={href}>
