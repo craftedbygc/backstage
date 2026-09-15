@@ -1,5 +1,11 @@
 # Theatre.js changelog
 
+## 0.2.3
+
+- Bug fixes
+  - Three.js Package:
+    - Published `@unseenco/theatre-threejs` runtime bundle no longer imports `@unseenco/theatre-core/propTypes` or `@unseenco/theatre-shared` subpaths, fixing Vite/Nuxt dependency resolution in consumer apps.
+
 ## 0.2.2
 
 - New features

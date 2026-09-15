@@ -1,16 +1,60 @@
-import {compound} from '@unseenco/theatre-core/propTypes'
+import {types} from '@unseenco/theatre-core'
 import type {ISheetObjectOptions} from '@unseenco/theatre-core'
-import type {PropTypeConfig} from '@unseenco/theatre-core/propTypes'
-import {getPropConfigByPath} from '@unseenco/theatre-shared/propTypes/utils'
-import type {
-  StaticPropPath,
-  TransientPropPath,
-} from '@unseenco/theatre-shared/utils/transientPropPaths'
-import {parseTransientPropPath} from '@unseenco/theatre-shared/utils/transientPropPaths'
 import type {ExcludeConfig, PropPathInput} from './config'
 import {mergeExcludeInput} from './config'
 
 export type {PropPathInput} from './config'
+
+type PathToProp = (string | number)[]
+
+export type TransientPropPath = string | readonly (string | number)[]
+
+/** Same path format as {@link TransientPropPath}. */
+export type StaticPropPath = TransientPropPath
+
+type PropTypeConfigLike = {
+  type: string
+  props?: Record<string, PropTypeConfigLike>
+  cases?: Record<string, PropTypeConfigLike>
+}
+
+function parseTransientPropPath(input: TransientPropPath): PathToProp {
+  if (typeof input === 'string') {
+    if (input.length === 0) {
+      throw new Error(
+        `Transient prop path cannot be an empty string. Use a dot-separated path like "foo.bar".`,
+      )
+    }
+    return input.split('.')
+  }
+  return [...input]
+}
+
+function isPropConfigComposite(
+  config: PropTypeConfigLike,
+): config is PropTypeConfigLike & {
+  props?: Record<string, PropTypeConfigLike>
+  cases?: Record<string, PropTypeConfigLike>
+} {
+  return config.type === 'compound' || config.type === 'enum'
+}
+
+function getPropConfigByPath(
+  parentConf: PropTypeConfigLike | undefined,
+  path: PathToProp,
+): PropTypeConfigLike | undefined {
+  if (!parentConf) return undefined
+  const [key, ...rest] = path
+  if (key === undefined) return parentConf
+  if (!isPropConfigComposite(parentConf)) return undefined
+
+  const sub =
+    parentConf.type === 'enum'
+      ? parentConf.cases?.[String(key)]
+      : parentConf.props?.[String(key)]
+
+  return getPropConfigByPath(sub, rest)
+}
 
 function dedupePropPaths(paths: TransientPropPath[]): TransientPropPath[] {
   const seen = new Set<string>()
@@ -18,7 +62,9 @@ function dedupePropPaths(paths: TransientPropPath[]): TransientPropPath[] {
 
   for (const path of paths) {
     const key =
-      typeof path === 'string' ? path : path.map((segment) => String(segment)).join('.')
+      typeof path === 'string'
+        ? path
+        : path.map((segment) => String(segment)).join('.')
     if (seen.has(key)) continue
     seen.add(key)
     result.push(path)
@@ -51,7 +97,9 @@ function categorizedPropPathsToTheatrePaths(
   return paths
 }
 
-export function expandPropPathInput(input?: PropPathInput): TransientPropPath[] {
+export function expandPropPathInput(
+  input?: PropPathInput,
+): TransientPropPath[] {
   if (!input) return []
 
   const paths: TransientPropPath[] = []
@@ -67,7 +115,9 @@ export function expandPropPathInput(input?: PropPathInput): TransientPropPath[] 
         shortKeys.uniforms = [...(shortKeys.uniforms ?? []), entry]
       }
     }
-    paths.push(...categorizedPropPathsToTheatrePaths(mergeExcludeInput(shortKeys)))
+    paths.push(
+      ...categorizedPropPathsToTheatrePaths(mergeExcludeInput(shortKeys)),
+    )
   } else {
     paths.push(...categorizedPropPathsToTheatrePaths(mergeExcludeInput(input)))
   }
@@ -83,7 +133,7 @@ export function mergePropPathInputs(
 
 export function filterPropPathsMatchingConfig(
   paths: readonly TransientPropPath[],
-  config: PropTypeConfig,
+  config: PropTypeConfigLike,
 ): TransientPropPath[] {
   return paths.filter((rawPath) => {
     const pathToProp = parseTransientPropPath(rawPath)
@@ -98,9 +148,9 @@ export function buildSheetObjectPathOptions(
     static?: readonly StaticPropPath[]
   },
 ): ISheetObjectOptions | undefined {
-  const compoundConfig = compound(
-    config as Parameters<typeof compound>[0],
-  ) as PropTypeConfig
+  const compoundConfig = types.compound(
+    config as Parameters<typeof types.compound>[0],
+  ) as PropTypeConfigLike
 
   const transient = filterPropPathsMatchingConfig(
     options.transient ?? [],
