@@ -5,6 +5,7 @@
 import {execSync} from 'node:child_process'
 import path from 'node:path'
 import {fileURLToPath} from 'node:url'
+import {fixApiDocumenterMarkdownFiles} from './fix-api-documenter-markdown.mjs'
 
 const docsDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const root = path.resolve(docsDir, '..')
@@ -34,5 +35,8 @@ console.log(`Running api-documenter → ${outputDir}`)
 run(
   `yarn api-documenter markdown --input-folder "${apiJsonDir}" --output-folder "${outputDir}"`,
 )
+
+console.log('Post-processing api-documenter Markdown (table + fence fixes)…')
+fixApiDocumenterMarkdownFiles(outputDir)
 
 console.log('API reference Markdown generated.')
