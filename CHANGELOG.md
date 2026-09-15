@@ -1,5 +1,19 @@
 # Theatre.js changelog
 
+## 0.2.2
+
+- New features
+  - Core:
+    - `sheet.props(config)` — sheet-level parameters (hidden carrier object, not listed in `sheet.getObjects()`). Supports `{reconfigure: true}`, `transient`, and `static` like `sheet.object()`. The reserved sheet-props key cannot be used with `sheet.object()`.
+  - Studio:
+    - Outline toolbar button shows an orange warning badge when the project has diverged from the JSON state passed to `getProject()`; tooltip points users to dirty indicators on outline rows.
+    - Sheet-level props editing in the details pane (sheet selected with no object), dope-sheet tree, and outline; prop labels use a dedicated sheet-props namespace.
+  - Three.js Package:
+    - `autoAddObject()` accepts `transient` and `static` prop paths (dot or array notation), merged with `configureTheatreThreejs()` defaults alongside existing `exclude` / `include` categories.
+- Bug fixes
+  - Playground:
+    - Netlify static deploy of the three-basic-vanilla-devtools demo bundles `noise.jpg` via a Vite `?url` import so the texture resolves on static hosting.
+
 ## 0.2.1
 
 - New features
