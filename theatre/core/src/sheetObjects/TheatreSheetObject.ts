@@ -36,6 +36,7 @@ export type SheetObjectValuesChangeMeta = {
   variant: SequenceVariantId
 }
 
+/** Public API for a Theatre.js sheet object (animated props and Studio integration). */
 export interface ISheetObject<
   Props extends UnknownShorthandCompoundProps = UnknownShorthandCompoundProps,
 > {

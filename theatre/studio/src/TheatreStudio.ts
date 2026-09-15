@@ -91,7 +91,7 @@ export interface ITransactionAPI {
   __experimental_forgetSheet(sheet: TheatreSheet): void
 }
 /**
- *
+ * Definition of a custom Studio pane type registered by an extension.
  */
 export interface PaneClassDefinition {
   /**
@@ -112,9 +112,11 @@ export interface PaneClassDefinition {
   //   paneId: string
   // }>
 
+  /** Mount the pane into a DOM node; return a dispose function when unmounting. */
   mount: (opts: {paneId: string; node: HTMLElement}) => () => void
 }
 
+/** Toolbar icon button configuration for extension toolsets. */
 export type ToolConfigIcon = {
   type: 'Icon'
   svgSource: string
@@ -126,12 +128,14 @@ export type ToolConfigIcon = {
   selected?: boolean
 }
 
+/** Single option in a toolbar switch control. */
 export type ToolConfigOption = {
   value: string
   label: string
   svgSource: string
 }
 
+/** Toolbar switch control that selects one of several options. */
 export type ToolConfigSwitch = {
   type: 'Switch'
   value: string
@@ -164,11 +168,13 @@ export type ToolConfigFlyoutMenu = {
   items: ToolconfigFlyoutMenuItem[]
 }
 
+/** One toolbar control in an extension toolset (icon, switch, or flyout menu). */
 export type ToolConfig =
   | ToolConfigIcon
   | ToolConfigSwitch
   | ToolConfigFlyoutMenu
 
+/** Ordered list of toolbar controls shown for an extension toolset. */
 export type ToolsetConfig = Array<ToolConfig>
 
 /**
@@ -202,12 +208,14 @@ export interface IExtension {
   panes?: Array<PaneClassDefinition>
 }
 
+/** Handle to a mounted extension pane instance in the Studio. */
 export type PaneInstance<ClassName extends string> = {
   extensionId: string
   instanceId: PaneInstanceId
   definition: PaneClassDefinition
 }
 
+/** Screen-space rectangle of the Studio's docked inner viewport (pixels). */
 export type IDockedViewport = {
   top: number
   left: number
@@ -215,6 +223,7 @@ export type IDockedViewport = {
   height: number
 }
 
+/** Controls for showing, hiding, and docking the Studio UI. */
 export interface IStudioUI {
   /**
    * Temporarily hides the studio
@@ -253,9 +262,17 @@ export interface IStudioUI {
    */
   onDockedResize(listener: (viewport: IDockedViewport | null) => void): VoidFn
 
+  /**
+   * Renders an extension toolset into a DOM node.
+   *
+   * @param toolsetId - Toolset id from the extension's `toolbars` config
+   * @param htmlNode - Container element for the toolbar controls
+   * @returns Disposer that unmounts the toolset
+   */
   renderToolset(toolsetId: string, htmlNode: HTMLElement): () => void
 }
 
+/** Options passed to {@link IStudio.initialize}. */
 export interface _StudioInitializeOpts {
   /**
    * The local storage key to use to persist the state.
@@ -271,6 +288,7 @@ export interface _StudioInitializeOpts {
    */
   usePersistentStorage?: boolean
 
+  /** Optional custom raf driver shared with `@unseenco/theatre-core` for synchronized ticking. */
   __experimental_rafDriver?: IRafDriver | undefined
 
   /**
@@ -317,6 +335,7 @@ export interface _StudioInitializeOpts {
  * ```
  */
 export interface IStudio {
+  /** UI visibility, docking, and extension toolbar rendering. */
   readonly ui: IStudioUI
 
   /**
@@ -534,6 +553,7 @@ export interface IStudio {
    */
   clearProjectState(persistenceKey?: string): Promise<void>
 
+  /** Experimental Studio APIs that may change without notice. */
   __experimental: {
     /**
      * Warning: This is an experimental API and will change in the future.

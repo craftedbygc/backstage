@@ -1,6 +1,10 @@
+/** Category map of transform, material, and uniform paths to exclude from auto-add helpers. */
 export type ExcludeConfig = {
+  /** Transform prop keys to exclude from auto-registration. */
   transform?: readonly string[]
+  /** Material prop keys to exclude from auto-registration. */
   material?: readonly string[]
+  /** Shader uniform names to exclude from auto-registration. */
   uniforms?: readonly string[]
 }
 
@@ -10,6 +14,7 @@ export type ExcludeInput = readonly string[] | ExcludeConfig
 /** Same shape as {@link ExcludeInput}; paths are expanded when passed to `sheet.object()`. */
 export type PropPathInput = ExcludeInput
 
+/** Default options merged into each {@link autoAddObject} call from {@link configureTheatreThreejs}. */
 export type AutoAddObjectDefaults = {
   exclude?: ExcludeInput
   include?: ExcludeInput
@@ -18,6 +23,7 @@ export type AutoAddObjectDefaults = {
   static?: PropPathInput
 }
 
+/** Project-wide defaults for {@link autoAddObject} via {@link configureTheatreThreejs}. */
 export type TheatreThreejsConfig = {
   autoAddObject?: AutoAddObjectDefaults
 }
@@ -34,6 +40,12 @@ function dedupe(values: string[]): string[] {
   return [...new Set(values)]
 }
 
+/**
+ * Merges exclude/include inputs into per-category path lists for auto-add helpers.
+ *
+ * @param inputs - Flat lists and/or category objects; later inputs append to earlier ones
+ * @returns Resolved transform, material, and uniform exclusion lists
+ */
 export function mergeExcludeInput(
   ...inputs: (ExcludeInput | undefined)[]
 ): ResolvedExcludeConfig {
@@ -80,10 +92,17 @@ export function setTheatreThreejsConfig(config: TheatreThreejsConfig): void {
   activeConfig = config
 }
 
+/** Clears project-wide `@unseenco/theatre-threejs` configuration back to defaults. */
 export function resetTheatreThreejsConfig(): void {
   activeConfig = {}
 }
 
+/**
+ * Sets project-wide defaults for `@unseenco/theatre-threejs` auto-add helpers.
+ *
+ * @param config - Configuration to apply until {@link resetTheatreThreejsConfig} or `reset()` from the return value
+ * @returns Object with `reset()` restoring the previous config
+ */
 export function configureTheatreThreejs(config: TheatreThreejsConfig): {
   reset: () => void
 } {

@@ -71,6 +71,7 @@ function registerStudioBundle() {
 
 // export {default as ToolbarSwitchSelect} from './uiComponents/toolbar/ToolbarSwitchSelect'
 // export {default as ToolbarIconButton} from './uiComponents/toolbar/ToolbarIconButton'
+/** Studio toolbar dropdown control for extension authors building custom toolsets. */
 export {default as ToolbarDropdownSelect} from './uiComponents/toolbar/ToolbarDropdownSelect'
 
 import {notify} from '@unseenco/theatre-studio/notify'

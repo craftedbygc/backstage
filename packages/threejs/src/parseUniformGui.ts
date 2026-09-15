@@ -1,3 +1,4 @@
+/** GUI metadata on a shader uniform (range, step, or texture type). */
 export type UniformGuiOptions = {
   min?: number
   max?: number
@@ -5,11 +6,13 @@ export type UniformGuiOptions = {
   type?: 'texture'
 }
 
+/** Shader uniform value plus optional GUI hints from the material source. */
 export type UniformWithGui = {
   value: unknown
   gui?: UniformGuiOptions | Record<string, UniformGuiOptions | undefined>
 }
 
+/** Parsed Studio number-editor options derived from {@link UniformGuiOptions}. */
 export type ParsedUniformGuiOptions = {
   range?: [number, number]
   nudgeMultiplier?: number
@@ -34,6 +37,13 @@ export function uniformGuiDeclaresTexture(uniform: UniformWithGui): boolean {
   )
 }
 
+/**
+ * Reads GUI hints from a shader uniform for Theatre number or image props.
+ *
+ * @param uniform - Uniform definition from the material
+ * @param component - Optional vec component name for composite uniforms
+ * @returns Range and nudge options for the Studio
+ */
 export function parseUniformGui(
   uniform: UniformWithGui,
   component?: string,

@@ -122,4 +122,41 @@ export function fixApiDocumenterMarkdownFiles(outputDir) {
       console.log(`  fixed markdown tables in ${entry.name}`)
     }
   }
+
+  injectApiDocumenterNamespaceSummaries(outputDir)
+}
+
+/** TSDoc on `export { types }` re-exports does not reach the api-extractor namespace node. */
+const NAMESPACE_PAGE_SUMMARIES = {
+  'theatre-core.types.md':
+    'Prop type factories (`number`, `rgba`, `compound`, etc.) for `sheet.object()` prop definitions.',
+}
+
+function injectApiDocumenterNamespaceSummaries(outputDir) {
+  for (const [fileName, summary] of Object.entries(NAMESPACE_PAGE_SUMMARIES)) {
+    const filePath = path.join(outputDir, fileName)
+    if (!fs.existsSync(filePath)) continue
+    let content = fs.readFileSync(filePath, 'utf8')
+    const heading = '## types namespace'
+    if (content.includes(heading) && !content.includes(summary)) {
+      content = content.replace(
+        new RegExp(`${heading}\r?\n\r?\n`),
+        `${heading}\n\n${summary}\n\n`,
+      )
+      fs.writeFileSync(filePath, content)
+      console.log(`  injected namespace summary in ${fileName}`)
+    }
+  }
+
+  const coreIndexPath = path.join(outputDir, 'theatre-core.md')
+  if (!fs.existsSync(coreIndexPath)) return
+  let coreIndex = fs.readFileSync(coreIndexPath, 'utf8')
+  const typesSummary = NAMESPACE_PAGE_SUMMARIES['theatre-core.types.md']
+  const emptyTypesRow = '|  [types](./theatre-core.types.md) |  |'
+  const filledTypesRow = `|  [types](./theatre-core.types.md) | ${typesSummary} |`
+  if (coreIndex.includes(emptyTypesRow)) {
+    coreIndex = coreIndex.replace(emptyTypesRow, filledTypesRow)
+    fs.writeFileSync(coreIndexPath, coreIndex)
+    console.log('  injected types namespace summary in theatre-core.md')
+  }
 }

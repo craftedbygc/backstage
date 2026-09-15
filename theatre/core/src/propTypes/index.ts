@@ -28,6 +28,12 @@ import type {Asset, File} from '@unseenco/theatre-shared/utils/assets'
 // Composite types are not directly sequenceable yet. Their simple sub/descendent props are.
 
 /**
+ * Prop type factory functions (exported from `@unseenco/theatre-core` as the `types` namespace).
+ *
+ * Use with {@link ISheet.object}, e.g. `types.number(0)` or `types.rgba()`.
+ */
+
+/**
  * Validates the common options given to all prop types, such as `opts.label`
  *
  * @param fnCallSignature - See references for examples
@@ -138,6 +144,14 @@ export function compoundFromSanitizedProps<
   return config
 }
 
+/**
+ * Shorthand compound prop type: plain object literals are sanitized into longhand prop configs.
+ *
+ * @example
+ * ```ts
+ * sheet.object('obj', types.compound({x: 0, y: 0}))
+ * ```
+ */
 export const compound = <Props extends UnknownShorthandCompoundProps>(
   props: Props,
   opts: CommonOpts = {},
@@ -459,6 +473,12 @@ const _interpolateNumber = (
   return left + progression * (right - left)
 }
 
+/**
+ * RGBA color prop type factory.
+ *
+ * @param defaultValue - Initial color; defaults to opaque black
+ * @param opts - Optional `{ label }` for the Studio
+ */
 export const rgba = (
   defaultValue: Rgba = {r: 0, g: 0, b: 0, a: 1},
   opts: CommonOpts = {},
@@ -747,6 +767,7 @@ export function stringLiteral<
  */
 export type Interpolator<T> = (left: T, right: T, progression: number) => T
 
+/** Base shape shared by all Theatre prop type configurations. */
 export interface IBasePropType<
   LiteralIdentifier extends string,
   ValueType,
@@ -761,6 +782,7 @@ export interface IBasePropType<
    * the `valueType` is only used by typescript. It won't be present in runtime.
    */
   valueType: ValueType
+  /** Internal marker distinguishing Theatre prop configs from plain values. */
   [propTypeSymbol]: 'TheatrePropType'
   /**
    * Each prop type may be given a custom label instead of the name of the sub-prop
@@ -775,6 +797,7 @@ export interface IBasePropType<
    * ```
    */
   label: string | undefined
+  /** Default value used when the prop has no override or keyframes. */
   default: ValueType
   /**
    * Each prop config has a `deserializeAndSanitize()` function that deserializes and sanitizes
@@ -807,9 +830,12 @@ interface ISimplePropType<LiteralIdentifier extends string, ValueType>
   interpolate: Interpolator<ValueType>
 }
 
+/** Number prop type configuration. */
 export interface PropTypeConfig_Number
   extends ISimplePropType<'number', number> {
+  /** Optional min/max shown in the Studio number editor (not a runtime clamp). */
   range?: [min: number, max: number]
+  /** Custom nudging behavior when dragging the number in the Studio. */
   nudgeFn: NumberNudgeFn
   /**
    * See {@link defaultNumberNudgeFn} to see how `nudgeMultiplier` is treated.
@@ -822,6 +848,7 @@ export interface PropTypeConfig_Number
   precision?: number
 }
 
+/** Function that computes a new number when the user nudges a number prop in the Studio. */
 export type NumberNudgeFn = (p: {
   deltaX: number
   deltaFraction: number
@@ -859,6 +886,7 @@ const defaultNumberNudgeFn: NumberNudgeFn = ({
   return deltaX * magnitude * (config.nudgeMultiplier ?? 1)
 }
 
+/** Boolean prop type configuration. */
 export interface PropTypeConfig_Boolean
   extends ISimplePropType<'boolean', boolean> {}
 
@@ -878,17 +906,23 @@ type CommonOpts = {
   label?: string
 }
 
+/** String prop type configuration. */
 export interface PropTypeConfig_String
   extends ISimplePropType<'string', string> {}
 
+/** String-literal prop type configuration (menu or switch UI in the Studio). */
 export interface PropTypeConfig_StringLiteral<T extends string>
   extends ISimplePropType<'stringLiteral', T> {
+  /** Map of allowed values to human-readable labels in the Studio. */
   valuesAndLabels: Record<T, string>
+  /** Whether the Studio renders a dropdown menu or a switch control. */
   as: 'menu' | 'switch'
 }
 
+/** RGBA color prop type configuration. */
 export interface PropTypeConfig_Rgba extends ISimplePropType<'rgba', Rgba> {}
 
+/** Image (texture) prop type configuration. */
 export interface PropTypeConfig_Image extends ISimplePropType<'image', Asset> {
   /**
    * When `false`, Studio edits are session-only and not written to persisted
@@ -896,6 +930,7 @@ export interface PropTypeConfig_Image extends ISimplePropType<'image', Asset> {
    */
   persist: boolean
 }
+/** File asset prop type configuration. */
 export interface PropTypeConfig_File extends ISimplePropType<'file', File> {}
 
 type DeepPartialCompound<Props extends UnknownValidCompoundProps> = {
@@ -909,6 +944,7 @@ type DeepPartial<Conf extends PropTypeConfig> =
     ? DeepPartialCompound<T>
     : never
 
+/** Compound (nested object) prop type configuration. */
 export interface PropTypeConfig_Compound<
   Props extends UnknownValidCompoundProps,
 > extends IBasePropType<
@@ -916,14 +952,19 @@ export interface PropTypeConfig_Compound<
     {[K in keyof Props]: Props[K]['valueType']},
     DeepPartialCompound<Props>
   > {
+  /** Child prop configurations keyed by sub-prop name. */
   props: Record<keyof Props, PropTypeConfig>
 }
 
+/** Enum (discriminated) prop type configuration with named cases. */
 export interface PropTypeConfig_Enum extends IBasePropType<'enum', {}> {
+  /** Prop configs for each enum case name. */
   cases: Record<string, PropTypeConfig>
+  /** Case name used when no value is set. */
   defaultCase: string
 }
 
+/** Union of all simple (non-compound, non-enum) prop type configurations. */
 export type PropTypeConfig_AllSimples =
   | PropTypeConfig_Number
   | PropTypeConfig_Boolean
@@ -933,6 +974,7 @@ export type PropTypeConfig_AllSimples =
   | PropTypeConfig_Image
   | PropTypeConfig_File
 
+/** Any Theatre prop type configuration (simple, compound, or enum). */
 export type PropTypeConfig =
   | PropTypeConfig_AllSimples
   | PropTypeConfig_Compound<$IntentionalAny>

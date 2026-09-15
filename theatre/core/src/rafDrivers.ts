@@ -1,6 +1,7 @@
 import {Ticker} from '@unseenco/theatre-dataverse'
 import {setPrivateAPI} from './privateAPIs'
 
+/** Public API for a custom requestAnimationFrame driver that advances Theatre's core ticker. */
 export interface IRafDriver {
   /**
    * All raf derivers have have `driver.type === 'Theatre_RafDriver_PublicAPI'`
