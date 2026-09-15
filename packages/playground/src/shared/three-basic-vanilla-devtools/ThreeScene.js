@@ -1,3 +1,4 @@
+import {types} from '@unseenco/theatre-core'
 import {autoAddCamera, autoAddObject} from '@unseenco/theatre-threejs'
 import {
   BoxGeometry,
@@ -95,6 +96,14 @@ function addInvisibleCameraPath(scene) {
  * @param {import('@unseenco/theatre-core').ISheet} sheet
  */
 async function createSpheresScene(sheet, width, height) {
+  sheet.props({
+    fogDensity: types.number(0.15, {
+      range: [0, 1],
+      label: 'Fog density',
+    }),
+    gridScale: types.number(1, {range: [0.5, 2], label: 'Grid scale'}),
+  })
+
   const scene = new Scene()
   scene.name = 'Spheres'
   scene.background = new Color(0xcccccc)
@@ -265,6 +274,11 @@ async function createSpheresScene(sheet, width, height) {
  * @param {import('@unseenco/theatre-core').ISheet} sheet
  */
 function createCubeScene(sheet, width, height) {
+  sheet.props({
+    backgroundTint: types.rgba({r: 0.16, g: 0.3, b: 0.41, a: 1}),
+    exposure: types.number(1, {range: [0, 3], label: 'Exposure'}),
+  })
+
   const scene = new Scene()
   scene.name = 'Cube'
   scene.background = new Color(0x2a4d69)

@@ -29,7 +29,10 @@ import memoizeFn from '@unseenco/theatre-shared/utils/memoizeFn'
 import {collapsedMap} from './collapsedMap'
 import useChordial from '@unseenco/theatre-studio/uiComponents/chordial/useChodrial'
 import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
-import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
+import {
+  isSheetPropsObjectKey,
+  sheetObjectPropsTooltipNamespace,
+} from '@unseenco/theatre-shared/utils/sheetProps'
 
 const Container = styled.div`
   --step: 12px;
@@ -272,7 +275,10 @@ function DetailCompoundPropEditor<
 
   const {targetRef} = useChordial(() => {
     const title = [
-      obj.address.objectKey,
+      sheetObjectPropsTooltipNamespace(
+        obj.address.objectKey,
+        obj.sheet.address.sheetId,
+      ),
       'props',
       ...getPointerParts(pointerToProp).path,
     ].join('.')

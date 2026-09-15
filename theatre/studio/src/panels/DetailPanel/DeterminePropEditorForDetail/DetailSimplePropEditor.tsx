@@ -10,6 +10,7 @@ import {getPointerParts} from '@unseenco/theatre-dataverse'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import type {ISimplePropEditorReactProps} from '@unseenco/theatre-studio/propEditors/simpleEditors/ISimplePropEditorReactProps'
 import {whatPropIsHighlighted} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/whatPropIsHighlighted'
+import {sheetObjectPropsTooltipNamespace} from '@unseenco/theatre-shared/utils/sheetProps'
 
 export type IDetailSimplePropEditorProps<
   TPropTypeConfig extends IBasePropType<string, any>,
@@ -59,7 +60,10 @@ function DetailSimplePropEditor<
         propConfig,
         pointerToProp,
         isPropHighlightedD,
-        objectKey: obj.address.objectKey,
+        objectKey: sheetObjectPropsTooltipNamespace(
+          obj.address.objectKey,
+          obj.sheet.address.sheetId,
+        ),
         isTransient,
       }}
     >

@@ -12,3 +12,11 @@ export function isSheetPropsObjectKey(
 ): objectKey is typeof SHEET_PROPS_OBJECT_KEY {
   return objectKey === SHEET_PROPS_OBJECT_KEY
 }
+
+/** User-facing namespace for detail-panel prop tooltips (sheet name for sheet props). */
+export function sheetObjectPropsTooltipNamespace(
+  objectKey: string,
+  sheetId: string,
+): string {
+  return isSheetPropsObjectKey(objectKey) ? sheetId : objectKey
+}
