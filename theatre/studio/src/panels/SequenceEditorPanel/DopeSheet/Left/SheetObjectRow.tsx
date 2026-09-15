@@ -11,7 +11,9 @@ const LeftSheetObjectRow: React.VFC<{
   return (
     <AnyCompositeRow
       leaf={leaf}
-      label={leaf.sheetObject.address.objectKey}
+      label={
+        leaf.displayLabel ?? leaf.sheetObject.address.objectKey
+      }
       isCollapsed={leaf.isCollapsed}
       toggleSelect={() => {
         // set selection to this sheet object on click

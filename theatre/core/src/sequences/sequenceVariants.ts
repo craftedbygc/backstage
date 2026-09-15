@@ -10,6 +10,7 @@ import type {
   SequenceTrackId,
   ObjectAddressKey,
 } from '@unseenco/theatre-shared/utils/ids'
+import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
 import {generateSequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
 import {InvalidArgumentError} from '@unseenco/theatre-shared/utils/errors'
 import userReadableTypeOfValue from '@unseenco/theatre-shared/utils/userReadableTypeOfValue'
@@ -88,6 +89,10 @@ export function getEffectiveStaticOverrideForObject(
   variantId: SequenceVariantId,
   objectKey: ObjectAddressKey,
 ): SerializableMap | undefined {
+  if (isSheetPropsObjectKey(objectKey)) {
+    return getDefaultStaticOverridesByObject(sheetState)?.[objectKey]
+  }
+
   const defaultOverrides =
     getDefaultStaticOverridesByObject(sheetState)?.[objectKey]
 

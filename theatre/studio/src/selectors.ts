@@ -19,6 +19,12 @@ import {
 } from '@unseenco/theatre-studio/panels/OutlinePanel/outlinePanelUtils'
 import type {ProjectId} from '@unseenco/theatre-shared/utils/ids'
 
+export function getSheetPropsObject(
+  sheet: Sheet,
+): SheetObject | undefined {
+  return sheet.getSheetPropsObject()
+}
+
 export const getOutlineSelection = (): OutlineSelection => {
   const projects = val(getStudio().projectsP)
 

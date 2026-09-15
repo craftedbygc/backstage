@@ -23,6 +23,8 @@ import {transportStripHeight} from '@unseenco/theatre-studio/panels/SequenceEdit
 import type {Studio} from '@unseenco/theatre-studio/Studio'
 import type {UnknownValidCompoundProps} from '@unseenco/theatre-core/propTypes/internals'
 import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {DEFAULT_SEQUENCE_VARIANT} from '@unseenco/theatre-core/sequences/sequenceVariants'
+import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
 
 /**
  * Base "view model" for each row with common
@@ -70,6 +72,8 @@ export type SequenceEditorTree_SheetObject =
   SequenceEditorTree_Row<'sheetObject'> & {
     isCollapsed: boolean
     sheetObject: SheetObject
+    /** When set, used instead of `objectKey` in the sequence editor left column. */
+    displayLabel?: string
     children: Array<
       SequenceEditorTree_PropWithChildren | SequenceEditorTree_PrimitiveProp
     >
@@ -146,8 +150,19 @@ export const calculateSequenceEditorTree = (
     nSoFar += 1
   }
 
+  const sheetPropsObject = sheet.getSheetPropsObject()
+  if (sheetPropsObject) {
+    addObject(
+      sheetPropsObject,
+      tree.children,
+      tree.depth + 1,
+      rootShouldRender && !isCollapsed,
+      {displayLabel: 'Sheet'},
+    )
+  }
+
   for (const sheetObject of Object.values(val(sheet.objectsP))) {
-    if (sheetObject) {
+    if (sheetObject && !isSheetPropsObjectKey(sheetObject.address.objectKey)) {
       addObject(
         sheetObject,
         tree.children,
@@ -163,10 +178,13 @@ export const calculateSequenceEditorTree = (
     arrayOfChildren: Array<SequenceEditorTree_SheetObject>,
     level: number,
     shouldRender: boolean,
+    options?: {displayLabel?: string},
   ) {
     const trackSetups = val(
       sheetObject.template.getMapOfValidSequenceTracks_forStudio(
-        activeSequenceVariant,
+        isSheetPropsObjectKey(sheetObject.address.objectKey)
+          ? DEFAULT_SEQUENCE_VARIANT
+          : activeSequenceVariant,
       ),
     )
     const objectConfig = val(sheetObject.template.configPointer)
@@ -189,6 +207,7 @@ export const calculateSequenceEditorTree = (
       depth: level,
       n: nSoFar,
       sheetObject: sheetObject,
+      displayLabel: options?.displayLabel,
       nodeHeight: shouldRender ? HEIGHT_OF_ANY_TITLE : 0,
       heightIncludingChildren: -1, // calculated below
     }
