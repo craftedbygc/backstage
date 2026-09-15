@@ -17,7 +17,7 @@ const textInterpolate = (left: string, right: string, progression: number) => {
   return left
 }
 
-const globalConfig = {
+const sheetPropsConfig = {
   background: {
     type: types.stringLiteral('white', {
       black: 'black',
@@ -26,6 +26,8 @@ const globalConfig = {
     }),
     dynamic: types.rgba(),
   },
+  toolbarLeft: types.number(60, {range: [0, 500], label: 'Add button X'}),
+  sceneOpacity: types.number(1, {range: [0, 1], label: 'Scene opacity'}),
 }
 
 const boxObjectConfig = {
@@ -183,6 +185,7 @@ export const Scene: React.FC<{project: IProject}> = ({project}) => {
 
   // This is cheap to call and always returns the same value, so no need for useMemo()
   const sheet = project.sheet('Scene', 'default')
+  const sheetProps = sheet.props(sheetPropsConfig)
   const [selection, setSelection] = useState<IStudio['selection']>()
 
   useLayoutEffect(() => {
@@ -192,6 +195,19 @@ export const Scene: React.FC<{project: IProject}> = ({project}) => {
   }, [])
 
   const containerRef = useRef<HTMLDivElement>(null!)
+  const addButtonRef = useRef<HTMLButtonElement>(null!)
+
+  useLayoutEffect(() => {
+    const unsubscribeFromChanges = onChange(sheetProps.props, (values) => {
+      containerRef.current.style.background =
+        values.background.type !== 'dynamic'
+          ? values.background.type
+          : values.background.dynamic.toString()
+      containerRef.current.style.opacity = String(values.sceneOpacity)
+      addButtonRef.current.style.left = `${values.toolbarLeft}px`
+    })
+    return unsubscribeFromChanges
+  }, [sheetProps])
 
   return (
     <div
@@ -206,6 +222,7 @@ export const Scene: React.FC<{project: IProject}> = ({project}) => {
       }}
     >
       <button
+        ref={addButtonRef}
         style={{
           top: '16px',
           left: '60px',
