@@ -94,6 +94,10 @@ export default defineConfig({
               text: '@unseenco/theatre-threejs',
               link: '/api/theatre-threejs',
             },
+            {
+              text: '@unseenco/theatre-dataverse',
+              link: '/api/theatre-dataverse',
+            },
           ],
         },
       ],

@@ -1,13 +1,12 @@
 {
-  "name": "@examples/basic-dom",
   "scripts": {
-    "start": "vite",
+    "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@unseenco/theatre-core": "workspace:*",
-    "@unseenco/theatre-studio": "workspace:*",
+    "@unseenco/theatre-core": "0.0.1-COMPAT.1",
+    "@unseenco/theatre-studio": "0.0.1-COMPAT.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

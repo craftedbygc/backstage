@@ -1,7 +1,7 @@
 # @unseenco/theatre-react
 
 Utilities for using [Theatre.js](https://www.theatrejs.com) or
-[Dataverse](https://github.com/theatre-js/theatre/tree/main/packages/dataverse)
+[Dataverse](https://github.com/craftedbygc/theatre/tree/main/packages/dataverse)
 with React.
 
 ## Documentation
