@@ -89,9 +89,11 @@ describe('outlinePanelUtils', () => {
 
   test('isSheetObjectVisibleInOutline respects object template visibility', () => {
     const visibleObject = {
+      address: {objectKey: 'Box'},
       template: {isVisibleInOutline: () => true},
     } as Parameters<typeof isSheetObjectVisibleInOutline>[0]
     const hiddenObject = {
+      address: {objectKey: 'Hidden'},
       template: {isVisibleInOutline: () => false},
     } as Parameters<typeof isSheetObjectVisibleInOutline>[0]
 

@@ -21,6 +21,9 @@ services:
       - /app/packages/dataverse-experiments/node_modules
       - /app/packages/playground/node_modules
       - /app/packages/react/node_modules
+      - /app/packages/gsap/node_modules
+      - /app/packages/threejs/node_modules
+      - /app/docs/node_modules
 
       - /app/theatre/core/node_modules
       - /app/theatre/node_modules
