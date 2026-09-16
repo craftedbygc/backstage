@@ -7,6 +7,8 @@ import {useVal} from '@unseenco/theatre-react'
 import uniqueKeyForAnyObject from '@unseenco/theatre-shared/utils/uniqueKeyForAnyObject'
 import styled from 'styled-components'
 import getStudio from '@unseenco/theatre-studio/getStudio'
+import {getGsapOutlineContextMenuItems} from '@unseenco/theatre-shared/gsap/outlineContextMenuRegistry'
+import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/sequence/trackData'
 
 const ActionButtonContainer = styled.div`
   display: flex;
@@ -117,6 +119,9 @@ const ObjectDetails: React.FC<{
   const config = useVal(obj.template.configPointer)
   const actions = useVal(obj.template._temp_actionsPointer)
   const showPropsOf = useVal(obj.template.showPropsOfPointer)
+  const gsapActions = isGsapSheetObjectKey(obj.address.objectKey)
+    ? getGsapOutlineContextMenuItems(obj)
+    : []
 
   return (
     <>
@@ -135,6 +140,19 @@ const ObjectDetails: React.FC<{
           source={source}
         />
       ))}
+      {gsapActions.length > 0 ? (
+        <ActionButtonContainer>
+          {gsapActions.map((item) => (
+            <ActionButton
+              key={item.label}
+              type="button"
+              onClick={item.callback}
+            >
+              {item.label}
+            </ActionButton>
+          ))}
+        </ActionButtonContainer>
+      ) : null}
       {actions && Object.keys(actions).length > 0 ? (
         <ActionButtonContainer>
           {Object.entries(actions).map(([actionName, action]) => {

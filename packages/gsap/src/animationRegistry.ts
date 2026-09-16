@@ -13,6 +13,13 @@ export type GsapAnimationRegistryEntry = {
 type RegistryStore = {
   byId: Map<string, GsapAnimationRegistryEntry>
   idBySheetObject: WeakMap<SheetObject, string>
+  /** Stable lookup when WeakMap identity differs across bundles/HMR. */
+  idByAddressKey: Map<string, string>
+}
+
+function sheetObjectAddressKey(sheetObject: SheetObject): string {
+  const a = sheetObject.address
+  return `${a.projectId}|${a.sheetId}|${a.sheetInstanceId}|${a.objectKey}`
 }
 
 function getStore(): RegistryStore {
@@ -23,6 +30,7 @@ function getStore(): RegistryStore {
     g[REGISTRY_KEY] = {
       byId: new Map(),
       idBySheetObject: new WeakMap(),
+      idByAddressKey: new Map(),
     }
   }
   return g[REGISTRY_KEY]!
@@ -35,6 +43,7 @@ export function registerAnimationInRegistry(
   store.byId.set(entry.id, entry)
   if (entry.sheetObject) {
     store.idBySheetObject.set(entry.sheetObject, entry.id)
+    store.idByAddressKey.set(sheetObjectAddressKey(entry.sheetObject), entry.id)
   }
 }
 
@@ -47,9 +56,12 @@ export function getAnimationEntryById(
 export function getAnimationEntryForSheetObject(
   sheetObject: SheetObject,
 ): GsapAnimationRegistryEntry | undefined {
-  const id = getStore().idBySheetObject.get(sheetObject)
+  const store = getStore()
+  const fromWeak = store.idBySheetObject.get(sheetObject)
+  const id =
+    fromWeak ?? store.idByAddressKey.get(sheetObjectAddressKey(sheetObject))
   if (!id) return undefined
-  return getStore().byId.get(id)
+  return store.byId.get(id)
 }
 
 export function listAnimationEntries(): GsapAnimationRegistryEntry[] {
@@ -57,5 +69,7 @@ export function listAnimationEntries(): GsapAnimationRegistryEntry[] {
 }
 
 export function clearAnimationRegistryForTests(): void {
-  getStore().byId.clear()
+  const store = getStore()
+  store.byId.clear()
+  store.idByAddressKey.clear()
 }

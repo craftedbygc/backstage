@@ -31,7 +31,10 @@ import type {
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import {getSequenceStateFromSheet} from '@unseenco/theatre-studio/utils/sequenceVariantHelpers'
-import {isGsapClipTrack} from '@unseenco/theatre-shared/sequence/trackData'
+import {
+  isGsapClipTrack,
+  isGsapSheetObjectKey,
+} from '@unseenco/theatre-shared/sequence/trackData'
 
 /**
  * Base "view model" for each row with common
@@ -218,7 +221,11 @@ export const calculateSequenceEditorTree = (
         : activeSequenceVariant,
     )
 
-    if (Object.keys(trackSetups).length === 0 && gsapClipEntries.length === 0) {
+    if (
+      Object.keys(trackSetups).length === 0 &&
+      gsapClipEntries.length === 0 &&
+      !isGsapSheetObjectKey(sheetObject.address.objectKey)
+    ) {
       return
     }
 
