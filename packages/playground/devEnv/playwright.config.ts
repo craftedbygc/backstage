@@ -21,6 +21,10 @@ const config: PlaywrightTestConfig = {
   expect: {
     // maximum timeout for expect assertions. If longer than the test timeout above, it'll still fail.
     timeout: 10000,
+    toHaveScreenshot: {
+      // Linux CI runners differ slightly in font/subpixel rendering (~3% on detail panel crops).
+      maxDiffPixelRatio: 0.05,
+    },
   },
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
