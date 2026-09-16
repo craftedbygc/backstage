@@ -1,8 +1,10 @@
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import type {
+  SequenceEditorTree_GsapClipTrack,
   SequenceEditorTree_PrimitiveProp,
   SequenceEditorTree_PropWithChildren,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import GsapClipTrackRow from './GsapClipTrack/GsapClipTrackRow'
 import {usePrism} from '@unseenco/theatre-react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import React from 'react'
@@ -14,6 +16,25 @@ import {
   ProvideLogger,
   useLogger,
 } from '@unseenco/theatre-studio/uiComponents/useLogger'
+
+export const decideSheetObjectChildRow = (
+  leaf:
+    | SequenceEditorTree_PropWithChildren
+    | SequenceEditorTree_PrimitiveProp
+    | SequenceEditorTree_GsapClipTrack,
+  layoutP: Pointer<SequenceEditorPanelLayout>,
+): React.ReactElement => {
+  if (leaf.type === 'gsapClipTrack') {
+    return (
+      <GsapClipTrackRow
+        layoutP={layoutP}
+        leaf={leaf}
+        key={'gsap-' + leaf.trackId}
+      />
+    )
+  }
+  return decideRowByPropType(leaf, layoutP)
+}
 
 export const decideRowByPropType = (
   leaf: SequenceEditorTree_PropWithChildren | SequenceEditorTree_PrimitiveProp,

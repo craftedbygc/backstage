@@ -96,12 +96,12 @@ export type HistoricPositionalSequence = {
 }
 
 /**
- * Currently just {@link BasicKeyframedTrack}.
+ * Discriminated union of sequence track kinds.
  *
  * Future: Other types of tracks can be added in, such as `MixedTrack` which would
  * look like `[keyframes, expression, moreKeyframes, anotherExpression, …]`.
  */
-export type TrackData = BasicKeyframedTrack
+export type TrackData = BasicKeyframedTrack | GsapClipTrack
 
 export type KeyframeType = 'bezier' | 'hold'
 
@@ -139,4 +139,17 @@ export type BasicKeyframedTrack = TrackDataCommon<'BasicKeyframedTrack'> & {
    * a single track can technically have multiple different types for each keyframe.
    */
   keyframes: Keyframe[]
+}
+
+/**
+ * A GSAP tween segment on the Theatre sequence timeline, bridged at runtime
+ * via `@unseenco/theatre-gsap`.
+ */
+export type GsapClipTrack = TrackDataCommon<'GsapClipTrack'> & {
+  /** Id from {@link registerGsapAnimation} / the global GSAP animation registry. */
+  gsapAnimationId: string
+  /** Sequence position where the clip starts (same units as the sequence). */
+  start: number
+  /** Clip length on the sequence timeline. Must be &gt; 0. */
+  duration: number
 }

@@ -12,9 +12,10 @@ import type {
 } from '@unseenco/theatre-shared/utils/ids'
 import {createStudioSheetItemKey} from '@unseenco/theatre-shared/utils/ids'
 import type {
+  BasicKeyframedTrack,
   Keyframe,
-  TrackData,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
+import {isBasicKeyframedTrack} from '@unseenco/theatre-shared/sequence/trackData'
 import {encodePathToProp} from '@unseenco/theatre-shared/utils/addresses'
 import {uniq} from 'lodash-es'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
@@ -31,7 +32,7 @@ export type AggregatedKeyframes = {
 
 export type TrackWithId = {
   id: SequenceTrackId
-  data: TrackData
+  data: BasicKeyframedTrack
   sheetObject: SheetObject
 }
 
@@ -82,6 +83,7 @@ function keyframesByPositionFromTrackWithIds(tracks: TrackWithId[]) {
   const byPosition = new Map<number, KeyframeWithTrack[]>()
 
   for (const track of tracks) {
+    if (!isBasicKeyframedTrack(track.data)) continue
     for (const kf of track.data.keyframes) {
       let existing = byPosition.get(kf.position)
       if (!existing) {
@@ -112,11 +114,12 @@ function collectAggregateKeyframesSheet(
 function collectAggregateKeyframesCompoundOrObject(
   leaf: SequenceEditorTree_PropWithChildren | SequenceEditorTree_SheetObject,
 ): TrackWithId[] {
-  return leaf.children.flatMap((childLeaf) =>
-    childLeaf.type === 'propWithChildren'
+  return leaf.children.flatMap((childLeaf) => {
+    if (childLeaf.type === 'gsapClipTrack') return []
+    return childLeaf.type === 'propWithChildren'
       ? collectAggregateKeyframesCompoundOrObject(childLeaf)
-      : collectAggregateKeyframesPrimitiveProp(childLeaf),
-  )
+      : collectAggregateKeyframesPrimitiveProp(childLeaf)
+  })
 }
 
 function collectAggregateKeyframesPrimitiveProp(
@@ -135,7 +138,7 @@ function collectAggregateKeyframesPrimitiveProp(
   if (!trackId) return []
 
   const trackData = val(sheetObjectTracksP.trackData[trackId])
-  if (!trackData) return []
+  if (!trackData || !isBasicKeyframedTrack(trackData)) return []
 
   return [{id: trackId, data: trackData, sheetObject}]
 }
@@ -162,8 +165,9 @@ export function collectAggregateSnapPositionsObjectOrCompound(
   snapTargetPositions: {[key: string]: {[key: string]: number[]}},
 ): number[] {
   return uniq(
-    leaf.children.flatMap((childLeaf) =>
-      childLeaf.type === 'propWithChildren'
+    leaf.children.flatMap((childLeaf) => {
+      if (childLeaf.type === 'gsapClipTrack') return []
+      return childLeaf.type === 'propWithChildren'
         ? collectAggregateSnapPositionsObjectOrCompound(
             childLeaf,
             snapTargetPositions,
@@ -171,8 +175,8 @@ export function collectAggregateSnapPositionsObjectOrCompound(
         : collectAggregateSnapPositionsPrimitiveProp(
             childLeaf,
             snapTargetPositions,
-          ),
-    ),
+          )
+    }),
   )
 }
 

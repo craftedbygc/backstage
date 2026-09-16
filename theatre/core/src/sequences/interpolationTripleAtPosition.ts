@@ -39,6 +39,8 @@ export default function interpolationTripleAtPosition(
           return prism(() => undefined)
         } else if (track.type === 'BasicKeyframedTrack') {
           return _forKeyframedTrack(ctx, track, timeD)
+        } else if (track.type === 'GsapClipTrack') {
+          return prism(() => undefined)
         } else {
           ctx.logger.error(`Track type not yet supported.`)
           return prism(() => undefined)

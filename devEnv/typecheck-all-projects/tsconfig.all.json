@@ -11,6 +11,7 @@
     {"path": "../../packages/playground"},
     {"path": "../../packages/react"},
     {"path": "../../packages/threejs"},
+    {"path": "../../packages/gsap"},
     {"path": "../../examples/basic-dom"},
     {"path": "../../compat-tests"},
     {"path": "../../devEnv"}

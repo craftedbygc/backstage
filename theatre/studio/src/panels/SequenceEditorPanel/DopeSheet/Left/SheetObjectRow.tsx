@@ -1,7 +1,7 @@
 import type {SequenceEditorTree_SheetObject} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import React from 'react'
 import AnyCompositeRow from './AnyCompositeRow'
-import {decideRowByPropType} from './PropWithChildrenRow'
+import {decideSheetObjectChildRow} from './PropWithChildrenRow'
 import {setCollapsedSheetItem} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/setCollapsedSheetObjectOrCompoundProp'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 
@@ -11,9 +11,7 @@ const LeftSheetObjectRow: React.VFC<{
   return (
     <AnyCompositeRow
       leaf={leaf}
-      label={
-        leaf.displayLabel ?? leaf.sheetObject.address.objectKey
-      }
+      label={leaf.displayLabel ?? leaf.sheetObject.address.objectKey}
       isCollapsed={leaf.isCollapsed}
       toggleSelect={() => {
         // set selection to this sheet object on click
@@ -30,7 +28,7 @@ const LeftSheetObjectRow: React.VFC<{
         })
       }
     >
-      {leaf.children.map((leaf) => decideRowByPropType(leaf))}
+      {leaf.children.map((child) => decideSheetObjectChildRow(child))}
     </AnyCompositeRow>
   )
 }

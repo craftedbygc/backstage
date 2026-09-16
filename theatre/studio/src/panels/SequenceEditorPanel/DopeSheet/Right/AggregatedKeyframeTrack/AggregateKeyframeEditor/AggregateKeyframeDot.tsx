@@ -43,11 +43,12 @@ function sheetObjectBuild(
   keyframes: KeyframeWithTrack[],
 ): SheetObjectEditingOptionsTree | null {
   const children = viewModel.children
-    .map((a) =>
-      a.type === 'propWithChildren'
+    .map((a) => {
+      if (a.type === 'gsapClipTrack') return null
+      return a.type === 'propWithChildren'
         ? propWithChildrenBuild(a, keyframes)
-        : primitivePropBuild(a, keyframes),
-    )
+        : primitivePropBuild(a, keyframes)
+    })
     .filter(isOptionsTreeNodeNotNull)
   if (children.length === 0) return null
   return {

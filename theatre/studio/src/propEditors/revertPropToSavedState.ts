@@ -1,6 +1,7 @@
 import cloneDeep from 'lodash-es/cloneDeep'
 import deepEqual from 'fast-deep-equal'
 import type {BasicKeyframedTrack} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
+import {isBasicKeyframedTrack} from '@unseenco/theatre-shared/sequence/trackData'
 import type {PropTypeConfig} from '@unseenco/theatre-core/propTypes'
 import type {PropTypeConfig_Compound} from '@unseenco/theatre-core/propTypes'
 import {
@@ -41,10 +42,8 @@ function getTrackAtPropPath(
   pathToProp: PathToProp,
 ): {trackId: SequenceTrackId; track: BasicKeyframedTrack} | undefined {
   const encodedPropPath = encodePathToProp(pathToProp)
-  const tracksOfObject = getSequenceStateFromSheet(
-    sheetState,
-    sequenceVariant,
-  )?.tracksByObject[objectKey]
+  const tracksOfObject = getSequenceStateFromSheet(sheetState, sequenceVariant)
+    ?.tracksByObject[objectKey]
 
   if (!tracksOfObject) return undefined
 
@@ -52,7 +51,7 @@ function getTrackAtPropPath(
   if (typeof trackId !== 'string') return undefined
 
   const track = tracksOfObject.trackData[trackId]
-  if (!track) return undefined
+  if (!track || !isBasicKeyframedTrack(track)) return undefined
 
   return {trackId, track}
 }
@@ -114,10 +113,8 @@ function deleteTrackAtPropPath(
   pathToProp: PathToProp,
 ): void {
   const encodedPropPath = encodePathToProp(pathToProp)
-  const tracksOfObject = getSequenceStateFromSheet(
-    sheetState,
-    sequenceVariant,
-  )?.tracksByObject[objectKey]
+  const tracksOfObject = getSequenceStateFromSheet(sheetState, sequenceVariant)
+    ?.tracksByObject[objectKey]
 
   if (!tracksOfObject) return
 
@@ -145,10 +142,7 @@ function restoreTrackAtPropPath(
   const tracksOfObject = sequenceState.tracksByObject[objectKey]!
 
   const currentTrackId = tracksOfObject.trackIdByPropPath[encodedPropPath]
-  if (
-    typeof currentTrackId === 'string' &&
-    currentTrackId !== onDiskTrackId
-  ) {
+  if (typeof currentTrackId === 'string' && currentTrackId !== onDiskTrackId) {
     delete tracksOfObject.trackData[currentTrackId]
   }
 

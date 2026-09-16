@@ -97,6 +97,16 @@ export const createStudioSheetItemKey = {
       k: keyframeId,
     }) as StudioSheetItemKey
   },
+  forSheetObjectGsapClipTrack(
+    obj: SheetObject,
+    trackId: SequenceTrackId,
+  ): StudioSheetItemKey {
+    return stableValueHash({
+      o: obj.address.objectKey,
+      t: trackId,
+      g: 'gsapClip',
+    }) as StudioSheetItemKey
+  },
   forSheetObjectAggregateKeyframe(
     obj: SheetObject,
     position: number,

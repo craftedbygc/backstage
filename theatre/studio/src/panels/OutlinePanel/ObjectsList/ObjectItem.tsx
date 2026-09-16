@@ -20,6 +20,7 @@ import {mergeRefs} from 'react-merge-refs'
 import {ObjectStatusCircle} from '@unseenco/theatre-studio/uiComponents/icons'
 import {objectHasDivergedFromSavedState} from '@unseenco/theatre-studio/propEditors/objectHasDivergedFromSavedState'
 import {DIVERGED_FROM_SAVED_STATE_TITLE} from '@unseenco/theatre-studio/propEditors/SavedStateDiamondWrapper'
+import {getGsapOutlineContextMenuItems} from '@unseenco/theatre-shared/gsap/outlineContextMenuRegistry'
 
 export const ObjectItem: React.VFC<{
   sheetObject: SheetObject
@@ -61,36 +62,50 @@ export const ObjectItem: React.VFC<{
     const objectKey = sheetObject.address.objectKey
     const variants = sheetObject.sheet.template.getSequenceVariants()
 
+    const gsapItems = getGsapOutlineContextMenuItems(sheetObject).map(
+      (item) => ({
+        type: 'normal' as const,
+        label: item.label,
+        callback: item.callback,
+      }),
+    )
+
     if (variant === DEFAULT_SEQUENCE_VARIANT) {
-      return variants
-        .filter((v) => v !== DEFAULT_SEQUENCE_VARIANT)
-        .filter((v) => !isObjectOverriddenInVariant(sheetAddress, v, objectKey))
-        .map((targetVariant) => ({
-          type: 'normal' as const,
-          label: `Override in variant: ${targetVariant}`,
-          callback: () => {
-            getStudio()!.transaction(({stateEditors}) => {
-              stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.addVariantObjectOverride(
-                {
-                  ...sheetAddress,
-                  variant: targetVariant,
-                  objectKey,
-                },
-              )
-              setStudioActiveSequenceVariant(
-                sheetAddress,
-                targetVariant,
-                stateEditors,
-              )
-              stateEditors.studio.historic.panels.outline.selection.set([
-                sheetObject,
-              ])
-            })
-          },
-        }))
+      return [
+        ...gsapItems,
+        ...variants
+          .filter((v) => v !== DEFAULT_SEQUENCE_VARIANT)
+          .filter(
+            (v) => !isObjectOverriddenInVariant(sheetAddress, v, objectKey),
+          )
+          .map((targetVariant) => ({
+            type: 'normal' as const,
+            label: `Override in variant: ${targetVariant}`,
+            callback: () => {
+              getStudio()!.transaction(({stateEditors}) => {
+                stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.addVariantObjectOverride(
+                  {
+                    ...sheetAddress,
+                    variant: targetVariant,
+                    objectKey,
+                  },
+                )
+                setStudioActiveSequenceVariant(
+                  sheetAddress,
+                  targetVariant,
+                  stateEditors,
+                )
+                stateEditors.studio.historic.panels.outline.selection.set([
+                  sheetObject,
+                ])
+              })
+            },
+          })),
+      ]
     }
 
     return [
+      ...gsapItems,
       {
         type: 'normal',
         label: 'Remove override',

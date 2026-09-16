@@ -1,10 +1,12 @@
 import type {
   BasicKeyframedTrack,
+  GsapClipTrack,
   HistoricPositionalSequence,
   Keyframe,
   KeyframeType,
   SheetState_Historic,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
+import {isBasicKeyframedTrack} from '@unseenco/theatre-shared/sequence/trackData'
 import type {SheetAhistoricState} from '@unseenco/theatre-core/projects/store/storeTypes'
 // stateEditors mutates core historic sheet state, so it needs these runtime helpers.
 // eslint-disable-next-line no-restricted-syntax
@@ -1009,9 +1011,21 @@ namespace stateEditors {
           function _getTrack(
             p: WithoutSheetInstance<SheetObjectAddress> & {
               trackId: SequenceTrackId
+              sequenceVariant?: SequenceVariantId
             },
           ) {
             return _ensureTracksOfObject(p).trackData[p.trackId]
+          }
+
+          function _getBasicKeyframedTrack(
+            p: WithoutSheetInstance<SheetObjectAddress> & {
+              trackId: SequenceTrackId
+              sequenceVariant?: SequenceVariantId
+            },
+          ): BasicKeyframedTrack | undefined {
+            const track = _getTrack(p)
+            if (!track || !isBasicKeyframedTrack(track)) return undefined
+            return track
           }
 
           function _getKeyframeById(
@@ -1020,7 +1034,7 @@ namespace stateEditors {
               keyframeId: KeyframeId
             },
           ): Keyframe | undefined {
-            const track = _getTrack(p)
+            const track = _getBasicKeyframedTrack(p)
             if (!track) return
             return track.keyframes.find((kf) => kf.id === p.keyframeId)
           }
@@ -1041,7 +1055,7 @@ namespace stateEditors {
             },
           ) {
             const position = p.snappingFunction(p.position)
-            const track = _getTrack(p)
+            const track = _getBasicKeyframedTrack(p)
             if (!track) return
             const {keyframes} = track
             const existingKeyframeIndex = keyframes.findIndex(
@@ -1088,7 +1102,7 @@ namespace stateEditors {
               sequenceVariant?: SequenceVariantId
             },
           ) {
-            const track = _getTrack(p)
+            const track = _getBasicKeyframedTrack(p)
             if (!track) return
             const {keyframes} = track
             const index = keyframes.findIndex(
@@ -1112,7 +1126,7 @@ namespace stateEditors {
               sequenceVariant?: SequenceVariantId
             },
           ) {
-            const track = _getTrack(p)
+            const track = _getBasicKeyframedTrack(p)
             if (!track) return
             const initialKeyframes = current(track.keyframes)
 
@@ -1151,7 +1165,7 @@ namespace stateEditors {
               handles: [number, number, number, number]
             },
           ) {
-            const track = _getTrack(p)
+            const track = _getBasicKeyframedTrack(p)
             if (!track) return
 
             track.keyframes = track.keyframes.map((kf, i) => {
@@ -1221,7 +1235,7 @@ namespace stateEditors {
               sequenceVariant?: SequenceVariantId
             },
           ) {
-            const track = _getTrack(p)
+            const track = _getBasicKeyframedTrack(p)
             if (!track) return
 
             track.keyframes = track.keyframes.filter(
@@ -1270,7 +1284,7 @@ namespace stateEditors {
               sequenceVariant?: SequenceVariantId
             },
           ) {
-            const track = _getTrack(p)
+            const track = _getBasicKeyframedTrack(p)
             if (!track) return
             const initialKeyframes = current(track.keyframes)
             const sanitizedKeyframes = p.keyframes
@@ -1308,6 +1322,57 @@ namespace stateEditors {
             )
 
             track.keyframes = sorted
+          }
+
+          export function addGsapClipTrack(
+            p: WithoutSheetInstance<SheetObjectAddress> & {
+              gsapAnimationId: string
+              start: number
+              duration: number
+              sequenceVariant?: SequenceVariantId
+            },
+          ): SequenceTrackId {
+            const duration = Math.max(p.duration, 0.01)
+            const start = Math.max(p.start, 0)
+            const tracks = _ensureTracksOfObject(p)
+            const trackId = generateSequenceTrackId()
+            const track: GsapClipTrack = {
+              type: 'GsapClipTrack',
+              gsapAnimationId: p.gsapAnimationId,
+              start,
+              duration,
+              __debugName: `gsap:${p.gsapAnimationId}`,
+            }
+            tracks.trackData[trackId] = track
+            return trackId
+          }
+
+          export function setGsapClipTrackTiming(
+            p: WithoutSheetInstance<SheetObjectAddress> & {
+              trackId: SequenceTrackId
+              start?: number
+              duration?: number
+              sequenceVariant?: SequenceVariantId
+            },
+          ) {
+            const track = _getTrack(p)
+            if (!track || track.type !== 'GsapClipTrack') return
+            if (typeof p.start === 'number') {
+              track.start = Math.max(p.start, 0)
+            }
+            if (typeof p.duration === 'number') {
+              track.duration = Math.max(p.duration, 0.01)
+            }
+          }
+
+          export function deleteGsapClipTrack(
+            p: WithoutSheetInstance<SheetObjectAddress> & {
+              trackId: SequenceTrackId
+              sequenceVariant?: SequenceVariantId
+            },
+          ) {
+            const tracks = _ensureTracksOfObject(p)
+            delete tracks.trackData[p.trackId]
           }
         }
 

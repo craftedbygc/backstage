@@ -1,6 +1,6 @@
 import type {
   Keyframe,
-  TrackData,
+  BasicKeyframedTrack,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
@@ -30,7 +30,7 @@ const noConnector = <></>
 type IKeyframeEditorProps = {
   index: number
   keyframe: Keyframe
-  trackData: TrackData
+  trackData: BasicKeyframedTrack
   itemKey: StudioSheetItemKey
   layoutP: Pointer<SequenceEditorPanelLayout>
   trackId: SequenceTrackId

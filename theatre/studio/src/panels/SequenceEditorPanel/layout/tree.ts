@@ -25,6 +25,13 @@ import type {UnknownValidCompoundProps} from '@unseenco/theatre-core/propTypes/i
 import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 import {DEFAULT_SEQUENCE_VARIANT} from '@unseenco/theatre-studio/utils/sequenceVariantHelpers'
 import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
+import type {
+  GsapClipTrack,
+  SheetState_Historic,
+} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
+import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
+import {getSequenceStateFromSheet} from '@unseenco/theatre-studio/utils/sequenceVariantHelpers'
+import {isGsapClipTrack} from '@unseenco/theatre-shared/sequence/trackData'
 
 /**
  * Base "view model" for each row with common
@@ -75,7 +82,9 @@ export type SequenceEditorTree_SheetObject =
     /** When set, used instead of `objectKey` in the sequence editor left column. */
     displayLabel?: string
     children: Array<
-      SequenceEditorTree_PropWithChildren | SequenceEditorTree_PrimitiveProp
+      | SequenceEditorTree_PropWithChildren
+      | SequenceEditorTree_PrimitiveProp
+      | SequenceEditorTree_GsapClipTrack
     >
   }
 
@@ -99,11 +108,19 @@ export type SequenceEditorTree_PrimitiveProp =
     propConf: PropTypeConfig_AllSimples
   }
 
+export type SequenceEditorTree_GsapClipTrack =
+  SequenceEditorTree_Row<'gsapClipTrack'> & {
+    sheetObject: SheetObject
+    trackId: SequenceTrackId
+    trackData: GsapClipTrack
+  }
+
 export type SequenceEditorTree_AllRowTypes =
   | SequenceEditorTree_Sheet
   | SequenceEditorTree_SheetObject
   | SequenceEditorTree_PropWithChildren
   | SequenceEditorTree_PrimitiveProp
+  | SequenceEditorTree_GsapClipTrack
 
 const HEIGHT_OF_ANY_TITLE = 28
 
@@ -189,7 +206,21 @@ export const calculateSequenceEditorTree = (
     )
     const objectConfig = val(sheetObject.template.configPointer)
 
-    if (Object.keys(trackSetups).length === 0) return
+    const sheetState = val(
+      studio.atomP.historic.coreByProject[sheetObject.address.projectId]
+        .sheetsById[sheetObject.address.sheetId],
+    )
+    const gsapClipEntries = listGsapClipTracksForObject(
+      sheetState,
+      sheetObject,
+      isSheetPropsObjectKey(sheetObject.address.objectKey)
+        ? DEFAULT_SEQUENCE_VARIANT
+        : activeSequenceVariant,
+    )
+
+    if (Object.keys(trackSetups).length === 0 && gsapClipEntries.length === 0) {
+      return
+    }
 
     const isCollapsedP =
       collapsableItemSetP.byId[
@@ -230,7 +261,76 @@ export const calculateSequenceEditorTree = (
       shouldRender && !isCollapsed,
     )
 
+    addGsapClipTrackRows(
+      sheetObject,
+      gsapClipEntries,
+      row.children,
+      level + 1,
+      shouldRender && !isCollapsed,
+    )
+
     row.heightIncludingChildren = topSoFar - row.top
+  }
+
+  function listGsapClipTracksForObject(
+    sheetState: SheetState_Historic | undefined,
+    sheetObject: SheetObject,
+    sequenceVariant: SequenceVariantId,
+  ): Array<{trackId: SequenceTrackId; trackData: GsapClipTrack}> {
+    if (!sheetState) return []
+    const tracksOfObject = getSequenceStateFromSheet(
+      sheetState,
+      sequenceVariant,
+    )?.tracksByObject[sheetObject.address.objectKey]
+    if (!tracksOfObject) return []
+
+    const linkedTrackIds = new Set(
+      Object.values(tracksOfObject.trackIdByPropPath),
+    )
+
+    const entries: Array<{trackId: SequenceTrackId; trackData: GsapClipTrack}> =
+      []
+    for (const [trackId, trackData] of Object.entries(
+      tracksOfObject.trackData,
+    )) {
+      if (linkedTrackIds.has(trackId)) continue
+      if (!trackData || !isGsapClipTrack(trackData)) continue
+      entries.push({trackId, trackData})
+    }
+    entries.sort((a, b) => a.trackData.start - b.trackData.start)
+    return entries
+  }
+
+  function addGsapClipTrackRows(
+    sheetObject: SheetObject,
+    clips: Array<{trackId: SequenceTrackId; trackData: GsapClipTrack}>,
+    arrayOfChildren: SequenceEditorTree_SheetObject['children'],
+    level: number,
+    shouldRender: boolean,
+  ) {
+    for (const {trackId, trackData} of clips) {
+      const row: SequenceEditorTree_GsapClipTrack = {
+        type: 'gsapClipTrack',
+        depth: level,
+        sheetItemKey: createStudioSheetItemKey.forSheetObjectGsapClipTrack(
+          sheetObject,
+          trackId,
+        ),
+        sheetObject,
+        trackId,
+        trackData,
+        shouldRender,
+        top: topSoFar,
+        nodeHeight: shouldRender ? HEIGHT_OF_ANY_TITLE : 0,
+        heightIncludingChildren: shouldRender ? HEIGHT_OF_ANY_TITLE : 0,
+        n: nSoFar,
+      }
+      arrayOfChildren.push(row)
+      if (shouldRender) {
+        nSoFar += 1
+        topSoFar += row.nodeHeight
+      }
+    }
   }
 
   function addProps(
@@ -238,9 +338,7 @@ export const calculateSequenceEditorTree = (
     trackSetups: IPropPathToTrackIdTree,
     pathSoFar: PathToProp,
     parentPropConfig: PropTypeConfig_Compound<$IntentionalAny>,
-    arrayOfChildren: Array<
-      SequenceEditorTree_PrimitiveProp | SequenceEditorTree_PropWithChildren
-    >,
+    arrayOfChildren: SequenceEditorTree_SheetObject['children'],
     level: number,
     shouldRender: boolean,
   ) {
@@ -263,9 +361,7 @@ export const calculateSequenceEditorTree = (
     trackIdOrMapping: SequenceTrackId | IPropPathToTrackIdTree,
     pathToProp: PathToProp,
     conf: PropTypeConfig,
-    arrayOfChildren: Array<
-      SequenceEditorTree_PrimitiveProp | SequenceEditorTree_PropWithChildren
-    >,
+    arrayOfChildren: SequenceEditorTree_SheetObject['children'],
     level: number,
     shouldRender: boolean,
   ) {
@@ -309,9 +405,7 @@ export const calculateSequenceEditorTree = (
     propConf: PropTypeConfig_Compound<UnknownValidCompoundProps>,
     pathToProp: PathToProp,
     conf: PropTypeConfig_Compound<$FixMe>,
-    arrayOfChildren: Array<
-      SequenceEditorTree_PrimitiveProp | SequenceEditorTree_PropWithChildren
-    >,
+    arrayOfChildren: SequenceEditorTree_SheetObject['children'],
     level: number,
     shouldRender: boolean,
   ) {
@@ -366,9 +460,7 @@ export const calculateSequenceEditorTree = (
     trackId: SequenceTrackId,
     pathToProp: PathToProp,
     propConf: PropTypeConfig_AllSimples,
-    arrayOfChildren: Array<
-      SequenceEditorTree_PrimitiveProp | SequenceEditorTree_PropWithChildren
-    >,
+    arrayOfChildren: SequenceEditorTree_SheetObject['children'],
     level: number,
     shouldRender: boolean,
   ) {

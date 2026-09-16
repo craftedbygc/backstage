@@ -257,7 +257,7 @@ namespace utils {
       const trackData = getSequenceStateFromSheet(sheetState, trackVariant)
         ?.tracksByObject[sheetObject.address.objectKey]?.trackData[trackId]
 
-      if (!trackData) return
+      if (!trackData || trackData.type !== 'BasicKeyframedTrack') return
 
       if (
         bounds.v[0] >

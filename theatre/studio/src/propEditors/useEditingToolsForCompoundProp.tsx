@@ -351,15 +351,21 @@ function ControlIndicators({
           )?.tracksByObject[obj.address.objectKey]?.trackData[trackId],
         }
       })
-      .filter(({track}) => !!track)
-      .map((s) => ({
-        ...s,
-        nearbies: getNearbyKeyframesOfTrack(
-          obj,
-          {id: s.trackId, data: s.track!, sheetObject: obj},
-          sequencePosition,
-        ),
-      }))
+      .flatMap((s) => {
+        if (s.track?.type !== 'BasicKeyframedTrack') return []
+        const track = s.track
+        return [
+          {
+            trackId: s.trackId,
+            track,
+            nearbies: getNearbyKeyframesOfTrack(
+              obj,
+              {id: s.trackId, data: track, sheetObject: obj},
+              sequencePosition,
+            ),
+          },
+        ]
+      })
 
     const hasCur = nearbyKeyframesInEachTrack.find(
       ({nearbies}) => !!nearbies.cur,
@@ -478,7 +484,13 @@ function ControlIndicators({
         )}
       />
     )
-  }, [pointerToProp, obj, propConfig, possibleSequenceTrackIds, listOfDescendantTrackIds])
+  }, [
+    pointerToProp,
+    obj,
+    propConfig,
+    possibleSequenceTrackIds,
+    listOfDescendantTrackIds,
+  ])
 }
 
 function compoundHasDivergedFromSavedState(
@@ -497,15 +509,13 @@ function compoundHasDivergedFromSavedState(
     if (isPropConfigComposite(conf)) continue
 
     const pathSuffix = path.slice(pathToProp.length)
-    const trackId = getDeep(
-      possibleSequenceTrackIds,
-      pathSuffix,
-    ) as SequenceTrackId | undefined
+    const trackId = getDeep(possibleSequenceTrackIds, pathSuffix) as
+      | SequenceTrackId
+      | undefined
 
     if (
       propHasDivergedFromSavedState(obj, path, {
-        sequenceTrackId:
-          typeof trackId === 'string' ? trackId : undefined,
+        sequenceTrackId: typeof trackId === 'string' ? trackId : undefined,
         trackVariant:
           typeof trackId === 'string'
             ? obj.template.getSequenceVariantOwningTrack(

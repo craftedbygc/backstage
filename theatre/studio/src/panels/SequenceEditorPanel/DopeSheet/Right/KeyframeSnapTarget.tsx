@@ -112,19 +112,24 @@ export function collectKeyframeSnapPositions(
       ([objectKey, trackDataAndTrackIdByPropPath]) => [
         objectKey,
         Object.fromEntries(
-          Object.entries(trackDataAndTrackIdByPropPath!.trackData).map(
-            ([trackId, track]) => [
-              trackId,
-              track!.keyframes
-                .filter((kf) =>
-                  shouldIncludeKeyframe(kf, {
-                    trackId,
-                    trackData: track!,
-                    objectKey,
-                  }),
-                )
-                .map((keyframe) => keyframe.position),
-            ],
+          Object.entries(trackDataAndTrackIdByPropPath!.trackData).flatMap(
+            ([trackId, track]) => {
+              if (track?.type !== 'BasicKeyframedTrack') return []
+              return [
+                [
+                  trackId,
+                  track.keyframes
+                    .filter((kf) =>
+                      shouldIncludeKeyframe(kf, {
+                        trackId,
+                        trackData: track,
+                        objectKey,
+                      }),
+                    )
+                    .map((keyframe) => keyframe.position),
+                ],
+              ]
+            },
           ),
         ),
       ],
