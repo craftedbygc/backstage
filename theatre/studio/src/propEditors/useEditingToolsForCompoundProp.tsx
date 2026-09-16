@@ -40,7 +40,7 @@ import {
   revertPropToSavedState,
 } from './revertPropToSavedState'
 import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/sequence/trackData'
-import {getGsapObjectBinding} from '@unseenco/theatre-shared/gsap/gsapObjectBinding'
+import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
 import GsapClipSequenceIndicator from '@unseenco/theatre-studio/gsap/GsapClipSequenceIndicator'
 import {getGsapStudioOutlineMenuItems} from '@unseenco/theatre-studio/gsap/gsapOutlineMenuItems'
 
@@ -77,12 +77,13 @@ export function useEditingToolsForCompoundProp<T extends SerializablePrimitive>(
   const isNonSequencable = isStatic || isTransient
 
   return usePrism((): Stuff => {
+    if (isGsapSheetObjectKey(obj.address.objectKey)) {
+      val(gsapStudioRegistryRevisionPointer)
+    }
     // if the compound has no simple descendants, then there isn't much the user can do with it
     if (!compoundHasSimpleDescendants(propConfig)) {
       const isRootGsapObject =
-        pathToProp.length === 0 &&
-        isGsapSheetObjectKey(obj.address.objectKey) &&
-        getGsapObjectBinding(obj)
+        pathToProp.length === 0 && isGsapSheetObjectKey(obj.address.objectKey)
 
       const gsapIndicator = isRootGsapObject ? (
         <GsapClipSequenceIndicator sheetObject={obj} />

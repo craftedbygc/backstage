@@ -22,6 +22,9 @@ import {objectHasDivergedFromSavedState} from '@unseenco/theatre-studio/propEdit
 import {DIVERGED_FROM_SAVED_STATE_TITLE} from '@unseenco/theatre-studio/propEditors/SavedStateDiamondWrapper'
 import {getGsapOutlineContextMenuItems} from '@unseenco/theatre-shared/gsap/outlineContextMenuRegistry'
 import {getGsapStudioOutlineMenuItems} from '@unseenco/theatre-studio/gsap/gsapOutlineMenuItems'
+import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/sequence/trackData'
+import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
+import {val} from '@unseenco/theatre-dataverse'
 
 export const ObjectItem: React.VFC<{
   sheetObject: SheetObject
@@ -61,6 +64,9 @@ export const ObjectItem: React.VFC<{
   const contextMenuItems = usePrism((): IContextMenuItem[] => {
     const sheetAddress = sheetObject.sheet.address
     const objectKey = sheetObject.address.objectKey
+    if (isGsapSheetObjectKey(objectKey)) {
+      val(gsapStudioRegistryRevisionPointer)
+    }
     const variants = sheetObject.sheet.template.getSequenceVariants()
 
     const studioGsapItems = getGsapStudioOutlineMenuItems(sheetObject)

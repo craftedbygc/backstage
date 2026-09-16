@@ -5,7 +5,7 @@ import {transparentize} from 'polished'
 import SavedStateDiamondWrapper from '@unseenco/theatre-studio/propEditors/SavedStateDiamondWrapper'
 import {nextPrevCursorsTheme} from '@unseenco/theatre-studio/propEditors/NextPrevKeyframeCursors'
 import {addGsapClipAtPlayhead} from './addGsapClipAtPlayhead'
-import {getGsapObjectBinding} from '@unseenco/theatre-shared/gsap/gsapObjectBinding'
+import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/sequence/trackData'
 
 const Container = styled.div`
   width: 16px;
@@ -25,7 +25,7 @@ const Container = styled.div`
 const GsapClipSequenceIndicator: React.FC<{sheetObject: SheetObject}> = ({
   sheetObject,
 }) => {
-  if (!getGsapObjectBinding(sheetObject)) return null
+  if (!isGsapSheetObjectKey(sheetObject.address.objectKey)) return null
 
   return (
     <Container

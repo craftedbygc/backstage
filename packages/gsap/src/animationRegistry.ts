@@ -1,75 +1,74 @@
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import type {GsapTweenLike} from './gsapTypes'
-
-const REGISTRY_KEY = '__unseenco_theatre_gsap_animationRegistry__'
+import {
+  clearAnimationRegistryForTests as clearSharedAnimationRegistryForTests,
+  getAnimationEntryById as getSharedAnimationEntryById,
+  getAnimationEntryForSheetObject as getSharedAnimationEntryForSheetObject,
+  listAnimationEntries as listSharedAnimationEntries,
+  registerAnimationInRegistry as registerSharedAnimationInRegistry,
+} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
 
 export type GsapAnimationRegistryEntry = {
   id: string
   label: string
   animation: GsapTweenLike
   sheetObject?: SheetObject
-}
-
-type RegistryStore = {
-  byId: Map<string, GsapAnimationRegistryEntry>
-  idBySheetObject: WeakMap<SheetObject, string>
-  /** Stable lookup when WeakMap identity differs across bundles/HMR. */
-  idByAddressKey: Map<string, string>
-}
-
-function sheetObjectAddressKey(sheetObject: SheetObject): string {
-  const a = sheetObject.address
-  return `${a.projectId}|${a.sheetId}|${a.sheetInstanceId}|${a.objectKey}`
-}
-
-function getStore(): RegistryStore {
-  const g = globalThis as typeof globalThis & {
-    [REGISTRY_KEY]?: RegistryStore
-  }
-  if (!g[REGISTRY_KEY]) {
-    g[REGISTRY_KEY] = {
-      byId: new Map(),
-      idBySheetObject: new WeakMap(),
-      idByAddressKey: new Map(),
-    }
-  }
-  return g[REGISTRY_KEY]!
+  defaultDuration?: number
 }
 
 export function registerAnimationInRegistry(
   entry: GsapAnimationRegistryEntry,
 ): void {
-  const store = getStore()
-  store.byId.set(entry.id, entry)
-  if (entry.sheetObject) {
-    store.idBySheetObject.set(entry.sheetObject, entry.id)
-    store.idByAddressKey.set(sheetObjectAddressKey(entry.sheetObject), entry.id)
-  }
+  registerSharedAnimationInRegistry({
+    ...entry,
+    animation: entry.animation,
+    defaultDuration:
+      entry.defaultDuration ?? defaultClipDuration(entry.animation),
+  })
+}
+
+function defaultClipDuration(animation: GsapTweenLike): number {
+  const d = animation.duration()
+  return d > 0 ? d : 1
 }
 
 export function getAnimationEntryById(
   id: string,
 ): GsapAnimationRegistryEntry | undefined {
-  return getStore().byId.get(id)
+  const entry = getSharedAnimationEntryById(id)
+  if (!entry || !entry.animation) return undefined
+  return {
+    id: entry.id,
+    label: entry.label,
+    animation: entry.animation as GsapTweenLike,
+    sheetObject: entry.sheetObject,
+  }
 }
 
 export function getAnimationEntryForSheetObject(
   sheetObject: SheetObject,
 ): GsapAnimationRegistryEntry | undefined {
-  const store = getStore()
-  const fromWeak = store.idBySheetObject.get(sheetObject)
-  const id =
-    fromWeak ?? store.idByAddressKey.get(sheetObjectAddressKey(sheetObject))
-  if (!id) return undefined
-  return store.byId.get(id)
+  const entry = getSharedAnimationEntryForSheetObject(sheetObject)
+  if (!entry || !entry.animation) return undefined
+  return {
+    id: entry.id,
+    label: entry.label,
+    animation: entry.animation as GsapTweenLike,
+    sheetObject: entry.sheetObject,
+  }
 }
 
 export function listAnimationEntries(): GsapAnimationRegistryEntry[] {
-  return [...getStore().byId.values()]
+  return listSharedAnimationEntries()
+    .filter((e): e is typeof e & {animation: GsapTweenLike} => !!e.animation)
+    .map((entry) => ({
+      id: entry.id,
+      label: entry.label,
+      animation: entry.animation as GsapTweenLike,
+      sheetObject: entry.sheetObject,
+    }))
 }
 
 export function clearAnimationRegistryForTests(): void {
-  const store = getStore()
-  store.byId.clear()
-  store.idByAddressKey.clear()
+  clearSharedAnimationRegistryForTests()
 }
