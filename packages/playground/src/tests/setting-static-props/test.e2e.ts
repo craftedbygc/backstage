@@ -42,6 +42,7 @@ test.describe('setting-static-props', () => {
     await expect(firstInput).toHaveAttribute('value', '1')
     await expect(secondInput).toHaveAttribute('value', '2')
 
-    await expect(detailPanel).toHaveScreenshot()
+    // Linux CI runners can differ slightly in font rasterization vs local/docker.
+    await expect(detailPanel).toHaveScreenshot({maxDiffPixelRatio: 0.05})
   })
 })
