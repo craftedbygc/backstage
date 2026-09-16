@@ -1,4 +1,5 @@
 import type {OutlineNamespaceConfig} from '@unseenco/theatre-shared/utils/outlineNamespaces'
+import {setConfiguredGsapSheetObjectNamespace} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
 
 export type TheatreGsapConfig = {
   /** Outline namespace segment for GSAP proxy objects (default `GSAP`). */
@@ -12,6 +13,8 @@ let activeConfig: TheatreGsapConfig = {
   outlineNamespace: {defaultCollapsed: false},
 }
 
+setConfiguredGsapSheetObjectNamespace(activeConfig.namespace!)
+
 export function configureTheatreGsap(config: TheatreGsapConfig): {
   reset: () => void
 } {
@@ -20,6 +23,7 @@ export function configureTheatreGsap(config: TheatreGsapConfig): {
     namespace: config.namespace ?? prev.namespace ?? 'GSAP',
     outlineNamespace: config.outlineNamespace ?? prev.outlineNamespace,
   }
+  setConfiguredGsapSheetObjectNamespace(activeConfig.namespace ?? 'GSAP')
   return {
     reset() {
       activeConfig = prev

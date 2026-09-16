@@ -323,7 +323,7 @@ export function useEditingToolsForCompoundProp<T extends SerializablePrimitive>(
         ),
       }
     }
-  }, [])
+  }, [pointerToProp, obj, propConfig, isStatic, isTransient])
 }
 
 function ControlIndicators({

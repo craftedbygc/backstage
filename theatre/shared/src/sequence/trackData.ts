@@ -4,6 +4,13 @@ import type {
   TrackData,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 
+export {
+  DEFAULT_GSAP_SHEET_OBJECT_NAMESPACE,
+  getConfiguredGsapSheetObjectNamespace,
+  isGsapSheetObjectKey,
+  setConfiguredGsapSheetObjectNamespace,
+} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
+
 export function isBasicKeyframedTrack(
   track: TrackData,
 ): track is BasicKeyframedTrack {
@@ -12,12 +19,6 @@ export function isBasicKeyframedTrack(
 
 export function isGsapClipTrack(track: TrackData): track is GsapClipTrack {
   return track.type === 'GsapClipTrack'
-}
-
-export const GSAP_SHEET_OBJECT_KEY_PREFIX = 'GSAP/'
-
-export function isGsapSheetObjectKey(objectKey: string): boolean {
-  return objectKey.startsWith(GSAP_SHEET_OBJECT_KEY_PREFIX)
 }
 
 export function gsapClipLocalProgress(
