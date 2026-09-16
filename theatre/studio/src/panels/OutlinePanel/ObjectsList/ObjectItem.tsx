@@ -21,6 +21,7 @@ import {ObjectStatusCircle} from '@unseenco/theatre-studio/uiComponents/icons'
 import {objectHasDivergedFromSavedState} from '@unseenco/theatre-studio/propEditors/objectHasDivergedFromSavedState'
 import {DIVERGED_FROM_SAVED_STATE_TITLE} from '@unseenco/theatre-studio/propEditors/SavedStateDiamondWrapper'
 import {getGsapOutlineContextMenuItems} from '@unseenco/theatre-shared/gsap/outlineContextMenuRegistry'
+import {getGsapStudioOutlineMenuItems} from '@unseenco/theatre-studio/gsap/gsapOutlineMenuItems'
 
 export const ObjectItem: React.VFC<{
   sheetObject: SheetObject
@@ -62,13 +63,16 @@ export const ObjectItem: React.VFC<{
     const objectKey = sheetObject.address.objectKey
     const variants = sheetObject.sheet.template.getSequenceVariants()
 
-    const gsapItems = getGsapOutlineContextMenuItems(sheetObject).map(
+    const studioGsapItems = getGsapStudioOutlineMenuItems(sheetObject)
+    const extensionGsapItems = getGsapOutlineContextMenuItems(sheetObject).map(
       (item) => ({
         type: 'normal' as const,
         label: item.label,
         callback: item.callback,
       }),
     )
+    const gsapItems =
+      studioGsapItems.length > 0 ? studioGsapItems : extensionGsapItems
 
     if (variant === DEFAULT_SEQUENCE_VARIANT) {
       return [

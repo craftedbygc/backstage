@@ -8,6 +8,7 @@ import {
   registerAnimationInRegistry,
 } from './animationRegistry'
 import {formatOutlineNamespacePathKey} from '@unseenco/theatre-shared/utils/outlineNamespaces'
+import {registerGsapObjectBinding} from '@unseenco/theatre-shared/gsap/gsapObjectBinding'
 
 export type RegisterGsapAnimationOptions = {
   /** Theatre object label (shown after the `GSAP/` namespace). */
@@ -19,6 +20,8 @@ export type RegisterGsapAnimationOptions = {
    * Re-registering with the same id updates the registry entry.
    */
   id?: string
+  /** Clip length when adding to the sequence (defaults to tween duration). */
+  defaultDuration?: number
 }
 
 export type RegisterGsapAnimationResult = {
@@ -26,10 +29,27 @@ export type RegisterGsapAnimationResult = {
   sheetObject: ISheetObject<{}>
 }
 
+function defaultClipDuration(animation: GsapTweenLike): number {
+  const d = animation.duration()
+  return d > 0 ? d : 1
+}
+
 function buildObjectKey(namespace: string, label: string): string {
   const trimmedNs = namespace.replace(/\/+$/g, '')
   const trimmedLabel = label.replace(/^\/+/g, '')
   return `${trimmedNs}/${trimmedLabel}`
+}
+
+function persistBinding(
+  sheetObjectInternal: ReturnType<typeof privateAPI>,
+  id: string,
+  animation: GsapTweenLike,
+  options: RegisterGsapAnimationOptions,
+): void {
+  registerGsapObjectBinding(sheetObjectInternal, {
+    gsapAnimationId: id,
+    defaultDuration: options.defaultDuration ?? defaultClipDuration(animation),
+  })
 }
 
 /**
@@ -61,6 +81,7 @@ export function registerGsapAnimation(
       animation,
       sheetObject: existing.sheetObject,
     })
+    persistBinding(existing.sheetObject, id, animation, options)
     return {id, sheetObject: sheetObjectPublic}
   }
 
@@ -77,6 +98,7 @@ export function registerGsapAnimation(
     animation,
     sheetObject: sheetObjectInternal,
   })
+  persistBinding(sheetObjectInternal, id, animation, options)
 
   return {id, sheetObject: sheetObjectPublic}
 }

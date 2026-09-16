@@ -39,6 +39,10 @@ import {
   compoundCanRevertToSavedState,
   revertPropToSavedState,
 } from './revertPropToSavedState'
+import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/sequence/trackData'
+import {getGsapObjectBinding} from '@unseenco/theatre-shared/gsap/gsapObjectBinding'
+import GsapClipSequenceIndicator from '@unseenco/theatre-studio/gsap/GsapClipSequenceIndicator'
+import {getGsapStudioOutlineMenuItems} from '@unseenco/theatre-studio/gsap/gsapOutlineMenuItems'
 
 interface CommonStuff {
   beingScrubbed: boolean
@@ -75,11 +79,24 @@ export function useEditingToolsForCompoundProp<T extends SerializablePrimitive>(
   return usePrism((): Stuff => {
     // if the compound has no simple descendants, then there isn't much the user can do with it
     if (!compoundHasSimpleDescendants(propConfig)) {
+      const isRootGsapObject =
+        pathToProp.length === 0 &&
+        isGsapSheetObjectKey(obj.address.objectKey) &&
+        getGsapObjectBinding(obj)
+
+      const gsapIndicator = isRootGsapObject ? (
+        <GsapClipSequenceIndicator sheetObject={obj} />
+      ) : null
+
+      const gsapContextMenuItems: ContextMenuItem[] = isRootGsapObject
+        ? getGsapStudioOutlineMenuItems(obj)
+        : []
+
       return {
         type: 'AllStatic',
         beingScrubbed: false,
-        contextMenuItems: [],
-        controlIndicators: (
+        contextMenuItems: gsapContextMenuItems,
+        controlIndicators: gsapIndicator ?? (
           <DefaultOrStaticValueIndicator
             hasStaticOverride={false}
             hasDivergedFromSavedState={propHasDivergedFromSavedState(

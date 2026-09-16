@@ -135,7 +135,8 @@ export const GsapTimeModeDemo: React.FC<{
     <Page>
       <Hint>
         GSAP runs the tweens in code; Theatre sequences them on the timeline.
-        Open the outline <code>GSAP</code> folder, right-click an animation →{' '}
+        Open the outline <code>GSAP</code> folder, right-click an animation (or
+        click the diamond in the details header) →{' '}
         <strong>Add to sequence at playhead</strong>, then scrub the sequence
         playhead (or play the sheet sequence) to drive{' '}
         <code>animation.progress()</code>.
