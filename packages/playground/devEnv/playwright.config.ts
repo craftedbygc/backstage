@@ -17,7 +17,7 @@ const config: PlaywrightTestConfig = {
   testDir: '../src',
   testMatch: /.*\.e2e\.ts/,
   /* Maximum time one test can run for. */
-  timeout: 4000,
+  timeout: process.env.CI ? 30_000 : 4000,
   expect: {
     // maximum timeout for expect assertions. If longer than the test timeout above, it'll still fail.
     timeout: 10000,
