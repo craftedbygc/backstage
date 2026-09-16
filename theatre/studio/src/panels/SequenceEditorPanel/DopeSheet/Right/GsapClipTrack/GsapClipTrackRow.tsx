@@ -15,6 +15,8 @@ import type {CommitOrDiscard} from '@unseenco/theatre-studio/StudioStore/StudioS
 import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 import {getSequenceStateFromSheet} from '@unseenco/theatre-studio/utils/sequenceVariantHelpers'
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
+import useContextMenu from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
+import type {IContextMenuItem} from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 
 const Container = styled.div`
   position: relative;
@@ -34,13 +36,15 @@ const ClipBar = styled.div`
   cursor: grab;
 `
 
-const ResizeHandle = styled.div`
+const EdgeHandle = styled.div<{$side: 'left' | 'right'}>`
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 6px;
-  height: 100%;
+  top: 2px;
+  bottom: 2px;
+  width: 3px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.35);
   cursor: ew-resize;
+  ${(props) => (props.$side === 'left' ? 'left: 3px;' : 'right: 3px;')}
 `
 
 const GsapClipTrackRow: React.VFC<{
@@ -98,9 +102,16 @@ const GsapClipTrackBar: React.VFC<{
   )
 
   const [barRef, barNode] = useRefAndState<HTMLDivElement | null>(null)
+  const [startHandleRef, startHandleNode] =
+    useRefAndState<HTMLDivElement | null>(null)
   const [endHandleRef, endHandleNode] = useRefAndState<HTMLDivElement | null>(
     null,
   )
+
+  const [contextMenu] = useGsapClipContextMenu(barNode, {
+    leaf,
+    sequenceVariant,
+  })
 
   const moveOpts: DragOpts = useMemo(() => {
     let temp: CommitOrDiscard | undefined
@@ -134,6 +145,43 @@ const GsapClipTrackBar: React.VFC<{
       },
     }
   }, [leaf, layoutP, sequenceVariant, trackData.start])
+
+  const resizeStartOpts: DragOpts = useMemo(() => {
+    let temp: CommitOrDiscard | undefined
+    const startAtDrag = trackData.start
+    const durationAtDrag = trackData.duration
+    const toUnitSpace = val(layoutP.scaledSpace.toUnitSpace)
+    return {
+      debugName: 'gsapClipResizeStart',
+      lockCSSCursorTo: 'ew-resize',
+      onDragStart() {
+        return {
+          onDrag(dx: number) {
+            const delta = toUnitSpace(dx)
+            const newStart = Math.max(0, startAtDrag + delta)
+            const newDuration = Math.max(0.01, durationAtDrag - delta)
+            temp?.discard()
+            temp = getStudio()!.tempTransaction(({stateEditors}) => {
+              stateEditors.coreByProject.historic.sheetsById.sequence.setGsapClipTrackTiming(
+                {
+                  ...leaf.sheetObject.address,
+                  trackId: leaf.trackId,
+                  start: newStart,
+                  duration: newDuration,
+                  sequenceVariant,
+                },
+              )
+            })
+          },
+          onDragEnd(dragHappened) {
+            if (dragHappened) temp?.commit()
+            else temp?.discard()
+            temp = undefined
+          },
+        }
+      },
+    }
+  }, [leaf, layoutP, sequenceVariant, trackData.duration, trackData.start])
 
   const resizeEndOpts: DragOpts = useMemo(() => {
     let temp: CommitOrDiscard | undefined
@@ -169,24 +217,56 @@ const GsapClipTrackBar: React.VFC<{
   }, [leaf, sequenceVariant, trackData.duration, layoutP])
 
   const [isDraggingMove] = useDrag(barNode, moveOpts)
-  const [isDraggingResize] = useDrag(endHandleNode, resizeEndOpts)
+  const [isDraggingStart] = useDrag(startHandleNode, resizeStartOpts)
+  const [isDraggingEnd] = useDrag(endHandleNode, resizeEndOpts)
   useCssCursorLock(
-    isDraggingMove || isDraggingResize,
+    isDraggingMove || isDraggingStart || isDraggingEnd,
     'draggingGsapClip',
     'ew-resize',
   )
 
   return (
     <Container>
+      {contextMenu}
       <ClipBar
         ref={barRef}
         style={{left: leftPx, width: widthPx}}
         title={trackData.gsapAnimationId}
       >
-        <ResizeHandle ref={endHandleRef} />
+        <EdgeHandle ref={startHandleRef} $side="left" />
+        <EdgeHandle ref={endHandleRef} $side="right" />
       </ClipBar>
     </Container>
   )
+}
+
+function useGsapClipContextMenu(
+  node: HTMLDivElement | null,
+  opts: {
+    leaf: SequenceEditorTree_GsapClipTrack
+    sequenceVariant: string
+  },
+) {
+  return useContextMenu(node, {
+    displayName: 'GSAP clip',
+    menuItems: (): IContextMenuItem[] => [
+      {
+        type: 'normal',
+        label: 'Remove from sequence',
+        callback: () => {
+          getStudio().transaction(({stateEditors}) => {
+            stateEditors.coreByProject.historic.sheetsById.sequence.deleteGsapClipTrack(
+              {
+                ...opts.leaf.sheetObject.address,
+                trackId: opts.leaf.trackId,
+                sequenceVariant: opts.sequenceVariant,
+              },
+            )
+          })
+        },
+      },
+    ],
+  })
 }
 
 export default GsapClipTrackRow

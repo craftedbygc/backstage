@@ -1,0 +1,89 @@
+import gsap from 'gsap'
+import {getProject} from '@unseenco/theatre-core'
+import studio from '@unseenco/theatre-studio'
+import {
+  attachGsapSequenceBridge,
+  configureTheatreGsap,
+  registerGsapAnimation,
+} from '@unseenco/theatre-gsap'
+import {buildExtension} from '@unseenco/theatre-gsap/extension'
+
+configureTheatreGsap({
+  namespace: 'GSAP',
+  outlineNamespace: {defaultCollapsed: false},
+})
+
+studio.initialize()
+
+const project = getProject('Theatre × GSAP demo')
+const sheet = project.sheet('Main')
+
+attachGsapSequenceBridge(sheet)
+studio.extend(buildExtension({studio}).extension)
+
+const panel = document.getElementById('panel')!
+const box = document.getElementById('box')!
+const toggle = document.getElementById('toggle')!
+
+const panelHidden = {autoAlpha: 0, y: -12, scale: 0.96}
+const panelShown = {autoAlpha: 1, y: 0, scale: 1}
+
+let menuOpen = false
+
+function syncPanelRuntimeState() {
+  if (menuOpen) {
+    gsap.set(panel, panelShown)
+    panel.style.visibility = 'visible'
+    toggle.textContent = 'Hide panel (runtime)'
+  } else {
+    gsap.set(panel, panelHidden)
+    panel.style.visibility = 'hidden'
+    toggle.textContent = 'Show panel (runtime)'
+  }
+}
+
+toggle.addEventListener('click', () => {
+  menuOpen = !menuOpen
+  syncPanelRuntimeState()
+})
+
+void project.ready.then(() => {
+  const panelShow = gsap.fromTo(panel, panelHidden, {
+    ...panelShown,
+    duration: 0.45,
+    ease: 'power2.out',
+    paused: true,
+  })
+
+  const panelHide = gsap.fromTo(panel, panelShown, {
+    autoAlpha: 0,
+    y: -8,
+    scale: 0.98,
+    duration: 0.35,
+    ease: 'power2.in',
+    paused: true,
+  })
+
+  const boxMove = gsap.to(box, {
+    x: 160,
+    rotation: 180,
+    duration: 1.2,
+    ease: 'elastic.out(1, 0.5)',
+    paused: true,
+  })
+
+  registerGsapAnimation(panelShow, sheet, {
+    label: 'Panel show',
+    id: 'gsap-panel-show',
+  })
+  registerGsapAnimation(panelHide, sheet, {
+    label: 'Panel hide',
+    id: 'gsap-panel-hide',
+  })
+  registerGsapAnimation(boxMove, sheet, {
+    label: 'Box move',
+    id: 'gsap-box-move',
+  })
+
+  syncPanelRuntimeState()
+})

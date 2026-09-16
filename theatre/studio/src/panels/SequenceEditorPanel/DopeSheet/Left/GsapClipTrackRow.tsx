@@ -9,6 +9,13 @@ const Label = styled.span`
   color: #9a9a9a;
 `
 
+const Header = styled(BaseHeader)`
+  padding-left: calc(0px + var(--depth) * 20px);
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+`
+
 const GsapClipTrackRow: React.VFC<{leaf: SequenceEditorTree_GsapClipTrack}> = ({
   leaf,
 }) => {
@@ -16,12 +23,12 @@ const GsapClipTrackRow: React.VFC<{leaf: SequenceEditorTree_GsapClipTrack}> = ({
 
   return (
     <LeftRowContainer depth={leaf.depth}>
-      <BaseHeader
+      <Header
         isEven={leaf.n % 2 === 0}
         style={{height: leaf.nodeHeight + 'px'}}
       >
         <Label title={leaf.trackData.gsapAnimationId}>GSAP clip</Label>
-      </BaseHeader>
+      </Header>
     </LeftRowContainer>
   )
 }
