@@ -40,6 +40,12 @@
       button:hover {
         background: #2563eb;
       }
+      .demo-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        align-items: flex-start;
+      }
       .panel {
         width: 280px;
         padding: 16px;
@@ -65,6 +71,22 @@
         margin-top: 24px;
         background: linear-gradient(135deg, #6ee7b7, #3b82f6);
       }
+      .theatre-object {
+        width: 200px;
+        min-height: 120px;
+        padding: 16px;
+        border-radius: 12px;
+        border: 1px solid #3d4654;
+        background: #22262f;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 14px;
+        line-height: 1.35;
+        color: #d2d5db;
+        will-change: transform, opacity;
+      }
     </style>
     <script src="./index.ts" type="module"></script>
   </head>
@@ -73,18 +95,24 @@
       GSAP runs tweens in code; Theatre sequences them on the timeline. Open the
       outline <code>GSAP</code> folder, right-click an animation (or use the
       details diamond) → <strong>Add to sequence at playhead</strong>, then scrub
-      the sequence playhead to drive <code>animation.progress()</code>.
+      the sequence playhead to drive <code>animation.progress()</code>. Compare
+      with the regular Theatre object beside the panel (sequence x, y, opacity).
     </p>
     <div class="row">
       <button type="button" id="toggle">Show panel (runtime)</button>
     </div>
-    <div class="panel" id="panel">
-      <h2>UI panel</h2>
-      <p>
-        Toggle with the button for live GSAP, or scrub Theatre clips for Panel
-        show / hide.
-      </p>
-      <div class="box" id="box"></div>
+    <div class="demo-row">
+      <div class="panel" id="panel">
+        <h2>UI panel</h2>
+        <p>
+          Toggle with the button for live GSAP, or scrub Theatre clips for Panel
+          show / hide.
+        </p>
+        <div class="box" id="box"></div>
+      </div>
+      <div class="theatre-object" id="theatre-object">
+        Regular Theatre Object
+      </div>
     </div>
   </body>
 </html>

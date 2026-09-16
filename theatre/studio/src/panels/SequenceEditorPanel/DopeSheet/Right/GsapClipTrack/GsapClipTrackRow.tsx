@@ -17,6 +17,7 @@ import {getSequenceStateFromSheet} from '@unseenco/theatre-studio/utils/sequence
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
 import useContextMenu from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import type {IContextMenuItem} from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
+import {previewGsapClipsAtCurrentPlayhead} from '@unseenco/theatre-studio/gsap/previewGsapClipsAtPlayhead'
 
 const Container = styled.div`
   position: relative;
@@ -38,13 +39,23 @@ const ClipBar = styled.div`
 
 const EdgeHandle = styled.div<{$side: 'left' | 'right'}>`
   position: absolute;
-  top: 2px;
-  bottom: 2px;
-  width: 3px;
-  border-radius: 1px;
-  background: rgba(255, 255, 255, 0.35);
+  top: -5px;
+  bottom: -5px;
+  width: 12px;
   cursor: ew-resize;
-  ${(props) => (props.$side === 'left' ? 'left: 3px;' : 'right: 3px;')}
+  z-index: 1;
+  ${(props) => (props.$side === 'left' ? 'left: 0;' : 'right: 0;')}
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 7px;
+    bottom: 7px;
+    width: 2px;
+    border-radius: 1px;
+    background: rgba(255, 255, 255, 0.35);
+    ${(props) => (props.$side === 'left' ? 'left: 4px;' : 'right: 4px;')}
+  }
 `
 
 const GsapClipTrackRow: React.VFC<{
@@ -125,15 +136,21 @@ const GsapClipTrackBar: React.VFC<{
           onDrag(dx: number) {
             const delta = toUnitSpace(dx)
             temp?.discard()
+            const nextStart = Math.max(0, startAtDrag + delta)
             temp = getStudio()!.tempTransaction(({stateEditors}) => {
               stateEditors.coreByProject.historic.sheetsById.sequence.setGsapClipTrackTiming(
                 {
                   ...leaf.sheetObject.address,
                   trackId: leaf.trackId,
-                  start: Math.max(0, startAtDrag + delta),
+                  start: nextStart,
                   sequenceVariant,
                 },
               )
+            })
+            previewGsapClipsAtCurrentPlayhead(leaf.sheetObject, {
+              trackId: leaf.trackId,
+              start: nextStart,
+              duration: trackData.duration,
             })
           },
           onDragEnd(dragHappened) {
@@ -172,6 +189,11 @@ const GsapClipTrackBar: React.VFC<{
                 },
               )
             })
+            previewGsapClipsAtCurrentPlayhead(leaf.sheetObject, {
+              trackId: leaf.trackId,
+              start: newStart,
+              duration: newDuration,
+            })
           },
           onDragEnd(dragHappened) {
             if (dragHappened) temp?.commit()
@@ -204,6 +226,11 @@ const GsapClipTrackBar: React.VFC<{
                   sequenceVariant,
                 },
               )
+            })
+            previewGsapClipsAtCurrentPlayhead(leaf.sheetObject, {
+              trackId: leaf.trackId,
+              start: trackData.start,
+              duration: newDuration,
             })
           },
           onDragEnd(dragHappened) {

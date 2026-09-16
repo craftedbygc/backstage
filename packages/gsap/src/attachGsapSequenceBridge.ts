@@ -1,7 +1,6 @@
 import type {ISheet} from '@unseenco/theatre-core'
 import {onChange} from '@unseenco/theatre-core'
-import {gsapClipLocalProgress} from '@unseenco/theatre-shared/sequence/trackData'
-import {getAnimationEntryById} from './animationRegistry'
+import {syncRegisteredGsapAnimationsForClips} from '@unseenco/theatre-shared/gsap/syncGsapClipProgress'
 
 /**
  * Drives registered GSAP animations from the sheet sequence playhead.
@@ -12,12 +11,7 @@ export function attachGsapSequenceBridge(sheet: ISheet): () => void {
   const sequence = sheet.sequence
 
   return onChange(sequence.pointer.position, (position) => {
-    const clips = sequence.__experimental_getGsapClips()
-    for (const {clip} of clips) {
-      const entry = getAnimationEntryById(clip.gsapAnimationId)
-      if (!entry) continue
-      const progress = gsapClipLocalProgress(position, clip)
-      entry.animation.progress(progress, true)
-    }
+    const clips = sequence.__experimental_getGsapClips().map(({clip}) => clip)
+    syncRegisteredGsapAnimationsForClips(position, clips)
   })
 }
