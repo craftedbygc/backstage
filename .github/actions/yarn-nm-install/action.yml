@@ -1,5 +1,12 @@
 name: yarn-nm-install
 description: Installs deps via yarn and re-uses the cache
+inputs:
+  installPlaywright:
+    description: >-
+      Download Playwright browser binaries (and cache them). Only needed for
+      jobs that run Playwright e2e tests.
+    required: false
+    default: 'false'
 runs:
   using: composite
   steps:
@@ -32,6 +39,7 @@ runs:
     # Thanks to https://github.com/rafaelbiten for this step https://github.com/microsoft/playwright/issues/7249#issuecomment-1385567519
     - name: Cache Playwright Browsers for Playwright's Version
       id: cache-playwright-browsers
+      if: inputs.installPlaywright == 'true'
       uses: actions/cache@v4
       with:
         path: ~/.cache/ms-playwright
@@ -44,14 +52,15 @@ runs:
       env:
         YARN_NM_MODE: 'hardlinks-local'
 
-    # This step is only needed if the job runs playwright tests. But we have
-    # to include it in all jobs. The reason is, both `yarn install` and `yarn run playwright install`
-    # modify the `~/.cache/ms-playwright` folder. If we don't include this step in all jobs,
-    # then the cache will change in some jobs and not in others, which would make the cache useless.
+    # Playwright 1.36's `install --with-deps` targets Ubuntu 22.04 package names
+    # and fails on ubuntu-latest (24.04 noble). Browser binaries alone are enough
+    # for headless CI; system libs on GitHub-hosted runners are sufficient.
     - name: Download playwright
-      if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
+      if: >-
+        inputs.installPlaywright == 'true' &&
+        steps.cache-playwright-browsers.outputs.cache-hit != 'true'
       shell: bash
-      run: yarn workspace playground run playwright install --with-deps
+      run: yarn workspace playground run playwright install chromium
 
     # - name: Update browserlist
     #   shell: bash
