@@ -20,14 +20,13 @@ Concise agent-facing notes for the Theatre.js monorepo. Read `CONTRIBUTING.md` f
 | Lint autofix | `yarn lint:all --fix` |
 | Unit/integration tests | `yarn test` (`--watch` supported) |
 | Single test file | `yarn test path/to/file.test.ts` |
-| E2E tests (playwright) | `yarn test:e2e` (headed) or `yarn test:e2e:ci` (chromium, dot reporter) |
 | Compat tests | `yarn test:compat:install` then `yarn test:compat:run` (two-step; install runs a local verdaccio) |
 | Docs (VitePress) | `yarn docs:dev` / `yarn docs:build` |
 | Unified static site (Netlify) | `yarn build:site` → `deploy/` (docs + playground) |
 | Dev playground | `yarn playground` (= `yarn workspace playground run serve`, Vite, rebuilds packages on the fly) |
 | Release | `yarn cli release x.y.z[-dev|rc.w]` (maintainers only; needs clean git tree) |
 
-CI order (`.github/workflows/ci.yml`): `Build`, `Docs`, `Lint`, `Test`, `Typecheck`, `VisualRegression`, `Compatibility-Tests` — all run in parallel jobs on Node 22. A passing PR must satisfy all seven.
+CI order (`.github/workflows/ci.yml`): `Build`, `Docs`, `Lint`, `Test`, `Typecheck`, `Compatibility-Tests` — all run in parallel jobs on Node 22. A passing PR must satisfy all six.
 
 ## Architecture / package boundaries
 
@@ -41,7 +40,7 @@ Published packages → source location:
 - `@unseenco/theatre-react` → `packages/react/`
 - `@unseenco/theatre-browser-bundles` → `packages/browser-bundles/`
 
-Non-published: `packages/playground` (dev harness + e2e), `theatre/shared` (`private: true`), `theatre/devEnv`, `compat-tests`, `docs` (`@unseenco/theatre-docs`), `examples/basic-dom`.
+Non-published: `packages/playground` (dev harness), `theatre/shared` (`private: true`), `theatre/devEnv`, `compat-tests`, `docs` (`@unseenco/theatre-docs`), `examples/basic-dom`.
 
 TypeScript path aliases (`tsconfig.base.json`) map `@unseenco/theatre-*` directly to `src/index.ts` of each package — imports resolve to source, not `dist`. Jest uses the same aliases (see `devEnv/getAliasesFromTsConfig.ts`). Don't add relative cross-package imports; use the `@unseenco/theatre-*` aliases.
 
@@ -57,8 +56,6 @@ TypeScript path aliases (`tsconfig.base.json`) map `@unseenco/theatre-*` directl
 - Jest config picks up `packages/*/src/**/*.test.ts`, `theatre/*/src/**/*.test.ts`, `devEnv/**/*.test.ts`. Compat tests use a **separate** config (`jest.compat-tests.config.js`) — `yarn test` will not run them.
 - `moduleNameMapper` rewrites ES-module-only deps (`uuid`, `nanoid`, `lodash-es`, `react-use/esm`, css/svg/png) — if a test fails on a missing ESM export, add the mapping here rather than changing the import.
 - `setupFiles: theatre/shared/src/setupTestEnv.ts` is loaded for every unit test.
-- E2E (playwright) tests live in `packages/playground/src/tests/<name>/*.e2e.ts`. Run from the playground workspace, not root: `cd packages/playground && yarn test`. Filter with `--project=firefox`, `--headed`, `--debug` (inspector). Use `yarn playwright codegen http://localhost:8080/tests/<name>` after `yarn serve`.
-- **Visual regression** only runs in CI (Linux VM). To reproduce locally use `docker-compose up -d` then `docker-compose exec -it node bash` → `yarn && yarn test:e2e:ci`. If you can't use Docker, ask maintainers to update screenshots.
 - **Compat tests** are two-phase: `test:compat:install` spins up verdaccio, publishes a real build, and runs `npm install` in each `compat-tests/fixtures/*/package`. Primary fixture: **Vite + React 18** (`vite-react18`).
 
 ## Pre-commit hook

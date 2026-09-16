@@ -42,7 +42,7 @@ $ yarn playground
 ```
 
 The playground is a bunch of ready-made projects that you can run to experiment
-with Theatre.js. It also contains the project's end-to-end tests.
+with Theatre.js.
 
 Read more at
 [`./packages/playground/README.md`](./packages/playground/README.md).
@@ -81,11 +81,6 @@ $ yarn test
 # or run them in watch mode:
 $ yarn test --watch
 ```
-
-### Running end-to-end tests
-
-End-to-end tests are hosted in the playground package. More details
-[there](./packages/playground/README.md).
 
 ### Type checking
 

@@ -3786,22 +3786,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.36.2":
-  version: 1.36.2
-  resolution: "@playwright/test@npm:1.36.2"
-  dependencies:
-    "@types/node": "*"
-    fsevents: 2.3.2
-    playwright-core: 1.36.2
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  bin:
-    playwright: cli.js
-  checksum: 659304e0bbbafb2fa36395fbd8bd2c5db2b7791bbb55fa62409946ec7ec726cf8fff89f2b8a1a74fe831bf50a8780a37a5322a1251a6f7db2a9220a57ac408f0
-  languageName: node
-  linkType: hard
-
 "@popperjs/core@npm:^2.5.4":
   version: 2.9.2
   resolution: "@popperjs/core@npm:2.9.2"
@@ -10432,7 +10416,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"fsevents@npm:2.3.2, fsevents@npm:^2.3.2, fsevents@npm:~2.3.2":
+"fsevents@npm:^2.3.2, fsevents@npm:~2.3.2":
   version: 2.3.2
   resolution: "fsevents@npm:2.3.2"
   dependencies:
@@ -15313,7 +15297,6 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "playground@workspace:packages/playground"
   dependencies:
-    "@playwright/test": ^1.36.2
     "@types/jest": ^26.0.23
     "@types/lodash-es": ^4.17.4
     "@types/node": ^15.6.2
@@ -15345,15 +15328,6 @@ fsevents@^1.2.7:
   bin:
     playwright-core: cli.js
   checksum: bbde807294053b50f0dbbc81f0dacc43fe525830ce1526e6ca74012582dd1645eae2391719cfb020051abea90704057cfabcbfe45ca530b37becc491e9459790
-  languageName: node
-  linkType: hard
-
-"playwright-core@npm:1.36.2":
-  version: 1.36.2
-  resolution: "playwright-core@npm:1.36.2"
-  bin:
-    playwright-core: cli.js
-  checksum: 2193ce802ef93c28b9b5e11a0b1d7b60778c686015659978d1cbf0eb9cda2cdc85ec5575b887c1346e9d161cc2805bf27638d76a2f7f857dffeae968e6ceffcd
   languageName: node
   linkType: hard
 
