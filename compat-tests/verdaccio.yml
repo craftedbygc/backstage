@@ -1,3 +1,6 @@
+# Studio publish tarball can exceed Verdaccio's default 10mb limit (source maps).
+max_body_size: 100mb
+
 store:
   memory:
     limit: 10000

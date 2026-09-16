@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "serve": "vite",
-    "serve:ci": "vite build && vite preview",
+    "serve:ci": "vite build --base / && vite preview",
     "build": "vite build --force",
     "build:static": "echo 'building for vercel' && yarn run build",
     "typecheck": "tsc --noEmit",
