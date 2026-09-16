@@ -42,6 +42,6 @@ test.describe('setting-static-props', () => {
     await expect(firstInput).toHaveAttribute('value', '1')
     await expect(secondInput).toHaveAttribute('value', '2')
 
-    await expect(page).toHaveScreenshot()
+    await expect(detailPanel).toHaveScreenshot()
   })
 })
