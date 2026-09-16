@@ -56,4 +56,4 @@ Register in root `devEnv/cli.ts`, `tsconfig.base.json`, and `devEnv/typecheck-al
 
 - **ScrollTrigger**: map scroll position instead of `sequence.pointer.position`.
 - **Page / route modes**: multiple sequences per route; clips may need variant-aware binding.
-- **Playground demo**: intentionally omitted from v1; add under `packages/playground/src/shared/` when UX stabilizes.
+- Manual playground: `yarn playground` → `/shared/gsap-time-mode/`
