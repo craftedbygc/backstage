@@ -76,7 +76,7 @@ jobs:
       - run: yarn typecheck
   VisualRegression:
     name: Visual regression tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     strategy:
       matrix:
@@ -89,6 +89,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - uses: ./.github/actions/yarn-nm-install
+        with:
+          installPlaywright: 'true'
 
       - name: Run e2e tests
         run: yarn test:e2e:ci
