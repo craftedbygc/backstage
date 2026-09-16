@@ -53,7 +53,7 @@ $ yarn playwright codegen http://localhost:8080/tests/[playground-name] # run th
 
 ## Visual regression testing
 
-Some `.e2e.ts` files also contain visual regression tetst. These tests run only the the [CI](../../.github/workflows/main.yml) using [Github actions](https://github.com/theatre-js/theatre/actions). Look at the example at [`src/tests/setting-static-props/test.e2e.ts`](src/tests/setting-static-props/test.e2e.ts) for an example of recording and diffing a screenshot.
+Some `.e2e.ts` files also contain visual regression tests. These tests run in [CI](../../.github/workflows/ci.yml) on GitHub Actions. Look at the example at [`src/tests/setting-static-props/test.e2e.ts`](src/tests/setting-static-props/test.e2e.ts) for recording and diffing a screenshot.
 
 Note that CI runs the visual regression tests in a linux VM, which is bound to produce a slightly different screenshot than a browser on Mac/Windows. Because of that, we have a `docker-compose.yml` file at the root of the repo which you can use to produce a screenshot in a linux vm. Here is how you can use it:
 

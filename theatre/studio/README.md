@@ -7,30 +7,14 @@ Theatre.js can be used both programmatically _and_ visually.
 You can use Theatre.js to:
 
 * Animate 3D objects made with THREE.js or other 3D libraries
-  
-  ![s](https://raw.githubusercontent.com/AriaMinaei/theatre-docs/main/docs/.vuepress/public/preview-3d-short.gif)
-
-  <sub>Art by [drei.lu](https://sketchfab.com/models/91964c1ce1a34c3985b6257441efa500)</sub>
-
 * Animate HTML/SVG via React or other libraries
-
-  ![s](https://raw.githubusercontent.com/AriaMinaei/theatre-docs/main/docs/.vuepress/public/preview-dom.gif)
-
 * Design micro-interactions
-
-  ![s](https://raw.githubusercontent.com/AriaMinaei/theatre-docs/main/docs/.vuepress/public/preview-micro-interaction.gif)
-
 * Choreograph generative interactive art
-
-  ![s](https://raw.githubusercontent.com/AriaMinaei/theatre-docs/main/docs/.vuepress/public/preview-generative.gif)
-
 * Or animate any other JS variable
 
-  ![s](https://raw.githubusercontent.com/AriaMinaei/theatre-docs/main/docs/.vuepress/public/preview-console.gif)
+## Documentation
 
-## Documentation and Tutorials
-
-You can find the documentation and video tutorials [here](https://www.theatrejs.com/docs/latest).
+Guides and API reference live in the monorepo `docs/` workspace. Run `yarn docs:dev` from the repo root, or see the deployed site from [craftedbygc/theatre](https://github.com/craftedbygc/theatre).
 
 ## Community
 

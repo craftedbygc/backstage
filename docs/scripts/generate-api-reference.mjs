@@ -28,6 +28,10 @@ console.log('Building @unseenco/theatre-threejs (types + api model)…')
 run('yarn workspace @unseenco/theatre-threejs run build:ts')
 run('yarn workspace @unseenco/theatre-threejs run build:api-json')
 
+console.log('Building @unseenco/theatre-dataverse (types + api model)…')
+run('yarn workspace @unseenco/theatre-dataverse run build:ts')
+run('yarn workspace @unseenco/theatre-dataverse run build:api-json')
+
 const apiJsonDir = path.join(root, '.temp', 'api')
 const outputDir = path.join(docsDir, 'api')
 

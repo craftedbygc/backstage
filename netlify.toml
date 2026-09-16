@@ -20,4 +20,4 @@
   ignore = "false"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "22"

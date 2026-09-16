@@ -357,7 +357,7 @@ export class Studio {
           if (reconfigure && existing.extensionId === extension.id) {
             // well this should never happen because we already deleted the pane class above
             console.warn(
-              `Pane class "${classDefinition.class}" already exists. This is a bug in Theatre.js. Please report it at https://github.com/theatre-js/theatre/issues/new`,
+              `Pane class "${classDefinition.class}" already exists. This is a bug in Theatre.js. Please report it at https://github.com/craftedbygc/theatre/issues/new`,
             )
           } else {
             throw new Error(
