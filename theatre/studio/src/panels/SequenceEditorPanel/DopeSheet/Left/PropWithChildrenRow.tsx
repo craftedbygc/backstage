@@ -1,12 +1,34 @@
 import type {
+  SequenceEditorTree_GsapChildClip,
+  SequenceEditorTree_GsapClipTrack,
   SequenceEditorTree_PrimitiveProp,
   SequenceEditorTree_PropWithChildren,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import GsapClipTrackRow from './GsapClipTrackRow'
+import GsapChildClipLeftRow from './GsapChildClipRow'
 import React from 'react'
 import AnyCompositeRow from './AnyCompositeRow'
 import PrimitivePropRow from './PrimitivePropRow'
 import {setCollapsedSheetItem} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/setCollapsedSheetObjectOrCompoundProp'
 import getStudio from '@unseenco/theatre-studio/getStudio'
+
+export const decideSheetObjectChildRow = (
+  leaf:
+    | SequenceEditorTree_PropWithChildren
+    | SequenceEditorTree_PrimitiveProp
+    | SequenceEditorTree_GsapClipTrack
+    | SequenceEditorTree_GsapChildClip,
+): React.ReactElement => {
+  if (leaf.type === 'gsapChildClip') {
+    return (
+      <GsapChildClipLeftRow leaf={leaf} key={'gsap-child-' + leaf.childId} />
+    )
+  }
+  if (leaf.type === 'gsapClipTrack') {
+    return <GsapClipTrackRow leaf={leaf} key={'gsap-' + leaf.trackId} />
+  }
+  return decideRowByPropType(leaf)
+}
 
 export const decideRowByPropType = (
   leaf: SequenceEditorTree_PropWithChildren | SequenceEditorTree_PrimitiveProp,

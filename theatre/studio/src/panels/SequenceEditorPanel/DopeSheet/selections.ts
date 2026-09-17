@@ -80,7 +80,7 @@ export function selectedKeyframeConnections(
       const track = getSequenceStateFromSheet(sheetState, trackVariant)
         ?.tracksByObject[objectKey]?.trackData[trackId]
 
-      if (track) {
+      if (track && track.type === 'BasicKeyframedTrack') {
         ckfs = ckfs.concat(
           keyframeConnections(track.keyframes)
             .filter((kfc) => isKeyframeConnectionInSelection(kfc, selection))
@@ -188,7 +188,7 @@ export function keyframesWithPaths({
     ?.tracksByObject[objectKey]
   const track = tracksByObject?.trackData[trackId]
 
-  if (!track) return null
+  if (!track || track.type !== 'BasicKeyframedTrack') return null
 
   const propPathByTrackId = swapKeyAndValue(
     tracksByObject?.trackIdByPropPath || {},

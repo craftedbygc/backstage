@@ -243,11 +243,13 @@ function createPrism<T extends SerializablePrimitive>(
             )
             return getNearbyKeyframesOfTrack(
               obj,
-              track && {
-                data: track,
-                id: sequenceTrackId,
-                sheetObject: obj,
-              },
+              track?.type === 'BasicKeyframedTrack'
+                ? {
+                    data: track,
+                    id: sequenceTrackId,
+                    sheetObject: obj,
+                  }
+                : undefined,
               sequencePosition,
             )
           },
@@ -314,9 +316,7 @@ function createPrism<T extends SerializablePrimitive>(
               : undefined,
         }
 
-        const sequencePosition = val(
-          getStudioSequence(obj.sheet).positionPrism,
-        )
+        const sequencePosition = val(getStudioSequence(obj.sheet).positionPrism)
 
         const hasDivergedFromSavedState = propHasDivergedFromSavedState(
           obj,

@@ -1,4 +1,5 @@
-import type {TrackData} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports -- prop type only
+import type {BasicKeyframedTrack} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import type {SequenceEditorTree_PrimitiveProp} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import type {Keyframe} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
@@ -32,7 +33,7 @@ const Container = styled.div`
 type BasicKeyframedTracksProps = {
   leaf: SequenceEditorTree_PrimitiveProp
   layoutP: Pointer<SequenceEditorPanelLayout>
-  trackData: TrackData
+  trackData: BasicKeyframedTrack
 }
 
 const BasicKeyframedTrack: React.VFC<BasicKeyframedTracksProps> = React.memo(

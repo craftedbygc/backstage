@@ -2,7 +2,11 @@ import {privateAPI, setPrivateAPI} from '@unseenco/theatre-core/privateAPIs'
 import {defer} from '@unseenco/theatre-shared/utils/defer'
 import type Sequence from './Sequence'
 import type {IPlaybackDirection, IPlaybackRange} from './Sequence'
-import type {Keyframe} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
+import type {
+  GsapClipTrack,
+  Keyframe,
+} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
+import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
 import AudioPlaybackController from './playbackControllers/AudioPlaybackController'
 import {getCoreTicker} from '@unseenco/theatre-core/coreTicker'
 import type {Pointer} from '@unseenco/theatre-dataverse'
@@ -148,6 +152,17 @@ export interface ISequence {
    * ```
    */
   __experimental_getKeyframes(prop: Pointer<{}>): Keyframe[]
+
+  /**
+   * Returns GSAP clip tracks on the active sequence variant for all objects.
+   *
+   * @experimental
+   */
+  __experimental_getGsapClips(): Array<{
+    objectKey: string
+    trackId: SequenceTrackId
+    clip: GsapClipTrack
+  }>
 
   /**
    * Attaches an audio source to the sequence. Playing the sequence automatically
@@ -309,6 +324,14 @@ export default class TheatreSequence implements ISequence {
 
   __experimental_getKeyframes(prop: Pointer<any>): Keyframe[] {
     return privateAPI(this).getKeyframesOfSimpleProp(prop)
+  }
+
+  __experimental_getGsapClips(): Array<{
+    objectKey: string
+    trackId: SequenceTrackId
+    clip: GsapClipTrack
+  }> {
+    return privateAPI(this).getGsapClips()
   }
 
   async attachAudio(args: IAttachAudioArgs): Promise<{

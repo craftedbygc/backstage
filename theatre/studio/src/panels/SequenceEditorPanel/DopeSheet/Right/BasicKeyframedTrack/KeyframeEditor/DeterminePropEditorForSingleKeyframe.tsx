@@ -96,9 +96,7 @@ const Chip = styled.div<{
   align-items: stretch;
   gap: 12px;
   padding: ${(props) =>
-    props.$fullBleedRange
-      ? '0'
-      : `0 10px 0 ${props.$paddingLeftPx}px`};
+    props.$fullBleedRange ? '0' : `0 10px 0 ${props.$paddingLeftPx}px`};
   box-sizing: border-box;
   background: transparent;
   border-radius: var(--studio-radius);

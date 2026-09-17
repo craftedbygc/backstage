@@ -93,13 +93,9 @@ const PopoverPositioner: React.FC<{
         verticalPlacement = 'bottom'
         top = targetRectForPlacement.bottom + gap
         arrowStyle.top = '0px'
-      } else if (
-        targetRectForPlacement.top >
-        containerRect.height + gap
-      ) {
+      } else if (targetRectForPlacement.top > containerRect.height + gap) {
         verticalPlacement = 'top'
-        top =
-          targetRectForPlacement.top - (containerRect.height + gap)
+        top = targetRectForPlacement.top - (containerRect.height + gap)
         arrowStyle.bottom = '0px'
         arrowStyle.transform = 'rotateZ(180deg)'
       } else {
@@ -108,8 +104,7 @@ const PopoverPositioner: React.FC<{
     } else if (verticalPlacement === 'top') {
       if (targetRectForPlacement.top > containerRect.height + gap) {
         verticalPlacement = 'top'
-        top =
-          targetRectForPlacement.top - (containerRect.height + gap)
+        top = targetRectForPlacement.top - (containerRect.height + gap)
         arrowStyle.bottom = '0px'
         arrowStyle.transform = 'rotateZ(180deg)'
       } else if (

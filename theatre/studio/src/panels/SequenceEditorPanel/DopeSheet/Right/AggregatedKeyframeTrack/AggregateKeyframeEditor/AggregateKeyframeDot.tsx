@@ -27,6 +27,10 @@ import type {
   SequenceEditorTree_SheetObject,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import type {KeyframeWithTrack} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
+import {
+  isSequenceEditorSheetScopedAggregateViewModel,
+  sequenceEditorAggregateViewModelSheetAddress,
+} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/sequenceEditorAggregateViewModel'
 
 type IAggregateKeyframeDotProps = {
   editorProps: IAggregateKeyframeEditorProps
@@ -43,11 +47,13 @@ function sheetObjectBuild(
   keyframes: KeyframeWithTrack[],
 ): SheetObjectEditingOptionsTree | null {
   const children = viewModel.children
-    .map((a) =>
-      a.type === 'propWithChildren'
+    .map((a) => {
+      if (a.type === 'gsapClipTrack') return null
+      if (a.type === 'gsapChildClip') return null
+      return a.type === 'propWithChildren'
         ? propWithChildrenBuild(a, keyframes)
-        : primitivePropBuild(a, keyframes),
-    )
+        : primitivePropBuild(a, keyframes)
+    })
     .filter(isOptionsTreeNodeNotNull)
   if (children.length === 0) return null
   return {
@@ -97,7 +103,7 @@ export function AggregateKeyframeDot(
   const {cur} = props.utils
 
   const inlineEditorPopover = useKeyframeInlineEditorPopover(
-    props.editorProps.viewModel.type === 'sheet'
+    isSequenceEditorSheetScopedAggregateViewModel(props.editorProps.viewModel)
       ? null
       : props.editorProps.viewModel.type === 'sheetObject'
       ? sheetObjectBuild(props.editorProps.viewModel, cur.keyframes)
@@ -135,7 +141,9 @@ export function AggregateKeyframeDot(
         // based on the position.
         {...DopeSnap.includePositionSnapAttrs(cur.position)}
         onClick={(e) =>
-          props.editorProps.viewModel.type !== 'sheet'
+          !isSequenceEditorSheetScopedAggregateViewModel(
+            props.editorProps.viewModel,
+          )
             ? inlineEditorPopover.open(e, ref.current!)
             : null
         }
@@ -171,9 +179,7 @@ function useAggregateKeyframeContextMenu(
             // to clipboard
             if (selection) {
               const {projectId, sheetId} =
-                viewModel.type === 'sheet'
-                  ? viewModel.sheet.address
-                  : viewModel.sheetObject.address
+                sequenceEditorAggregateViewModelSheetAddress(viewModel)
               const copyableKeyframes = copyableKeyframesFromSelection(
                 projectId,
                 sheetId,
@@ -196,7 +202,7 @@ function useAggregateKeyframeContextMenu(
                 )
 
               const basePathRelativeToSheet =
-                viewModel.type === 'sheet'
+                isSequenceEditorSheetScopedAggregateViewModel(viewModel)
                   ? []
                   : viewModel.type === 'sheetObject'
                   ? [viewModel.sheetObject.address.objectKey]

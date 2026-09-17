@@ -53,7 +53,7 @@ Each sheet’s **sequence** holds keyframes for all sequenced props on that shee
 
 ## Extensions
 
-**Extensions** add Studio UI and workflows: toolbar buttons, panes, viewport gizmos. `@unseenco/theatre-threejs/extension` is the main extension in this monorepo; you can author your own via the Studio API.
+**Extensions** add Studio UI and workflows: toolbar buttons, panes, viewport gizmos. `@unseenco/theatre-threejs/extension` and built-in GSAP clip authoring in Studio are the main extension-style workflows in this monorepo; you can author your own via the Studio API. See [GSAP](./extensions/gsap.md) and [Three.js](./extensions/threejs.md).
 
 ## What we skip here
 

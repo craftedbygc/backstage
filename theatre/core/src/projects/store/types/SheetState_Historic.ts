@@ -96,12 +96,12 @@ export type HistoricPositionalSequence = {
 }
 
 /**
- * Currently just {@link BasicKeyframedTrack}.
+ * Discriminated union of sequence track kinds.
  *
  * Future: Other types of tracks can be added in, such as `MixedTrack` which would
  * look like `[keyframes, expression, moreKeyframes, anotherExpression, …]`.
  */
-export type TrackData = BasicKeyframedTrack
+export type TrackData = BasicKeyframedTrack | GsapClipTrack
 
 export type KeyframeType = 'bezier' | 'hold'
 
@@ -139,4 +139,53 @@ export type BasicKeyframedTrack = TrackDataCommon<'BasicKeyframedTrack'> & {
    * a single track can technically have multiple different types for each keyframe.
    */
   keyframes: Keyframe[]
+}
+
+/**
+ * A GSAP tween segment on the Theatre sequence timeline, bridged at runtime
+ * via `@unseenco/theatre-gsap`.
+ */
+export type GsapTimelineChildClip = {
+  /** Stable id for this child tween within the parent timeline clip. */
+  childId: string
+  /** Display label in the sequence editor. */
+  label: string
+  /** Start time in seconds on the parent GSAP timeline (at progress 0). */
+  localStart: number
+  /** Duration in seconds on the parent GSAP timeline. */
+  localDuration: number
+}
+
+/** Timing snapshot captured when a GSAP clip is first added to the sequence. */
+export type GsapClipBaselineTiming = {
+  duration: number
+  timelineSpan?: number
+  timelineChildren?: GsapTimelineChildClip[]
+}
+
+export type GsapClipTrack = TrackDataCommon<'GsapClipTrack'> & {
+  /**
+   * Registry animation id for this clip. Defaults to the sanitised GSAP sheet
+   * object key (e.g. `GSAP / Panel show`) when set via Studio; may differ if
+   * {@link registerGsapAnimation} was called with an explicit `id` override.
+   */
+  gsapAnimationId: string
+  /** Sequence position where the clip starts (same units as the sequence). */
+  start: number
+  /** Clip length on the sequence timeline. Must be &gt; 0. */
+  duration: number
+  /**
+   * One-level child tweens when the registered animation is a GSAP timeline.
+   * Omitted for single tweens.
+   */
+  timelineChildren?: GsapTimelineChildClip[]
+  /**
+   * Parent timeline total duration in seconds when {@link timelineChildren} was
+   * last synced (used to map child local times into sequence space).
+   */
+  timelineSpan?: number
+  /**
+   * Default clip timing before Studio edits; used by "Reset to original state".
+   */
+  baselineTiming?: GsapClipBaselineTiming
 }

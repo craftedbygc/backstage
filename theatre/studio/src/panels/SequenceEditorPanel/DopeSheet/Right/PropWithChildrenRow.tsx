@@ -1,8 +1,12 @@
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import type {
+  SequenceEditorTree_GsapChildClip,
+  SequenceEditorTree_GsapClipTrack,
   SequenceEditorTree_PrimitiveProp,
   SequenceEditorTree_PropWithChildren,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import GsapClipTrackRow from './GsapClipTrack/GsapClipTrackRow'
+import GsapChildClipTrackRow from './GsapClipTrack/GsapChildClipTrackRow'
 import {usePrism} from '@unseenco/theatre-react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import React from 'react'
@@ -10,10 +14,43 @@ import PrimitivePropRow from './PrimitivePropRow'
 import RightRow from './Row'
 import AggregatedKeyframeTrack from './AggregatedKeyframeTrack/AggregatedKeyframeTrack'
 import {collectAggregateKeyframesInPrism} from './collectAggregateKeyframes'
+import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 import {
   ProvideLogger,
   useLogger,
 } from '@unseenco/theatre-studio/uiComponents/useLogger'
+
+export const decideSheetObjectChildRow = (
+  leaf:
+    | SequenceEditorTree_PropWithChildren
+    | SequenceEditorTree_PrimitiveProp
+    | SequenceEditorTree_GsapClipTrack
+    | SequenceEditorTree_GsapChildClip,
+  layoutP: Pointer<SequenceEditorPanelLayout>,
+): React.ReactElement => {
+  if (leaf.type === 'gsapChildClip') {
+    return (
+      <GsapChildClipTrackRow
+        layoutP={layoutP}
+        leaf={leaf}
+        sequenceVariant={
+          getStudioActiveSequenceVariant(leaf.sheetObject.sheet.address) ?? ''
+        }
+        key={'gsap-child-' + leaf.childId}
+      />
+    )
+  }
+  if (leaf.type === 'gsapClipTrack') {
+    return (
+      <GsapClipTrackRow
+        layoutP={layoutP}
+        leaf={leaf}
+        key={'gsap-' + leaf.trackId}
+      />
+    )
+  }
+  return decideRowByPropType(leaf, layoutP)
+}
 
 export const decideRowByPropType = (
   leaf: SequenceEditorTree_PropWithChildren | SequenceEditorTree_PrimitiveProp,

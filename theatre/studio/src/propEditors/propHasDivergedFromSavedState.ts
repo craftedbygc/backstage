@@ -79,7 +79,16 @@ function sequenceTrackDiffers(
   const onDiskTrack = getSequenceStateFromSheet(onDiskSheetState, trackVariant)
     ?.tracksByObject[objectKey]?.trackData[trackId]
 
-  return !deepEqual(currentTrack?.keyframes, onDiskTrack?.keyframes)
+  const currentKeyframes =
+    currentTrack?.type === 'BasicKeyframedTrack'
+      ? currentTrack.keyframes
+      : undefined
+  const onDiskKeyframes =
+    onDiskTrack?.type === 'BasicKeyframedTrack'
+      ? onDiskTrack.keyframes
+      : undefined
+
+  return !deepEqual(currentKeyframes, onDiskKeyframes)
 }
 
 /**

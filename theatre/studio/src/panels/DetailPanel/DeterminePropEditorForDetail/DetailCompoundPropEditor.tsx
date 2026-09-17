@@ -50,14 +50,16 @@ const Header = styled.div<{isHighlighted: PropHighlighted}>`
   margin: calc(var(--studio-row-gap, 3px) / 2) 0;
 `
 
-const Padding = styled.div<{isVectorProp: boolean}>`
+const Padding = styled.div<{isVectorProp: boolean; $fullWidth?: boolean}>`
   padding-left: ${rowIndentationFormulaCSS};
   display: flex;
   align-items: center;
   /* Allow keyframe-cursor hover bg to paint; text ellipsis lives on PropName */
   overflow: visible;
-  ${({isVectorProp}) =>
-    isVectorProp ? 'width: calc(100% - var(--right-width))' : ''};
+  ${({isVectorProp, $fullWidth}) =>
+    isVectorProp && !$fullWidth
+      ? 'width: calc(100% - var(--right-width))'
+      : ''};
 `
 
 const ControlIndicators = styled.div`
@@ -133,6 +135,7 @@ const isVectorProp = memoizeFn((propConfig: PropTypeConfig_Compound<any>) => {
   const props = Object.entries(propConfig.props)
 
   return (
+    props.length > 0 &&
     props.length <= 3 &&
     props.every(
       ([name, conf]) =>
@@ -295,7 +298,10 @@ function DetailCompoundPropEditor<
           // @ts-ignore
           style={{'--depth': visualIndentation - 1}}
         >
-          <Padding isVectorProp={isVector}>
+          <Padding
+            isVectorProp={isVector}
+            $fullWidth={isRootProps || !(isVector && showCollapsed)}
+          >
             <ControlIndicators>{tools.controlIndicators}</ControlIndicators>
 
             <PropName

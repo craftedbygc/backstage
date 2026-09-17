@@ -655,7 +655,11 @@ describe(`SheetObjectTemplate`, () => {
           .trackData[mobileTracks[0]!.trackId],
       )
 
-      expect(mobileTrackData?.keyframes[0]?.value).toBe(1)
+      expect(
+        mobileTrackData?.type === 'BasicKeyframedTrack'
+          ? mobileTrackData.keyframes[0]?.value
+          : undefined,
+      ).toBe(1)
     })
   })
 })

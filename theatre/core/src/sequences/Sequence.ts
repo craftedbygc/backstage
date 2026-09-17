@@ -21,7 +21,18 @@ import type {
 } from './playbackControllers/DefaultPlaybackController'
 import DefaultPlaybackController from './playbackControllers/DefaultPlaybackController'
 import TheatreSequence from './TheatreSequence'
-import type {Keyframe} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
+import type {
+  GsapClipTrack,
+  Keyframe,
+} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
+import {
+  isBasicKeyframedTrack,
+  isGsapClipTrack,
+} from '@unseenco/theatre-shared/sequence/trackData'
+import type {
+  ObjectAddressKey,
+  SequenceTrackId,
+} from '@unseenco/theatre-shared/utils/ids'
 import type {ILogger} from '@unseenco/theatre-shared/logger'
 import type {ISequence} from '..'
 import {notify} from '@unseenco/theatre-shared/notify'
@@ -158,11 +169,75 @@ export default class Sequence implements PointerToPrismProvider {
 
     const track = trackData[id]
 
-    if (!track) {
+    if (!track || !isBasicKeyframedTrack(track)) {
       return []
     }
 
     return track.keyframes
+  }
+
+  /**
+   * @internal Used by the public sequence API.
+   */
+  getGsapClipsForObject(objectKey: ObjectAddressKey): Array<{
+    trackId: SequenceTrackId
+    clip: GsapClipTrack
+  }> {
+    const sheetState = val(
+      this._project.pointers.historic.sheetsById[this._sheet.address.sheetId],
+    )
+    const tracksOfObject = getSequenceStateFromSheet(
+      sheetState,
+      this._sequenceVariant,
+    )?.tracksByObject[objectKey]
+
+    if (!tracksOfObject) return []
+
+    const result: Array<{trackId: SequenceTrackId; clip: GsapClipTrack}> = []
+    for (const [trackId, track] of Object.entries(tracksOfObject.trackData)) {
+      if (track && isGsapClipTrack(track)) {
+        result.push({trackId, clip: track})
+      }
+    }
+    return result.sort((a, b) => a.clip.start - b.clip.start)
+  }
+
+  getGsapClips(): Array<{
+    objectKey: string
+    trackId: SequenceTrackId
+    clip: GsapClipTrack
+  }> {
+    const sheetState = val(
+      this._project.pointers.historic.sheetsById[this._sheet.address.sheetId],
+    )
+    const sequenceState = getSequenceStateFromSheet(
+      sheetState,
+      this._sequenceVariant,
+    )
+    if (!sequenceState) return []
+
+    const result: Array<{
+      objectKey: string
+      trackId: SequenceTrackId
+      clip: GsapClipTrack
+    }> = []
+
+    for (const [objectKey, tracksOfObject] of Object.entries(
+      sequenceState.tracksByObject,
+    )) {
+      if (!tracksOfObject) continue
+      for (const [trackId, track] of Object.entries(tracksOfObject.trackData)) {
+        if (track && isGsapClipTrack(track)) {
+          result.push({
+            objectKey: objectKey as ObjectAddressKey,
+            trackId,
+            clip: track,
+          })
+        }
+      }
+    }
+
+    return result.sort((a, b) => a.clip.start - b.clip.start)
   }
 
   get positionFormatter(): ISequencePositionFormatter {

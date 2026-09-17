@@ -240,7 +240,6 @@ const Input = styled.input<{
   }
 `
 
-
 type IState_NoFocus = {
   mode: 'noFocus'
 }
@@ -445,9 +444,7 @@ const BasicNumberInput: React.FC<{
         if (!el) return propsRef.current.value
         const rect = el.getBoundingClientRect()
         const ratio =
-          rect.width <= 0
-            ? 0
-            : clamp((clientX - rect.left) / rect.width, 0, 1)
+          rect.width <= 0 ? 0 : clamp((clientX - rect.left) / rect.width, 0, 1)
         return roundNumberToPrecision(
           range[0] + ratio * (range[1] - range[0]),
           getPrecision(),
@@ -614,7 +611,7 @@ const BasicNumberInput: React.FC<{
   const num = isDraggingValue ? propsA.value : parseFloat(value)
 
   const percentage = hasBoundedRange
-    ? clamp((num - range[0]) / ((range[1] - range[0]) || 1), 0, 1)
+    ? clamp((num - range[0]) / (range[1] - range[0] || 1), 0, 1)
     : 0
 
   const showChrome =

@@ -3,11 +3,7 @@ import type {
   DopeSheetSelection,
   SequenceEditorPanelLayout,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
-import type {
-  SequenceEditorTree_PropWithChildren,
-  SequenceEditorTree_Sheet,
-  SequenceEditorTree_SheetObject,
-} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import type {SequenceEditorAggregateViewModel} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/sequenceEditorAggregateViewModel'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {val} from '@unseenco/theatre-dataverse'
 import React from 'react'
@@ -42,10 +38,7 @@ export type IAggregateKeyframeEditorProps = {
   index: number
   aggregateKeyframes: IAggregateKeyframesAtPosition[]
   layoutP: Pointer<SequenceEditorPanelLayout>
-  viewModel:
-    | SequenceEditorTree_PropWithChildren
-    | SequenceEditorTree_SheetObject
-    | SequenceEditorTree_Sheet
+  viewModel: SequenceEditorAggregateViewModel
   selection: undefined | DopeSheetSelection
 }
 

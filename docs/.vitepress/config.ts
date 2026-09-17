@@ -58,6 +58,7 @@ const guideSidebar = [
     items: [
       {text: 'Overview', link: '/guide/extensions/'},
       {text: 'Three.js', link: '/guide/extensions/threejs'},
+      {text: 'GSAP', link: '/guide/extensions/gsap'},
     ],
   },
 ]
@@ -97,6 +98,10 @@ export default defineConfig({
             {
               text: '@unseenco/theatre-dataverse',
               link: '/api/theatre-dataverse',
+            },
+            {
+              text: '@unseenco/theatre-gsap',
+              link: '/api/theatre-gsap',
             },
           ],
         },

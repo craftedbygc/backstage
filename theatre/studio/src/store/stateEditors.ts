@@ -1,10 +1,23 @@
 import type {
   BasicKeyframedTrack,
+  GsapClipTrack,
+  GsapTimelineChildClip,
   HistoricPositionalSequence,
   Keyframe,
   KeyframeType,
   SheetState_Historic,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
+import {
+  applyGsapClipBaselineToTrack,
+  applyGsapTimelineChildBaselineToTrack,
+  buildGsapClipBaselineTiming,
+  resolveGsapClipBaselineTiming,
+} from '@unseenco/theatre-shared/gsap/gsapClipBaseline'
+import {getAnimationEntryForAddress} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import {
+  gsapClipEndTime,
+  isBasicKeyframedTrack,
+} from '@unseenco/theatre-shared/sequence/trackData'
 import type {SheetAhistoricState} from '@unseenco/theatre-core/projects/store/storeTypes'
 // stateEditors mutates core historic sheet state, so it needs these runtime helpers.
 // eslint-disable-next-line no-restricted-syntax
@@ -1009,9 +1022,21 @@ namespace stateEditors {
           function _getTrack(
             p: WithoutSheetInstance<SheetObjectAddress> & {
               trackId: SequenceTrackId
+              sequenceVariant?: SequenceVariantId
             },
           ) {
             return _ensureTracksOfObject(p).trackData[p.trackId]
+          }
+
+          function _getBasicKeyframedTrack(
+            p: WithoutSheetInstance<SheetObjectAddress> & {
+              trackId: SequenceTrackId
+              sequenceVariant?: SequenceVariantId
+            },
+          ): BasicKeyframedTrack | undefined {
+            const track = _getTrack(p)
+            if (!track || !isBasicKeyframedTrack(track)) return undefined
+            return track
           }
 
           function _getKeyframeById(
@@ -1020,7 +1045,7 @@ namespace stateEditors {
               keyframeId: KeyframeId
             },
           ): Keyframe | undefined {
-            const track = _getTrack(p)
+            const track = _getBasicKeyframedTrack(p)
             if (!track) return
             return track.keyframes.find((kf) => kf.id === p.keyframeId)
           }
@@ -1041,7 +1066,7 @@ namespace stateEditors {
             },
           ) {
             const position = p.snappingFunction(p.position)
-            const track = _getTrack(p)
+            const track = _getBasicKeyframedTrack(p)
             if (!track) return
             const {keyframes} = track
             const existingKeyframeIndex = keyframes.findIndex(
@@ -1088,7 +1113,7 @@ namespace stateEditors {
               sequenceVariant?: SequenceVariantId
             },
           ) {
-            const track = _getTrack(p)
+            const track = _getBasicKeyframedTrack(p)
             if (!track) return
             const {keyframes} = track
             const index = keyframes.findIndex(
@@ -1112,7 +1137,7 @@ namespace stateEditors {
               sequenceVariant?: SequenceVariantId
             },
           ) {
-            const track = _getTrack(p)
+            const track = _getBasicKeyframedTrack(p)
             if (!track) return
             const initialKeyframes = current(track.keyframes)
 
@@ -1151,7 +1176,7 @@ namespace stateEditors {
               handles: [number, number, number, number]
             },
           ) {
-            const track = _getTrack(p)
+            const track = _getBasicKeyframedTrack(p)
             if (!track) return
 
             track.keyframes = track.keyframes.map((kf, i) => {
@@ -1221,7 +1246,7 @@ namespace stateEditors {
               sequenceVariant?: SequenceVariantId
             },
           ) {
-            const track = _getTrack(p)
+            const track = _getBasicKeyframedTrack(p)
             if (!track) return
 
             track.keyframes = track.keyframes.filter(
@@ -1270,7 +1295,7 @@ namespace stateEditors {
               sequenceVariant?: SequenceVariantId
             },
           ) {
-            const track = _getTrack(p)
+            const track = _getBasicKeyframedTrack(p)
             if (!track) return
             const initialKeyframes = current(track.keyframes)
             const sanitizedKeyframes = p.keyframes
@@ -1308,6 +1333,167 @@ namespace stateEditors {
             )
 
             track.keyframes = sorted
+          }
+
+          function _extendSequenceLengthForGsapClipEnd(
+            p: WithoutSheetInstance<SheetObjectAddress> & {
+              sequenceVariant?: SequenceVariantId
+            },
+            clipEnd: number,
+          ) {
+            const variantId = effectiveSequenceVariantForObjectKey(
+              p.objectKey,
+              p.sequenceVariant,
+            )
+            const seq =
+              stateEditors.coreByProject.historic.sheetsById.sequence._ensure({
+                ...p,
+                sequenceVariant: variantId,
+              })
+            const needed = parseFloat(clipEnd.toFixed(2))
+            if (needed > seq.length) {
+              seq.length = needed
+            }
+          }
+
+          export function addGsapClipTrack(
+            p: WithoutSheetInstance<SheetObjectAddress> & {
+              gsapAnimationId: string
+              start: number
+              duration: number
+              timelineChildren?: GsapTimelineChildClip[]
+              timelineSpan?: number
+              sequenceVariant?: SequenceVariantId
+            },
+          ): SequenceTrackId {
+            const duration = Math.max(p.duration, 0.01)
+            const start = Math.max(p.start, 0)
+            const tracks = _ensureTracksOfObject(p)
+            const trackId = generateSequenceTrackId()
+            const track: GsapClipTrack = {
+              type: 'GsapClipTrack',
+              gsapAnimationId: p.gsapAnimationId,
+              start,
+              duration,
+              __debugName: `gsap:${p.gsapAnimationId}`,
+            }
+            if (p.timelineChildren && p.timelineChildren.length > 0) {
+              track.timelineChildren = p.timelineChildren.map((c) => ({...c}))
+              track.timelineSpan = p.timelineSpan ?? duration
+            }
+            track.baselineTiming = buildGsapClipBaselineTiming({
+              duration,
+              timelineSpan: track.timelineSpan,
+              timelineChildren: track.timelineChildren,
+            })
+            tracks.trackData[trackId] = track
+            _extendSequenceLengthForGsapClipEnd(p, gsapClipEndTime(track))
+            return trackId
+          }
+
+          export function setGsapTimelineChildTiming(
+            p: WithoutSheetInstance<SheetObjectAddress> & {
+              trackId: SequenceTrackId
+              childId: string
+              localStart?: number
+              localDuration?: number
+              timelineSpan?: number
+              parentDuration?: number
+              sequenceVariant?: SequenceVariantId
+            },
+          ) {
+            const track = _getTrack(p)
+            if (!track || track.type !== 'GsapClipTrack') return
+            if (!track.timelineChildren?.length) return
+            const child = track.timelineChildren.find(
+              (c) => c.childId === p.childId,
+            )
+            if (!child) return
+            if (typeof p.localStart === 'number') {
+              child.localStart = Math.max(p.localStart, 0)
+            }
+            if (typeof p.localDuration === 'number') {
+              child.localDuration = Math.max(p.localDuration, 0.01)
+            }
+            if (typeof p.timelineSpan === 'number') {
+              track.timelineSpan = Math.max(p.timelineSpan, 0.01)
+            }
+            if (typeof p.parentDuration === 'number') {
+              track.duration = Math.max(p.parentDuration, 0.01)
+            }
+            _extendSequenceLengthForGsapClipEnd(p, gsapClipEndTime(track))
+          }
+
+          export function setGsapClipTrackTiming(
+            p: WithoutSheetInstance<SheetObjectAddress> & {
+              trackId: SequenceTrackId
+              start?: number
+              duration?: number
+              sequenceVariant?: SequenceVariantId
+            },
+          ) {
+            const track = _getTrack(p)
+            if (!track || track.type !== 'GsapClipTrack') return
+            if (typeof p.start === 'number') {
+              track.start = Math.max(p.start, 0)
+            }
+            if (typeof p.duration === 'number') {
+              track.duration = Math.max(p.duration, 0.01)
+            }
+            _extendSequenceLengthForGsapClipEnd(p, gsapClipEndTime(track))
+          }
+
+          export function deleteGsapClipTrack(
+            p: WithoutSheetInstance<SheetObjectAddress> & {
+              trackId: SequenceTrackId
+              sequenceVariant?: SequenceVariantId
+            },
+          ) {
+            const tracks = _ensureTracksOfObject(p)
+            delete tracks.trackData[p.trackId]
+          }
+
+          export function resetGsapClipTrackToOriginal(
+            p: WithoutSheetInstance<SheetObjectAddress> & {
+              trackId: SequenceTrackId
+              sequenceVariant?: SequenceVariantId
+            },
+          ): boolean {
+            const track = _getTrack(p)
+            if (!track || track.type !== 'GsapClipTrack') return false
+            const baseline = resolveGsapClipBaselineTiming(
+              track,
+              getAnimationEntryForAddress(p, track.gsapAnimationId),
+            )
+            if (!baseline) return false
+            applyGsapClipBaselineToTrack(track, baseline)
+            _extendSequenceLengthForGsapClipEnd(p, gsapClipEndTime(track))
+            return true
+          }
+
+          export function resetGsapTimelineChildToOriginal(
+            p: WithoutSheetInstance<SheetObjectAddress> & {
+              trackId: SequenceTrackId
+              childId: string
+              sequenceVariant?: SequenceVariantId
+            },
+          ): boolean {
+            const track = _getTrack(p)
+            if (!track || track.type !== 'GsapClipTrack') return false
+            const baseline = resolveGsapClipBaselineTiming(
+              track,
+              getAnimationEntryForAddress(p, track.gsapAnimationId),
+            )
+            if (!baseline) return false
+            const ok = applyGsapTimelineChildBaselineToTrack(
+              track,
+              p.childId,
+              baseline,
+            )
+            if (ok) {
+              _extendSequenceLengthForGsapClipEnd(p, gsapClipEndTime(track))
+            }
+            return ok
           }
         }
 

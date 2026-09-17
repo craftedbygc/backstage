@@ -5,11 +5,9 @@ function normalizeContainers(
   container: Element | null | (Element | null)[],
 ): Element[] {
   if (!container) return []
-  return (
-    Array.isArray(container)
-      ? container.filter((c): c is Element => c != null)
-      : [container]
-  )
+  return Array.isArray(container)
+    ? container.filter((c): c is Element => c != null)
+    : [container]
 }
 
 function eventListenTargets(containers: Element[]): EventTarget[] {

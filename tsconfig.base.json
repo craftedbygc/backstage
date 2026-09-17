@@ -26,7 +26,8 @@
       "@unseenco/theatre-threejs": ["./packages/threejs/src/index.ts"],
       "@unseenco/theatre-threejs/extension": [
         "./packages/threejs/src/extension.ts"
-      ]
+      ],
+      "@unseenco/theatre-gsap": ["./packages/gsap/src/index.ts"]
     },
     "forceConsistentCasingInFileNames": true
   },

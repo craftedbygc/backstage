@@ -3,7 +3,7 @@ import type {SequenceEditorTree_Sheet} from '@unseenco/theatre-studio/panels/Seq
 import {usePrism} from '@unseenco/theatre-react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import React from 'react'
-import RightSheetObjectRow from './SheetObjectRow'
+import {decideRightSheetChildRow} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/decideSheetChildRow'
 import RightRow from './Row'
 import {collectAggregateKeyframesInPrism} from './collectAggregateKeyframes'
 import AggregatedKeyframeTrack from './AggregatedKeyframeTrack/AggregatedKeyframeTrack'
@@ -25,13 +25,7 @@ const SheetRow: React.FC<{
 
     return (
       <RightRow leaf={leaf} node={node} isCollapsed={leaf.isCollapsed}>
-        {leaf.children.map((sheetObjectLeaf) => (
-          <RightSheetObjectRow
-            layoutP={layoutP}
-            key={'sheetObject-' + sheetObjectLeaf.sheetObject.address.objectKey}
-            leaf={sheetObjectLeaf}
-          />
-        ))}
+        {leaf.children.map((child) => decideRightSheetChildRow(child, layoutP))}
       </RightRow>
     )
   }, [leaf, layoutP])

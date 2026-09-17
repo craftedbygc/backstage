@@ -29,7 +29,8 @@ export const ItemSectionWithPreviews = (props: {
         <ItemListContainer>
           {modules.map((moduleName) => {
             const href = `${
-              import.meta.env.BASE_URL
+              (import.meta as ImportMeta & {env?: {BASE_URL?: string}}).env
+                ?.BASE_URL ?? '/'
             }${groupName}/${moduleName}/`
             return (
               <ItemContainer key={`li-${moduleName}`}>

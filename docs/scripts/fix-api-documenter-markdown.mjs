@@ -108,6 +108,7 @@ const PACKAGE_INDEX_FILES = new Set([
   'theatre-core.md',
   'theatre-studio.md',
   'theatre-threejs.md',
+  'theatre-gsap.md',
 ])
 
 export function fixApiDocumenterMarkdownFiles(outputDir) {

@@ -15,5 +15,6 @@ Theatre is a motion design library for the web. This site hosts **guides** and *
 | [@unseenco/theatre-core](./api/theatre-core.md) | Runtime animation library (ships in production bundles). |
 | [@unseenco/theatre-studio](./api/theatre-studio.md) | Visual editor (development only). |
 | [@unseenco/theatre-threejs](./api/theatre-threejs.md) | Three.js helpers; Studio extension is `@unseenco/theatre-threejs/extension`. |
+| [@unseenco/theatre-gsap](./api/theatre-gsap.md) | GSAP sequence bridge (time mode v1). |
 
 [Browse full API reference →](./api/)

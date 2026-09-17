@@ -3,10 +3,14 @@ import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import type {$FixMe} from '@unseenco/theatre-shared/utils/types'
 import DeterminePropEditorForDetail from './DeterminePropEditorForDetail'
-import {useVal} from '@unseenco/theatre-react'
+import {useVal, usePrism} from '@unseenco/theatre-react'
 import uniqueKeyForAnyObject from '@unseenco/theatre-shared/utils/uniqueKeyForAnyObject'
 import styled from 'styled-components'
 import getStudio from '@unseenco/theatre-studio/getStudio'
+import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/sequence/trackData'
+import {getGsapStudioOutlineMenuItems} from '@unseenco/theatre-studio/gsap/gsapOutlineMenuItems'
+import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
+import {val} from '@unseenco/theatre-dataverse'
 
 const ActionButtonContainer = styled.div`
   display: flex;
@@ -117,6 +121,21 @@ const ObjectDetails: React.FC<{
   const config = useVal(obj.template.configPointer)
   const actions = useVal(obj.template._temp_actionsPointer)
   const showPropsOf = useVal(obj.template.showPropsOfPointer)
+  const gsapActions = usePrism(() => {
+    if (!isGsapSheetObjectKey(obj.address.objectKey)) return []
+    val(gsapStudioRegistryRevisionPointer)
+    val(obj.template.project.pointers.historic.sheetsById[obj.address.sheetId])
+    return getGsapStudioOutlineMenuItems(obj).map((item) => ({
+      type: 'normal' as const,
+      label:
+        typeof item.label === 'string'
+          ? item.label
+          : 'Add to sequence at playhead',
+      callback: () => {
+        item.callback?.({} as React.MouseEvent)
+      },
+    }))
+  }, [obj])
 
   return (
     <>
@@ -135,6 +154,19 @@ const ObjectDetails: React.FC<{
           source={source}
         />
       ))}
+      {gsapActions.length > 0 ? (
+        <ActionButtonContainer>
+          {gsapActions.map((item) => (
+            <ActionButton
+              key={item.label}
+              type="button"
+              onClick={item.callback}
+            >
+              {item.label}
+            </ActionButton>
+          ))}
+        </ActionButtonContainer>
+      ) : null}
       {actions && Object.keys(actions).length > 0 ? (
         <ActionButtonContainer>
           {Object.entries(actions).map(([actionName, action]) => {

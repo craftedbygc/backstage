@@ -35,6 +35,7 @@ const packagesToPublish = [
   '@unseenco/theatre-react',
   '@unseenco/theatre-browser-bundles',
   '@unseenco/theatre-threejs',
+  '@unseenco/theatre-gsap',
 ]
 
 const packageDirByName: Record<string, string> = {
@@ -44,6 +45,7 @@ const packageDirByName: Record<string, string> = {
   '@unseenco/theatre-react': 'packages/react',
   '@unseenco/theatre-browser-bundles': 'packages/browser-bundles',
   '@unseenco/theatre-threejs': 'packages/threejs',
+  '@unseenco/theatre-gsap': 'packages/gsap',
 }
 
 /**
@@ -85,6 +87,7 @@ prog
       '@unseenco/theatre-react',
       '@unseenco/theatre-browser-bundles',
       '@unseenco/theatre-threejs',
+      '@unseenco/theatre-gsap',
     ]
 
     await Promise.all([
@@ -99,6 +102,7 @@ prog.command('build', 'Builds all the main packages').action(async () => {
     '@unseenco/theatre-react',
     '@unseenco/theatre-browser-bundles',
     '@unseenco/theatre-threejs',
+    '@unseenco/theatre-gsap',
   ]
   async function build() {
     await Promise.all([
@@ -128,6 +132,7 @@ prog
       '@unseenco/theatre-react',
       '@unseenco/theatre-browser-bundles',
       '@unseenco/theatre-threejs',
+      '@unseenco/theatre-gsap',
     ]
 
     const packagesToPublish = [
@@ -137,6 +142,7 @@ prog
       '@unseenco/theatre-react',
       '@unseenco/theatre-browser-bundles',
       '@unseenco/theatre-threejs',
+      '@unseenco/theatre-gsap',
     ]
 
     const packageDirByName: Record<string, string> = {
@@ -146,6 +152,7 @@ prog
       '@unseenco/theatre-react': 'packages/react',
       '@unseenco/theatre-browser-bundles': 'packages/browser-bundles',
       '@unseenco/theatre-threejs': 'packages/threejs',
+      '@unseenco/theatre-gsap': 'packages/gsap',
     }
 
     /**
@@ -160,6 +167,7 @@ prog
       'packages/react',
       'packages/browser-bundles',
       'packages/threejs',
+      'packages/gsap',
     ]
 
     // our packages will check for this env variable to make sure their

@@ -39,6 +39,10 @@ import {
   compoundCanRevertToSavedState,
   revertPropToSavedState,
 } from './revertPropToSavedState'
+import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/sequence/trackData'
+import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
+import GsapClipSequenceIndicator from '@unseenco/theatre-studio/gsap/GsapClipSequenceIndicator'
+import {getGsapStudioOutlineMenuItems} from '@unseenco/theatre-studio/gsap/gsapOutlineMenuItems'
 
 interface CommonStuff {
   beingScrubbed: boolean
@@ -73,13 +77,30 @@ export function useEditingToolsForCompoundProp<T extends SerializablePrimitive>(
   const isNonSequencable = isStatic || isTransient
 
   return usePrism((): Stuff => {
+    if (isGsapSheetObjectKey(obj.address.objectKey)) {
+      val(gsapStudioRegistryRevisionPointer)
+      val(
+        obj.template.project.pointers.historic.sheetsById[obj.address.sheetId],
+      )
+    }
     // if the compound has no simple descendants, then there isn't much the user can do with it
     if (!compoundHasSimpleDescendants(propConfig)) {
+      const isRootGsapObject =
+        pathToProp.length === 0 && isGsapSheetObjectKey(obj.address.objectKey)
+
+      const gsapIndicator = isRootGsapObject ? (
+        <GsapClipSequenceIndicator sheetObject={obj} />
+      ) : null
+
+      const gsapContextMenuItems: ContextMenuItem[] = isRootGsapObject
+        ? getGsapStudioOutlineMenuItems(obj)
+        : []
+
       return {
         type: 'AllStatic',
         beingScrubbed: false,
-        contextMenuItems: [],
-        controlIndicators: (
+        contextMenuItems: gsapContextMenuItems,
+        controlIndicators: gsapIndicator ?? (
           <DefaultOrStaticValueIndicator
             hasStaticOverride={false}
             hasDivergedFromSavedState={propHasDivergedFromSavedState(
@@ -305,7 +326,7 @@ export function useEditingToolsForCompoundProp<T extends SerializablePrimitive>(
         ),
       }
     }
-  }, [])
+  }, [pointerToProp, obj, propConfig, isStatic, isTransient])
 }
 
 function ControlIndicators({
@@ -351,15 +372,21 @@ function ControlIndicators({
           )?.tracksByObject[obj.address.objectKey]?.trackData[trackId],
         }
       })
-      .filter(({track}) => !!track)
-      .map((s) => ({
-        ...s,
-        nearbies: getNearbyKeyframesOfTrack(
-          obj,
-          {id: s.trackId, data: s.track!, sheetObject: obj},
-          sequencePosition,
-        ),
-      }))
+      .flatMap((s) => {
+        if (s.track?.type !== 'BasicKeyframedTrack') return []
+        const track = s.track
+        return [
+          {
+            trackId: s.trackId,
+            track,
+            nearbies: getNearbyKeyframesOfTrack(
+              obj,
+              {id: s.trackId, data: track, sheetObject: obj},
+              sequencePosition,
+            ),
+          },
+        ]
+      })
 
     const hasCur = nearbyKeyframesInEachTrack.find(
       ({nearbies}) => !!nearbies.cur,
@@ -478,7 +505,13 @@ function ControlIndicators({
         )}
       />
     )
-  }, [pointerToProp, obj, propConfig, possibleSequenceTrackIds, listOfDescendantTrackIds])
+  }, [
+    pointerToProp,
+    obj,
+    propConfig,
+    possibleSequenceTrackIds,
+    listOfDescendantTrackIds,
+  ])
 }
 
 function compoundHasDivergedFromSavedState(
@@ -497,15 +530,13 @@ function compoundHasDivergedFromSavedState(
     if (isPropConfigComposite(conf)) continue
 
     const pathSuffix = path.slice(pathToProp.length)
-    const trackId = getDeep(
-      possibleSequenceTrackIds,
-      pathSuffix,
-    ) as SequenceTrackId | undefined
+    const trackId = getDeep(possibleSequenceTrackIds, pathSuffix) as
+      | SequenceTrackId
+      | undefined
 
     if (
       propHasDivergedFromSavedState(obj, path, {
-        sequenceTrackId:
-          typeof trackId === 'string' ? trackId : undefined,
+        sequenceTrackId: typeof trackId === 'string' ? trackId : undefined,
         trackVariant:
           typeof trackId === 'string'
             ? obj.template.getSequenceVariantOwningTrack(

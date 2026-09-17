@@ -1,6 +1,7 @@
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports -- prop type only
 import type {
+  BasicKeyframedTrack,
   Keyframe,
-  TrackData,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import type {PathToProp} from '@unseenco/theatre-shared/utils/addresses'
@@ -35,7 +36,7 @@ const BasicKeyframedTrack: React.VFC<{
   sheetObject: SheetObject
   pathToProp: PathToProp
   trackId: SequenceTrackId
-  trackData: TrackData
+  trackData: BasicKeyframedTrack
   color: keyof typeof graphEditorColors
 }> = React.memo(
   ({layoutP, trackData, sheetObject, trackId, color, pathToProp}) => {

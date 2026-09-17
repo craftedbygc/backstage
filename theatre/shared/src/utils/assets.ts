@@ -60,9 +60,7 @@ export function getAllPossibleAssetIDs(project: Project, type?: string) {
   )
 
   const staticValues = sheets
-    .flatMap((sheet) =>
-      Object.values(sheet?.staticOverrides?.byObject ?? {}),
-    )
+    .flatMap((sheet) => Object.values(sheet?.staticOverrides?.byObject ?? {}))
     .concat(
       sheets.flatMap((sheet) =>
         Object.values(sheet?.staticOverridesByVariant ?? {}).flatMap(
@@ -80,7 +78,9 @@ export function getAllPossibleAssetIDs(project: Project, type?: string) {
   const keyframeValues = sheets
     .flatMap((sheet) => Object.values(sheet?.sequence?.tracksByObject ?? {}))
     .flatMap((tracks) => Object.values(tracks?.trackData ?? {}))
-    .flatMap((track) => track?.keyframes)
+    .flatMap((track) =>
+      track?.type === 'BasicKeyframedTrack' ? track.keyframes : [],
+    )
     .map((keyframe) => keyframe?.value)
 
   const allValues = [...keyframeValues]

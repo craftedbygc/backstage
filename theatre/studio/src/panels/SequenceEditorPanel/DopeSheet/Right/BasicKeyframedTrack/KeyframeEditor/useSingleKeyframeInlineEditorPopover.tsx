@@ -1,7 +1,10 @@
 import React, {useCallback, useEffect} from 'react'
 import styled from 'styled-components'
 import usePopover from '@unseenco/theatre-studio/uiComponents/Popover/usePopover'
-import type {CloseFn, OpenFn} from '@unseenco/theatre-studio/uiComponents/Popover/usePopover'
+import type {
+  CloseFn,
+  OpenFn,
+} from '@unseenco/theatre-studio/uiComponents/Popover/usePopover'
 import BasicPopover from '@unseenco/theatre-studio/uiComponents/Popover/BasicPopover'
 import {DeterminePropEditorForKeyframeTree} from './DeterminePropEditorForSingleKeyframe'
 import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'

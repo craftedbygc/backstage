@@ -11,7 +11,8 @@
   },
   "references": [
     {"path": "../../theatre"},
-    {"path": "../dataverse"}
+    {"path": "../dataverse"},
+    {"path": "../gsap"}
   ],
   "include": [
     "./src/**/*",
