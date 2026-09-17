@@ -17,12 +17,6 @@ import {buildExtension} from '@unseenco/theatre-gsap/extension'
 const rafDriver = createRafDriver({name: 'gsap-time-mode'})
 setCoreRafDriver(rafDriver)
 
-// Drive GSAP from Theatre's rAF loop (not GSAP's internal ticker).
-gsap.ticker.remove(gsap.updateRoot)
-gsap.ticker.fps(-1)
-gsap.ticker.lagSmoothing(0)
-gsap.ticker.sleep()
-
 configureTheatreGsap({
   namespace: 'GSAP',
   outlineNamespace: {defaultCollapsed: false},
@@ -63,18 +57,10 @@ toggle.addEventListener('click', () => {
   syncPanelRuntimeState()
 })
 
-function detachGsapTickerFromRaf() {
-  gsap.ticker.remove(gsap.updateRoot)
-  gsap.ticker.sleep()
-}
-
-function onAnimationFrame(time: number) {
-  requestAnimationFrame(onAnimationFrame)
-  rafDriver.tick(time)
-  gsap.updateRoot(time / 1000)
-}
-
-requestAnimationFrame(onAnimationFrame)
+// GSAP ticker is the master clock; Theatre core + Studio share this rAF driver.
+gsap.ticker.add((time) => {
+  rafDriver.tick(time * 1000)
+})
 
 void project.ready.then(() => {
   const panelShow = gsap.fromTo(panel, panelHidden, {
@@ -113,8 +99,6 @@ void project.ready.then(() => {
     label: 'Box move',
     id: 'gsap-box-move',
   })
-
-  detachGsapTickerFromRaf()
 
   const regularObject = sheet.object('Regular Theatre Object', {
     x: types.number(0, {range: [-80, 80], label: 'X'}),
