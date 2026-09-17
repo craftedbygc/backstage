@@ -1,9 +1,11 @@
 import {pointerToActiveSheetSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 import {val} from '@unseenco/theatre-dataverse'
 import type {
+  SequenceEditorTree_ObjectNamespace,
   SequenceEditorTree_PrimitiveProp,
   SequenceEditorTree_PropWithChildren,
   SequenceEditorTree_Sheet,
+  SequenceEditorTree_SheetChild,
   SequenceEditorTree_SheetObject,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import type {
@@ -65,13 +67,16 @@ export type KeyframeWithTrack = {
 export function collectAggregateKeyframesInPrism(
   leaf:
     | SequenceEditorTree_Sheet
+    | SequenceEditorTree_ObjectNamespace
     | SequenceEditorTree_PropWithChildren
     | SequenceEditorTree_SheetObject,
 ): AggregatedKeyframes {
   const tracks =
     leaf.type === 'sheet'
       ? collectAggregateKeyframesSheet(leaf)
-      : collectAggregateKeyframesCompoundOrObject(leaf)
+      : leaf.type === 'objectNamespace'
+        ? collectAggregateKeyframesObjectNamespace(leaf)
+        : collectAggregateKeyframesCompoundOrObject(leaf)
 
   return {
     byPosition: keyframesByPositionFromTrackWithIds(tracks),
@@ -108,7 +113,21 @@ function keyframesByPositionFromTrackWithIds(tracks: TrackWithId[]) {
 function collectAggregateKeyframesSheet(
   leaf: SequenceEditorTree_Sheet,
 ): TrackWithId[] {
-  return leaf.children.flatMap(collectAggregateKeyframesCompoundOrObject)
+  return leaf.children.flatMap(collectAggregateKeyframesFromSheetChild)
+}
+
+function collectAggregateKeyframesObjectNamespace(
+  leaf: SequenceEditorTree_ObjectNamespace,
+): TrackWithId[] {
+  return leaf.children.flatMap(collectAggregateKeyframesFromSheetChild)
+}
+
+function collectAggregateKeyframesFromSheetChild(
+  child: SequenceEditorTree_SheetChild,
+): TrackWithId[] {
+  return child.type === 'objectNamespace'
+    ? collectAggregateKeyframesObjectNamespace(child)
+    : collectAggregateKeyframesCompoundOrObject(child)
 }
 
 function collectAggregateKeyframesCompoundOrObject(
@@ -153,11 +172,39 @@ export function collectAggregateSnapPositionsSheet(
 ): number[] {
   return uniq(
     leaf.children.flatMap((childLeaf) =>
-      collectAggregateSnapPositionsObjectOrCompound(
+      collectAggregateSnapPositionsFromSheetChild(
         childLeaf,
         snapTargetPositions,
       ),
     ),
+  )
+}
+
+export function collectAggregateSnapPositionsObjectNamespace(
+  leaf: SequenceEditorTree_ObjectNamespace,
+  snapTargetPositions: {[key: string]: {[key: string]: number[]}},
+): number[] {
+  return uniq(
+    leaf.children.flatMap((nested) =>
+      collectAggregateSnapPositionsFromSheetChild(nested, snapTargetPositions),
+    ),
+  )
+}
+
+function collectAggregateSnapPositionsFromSheetChild(
+  child: SequenceEditorTree_SheetChild,
+  snapTargetPositions: {[key: string]: {[key: string]: number[]}},
+): number[] {
+  if (child.type === 'objectNamespace') {
+    return uniq(
+      child.children.flatMap((nested) =>
+        collectAggregateSnapPositionsFromSheetChild(nested, snapTargetPositions),
+      ),
+    )
+  }
+  return collectAggregateSnapPositionsObjectOrCompound(
+    child,
+    snapTargetPositions,
   )
 }
 

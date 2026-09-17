@@ -97,6 +97,26 @@ export const createStudioSheetItemKey = {
       k: keyframeId,
     }) as StudioSheetItemKey
   },
+  forObjectNamespaceFolder(
+    sheetId: string,
+    namespacePath: string[],
+  ): StudioSheetItemKey {
+    return stableValueHash({
+      s: sheetId,
+      ns: namespacePath,
+    }) as StudioSheetItemKey
+  },
+  forObjectNamespaceAggregateKeyframe(
+    sheetId: string,
+    namespacePath: string[],
+    position: number,
+  ): StudioSheetItemKey {
+    return stableValueHash({
+      s: sheetId,
+      ns: namespacePath,
+      pos: position,
+    }) as StudioSheetItemKey
+  },
   forSheetObjectGsapClipTrack(
     obj: SheetObject,
     trackId: SequenceTrackId,

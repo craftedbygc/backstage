@@ -9,6 +9,7 @@ import type {
   AggregatedKeyframeConnection,
 } from './AggregateKeyframeEditor'
 import {iif} from './iif'
+import {sequenceEditorAggregateViewModelSheetAddress} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/sequenceEditorAggregateViewModel'
 
 export type IAggregateKeyframeEditorUtils = ReturnType<
   typeof useAggregateKeyframeEditorUtils
@@ -42,10 +43,9 @@ export function getAggregateKeyframeEditorUtilsPrismFn(
 ) {
   const {index, aggregateKeyframes, selection} = props
 
-  const {projectId, sheetId} =
-    props.viewModel.type === 'sheet'
-      ? props.viewModel.sheet.address
-      : props.viewModel.sheetObject.address
+  const {projectId, sheetId} = sequenceEditorAggregateViewModelSheetAddress(
+    props.viewModel,
+  )
 
   return () => {
     const cur = aggregateKeyframes[index]
@@ -96,6 +96,12 @@ export function getAggregateKeyframeEditorUtilsPrismFn(
         if (props.viewModel.type === 'sheet') {
           return createStudioSheetItemKey.forSheetAggregateKeyframe(
             props.viewModel.sheet,
+            cur.position,
+          )
+        } else if (props.viewModel.type === 'objectNamespace') {
+          return createStudioSheetItemKey.forObjectNamespaceAggregateKeyframe(
+            props.viewModel.sheetAddress.sheetId,
+            props.viewModel.namespacePath,
             cur.position,
           )
         } else if (props.viewModel.type === 'sheetObject') {

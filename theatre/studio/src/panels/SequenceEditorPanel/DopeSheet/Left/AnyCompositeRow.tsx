@@ -4,6 +4,7 @@ import type {
   SequenceEditorTree_PropWithChildren,
   SequenceEditorTree_Sheet,
   SequenceEditorTree_SheetObject,
+  SequenceEditorTree_ObjectNamespace,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import type {VoidFn} from '@unseenco/theatre-shared/utils/types'
 import React, {useRef} from 'react'
@@ -91,6 +92,7 @@ const AnyCompositeRow: React.FC<{
     | SequenceEditorTree_PrimitiveProp
     | SequenceEditorTree_PropWithChildren
     | SequenceEditorTree_SheetObject
+    | SequenceEditorTree_ObjectNamespace
     | import('@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree').SequenceEditorTree_GsapClipTrack
   label: React.ReactNode
   toggleSelect?: VoidFn

@@ -3,10 +3,18 @@ import type {
   SequenceEditorPanelLayout,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import type {
+  SequenceEditorTree_ObjectNamespace,
   SequenceEditorTree_PropWithChildren,
   SequenceEditorTree_Sheet,
   SequenceEditorTree_SheetObject,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import {
+  collectSheetObjectsFromSheetChildren,
+} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import {
+  isSequenceEditorSheetScopedAggregateViewModel,
+  sequenceEditorAggregateViewModelSheetAddress,
+} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/sequenceEditorAggregateViewModel'
 import {usePrism, useVal} from '@unseenco/theatre-react'
 import type {Prism, Pointer} from '@unseenco/theatre-dataverse'
 import {prism, val, pointerToPrism} from '@unseenco/theatre-dataverse'
@@ -61,7 +69,10 @@ import {
   snapToNone,
   snapToSome,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
-import {collectAggregateSnapPositionsSheet} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
+import {
+  collectAggregateSnapPositionsObjectNamespace,
+  collectAggregateSnapPositionsSheet,
+} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
 import type {Keyframe} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 
 const AggregatedKeyframeTrackContainer = styled.div`
@@ -74,6 +85,7 @@ type IAggregatedKeyframeTracksProps = {
   viewModel:
     | SequenceEditorTree_PropWithChildren
     | SequenceEditorTree_SheetObject
+    | SequenceEditorTree_ObjectNamespace
     | SequenceEditorTree_Sheet
   aggregatedKeyframes: AggregatedKeyframes
   layoutP: Pointer<SequenceEditorPanelLayout>
@@ -135,10 +147,15 @@ function AggregatedKeyframeTrack_memo(props: IAggregatedKeyframeTracksProps) {
     () =>
       viewModel.type === 'sheet'
         ? collectAggregateSnapPositionsSheet(viewModel, snapPositions)
-        : collectAggregateSnapPositionsObjectOrCompound(
-            viewModel,
-            snapPositions,
-          ),
+        : viewModel.type === 'objectNamespace'
+          ? collectAggregateSnapPositionsObjectNamespace(
+              viewModel,
+              snapPositions,
+            )
+          : collectAggregateSnapPositionsObjectOrCompound(
+              viewModel,
+              snapPositions,
+            ),
     [snapPositions],
   )
 
@@ -332,8 +349,8 @@ function pasteKeyframesContextMenuItem(
       const sheet = val(props.layoutP.sheet)
       const sequence = getStudioSequence(sheet)
 
-      if (props.viewModel.type === 'sheet') {
-        pasteKeyframesSheet(props.viewModel, keyframes, sequence)
+      if (isSequenceEditorSheetScopedAggregateViewModel(props.viewModel)) {
+        pasteKeyframesSheetScoped(props.viewModel, keyframes, sequence)
       } else {
         pasteKeyframesObjectOrCompound(props.viewModel, keyframes, sequence)
       }
@@ -352,12 +369,16 @@ function pasteKeyframesContextMenuItem(
  * @see StudioAhistoricState.clipboard
  * @see setClipboardNestedKeyframes
  */
-function pasteKeyframesSheet(
-  viewModel: SequenceEditorTree_Sheet,
+function pasteKeyframesSheetScoped(
+  viewModel: SequenceEditorTree_Sheet | SequenceEditorTree_ObjectNamespace,
   keyframes: KeyframeWithPathToPropFromCommonRoot[],
   sequence: Sequence,
 ) {
-  const {projectId, sheetId, sheetInstanceId} = viewModel.sheet.address
+  const scopedRows = collectSheetObjectsFromSheetChildren(viewModel.children)
+  const {projectId, sheetId, sheetInstanceId} =
+    viewModel.type === 'sheet'
+      ? viewModel.sheet.address
+      : scopedRows[0]?.sheetObject.address ?? viewModel.sheetAddress
 
   const areKeyframesAllOnSingleTrack = keyframes.every(
     ({pathToProp}) => pathToProp.length === 0,
@@ -366,10 +387,13 @@ function pasteKeyframesSheet(
   const sheetAddress = {projectId, sheetId}
 
   if (areKeyframesAllOnSingleTrack) {
-    for (const object of viewModel.children.map((child) => child.sheetObject)) {
+    for (const row of scopedRows) {
+      const object = row.sheetObject
       const tracksByObject = pointerToPrism(
         pointerToActiveSheetSequence(
-          viewModel.sheet.project,
+          viewModel.type === 'sheet'
+            ? viewModel.sheet.project
+            : object.template.project,
           sheetId,
           sheetAddress,
         ).tracksByObject[object.address.objectKey],
@@ -385,12 +409,12 @@ function pasteKeyframesSheet(
       )
     }
   } else {
+    const project =
+      viewModel.type === 'sheet'
+        ? viewModel.sheet.project
+        : scopedRows[0]!.sheetObject.template.project
     const tracksByObject = pointerToPrism(
-      pointerToActiveSheetSequence(
-        viewModel.sheet.project,
-        sheetId,
-        sheetAddress,
-      ).tracksByObject,
+      pointerToActiveSheetSequence(project, sheetId, sheetAddress).tracksByObject,
     ).getValue()
 
     const placeableKeyframes = keyframes
@@ -633,10 +657,9 @@ function useDragForAggregateKeyframeDot(
           getAggregateKeyframeEditorUtilsPrismFn(props),
         ).getValue().cur.keyframes
 
-        const address =
-          props.viewModel.type === 'sheet'
-            ? props.viewModel.sheet.address
-            : props.viewModel.sheetObject.address
+        const address = sequenceEditorAggregateViewModelSheetAddress(
+          props.viewModel,
+        )
 
         const sheetStatePointer =
           getStudio()!.atomP.historic.coreByProject[address.projectId]

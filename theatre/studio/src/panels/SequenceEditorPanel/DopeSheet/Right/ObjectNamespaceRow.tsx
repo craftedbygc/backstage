@@ -1,15 +1,15 @@
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
-import type {SequenceEditorTree_Sheet} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import type {SequenceEditorTree_ObjectNamespace} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import {usePrism} from '@unseenco/theatre-react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import React from 'react'
-import {decideRightSheetChildRow} from '../decideSheetChildRow'
 import RightRow from './Row'
-import {collectAggregateKeyframesInPrism} from './collectAggregateKeyframes'
 import AggregatedKeyframeTrack from './AggregatedKeyframeTrack/AggregatedKeyframeTrack'
+import {collectAggregateKeyframesInPrism} from './collectAggregateKeyframes'
+import {decideRightSheetChildRow} from '../decideSheetChildRow'
 
-const SheetRow: React.FC<{
-  leaf: SequenceEditorTree_Sheet
+const RightObjectNamespaceRow: React.VFC<{
+  leaf: SequenceEditorTree_ObjectNamespace
   layoutP: Pointer<SequenceEditorPanelLayout>
 }> = ({leaf, layoutP}) => {
   return usePrism(() => {
@@ -25,10 +25,12 @@ const SheetRow: React.FC<{
 
     return (
       <RightRow leaf={leaf} node={node} isCollapsed={leaf.isCollapsed}>
-        {leaf.children.map((child) => decideRightSheetChildRow(child, layoutP))}
+        {leaf.children.map((child) =>
+          decideRightSheetChildRow(child, layoutP),
+        )}
       </RightRow>
     )
   }, [leaf, layoutP])
 }
 
-export default SheetRow
+export default RightObjectNamespaceRow

@@ -23,6 +23,7 @@ import type {
 import type {
   SequenceEditorTree_AllRowTypes,
   SequenceEditorTree_PropWithChildren,
+  SequenceEditorTree_ObjectNamespace,
   SequenceEditorTree_Sheet,
   SequenceEditorTree_SheetObject,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
@@ -167,6 +168,7 @@ namespace utils {
     leaf:
       | SequenceEditorTree_SheetObject
       | SequenceEditorTree_PropWithChildren
+      | SequenceEditorTree_ObjectNamespace
       | SequenceEditorTree_Sheet,
     bounds: SelectionBounds,
     selectionByObjectKey: DopeSheetSelection['byObjectKey'],
@@ -214,6 +216,15 @@ namespace utils {
     ) => void
   } = {
     sheet(logger, layout, leaf, bounds, selectionByObjectKey) {
+      collectForAggregatedChildren(
+        logger,
+        layout,
+        leaf,
+        bounds,
+        selectionByObjectKey,
+      )
+    },
+    objectNamespace(logger, layout, leaf, bounds, selectionByObjectKey) {
       collectForAggregatedChildren(
         logger,
         layout,

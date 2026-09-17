@@ -22,6 +22,7 @@ import useContextMenu from '@unseenco/theatre-studio/uiComponents/simpleContextM
 import {commonRootOfPathsToProps} from '@unseenco/theatre-shared/utils/addresses'
 import type {KeyframeWithPathToPropFromCommonRoot} from '@unseenco/theatre-studio/store/types'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {sequenceEditorAggregateViewModelSheetAddress} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/sequenceEditorAggregateViewModel'
 import TweenNameEditorPopover, {
   getSharedTweenLabel,
   type TweenNameEditorTarget,
@@ -173,10 +174,7 @@ function useDragKeyframe(
         const keyframes = props.aggregateKeyframes[props.index].keyframes
 
         const {selection, viewModel} = props
-        const address =
-          viewModel.type === 'sheet'
-            ? viewModel.sheet.address
-            : viewModel.sheetObject.address
+        const address = sequenceEditorAggregateViewModelSheetAddress(viewModel)
 
         if (
           selection &&
@@ -282,10 +280,7 @@ function useConnectorContextMenu(
       }))
 
       const viewModel = props.editorProps.viewModel
-      const address =
-        viewModel.type === 'sheet'
-          ? viewModel.sheet.address
-          : viewModel.sheetObject.address
+      const address = sequenceEditorAggregateViewModelSheetAddress(viewModel)
 
       const sharedTweenLabel = getSharedTweenLabel(tweenNameTargets)
       const tweenNameMenuItems = sharedTweenLabel

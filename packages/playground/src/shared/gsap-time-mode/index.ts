@@ -87,9 +87,9 @@ void project.ready.then(() => {
     paused: true,
   })
 
-  registerGsapAnimation(panelShow, sheet, {label: 'Panel show'})
-  registerGsapAnimation(panelHide, sheet, {label: 'Panel hide'})
-  registerGsapAnimation(boxMove, sheet, {label: 'Box move'})
+  registerGsapAnimation(panelShow, sheet, {label: 'UI / Panel show'})
+  registerGsapAnimation(panelHide, sheet, {label: 'UI / Panel hide'})
+  registerGsapAnimation(boxMove, sheet, {label: 'UI / Box move'})
 
   let boxChoreoTimeline = gsap.timeline({paused: true})
   boxChoreoTimeline
