@@ -175,7 +175,7 @@ const BaseItem: React.FC<{
               <ChevronDown />
             </Head_Icon_WithDescendants>
           ) : (
-            (leafIcon ?? <Package />)
+            leafIcon ?? <Package />
           )}
         </Head_IconContainer>
 

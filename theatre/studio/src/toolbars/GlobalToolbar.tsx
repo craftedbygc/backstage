@@ -79,15 +79,26 @@ const SubContainer = styled.div`
   gap: 8px;
 `
 
-const HasUpdatesBadge = styled.div<{type: 'info' | 'warning'}>`
+const HasUpdatesBadge = styled.div<{
+  type: 'info' | 'warning'
+  $corner?: 'top-left' | 'top-right'
+}>`
   position: absolute;
   background: ${({type}) =>
     type === 'info' ? 'var(--studio-accent-soft)' : '#f59e0b'};
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  right: -2px;
-  top: -2px;
+  ${({$corner}) =>
+    $corner === 'top-left'
+      ? css`
+          top: -3px;
+          left: -3px;
+        `
+      : css`
+          top: -2px;
+          right: -2px;
+        `};
 `
 
 const GroupDivider = styled.div`
@@ -110,7 +121,10 @@ const GlobalToolbar: React.FC = () => {
           state.loadingState.type === 'browserStateIsNotBasedOnDiskState',
       )
   }, [])
-  const hasUnsavedChanges = usePrism(() => studioHasDivergedFromSavedState(), [])
+  const hasUnsavedChanges = usePrism(
+    () => studioHasDivergedFromSavedState(),
+    [],
+  )
   const [triggerTooltip, triggerButtonRef] = useTooltip(
     {
       enabled: conflicts.length > 0 || hasUnsavedChanges,
@@ -171,6 +185,7 @@ const GlobalToolbar: React.FC = () => {
           {hasUnsavedChanges ? (
             <HasUpdatesBadge
               type="warning"
+              $corner="top-left"
               data-testid="OutlinePanel-UnsavedIndicator"
             />
           ) : null}

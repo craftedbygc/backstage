@@ -290,10 +290,13 @@ export function stripTransientPropsFromObjectInSheetState(
 ): void {
   if (prefixes.size === 0) return
 
-  const staticOverrides = sheetState.staticOverrides.byObject[objectKey]
-  if (staticOverrides) {
-    sheetState.staticOverrides.byObject[objectKey] =
-      stripTransientPathsFromSerializableMap(staticOverrides, prefixes)
+  const byObject = sheetState.staticOverrides?.byObject
+  const staticOverrides = byObject?.[objectKey]
+  if (staticOverrides && byObject) {
+    byObject[objectKey] = stripTransientPathsFromSerializableMap(
+      staticOverrides,
+      prefixes,
+    )
   }
 
   if (sheetState.staticOverridesByVariant) {

@@ -17,7 +17,7 @@ import type {IContextMenuItem} from '@unseenco/theatre-studio/uiComponents/simpl
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
 import useChordial from '@unseenco/theatre-studio/uiComponents/chordial/useChodrial'
 import {mergeRefs} from 'react-merge-refs'
-import {ObjectStatusCircle} from '@unseenco/theatre-studio/uiComponents/icons'
+import {ObjectListObjectIcon} from '@unseenco/theatre-studio/uiComponents/icons'
 import {objectHasDivergedFromSavedState} from '@unseenco/theatre-studio/propEditors/objectHasDivergedFromSavedState'
 import {DIVERGED_FROM_SAVED_STATE_TITLE} from '@unseenco/theatre-studio/propEditors/SavedStateDiamondWrapper'
 
@@ -148,7 +148,7 @@ export const ObjectItem: React.VFC<{
             }
             style={{display: 'flex', lineHeight: 0}}
           >
-            <ObjectStatusCircle filled={hasDivergedFromSavedState} />
+            <ObjectListObjectIcon unsaved={hasDivergedFromSavedState} />
           </span>
         }
       />

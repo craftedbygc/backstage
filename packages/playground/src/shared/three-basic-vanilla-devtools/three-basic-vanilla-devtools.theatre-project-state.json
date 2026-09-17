@@ -1,0 +1,21 @@
+{
+  "sheetsById": {
+    "Sphere": {
+      "staticOverrides": {
+        "byObject": {}
+      }
+    },
+    "Cube": {
+      "staticOverrides": {
+        "byObject": {}
+      }
+    },
+    "Cylinder": {
+      "staticOverrides": {
+        "byObject": {}
+      }
+    }
+  },
+  "definitionVersion": "0.4.0",
+  "revisionHistory": ["three-basic-vanilla-devtools-baseline"]
+}

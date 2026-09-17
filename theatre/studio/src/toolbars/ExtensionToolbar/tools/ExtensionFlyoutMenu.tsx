@@ -9,13 +9,23 @@ import ToolbarIconButton from '@unseenco/theatre-studio/uiComponents/toolbar/Too
 import BaseMenu from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/ContextMenu/BaseMenu'
 import usePopover from '@unseenco/theatre-studio/uiComponents/Popover/usePopover'
 import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import FlyoutMenuLabel from './FlyoutMenuLabel'
+import UnsavedChangesDot from '@unseenco/theatre-studio/uiComponents/UnsavedChangesDot'
 
 const FlyoutTriggerButton = styled(ToolbarIconButton)`
   ${pointerEventsAutoInNormalMode};
+  position: relative;
   min-width: 32px;
   width: auto;
   padding: 0 8px;
   font-size: 11px;
+`
+
+const FlyoutTriggerUnsavedDot = styled(UnsavedChangesDot)`
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  pointer-events: none;
 `
 
 const ExtensionFlyoutMenu: React.FC<{
@@ -43,7 +53,12 @@ const ExtensionFlyoutMenu: React.FC<{
         <BaseMenu
           items={config.items.map(
             (option: ToolconfigFlyoutMenuItem, index: number) => ({
-              label: option.label,
+              label: (
+                <FlyoutMenuLabel
+                  text={option.label}
+                  showUnsavedIndicator={option.showUnsavedIndicator}
+                />
+              ),
               callback: () => {
                 // this is a user-defined function, so we need to wrap it in a try/catch
                 try {
@@ -73,7 +88,8 @@ const ExtensionFlyoutMenu: React.FC<{
           popover.open(e, triggerRef.current!)
         }}
       >
-        {config.label}
+        {config.showUnsavedIndicator ? <FlyoutTriggerUnsavedDot /> : null}
+        {typeof config.label === 'string' ? config.label : config.label}
       </FlyoutTriggerButton>
     </>
   )
