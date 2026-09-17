@@ -7,7 +7,6 @@ import {readGsapTweenTimelineDuration} from '@unseenco/theatre-shared/gsap/syncG
 import {gsapClipIsOnSequence} from '@unseenco/theatre-shared/gsap/gsapClipOnSequence'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
-import {val} from '@unseenco/theatre-dataverse'
 
 /** Creates a {@link GsapClipTrack} at the current sequence playhead. */
 export function addGsapClipAtPlayhead(sheetObject: SheetObject): boolean {
