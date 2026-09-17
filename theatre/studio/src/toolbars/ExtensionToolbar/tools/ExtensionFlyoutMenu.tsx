@@ -23,8 +23,8 @@ const FlyoutTriggerButton = styled(ToolbarIconButton)`
 
 const FlyoutTriggerUnsavedDot = styled(UnsavedChangesDot)`
   position: absolute;
-  left: -2px;
-  top: -2px;
+  left: -3px;
+  top: -3px;
   pointer-events: none;
 `
 

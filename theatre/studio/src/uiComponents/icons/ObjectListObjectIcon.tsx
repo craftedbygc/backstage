@@ -30,7 +30,7 @@ function ObjectListObjectIcon(props: {unsaved?: boolean}) {
         <circle
           cx={8}
           cy={8}
-          r={3.5}
+          r={2.5}
           fill={unsaved ? UNSAVED_FILL : '#ffffff'}
         />
       </svg>

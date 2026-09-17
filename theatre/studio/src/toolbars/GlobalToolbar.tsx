@@ -89,13 +89,14 @@ const HasUpdatesBadge = styled.div<{
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  top: -2px;
   ${({$corner}) =>
     $corner === 'top-left'
       ? css`
-          left: -2px;
+          top: -3px;
+          left: -3px;
         `
       : css`
+          top: -2px;
           right: -2px;
         `};
 `
