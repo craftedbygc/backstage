@@ -16,7 +16,10 @@ import {
   useCssCursorLock,
 } from '@unseenco/theatre-studio/uiComponents/PointerEventsHandler'
 import DopeSnap from '@unseenco/theatre-studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
-import {useKeyframeInlineEditorPopover} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/BasicKeyframedTrack/KeyframeEditor/useSingleKeyframeInlineEditorPopover'
+import {
+  resolveKeyframePopoverTarget,
+  useKeyframeInlineEditorPopover,
+} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/BasicKeyframedTrack/KeyframeEditor/useSingleKeyframeInlineEditorPopover'
 import usePresence, {
   PresenceFlag,
 } from '@unseenco/theatre-studio/uiComponents/usePresence'
@@ -89,7 +92,7 @@ const GraphEditorDotNonScalar: React.VFC<IProps> = (props) => {
     onDetectedClick: (event) =>
       inlineEditorPopover.toggle(
         event,
-        event.target instanceof Element ? event.target : node!,
+        resolveKeyframePopoverTarget(event, node),
       ),
   })
 

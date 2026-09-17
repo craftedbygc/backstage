@@ -121,7 +121,9 @@ const DragSurface = styled.div`
   cursor: ew-resize;
 `
 
-const Content = styled.div`
+const Content = styled.div<{
+  $padding: string
+}>`
   position: relative;
   z-index: 5;
   display: flex;
@@ -129,7 +131,7 @@ const Content = styled.div`
   width: 100%;
   height: 100%;
   min-height: inherit;
-  padding: 0 10px;
+  padding: ${(p) => p.$padding};
   box-sizing: border-box;
   pointer-events: none;
 `
@@ -294,12 +296,15 @@ const BasicNumberInput: React.FC<{
    * Details-pane number rows pass this so brightness matches other controls.
    */
   embedded?: boolean
+  /** Inner TextRow padding; default `0 10px` (details pane). Pass `0` when the parent chip already insets horizontally. */
+  contentPadding?: string
 }> = (propsA) => {
   const [stateRef] = useRefAndState<IState>({mode: 'noFocus'})
   const [isHot, setIsHot] = useState(false)
   const isValid = propsA.isValid ?? alwaysValid
   const precision = propsA.precision ?? DEFAULT_NUMBER_PRECISION
   const embedded = !!propsA.embedded || !!propsA.label
+  const contentPadding = propsA.contentPadding ?? '0 10px'
 
   const propsRef = useRef(propsA)
   propsRef.current = propsA
@@ -645,7 +650,7 @@ const BasicNumberInput: React.FC<{
       {hasBoundedRange ? <Hashmarks $visible={showChrome} /> : null}
       {hasBoundedRange ? <Handle $visible={showChrome} /> : null}
       {!isEditing ? <DragSurface ref={setDragNode} /> : null}
-      <Content>
+      <Content $padding={contentPadding}>
         <TextRow>
           {propsA.label ? <LabelText>{propsA.label}</LabelText> : null}
           <ValueSlot>

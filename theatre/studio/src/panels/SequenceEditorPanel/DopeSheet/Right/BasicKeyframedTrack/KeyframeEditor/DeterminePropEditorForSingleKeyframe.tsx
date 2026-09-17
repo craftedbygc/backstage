@@ -15,24 +15,58 @@ import {
   getStudioSequence,
   getStudioTrackSequenceVariant,
 } from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {ChevronDown} from '@unseenco/theatre-studio/uiComponents/icons'
+
+const INDENT_PX = 14
+/** Extra inset for hierarchy section titles (transform, position, …). */
+const SECTION_LABEL_BASE_PADDING_PX = 10
+const PROP_ROW_BASE_PADDING_PX = 10
+
+function sectionLabelPaddingLeft(indent: number): number {
+  return SECTION_LABEL_BASE_PADDING_PX + indent * INDENT_PX
+}
+
+function propRowPaddingLeft(indent: number): number {
+  return PROP_ROW_BASE_PADDING_PX + indent * INDENT_PX
+}
 
 const SectionLabel = styled.div`
   font-size: 11px;
   font-weight: 500;
   line-height: 13px;
   letter-spacing: 0.01em;
-  padding: 6px 10px 4px;
+  padding: 2px 0 4px 0;
   color: var(--studio-text-muted, #919191);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  box-sizing: border-box;
+`
+
+const SectionLabelText = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
+`
+
+const SectionChevron = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  font-size: 12px;
+  color: var(--studio-text-muted, #919191);
+  pointer-events: none;
 `
 
 const Row = styled.div`
   display: flex;
   align-items: stretch;
-  /* Hug the control; don’t force a wide empty chip. */
-  width: max-content;
+  width: 100%;
   min-width: 160px;
   max-width: 320px;
   padding: 0;
@@ -48,17 +82,23 @@ const Row = styled.div`
  * chip surface (see KeyframeInlineEditorPopover); this only lays out label + value.
  */
 const Chip = styled.div<{
-  $ownsLabel: boolean
   $interactive: boolean
+  $paddingLeftPx: number
+  /** Number rows: chip is full-bleed; label/value inset lives in BasicNumberInput. */
+  $fullBleedRange: boolean
 }>`
   flex: 1 1 auto;
+  width: 100%;
   min-width: 0;
   min-height: var(--studio-row-height, 36px);
   height: var(--studio-row-height, 36px);
   display: flex;
   align-items: stretch;
   gap: 12px;
-  padding: ${(props) => (props.$ownsLabel ? '0' : '0 10px')};
+  padding: ${(props) =>
+    props.$fullBleedRange
+      ? '0'
+      : `0 10px 0 ${props.$paddingLeftPx}px`};
   box-sizing: border-box;
   background: transparent;
   border-radius: var(--studio-radius);
@@ -108,7 +148,22 @@ const InputSlot = styled.div<{
   `}
 `
 
-const INDENT_PX = 10
+function HierarchySectionLabel({
+  indent,
+  children,
+}: {
+  indent: number
+  children: React.ReactNode
+}) {
+  return (
+    <SectionLabel style={{paddingLeft: `${sectionLabelPaddingLeft(indent)}px`}}>
+      <SectionLabelText>{children}</SectionLabelText>
+      <SectionChevron aria-hidden>
+        <ChevronDown width={12} height={12} />
+      </SectionChevron>
+    </SectionLabel>
+  )
+}
 
 function editorOwnsLabel(propType: string): boolean {
   return propType === 'number'
@@ -139,9 +194,9 @@ export function DeterminePropEditorForKeyframeTree(
   if (p.type === 'sheetObject') {
     return (
       <>
-        <SectionLabel style={{paddingLeft: `${p.indent * INDENT_PX}px`}}>
+        <HierarchySectionLabel indent={p.indent}>
           {p.sheetObject.address.objectKey}
-        </SectionLabel>
+        </HierarchySectionLabel>
         {p.children.map((c, i) => (
           <DeterminePropEditorForKeyframeTree
             key={i}
@@ -156,9 +211,7 @@ export function DeterminePropEditorForKeyframeTree(
     const label = p.propConfig.label ?? last(p.pathToProp)
     return (
       <>
-        <SectionLabel style={{paddingLeft: `${p.indent * INDENT_PX}px`}}>
-          {label}
-        </SectionLabel>
+        <HierarchySectionLabel indent={p.indent}>{label}</HierarchySectionLabel>
         {p.children.map((c, i) => (
           <DeterminePropEditorForKeyframeTree
             key={i}
@@ -199,13 +252,15 @@ function PrimitivePropEditor(
 
   const ownsLabel = editorOwnsLabel(p.propConfig.type)
   const interactive = chipHostClickable(p.propConfig.type)
+  const rowPaddingLeftPx = propRowPaddingLeft(p.indent)
 
   return (
-    <Row style={{paddingLeft: `${p.indent * INDENT_PX}px`}}>
+    <Row>
       <Chip
         data-detail-prop-chip=""
-        $ownsLabel={ownsLabel}
         $interactive={interactive}
+        $paddingLeftPx={rowPaddingLeftPx}
+        $fullBleedRange={ownsLabel}
         onClick={
           interactive
             ? (e) => {
@@ -223,7 +278,13 @@ function PrimitivePropEditor(
             propConfig={p.propConfig}
             value={valueInProp(p.keyframe.value, p.propConfig)}
             autoFocus={p.autoFocusInput}
-            {...(ownsLabel ? {label: labelText, embedded: true} : {})}
+            {...(ownsLabel
+              ? {
+                  label: labelText,
+                  embedded: true,
+                  contentPadding: `0 10px 0 ${rowPaddingLeftPx}px`,
+                }
+              : {})}
             {...(interactive ? {hostClickRef} : {})}
           />
         </InputSlot>

@@ -11,8 +11,11 @@ function NumberPropEditor({
   autoFocus,
   label,
   embedded,
+  contentPadding,
 }: ISimplePropEditorReactProps<PropTypeConfig_Number> & {
   embedded?: boolean
+  /** Overrides BasicNumberInput inner row padding (default `0 10px`). */
+  contentPadding?: string
 }) {
   const precision = useMemo(
     () => getNumberPrecisionFromPropConfig(propConfig),
@@ -38,6 +41,7 @@ function NumberPropEditor({
       autoFocus={autoFocus}
       label={label}
       embedded={embedded}
+      contentPadding={contentPadding}
     />
   )
 }
