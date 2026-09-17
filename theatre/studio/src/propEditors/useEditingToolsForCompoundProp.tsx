@@ -79,6 +79,9 @@ export function useEditingToolsForCompoundProp<T extends SerializablePrimitive>(
   return usePrism((): Stuff => {
     if (isGsapSheetObjectKey(obj.address.objectKey)) {
       val(gsapStudioRegistryRevisionPointer)
+      val(
+        obj.template.project.pointers.historic.sheetsById[obj.address.sheetId],
+      )
     }
     // if the compound has no simple descendants, then there isn't much the user can do with it
     if (!compoundHasSimpleDescendants(propConfig)) {

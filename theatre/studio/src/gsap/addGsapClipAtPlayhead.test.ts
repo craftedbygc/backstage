@@ -1,7 +1,43 @@
 import {Atom} from '@unseenco/theatre-dataverse'
+import type {SheetState_Historic} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import {registerGsapObjectBinding} from '@unseenco/theatre-shared/gsap/gsapObjectBinding'
 import getStudio, {setStudio} from '@unseenco/theatre-studio/getStudio'
 import {addGsapClipAtPlayhead} from './addGsapClipAtPlayhead'
+
+function sheetObjectWithHistoric(
+  overrides: Record<string, unknown> = {},
+  sheetState: SheetState_Historic = {sequencesById: {}} as SheetState_Historic,
+) {
+  const sheetStateAtom = new Atom(sheetState)
+  return {
+    address: {
+      projectId: 'p',
+      sheetId: 's',
+      sheetInstanceId: 'si',
+      objectKey: 'o',
+    },
+    sheet: {
+      address: {projectId: 'p', sheetId: 's'},
+      publicApi: {
+        sequence: {
+          pointer: {position: new Atom(8.12).pointer},
+        },
+      },
+    },
+    template: {
+      project: {
+        pointers: {
+          historic: {
+            sheetsById: {
+              s: sheetStateAtom.pointer,
+            },
+          },
+        },
+      },
+    },
+    ...overrides,
+  }
+}
 
 describe('addGsapClipAtPlayhead', () => {
   const addGsapClipTrack = jest.fn()
@@ -9,6 +45,19 @@ describe('addGsapClipAtPlayhead', () => {
   beforeEach(() => {
     addGsapClipTrack.mockReset()
     setStudio({
+      atomP: {
+        historic: {
+          projects: {
+            stateByProjectId: {
+              p: {
+                stateBySheetId: {
+                  s: new Atom({activeSequenceVariant: 'default'}).pointer,
+                },
+              },
+            },
+          },
+        },
+      },
       transaction: (fn: (ctx: {stateEditors: unknown}) => void) => {
         fn({
           stateEditors: {
@@ -28,21 +77,16 @@ describe('addGsapClipAtPlayhead', () => {
   test('uses current sequence position as clip start', () => {
     const playhead = 8.12
     const positionAtom = new Atom(playhead)
-    const sheetObject = {
-      address: {
-        projectId: 'p',
-        sheetId: 's',
-        sheetInstanceId: 'si',
-        objectKey: 'o',
-      },
+    const sheetObject = sheetObjectWithHistoric({
       sheet: {
+        address: {projectId: 'p', sheetId: 's'},
         publicApi: {
           sequence: {
             pointer: {position: positionAtom.pointer},
           },
         },
       },
-    }
+    })
 
     registerGsapObjectBinding(sheetObject as never, {
       gsapAnimationId: 'hide',
@@ -59,7 +103,43 @@ describe('addGsapClipAtPlayhead', () => {
       gsapAnimationId: 'hide',
       start: playhead,
       duration: 0.35,
+      sequenceVariant: 'default',
     })
     expect(getStudio()).toBeDefined()
+  })
+
+  test('does not add when clip already exists on sequence', () => {
+    const sheetObject = sheetObjectWithHistoric(
+      {},
+      {
+        sequencesById: {
+          default: {
+            length: 10,
+            tracksByObject: {
+              o: {
+                trackIdByPropPath: {},
+                trackData: {
+                  t1: {
+                    type: 'GsapClipTrack',
+                    gsapAnimationId: 'hide',
+                    start: 0,
+                    duration: 1,
+                  },
+                },
+              },
+            },
+          },
+        },
+      } as SheetState_Historic,
+    )
+
+    registerGsapObjectBinding(sheetObject as never, {
+      gsapAnimationId: 'hide',
+      defaultDuration: 0.35,
+    })
+
+    const ok = addGsapClipAtPlayhead(sheetObject as never)
+    expect(ok).toBe(false)
+    expect(addGsapClipTrack).not.toHaveBeenCalled()
   })
 })

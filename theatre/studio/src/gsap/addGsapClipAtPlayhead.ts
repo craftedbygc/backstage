@@ -4,7 +4,10 @@ import {getGsapObjectBinding} from '@unseenco/theatre-shared/gsap/gsapObjectBind
 import {getAnimationEntryForSheetObject} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
 import {introspectGsapTimelineChildren} from '@unseenco/theatre-shared/gsap/introspectGsapTimelineChildren'
 import {readGsapTweenTimelineDuration} from '@unseenco/theatre-shared/gsap/syncGsapClipProgress'
+import {gsapClipIsOnSequence} from '@unseenco/theatre-shared/gsap/gsapClipOnSequence'
 import getStudio from '@unseenco/theatre-studio/getStudio'
+import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {val} from '@unseenco/theatre-dataverse'
 
 /** Creates a {@link GsapClipTrack} at the current sequence playhead. */
 export function addGsapClipAtPlayhead(sheetObject: SheetObject): boolean {
@@ -12,6 +15,16 @@ export function addGsapClipAtPlayhead(sheetObject: SheetObject): boolean {
   const entry = getAnimationEntryForSheetObject(sheetObject)
   const gsapAnimationId = binding?.gsapAnimationId ?? entry?.id
   if (!gsapAnimationId) return false
+
+  const variant = getStudioActiveSequenceVariant(sheetObject.sheet.address)
+  const sheetState = val(
+    sheetObject.template.project.pointers.historic.sheetsById[
+      sheetObject.address.sheetId
+    ],
+  )
+  if (gsapClipIsOnSequence(sheetObject, variant, sheetState)) {
+    return false
+  }
 
   const duration =
     binding?.defaultDuration ??
@@ -34,6 +47,7 @@ export function addGsapClipAtPlayhead(sheetObject: SheetObject): boolean {
       gsapAnimationId,
       start: position,
       duration,
+      sequenceVariant: variant,
       ...(timelineChildren.length > 0 ? {timelineChildren, timelineSpan} : {}),
     })
   })

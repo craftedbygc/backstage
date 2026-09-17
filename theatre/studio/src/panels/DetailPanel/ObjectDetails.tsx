@@ -126,6 +126,7 @@ const ObjectDetails: React.FC<{
   const gsapActions = usePrism((): GsapOutlineContextMenuItem[] => {
     if (!isGsapSheetObjectKey(obj.address.objectKey)) return []
     val(gsapStudioRegistryRevisionPointer)
+    val(obj.template.project.pointers.historic.sheetsById[obj.address.sheetId])
     const studioItems = getGsapStudioOutlineMenuItems(obj)
     if (studioItems.length > 0) {
       return studioItems.map((item) => ({

@@ -66,6 +66,11 @@ export const ObjectItem: React.VFC<{
     const objectKey = sheetObject.address.objectKey
     if (isGsapSheetObjectKey(objectKey)) {
       val(gsapStudioRegistryRevisionPointer)
+      val(
+        sheetObject.template.project.pointers.historic.sheetsById[
+          sheetObject.address.sheetId
+        ],
+      )
     }
     const variants = sheetObject.sheet.template.getSequenceVariants()
 
