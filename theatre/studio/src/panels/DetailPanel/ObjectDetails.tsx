@@ -7,8 +7,6 @@ import {useVal, usePrism} from '@unseenco/theatre-react'
 import uniqueKeyForAnyObject from '@unseenco/theatre-shared/utils/uniqueKeyForAnyObject'
 import styled from 'styled-components'
 import getStudio from '@unseenco/theatre-studio/getStudio'
-import {getGsapOutlineContextMenuItems} from '@unseenco/theatre-shared/gsap/outlineContextMenuRegistry'
-import type {GsapOutlineContextMenuItem} from '@unseenco/theatre-shared/gsap/outlineContextMenuRegistry'
 import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/sequence/trackData'
 import {getGsapStudioOutlineMenuItems} from '@unseenco/theatre-studio/gsap/gsapOutlineMenuItems'
 import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
@@ -123,24 +121,20 @@ const ObjectDetails: React.FC<{
   const config = useVal(obj.template.configPointer)
   const actions = useVal(obj.template._temp_actionsPointer)
   const showPropsOf = useVal(obj.template.showPropsOfPointer)
-  const gsapActions = usePrism((): GsapOutlineContextMenuItem[] => {
+  const gsapActions = usePrism(() => {
     if (!isGsapSheetObjectKey(obj.address.objectKey)) return []
     val(gsapStudioRegistryRevisionPointer)
     val(obj.template.project.pointers.historic.sheetsById[obj.address.sheetId])
-    const studioItems = getGsapStudioOutlineMenuItems(obj)
-    if (studioItems.length > 0) {
-      return studioItems.map((item) => ({
-        type: 'normal' as const,
-        label:
-          typeof item.label === 'string'
-            ? item.label
-            : 'Add to sequence at playhead',
-        callback: () => {
-          item.callback?.({} as React.MouseEvent)
-        },
-      }))
-    }
-    return getGsapOutlineContextMenuItems(obj)
+    return getGsapStudioOutlineMenuItems(obj).map((item) => ({
+      type: 'normal' as const,
+      label:
+        typeof item.label === 'string'
+          ? item.label
+          : 'Add to sequence at playhead',
+      callback: () => {
+        item.callback?.({} as React.MouseEvent)
+      },
+    }))
   }, [obj])
 
   return (

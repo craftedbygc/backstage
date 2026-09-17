@@ -12,7 +12,6 @@ import {
   configureTheatreGsap,
   registerGsapAnimation,
 } from '@unseenco/theatre-gsap'
-import {buildExtension} from '@unseenco/theatre-gsap/extension'
 
 const rafDriver = createRafDriver({name: 'gsap-time-mode'})
 setCoreRafDriver(rafDriver)
@@ -28,7 +27,6 @@ const project = getProject('Theatre × GSAP demo')
 const sheet = project.sheet('Main')
 
 attachGsapSequenceBridge(sheet)
-studio.extend(buildExtension({studio}).extension)
 
 const panel = document.getElementById('panel')!
 const box = document.getElementById('box')!

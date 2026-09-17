@@ -21,11 +21,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
-    },
-    "./extension": {
-      "types": "./dist/extension.d.ts",
-      "import": "./dist/extension.mjs",
-      "require": "./dist/extension.js"
     }
   },
   "sideEffects": false,
@@ -46,7 +41,6 @@
     "@microsoft/api-extractor": "^7.18.11",
     "@types/node": "^15.6.2",
     "@unseenco/theatre-core": "workspace:*",
-    "@unseenco/theatre-studio": "workspace:*",
     "esbuild": "^0.18.18",
     "esbuild-register": "^2.5.0",
     "gsap": "^3.12.5",
@@ -55,12 +49,6 @@
   },
   "peerDependencies": {
     "@unseenco/theatre-core": "*",
-    "@unseenco/theatre-studio": "*",
     "gsap": ">=3.0.0"
-  },
-  "peerDependenciesMeta": {
-    "@unseenco/theatre-studio": {
-      "optional": true
-    }
   }
 }

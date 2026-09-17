@@ -2,14 +2,15 @@
 
 Bridge GSAP tweens to Theatre.js **sequence time mode** (v1). ScrollTrigger / page scroll modes are planned for v2 — see notes at the end.
 
+Studio GSAP UI (outline context menu, sequencer clips, detail actions) is built into `@unseenco/theatre-studio` — there is no separate `/extension` entry for this package.
+
 ## Package layout
 
 | Entry | Purpose |
 | --- | --- |
 | `@unseenco/theatre-gsap` | Runtime: `registerGsapAnimation`, `attachGsapSequenceBridge`, `configureTheatreGsap` |
-| `@unseenco/theatre-gsap/extension` | Studio: `buildExtension()` — outline context menu **Add to sequence at playhead** |
 
-Peers: `gsap`, `@unseenco/theatre-core`; optional `@unseenco/theatre-studio` for `/extension`.
+Peers: `gsap`, `@unseenco/theatre-core`.
 
 ## Typical integration
 
@@ -22,7 +23,6 @@ import {
   configureTheatreGsap,
   registerGsapAnimation,
 } from '@unseenco/theatre-gsap'
-import {buildExtension} from '@unseenco/theatre-gsap/extension'
 
 configureTheatreGsap({
   namespace: 'GSAP',
@@ -33,11 +33,10 @@ const project = getProject('My Project')
 const sheet = project.sheet('Scene')
 const tween = gsap.to('.box', {x: 100, duration: 2, paused: true})
 
-const {id} = registerGsapAnimation(tween, sheet, {label: 'Box move'})
+registerGsapAnimation(tween, sheet, {label: 'Box move'})
 attachGsapSequenceBridge(sheet)
 
-const ext = buildExtension({studio})
-studio.extend(ext.extension)
+studio.initialize()
 ```
 
 Clips are stored as `GsapClipTrack` rows on the outline proxy object (`GSAP/<label>`). Runtime reads them via `sheet.sequence.__experimental_getGsapClips()` and sets `animation.progress(localProgress, true)`.

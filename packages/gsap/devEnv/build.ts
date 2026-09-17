@@ -28,10 +28,7 @@ const definedGlobals = {
 
 async function createBundles() {
   const pathToPackage = path.join(__dirname, '../')
-  const entries = [
-    {entry: 'index.ts', outfileBase: 'index'},
-    {entry: 'extension.ts', outfileBase: 'extension'},
-  ] as const
+  const entries = [{entry: 'index.ts', outfileBase: 'index'}] as const
 
   const esbuildConfig: BuildOptions = {
     bundle: true,

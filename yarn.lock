@@ -7481,7 +7481,6 @@ __metadata:
     "@microsoft/api-extractor": ^7.18.11
     "@types/node": ^15.6.2
     "@unseenco/theatre-core": "workspace:*"
-    "@unseenco/theatre-studio": "workspace:*"
     esbuild: ^0.18.18
     esbuild-register: ^2.5.0
     gsap: ^3.12.5
@@ -7489,11 +7488,7 @@ __metadata:
     typescript: 5.1.6
   peerDependencies:
     "@unseenco/theatre-core": "*"
-    "@unseenco/theatre-studio": "*"
     gsap: ">=3.0.0"
-  peerDependenciesMeta:
-    "@unseenco/theatre-studio":
-      optional: true
   languageName: unknown
   linkType: soft
 
