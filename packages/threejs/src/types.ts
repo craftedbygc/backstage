@@ -39,12 +39,14 @@ export type ToolConfigSwitch = {
 export type ToolconfigFlyoutMenuItem = {
   label: string
   onClick?: () => void
+  showUnsavedIndicator?: boolean
 }
 
 export type ToolConfigFlyoutMenu = {
   type: 'Flyout'
   label: string
   items: ToolconfigFlyoutMenuItem[]
+  showUnsavedIndicator?: boolean
 }
 
 export type ToolConfig =

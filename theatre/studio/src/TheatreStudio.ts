@@ -146,6 +146,8 @@ export type ToolConfigSwitch = {
 export type ToolconfigFlyoutMenuItem = {
   label: string
   onClick?: () => void
+  /** Orange unsaved dot (same as outline toolbar). */
+  showUnsavedIndicator?: boolean
 }
 
 export type ToolConfigFlyoutMenu = {
@@ -166,6 +168,8 @@ export type ToolConfigFlyoutMenu = {
    */
   'data-testid'?: string
   items: ToolconfigFlyoutMenuItem[]
+  /** Orange unsaved dot on the flyout trigger (e.g. any scene has diverged state). */
+  showUnsavedIndicator?: boolean
 }
 
 /** One toolbar control in an extension toolset (icon, switch, or flyout menu). */

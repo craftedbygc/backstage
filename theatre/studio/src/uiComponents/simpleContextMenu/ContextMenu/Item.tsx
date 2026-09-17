@@ -35,7 +35,7 @@ const ItemContainer = styled.li<{enabled: boolean}>`
 const ItemLabel = styled.span``
 
 const Item: React.FC<{
-  label: string | ElementType
+  label: string | ElementType | React.ReactNode
   onClick: (e: React.MouseEvent) => void
   enabled: boolean
 }> = (props) => {

@@ -9,6 +9,7 @@ import ToolbarIconButton from '@unseenco/theatre-studio/uiComponents/toolbar/Too
 import BaseMenu from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/ContextMenu/BaseMenu'
 import usePopover from '@unseenco/theatre-studio/uiComponents/Popover/usePopover'
 import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import FlyoutMenuLabel from './FlyoutMenuLabel'
 
 const FlyoutTriggerButton = styled(ToolbarIconButton)`
   ${pointerEventsAutoInNormalMode};
@@ -43,7 +44,12 @@ const ExtensionFlyoutMenu: React.FC<{
         <BaseMenu
           items={config.items.map(
             (option: ToolconfigFlyoutMenuItem, index: number) => ({
-              label: option.label,
+              label: (
+                <FlyoutMenuLabel
+                  text={option.label}
+                  showUnsavedIndicator={option.showUnsavedIndicator}
+                />
+              ),
               callback: () => {
                 // this is a user-defined function, so we need to wrap it in a try/catch
                 try {
@@ -73,7 +79,15 @@ const ExtensionFlyoutMenu: React.FC<{
           popover.open(e, triggerRef.current!)
         }}
       >
-        {config.label}
+        {typeof config.label === 'string' ? (
+          <FlyoutMenuLabel
+            text={config.label}
+            showUnsavedIndicator={config.showUnsavedIndicator}
+            variant="trigger"
+          />
+        ) : (
+          config.label
+        )}
       </FlyoutTriggerButton>
     </>
   )

@@ -4,6 +4,9 @@ import {
   isRemoteEditorOpen,
   onRemoteEditorOpenChange,
 } from '@unseenco/theatre-studio'
+import getStudio from '@unseenco/theatre-studio/getStudio'
+import {pointerToPrism} from '@unseenco/theatre-dataverse'
+import {studioHasDivergedFromSavedState} from '@unseenco/theatre-studio/propEditors/projectHasDivergedFromSavedState'
 import {OrthographicCamera, PerspectiveCamera, CameraHelper} from 'three'
 import type {Camera, Scene} from 'three'
 import type {ThreejsRenderer} from './types'
@@ -43,6 +46,8 @@ import type {
 import {setupSelectionSync} from './selectionSync'
 import type {SelectionSync} from './selectionSync'
 import {setupOutlineSceneVisibility} from './outlineSceneVisibility'
+import {sceneHasDivergedFromSavedState} from './sceneSavedStateDivergence'
+import {onObjectRegistryChange} from './objectRegistry'
 import {setupTransformControls} from './transformControlsSetup'
 import type {
   TransformControlsSetup,
@@ -340,8 +345,10 @@ export function buildExtension(config: ThreejsDevtoolsConfig): ThreejsDevtools {
       toolbarConfig.push({
         type: 'Flyout',
         label: `Scene: ${getActiveScene().name}`,
+        showUnsavedIndicator: studioHasDivergedFromSavedState(),
         items: normalizedScenes.map((entry, index) => ({
           label: entry.name,
+          showUnsavedIndicator: sceneHasDivergedFromSavedState(entry.scene),
           onClick: () => {
             switchToScene(index)
           },
@@ -693,7 +700,26 @@ export function buildExtension(config: ThreejsDevtoolsConfig): ThreejsDevtools {
       global(set) {
         setToolbar = set
         updateToolbarConfig()
+
+        const studioInstance = getStudio()
+        const unsubHistoric = studioInstance
+          ? pointerToPrism(studioInstance.atomP.historic).onChange(
+              studioInstance.ticker,
+              updateToolbarConfig,
+            )
+          : undefined
+        const unsubAhistoric = studioInstance
+          ? pointerToPrism(studioInstance.atomP.ahistoric).onChange(
+              studioInstance.ticker,
+              updateToolbarConfig,
+            )
+          : undefined
+        const unsubRegistry = onObjectRegistryChange(updateToolbarConfig)
+
         return () => {
+          unsubHistoric?.()
+          unsubAhistoric?.()
+          unsubRegistry()
           setToolbar = null
         }
       },
