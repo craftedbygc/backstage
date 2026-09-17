@@ -6,7 +6,7 @@ import React from 'react'
 import RightRow from './Row'
 import AggregatedKeyframeTrack from './AggregatedKeyframeTrack/AggregatedKeyframeTrack'
 import {collectAggregateKeyframesInPrism} from './collectAggregateKeyframes'
-import {decideRightSheetChildRow} from '../decideSheetChildRow'
+import {decideRightSheetChildRow} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/decideSheetChildRow'
 
 const RightObjectNamespaceRow: React.VFC<{
   leaf: SequenceEditorTree_ObjectNamespace
@@ -25,9 +25,7 @@ const RightObjectNamespaceRow: React.VFC<{
 
     return (
       <RightRow leaf={leaf} node={node} isCollapsed={leaf.isCollapsed}>
-        {leaf.children.map((child) =>
-          decideRightSheetChildRow(child, layoutP),
-        )}
+        {leaf.children.map((child) => decideRightSheetChildRow(child, layoutP))}
       </RightRow>
     )
   }, [leaf, layoutP])

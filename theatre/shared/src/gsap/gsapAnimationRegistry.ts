@@ -1,6 +1,5 @@
 import type {GsapClipBaselineTiming} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
-import type {SheetObjectAddress} from '@unseenco/theatre-shared/utils/addresses'
 import type {
   ObjectAddressKey,
   ProjectId,
@@ -69,7 +68,9 @@ function getStore(): RegistryStore {
   return g[REGISTRY_KEY]!
 }
 
-function getSheetEntryMap(sheetKey: string): Map<string, GsapAnimationRegistryEntry> {
+function getSheetEntryMap(
+  sheetKey: string,
+): Map<string, GsapAnimationRegistryEntry> {
   const store = getStore()
   let map = store.bySheetAddress.get(sheetKey)
   if (!map) {

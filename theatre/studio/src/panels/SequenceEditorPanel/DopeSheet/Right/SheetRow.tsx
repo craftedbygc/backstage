@@ -3,7 +3,7 @@ import type {SequenceEditorTree_Sheet} from '@unseenco/theatre-studio/panels/Seq
 import {usePrism} from '@unseenco/theatre-react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import React from 'react'
-import {decideRightSheetChildRow} from '../decideSheetChildRow'
+import {decideRightSheetChildRow} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/decideSheetChildRow'
 import RightRow from './Row'
 import {collectAggregateKeyframesInPrism} from './collectAggregateKeyframes'
 import AggregatedKeyframeTrack from './AggregatedKeyframeTrack/AggregatedKeyframeTrack'

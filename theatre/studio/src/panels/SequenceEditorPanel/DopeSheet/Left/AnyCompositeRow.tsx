@@ -1,5 +1,6 @@
 import {theme} from '@unseenco/theatre-studio/css'
 import type {
+  SequenceEditorTree_GsapClipTrack,
   SequenceEditorTree_PrimitiveProp,
   SequenceEditorTree_PropWithChildren,
   SequenceEditorTree_Sheet,
@@ -93,7 +94,7 @@ const AnyCompositeRow: React.FC<{
     | SequenceEditorTree_PropWithChildren
     | SequenceEditorTree_SheetObject
     | SequenceEditorTree_ObjectNamespace
-    | import('@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree').SequenceEditorTree_GsapClipTrack
+    | SequenceEditorTree_GsapClipTrack
   label: React.ReactNode
   toggleSelect?: VoidFn
   toggleCollapsed: VoidFn

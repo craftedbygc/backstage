@@ -3,7 +3,7 @@ import {usePrism} from '@unseenco/theatre-react'
 import React from 'react'
 import AnyCompositeRow from './AnyCompositeRow'
 import {setCollapsedSheetItem} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/setCollapsedSheetObjectOrCompoundProp'
-import {decideLeftSheetChildRow} from '../decideSheetChildRow'
+import {decideLeftSheetChildRow} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/decideSheetChildRow'
 
 const SheetRow: React.VFC<{
   leaf: SequenceEditorTree_Sheet
