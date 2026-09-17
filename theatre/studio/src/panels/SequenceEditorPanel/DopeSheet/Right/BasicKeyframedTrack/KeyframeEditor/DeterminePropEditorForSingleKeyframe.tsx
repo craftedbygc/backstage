@@ -19,7 +19,7 @@ import {ChevronDown} from '@unseenco/theatre-studio/uiComponents/icons'
 
 const INDENT_PX = 14
 /** Extra inset for hierarchy section titles (transform, position, …). */
-const SECTION_LABEL_BASE_PADDING_PX = 16
+const SECTION_LABEL_BASE_PADDING_PX = 10
 const PROP_ROW_BASE_PADDING_PX = 10
 
 function sectionLabelPaddingLeft(indent: number): number {
@@ -35,7 +35,7 @@ const SectionLabel = styled.div`
   font-weight: 500;
   line-height: 13px;
   letter-spacing: 0.01em;
-  padding: 6px 10px 4px 0;
+  padding: 2px 0 4px 0;
   color: var(--studio-text-muted, #919191);
   display: flex;
   align-items: center;
@@ -96,7 +96,7 @@ const Chip = styled.div<{
   gap: 12px;
   padding: ${(props) =>
     props.$ownsLabel
-      ? `0 10px 0 ${props.$paddingLeftPx}px`
+      ? `0 0 0 ${props.$paddingLeftPx}px`
       : `0 10px 0 ${props.$paddingLeftPx}px`};
   box-sizing: border-box;
   background: transparent;

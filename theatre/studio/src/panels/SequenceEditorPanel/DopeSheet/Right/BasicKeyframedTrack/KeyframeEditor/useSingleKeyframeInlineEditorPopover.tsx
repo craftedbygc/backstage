@@ -31,9 +31,10 @@ const KeyframeInlineEditorPopover = styled(BasicPopover)`
     background: var(--studio-chip-bg, #393c40);
     border: none;
     border-radius: var(--studio-radius, 4px);
-    padding: 0;
+    padding: 6px;
     overflow: hidden;
     min-width: 200px;
+    box-sizing: border-box;
   }
 `
 
@@ -51,7 +52,6 @@ export function useKeyframeInlineEditorPopover(
   const popover = usePopover(
     {
       debugName: 'useKeyframeInlineEditorPopover',
-      closeWhenPointerIsDistant: false,
     },
     () => (
       <KeyframeInlineEditorPopover showPopoverEdgeTriangle>
