@@ -24,27 +24,6 @@ function getGsapAnimationTargetKey(
   return fallbackAnimationId
 }
 
-const GSAP_CLIP_TIME_EPS = 1e-5
-
-function pickActiveClipForTarget(
-  group: EnrichedClip[],
-  sequencePosition: number,
-): EnrichedClip {
-  const sorted = [...group].sort((a, b) => a.start - b.start)
-
-  // Same-target clips are sequential: the latest clip whose start has passed
-  // drives the tween (including hold-at-end after its bar). An earlier clip
-  // with a longer sequencer bar must not win once a later clip has started.
-  const started = sorted.filter(
-    (clip) => sequencePosition + GSAP_CLIP_TIME_EPS >= clip.start,
-  )
-  if (started.length > 0) {
-    return started[started.length - 1]!
-  }
-
-  return sorted[0]!
-}
-
 /** Updates registered GSAP tween progress for each clip at `sequencePosition`. */
 export function syncRegisteredGsapAnimationsForClips(
   sequencePosition: number,
@@ -72,12 +51,17 @@ export function syncRegisteredGsapAnimationsForClips(
   }
 
   for (const group of byTarget.values()) {
-    const active = pickActiveClipForTarget(group, sequencePosition)
-    const progress = gsapClipSyncProgress(sequencePosition, active)
-    const animation = active.entry.animation as {
-      progress: (progress: number, suppressEvents?: boolean) => void
+    const sorted = [...group].sort((a, b) => a.start - b.start)
+    // Same-target clips often animate the same properties. Apply every clip's
+    // progress in timeline order so a playhead jump cannot leave an earlier
+    // tween at a stale partial progress that overrides a later clip.
+    for (const clip of sorted) {
+      const progress = gsapClipSyncProgress(sequencePosition, clip)
+      const animation = clip.entry.animation as {
+        progress: (progress: number, suppressEvents?: boolean) => void
+      }
+      animation.progress(progress, true)
     }
-    animation.progress(progress, true)
   }
 }
 

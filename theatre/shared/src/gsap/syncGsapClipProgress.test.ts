@@ -25,7 +25,7 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
     }
   }
 
-  test('applies only the later clip when multiple tweens share a target', () => {
+  test('past hide end on shared target: all clips synced in order, hide last', () => {
     const show = {progress: jest.fn()}
     const hide = {progress: jest.fn()}
     const panel = {}
@@ -40,8 +40,11 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
       {gsapAnimationId: 'hide', start: 8, duration: 2},
     ])
 
-    expect(show.progress).not.toHaveBeenCalled()
+    expect(show.progress).toHaveBeenCalledWith(1, true)
     expect(hide.progress).toHaveBeenCalledWith(1, true)
+    expect(show.progress.mock.invocationCallOrder[0]).toBeLessThan(
+      hide.progress.mock.invocationCallOrder[0]!,
+    )
   })
 
   test('jumping past a single clip marks it completed', () => {
@@ -87,8 +90,8 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
       {gsapAnimationId: 'hide', start: 8, duration: 2},
     ])
 
+    expect(show.progress).toHaveBeenCalledWith(1, true)
     expect(hide.progress).toHaveBeenCalledWith(1, true)
-    expect(show.progress).not.toHaveBeenCalled()
   })
 
   test('sequence end past hide start but before hide end completes hide', () => {
@@ -142,8 +145,8 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
       {gsapAnimationId: 'hide', start: hideStart, duration: hideDuration},
     ])
 
+    expect(show.progress).toHaveBeenCalledWith(1, true)
     expect(hide.progress).toHaveBeenCalledWith(1, true)
-    expect(show.progress).not.toHaveBeenCalled()
   })
 
   test('longer show bar after hide started: hide still wins past hide end', () => {
@@ -161,11 +164,14 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
       {gsapAnimationId: 'hide', start: 0.45, duration: 0.35},
     ])
 
+    expect(show.progress).toHaveBeenCalledWith(0.801, true)
     expect(hide.progress).toHaveBeenCalledWith(1, true)
-    expect(show.progress).not.toHaveBeenCalled()
+    expect(show.progress.mock.invocationCallOrder[0]).toBeLessThan(
+      hide.progress.mock.invocationCallOrder[0]!,
+    )
   })
 
-  test('during first clip on shared target, later clip does not override', () => {
+  test('during first clip on shared target, hide held at 0 then show', () => {
     const show = {progress: jest.fn()}
     const hide = {progress: jest.fn()}
     const panel = {}
@@ -181,6 +187,37 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
     ])
 
     expect(show.progress).toHaveBeenCalledWith(0.5, true)
-    expect(hide.progress).not.toHaveBeenCalled()
+    expect(hide.progress).toHaveBeenCalledWith(0, true)
+    expect(show.progress.mock.invocationCallOrder[0]).toBeLessThan(
+      hide.progress.mock.invocationCallOrder[0]!,
+    )
+  })
+
+  test('click mid-show then jump past hide: stale show progress cleared', () => {
+    const show = {progress: jest.fn()}
+    const hide = {progress: jest.fn()}
+    const panel = {}
+
+    setRegistry({
+      show: {animation: show, targets: [panel]},
+      hide: {animation: hide, targets: [panel]},
+    })
+
+    const clips = [
+      {gsapAnimationId: 'show', start: 0, duration: 0.45},
+      {gsapAnimationId: 'hide', start: 0.45, duration: 0.35},
+    ]
+
+    syncRegisteredGsapAnimationsForClips(0.2, clips)
+    show.progress.mockClear()
+    hide.progress.mockClear()
+
+    syncRegisteredGsapAnimationsForClips(1, clips)
+
+    expect(show.progress).toHaveBeenCalledWith(1, true)
+    expect(hide.progress).toHaveBeenCalledWith(1, true)
+    expect(show.progress.mock.invocationCallOrder[0]).toBeLessThan(
+      hide.progress.mock.invocationCallOrder[0]!,
+    )
   })
 })
