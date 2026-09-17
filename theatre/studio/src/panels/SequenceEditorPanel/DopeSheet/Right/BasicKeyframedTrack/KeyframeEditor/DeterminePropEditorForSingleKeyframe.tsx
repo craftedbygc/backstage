@@ -84,6 +84,8 @@ const Row = styled.div`
 const Chip = styled.div<{
   $interactive: boolean
   $paddingLeftPx: number
+  /** Number rows: chip is full-bleed; label/value inset lives in BasicNumberInput. */
+  $fullBleedRange: boolean
 }>`
   flex: 1 1 auto;
   width: 100%;
@@ -93,9 +95,10 @@ const Chip = styled.div<{
   display: flex;
   align-items: stretch;
   gap: 12px;
-  /* Same horizontal inset for every row; number rows must not double-apply the
-     10px base inset (BasicNumberInput Content padding) on top of chip padding. */
-  padding: 0 10px 0 ${(props) => props.$paddingLeftPx}px;
+  padding: ${(props) =>
+    props.$fullBleedRange
+      ? '0'
+      : `0 10px 0 ${props.$paddingLeftPx}px`};
   box-sizing: border-box;
   background: transparent;
   border-radius: var(--studio-radius);
@@ -249,13 +252,15 @@ function PrimitivePropEditor(
 
   const ownsLabel = editorOwnsLabel(p.propConfig.type)
   const interactive = chipHostClickable(p.propConfig.type)
+  const rowPaddingLeftPx = propRowPaddingLeft(p.indent)
 
   return (
     <Row>
       <Chip
         data-detail-prop-chip=""
         $interactive={interactive}
-        $paddingLeftPx={propRowPaddingLeft(p.indent)}
+        $paddingLeftPx={rowPaddingLeftPx}
+        $fullBleedRange={ownsLabel}
         onClick={
           interactive
             ? (e) => {
@@ -277,7 +282,7 @@ function PrimitivePropEditor(
               ? {
                   label: labelText,
                   embedded: true,
-                  contentPadding: '0',
+                  contentPadding: `0 10px 0 ${rowPaddingLeftPx}px`,
                 }
               : {})}
             {...(interactive ? {hostClickRef} : {})}

@@ -49,7 +49,34 @@ const PopoverPositioner: React.FC<{
   >({})
 
   useLayoutEffect(() => {
-    if (!containerRect || !container || !targetRect) return
+    if (!containerRect || !container) return
+
+    const targetRectLive = props.target.getBoundingClientRect()
+    const clickPoint = props.clickPoint
+    const targetRectForPlacement =
+      targetRectLive.width > 0 || targetRectLive.height > 0
+        ? targetRectLive
+        : clickPoint
+        ? {
+            left: clickPoint.clientX,
+            top: clickPoint.clientY,
+            right: clickPoint.clientX,
+            bottom: clickPoint.clientY,
+            width: 0,
+            height: 0,
+            x: clickPoint.clientX,
+            y: clickPoint.clientY,
+            toJSON: targetRectLive.toJSON,
+          }
+        : targetRectLive
+
+    if (
+      !targetRectForPlacement.width &&
+      !targetRectForPlacement.height &&
+      !clickPoint
+    ) {
+      return
+    }
 
     const gap = props.verticalGap ?? 8
     const arrowStyle: Record<string, string> = {}
@@ -59,30 +86,38 @@ const PopoverPositioner: React.FC<{
     let top = 0
     let left = 0
     if (verticalPlacement === 'bottom') {
-      if (targetRect.bottom + containerRect.height + gap < windowSize.height) {
+      if (
+        targetRectForPlacement.bottom + containerRect.height + gap <
+        windowSize.height
+      ) {
         verticalPlacement = 'bottom'
-        top = targetRect.bottom + gap
+        top = targetRectForPlacement.bottom + gap
         arrowStyle.top = '0px'
-      } else if (targetRect.top > containerRect.height + gap) {
+      } else if (
+        targetRectForPlacement.top >
+        containerRect.height + gap
+      ) {
         verticalPlacement = 'top'
-        top = targetRect.top - (containerRect.height + gap)
+        top =
+          targetRectForPlacement.top - (containerRect.height + gap)
         arrowStyle.bottom = '0px'
         arrowStyle.transform = 'rotateZ(180deg)'
       } else {
         verticalPlacement = 'overlay'
       }
     } else if (verticalPlacement === 'top') {
-      if (targetRect.top > containerRect.height + gap) {
+      if (targetRectForPlacement.top > containerRect.height + gap) {
         verticalPlacement = 'top'
-        top = targetRect.top - (containerRect.height + gap)
+        top =
+          targetRectForPlacement.top - (containerRect.height + gap)
         arrowStyle.bottom = '0px'
         arrowStyle.transform = 'rotateZ(180deg)'
       } else if (
-        targetRect.bottom + containerRect.height + gap <
+        targetRectForPlacement.bottom + containerRect.height + gap <
         windowSize.height
       ) {
         verticalPlacement = 'bottom'
-        top = targetRect.bottom + gap
+        top = targetRectForPlacement.bottom + gap
         arrowStyle.top = '0px'
       } else {
         verticalPlacement = 'overlay'
@@ -90,9 +125,17 @@ const PopoverPositioner: React.FC<{
     }
 
     let arrowLeft = 0
-    if (verticalPlacement !== 'overlay') {
+    if (verticalPlacement === 'overlay' && clickPoint) {
+      top = clickPoint.clientY + gap
+      left = clickPoint.clientX - containerRect.width / 2
+      arrowLeft = containerRect.width / 2
+      arrowStyle.top = '0px'
+      arrowStyle.left = arrowLeft + 'px'
+      verticalPlacement = 'bottom'
+    } else if (verticalPlacement !== 'overlay') {
       const anchorLeft =
-        props.clickPoint?.clientX ?? targetRect.left + targetRect.width / 2
+        clickPoint?.clientX ??
+        targetRectForPlacement.left + targetRectForPlacement.width / 2
       if (anchorLeft < containerRect.width / 2) {
         left = gap
         arrowLeft = Math.max(
@@ -138,9 +181,13 @@ const PopoverPositioner: React.FC<{
     containerRect,
     container,
     props.target,
+    props.clickPoint,
     targetRect,
     windowSize,
     props.onPointerOutside,
+    props.verticalGap,
+    props.verticalPlacement,
+    props.constraints,
   ])
 
   useOnClickOutside(

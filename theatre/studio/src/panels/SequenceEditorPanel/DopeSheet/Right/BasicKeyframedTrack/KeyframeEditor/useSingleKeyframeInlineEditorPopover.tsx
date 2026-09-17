@@ -45,6 +45,37 @@ function closeOpenKeyframeInlineEditorPopover(reason: string) {
   openKeyframeInlineEditorPopoverClose = null
 }
 
+function hasNonZeroLayoutRect(el: Element): boolean {
+  const {width, height} = el.getBoundingClientRect()
+  return width > 0 || height > 0
+}
+
+/** Prefer a mounted trigger with real layout bounds (avoids popover at 0,0). */
+export function resolveKeyframePopoverTarget(
+  event: React.MouseEvent | MouseEvent | {clientX: number; clientY: number},
+  target: Element | null | undefined,
+): Element {
+  if (target instanceof Element && hasNonZeroLayoutRect(target)) {
+    return target
+  }
+  if (
+    'currentTarget' in event &&
+    event.currentTarget instanceof Element &&
+    hasNonZeroLayoutRect(event.currentTarget)
+  ) {
+    return event.currentTarget
+  }
+  if ('target' in event && event.target instanceof Element) {
+    return event.target
+  }
+  if (target instanceof Element) {
+    return target
+  }
+  throw new Error(
+    'useKeyframeInlineEditorPopover: could not resolve popover anchor element',
+  )
+}
+
 /** The editor that pops up when directly clicking a Keyframe. */
 export function useKeyframeInlineEditorPopover(
   props: EditingOptionsTree[] | null,
@@ -89,7 +120,7 @@ export function useKeyframeInlineEditorPopover(
       closeOpenKeyframeInlineEditorPopover(
         'replaced by another keyframe inline editor',
       )
-      popover.open(e, target)
+      popover.open(e, resolveKeyframePopoverTarget(e, target))
       openKeyframeInlineEditorPopoverClose = close
     },
     [popover.open, close],
@@ -103,7 +134,7 @@ export function useKeyframeInlineEditorPopover(
         closeOpenKeyframeInlineEditorPopover(
           'replaced by another keyframe inline editor',
         )
-        popover.open(e, target)
+        popover.open(e, resolveKeyframePopoverTarget(e, target))
         openKeyframeInlineEditorPopoverClose = close
       }
     },
