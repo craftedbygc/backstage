@@ -24,6 +24,7 @@ studio.initialize({
 3. **Sequence Editor** — timeline and dope sheet for sequenced props. Playback controls (play/pause, loop, zoom) sit above the dope sheet; `Space` toggles playback ([Keyboard shortcuts](./keyboard-shortcuts.md)).
 4. **Global toolbar** — built-in controls plus extension buttons.
 5. **Extension panes** — optional panels from extensions (e.g. Three.js viewport tools).
+6. **GSAP clip tracks** — when you use [@unseenco/theatre-gsap](../extensions/gsap.md), registered animations appear in the outline and sequence editor as clip rows (no separate extension install).
 
 ## Saved vs in-memory state
 

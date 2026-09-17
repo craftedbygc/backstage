@@ -10,7 +10,7 @@ We chose **VitePress** over Starlight (Astro) because the monorepo already uses 
 
 Public API pages are **not** hand-written. They are produced from TypeScript via the same pipeline as package releases:
 
-1. **api-extractor** — each package’s `build:api-json` script (see `theatre/package.json` and `packages/threejs/package.json`) emits a doc model to `/.temp/api/<package>.api.json` (configured in `devEnv/api-extractor-base.json`).
+1. **api-extractor** — each package’s `build:api-json` script (see `theatre/package.json`, `packages/threejs/package.json`, `packages/gsap/package.json`, …) emits a doc model to `/.temp/api/<package>.api.json` (configured in `devEnv/api-extractor-base.json`).
 2. **api-documenter** — root devDependency `@microsoft/api-documenter` turns those JSON files into Markdown under `docs/api/` (public URL `/docs/api/`).
 
 The `generate:api` script runs the necessary package builds, then api-documenter:
@@ -40,7 +40,7 @@ yarn docs:build
 yarn workspace @unseenco/theatre-docs run preview   # optional; preview also uses /docs/
 ```
 
-The first run compiles `theatre` and `@unseenco/theatre-threejs` declarations and may take a minute.
+The first run compiles `theatre`, `@unseenco/theatre-threejs`, `@unseenco/theatre-dataverse`, and `@unseenco/theatre-gsap` declarations and may take a minute.
 
 ### Playground base path
 

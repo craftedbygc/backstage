@@ -34,6 +34,7 @@ In-depth topics for day-to-day authoring:
 
 - [Overview](./extensions/index.md)
 - [Three.js](./extensions/threejs.md) — `@unseenco/theatre-threejs`
+- [GSAP](./extensions/gsap.md) — `@unseenco/theatre-gsap`
 
 ## Community
 
