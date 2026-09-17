@@ -33,19 +33,19 @@ export function gsapClipLocalProgress(
 }
 
 /**
- * Like {@link gsapClipLocalProgress}, but returns `null` once the playhead is
- * past the clip end. Used when driving GSAP tweens so finished clips (e.g.
- * Panel show) do not keep applying progress 1 while a later clip (Panel hide)
- * runs on the same target.
+ * Progress for driving a GSAP tween from sequence time.
+ *
+ * - Before clip start: `0` (hold at tween start)
+ * - Inside clip: local linear progress
+ * - At or after clip end (including playhead jumps): `1` (completed)
  */
 export function gsapClipSyncProgress(
   sequencePosition: number,
   clip: Pick<GsapClipTrack, 'start' | 'duration'>,
-): number | null {
+): number {
   if (clip.duration <= 0) return 0
   if (sequencePosition < clip.start) return 0
   const clipEnd = clip.start + clip.duration
-  if (sequencePosition > clipEnd) return null
   if (sequencePosition >= clipEnd - 1e-5) return 1
   const raw = (sequencePosition - clip.start) / clip.duration
   if (raw <= 0) return 0

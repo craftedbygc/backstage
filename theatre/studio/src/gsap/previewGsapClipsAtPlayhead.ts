@@ -1,7 +1,7 @@
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
 import {val} from '@unseenco/theatre-dataverse'
-import {syncRegisteredGsapAnimationsForClips} from '@unseenco/theatre-shared/gsap/syncGsapClipProgress'
+import {syncGsapClipsAtSequencePosition} from '@unseenco/theatre-shared/gsap/syncGsapClipsAtSequencePosition'
 
 export type GsapClipTimingOverride = {
   trackId: SequenceTrackId
@@ -32,5 +32,5 @@ export function previewGsapClipsAtCurrentPlayhead(
         duration: clip.duration,
       }
     })
-  syncRegisteredGsapAnimationsForClips(position, clips)
+  syncGsapClipsAtSequencePosition(position, clips)
 }

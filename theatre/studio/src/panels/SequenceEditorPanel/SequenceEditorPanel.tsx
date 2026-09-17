@@ -32,13 +32,13 @@ import DockResizeHandle from '@unseenco/theatre-studio/UIRoot/DockResizeHandle'
 import {DOCKED_PANE_BACKGROUND} from '@unseenco/theatre-studio/UIRoot/dockedLayoutConstants'
 import PlaybackControls from './PlaybackControls/PlaybackControls'
 import {transportStripHeight} from './PlaybackControls/constants'
+import GsapClipPlayheadSync from '@unseenco/theatre-studio/gsap/GsapClipPlayheadSync'
 
 const Container = styled(PanelWrapper)<{$docked?: boolean}>`
   z-index: ${panelZIndexes.sequenceEditorPanel};
   border: ${({$docked}) =>
     $docked ? 'none' : '1px solid var(--studio-border)'};
-  border-radius: ${({$docked}) =>
-    $docked ? '0' : 'var(--studio-radius)'};
+  border-radius: ${({$docked}) => ($docked ? '0' : 'var(--studio-radius)')};
   box-sizing: border-box;
   overflow: ${({$docked}) => ($docked ? 'visible' : 'hidden')};
 `
@@ -216,6 +216,7 @@ const Content: React.VFC<{}> = () => {
           style={{width: `${val(layoutP.leftDims.width)}px`}}
         />
         <FrameStampPositionProvider layoutP={layoutP}>
+          <GsapClipPlayheadSync />
           <PlaybackControls layoutP={layoutP} docked={isDocked} />
           <Header layoutP={layoutP} />
           <DopeSheet key={key + '-dopeSheet'} layoutP={layoutP} />

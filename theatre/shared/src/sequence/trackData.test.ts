@@ -13,12 +13,13 @@ describe('trackData helpers', () => {
     expect(gsapClipLocalProgress(10, {start: 1, duration: 2})).toBe(1)
   })
 
-  test('gsapClipSyncProgress stops after clip end', () => {
+  test('gsapClipSyncProgress holds completed state after clip end', () => {
     const clip = {start: 5, duration: 1}
     expect(gsapClipSyncProgress(4, clip)).toBe(0)
     expect(gsapClipSyncProgress(5.5, clip)).toBe(0.5)
     expect(gsapClipSyncProgress(6, clip)).toBe(1)
-    expect(gsapClipSyncProgress(7, clip)).toBe(null)
+    expect(gsapClipSyncProgress(7, clip)).toBe(1)
+    expect(gsapClipSyncProgress(100, clip)).toBe(1)
   })
 
   test('type guards', () => {
