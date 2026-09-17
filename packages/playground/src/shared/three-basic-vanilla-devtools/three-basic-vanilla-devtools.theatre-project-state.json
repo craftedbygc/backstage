@@ -1,0 +1,9 @@
+{
+  "sheetsById": {
+    "Sphere": {},
+    "Cube": {},
+    "Cylinder": {}
+  },
+  "definitionVersion": "0.4.0",
+  "revisionHistory": ["three-basic-vanilla-devtools-baseline"]
+}
