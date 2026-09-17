@@ -1,10 +1,18 @@
 import type {GsapClipTrack} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import type {SequenceEditorTree_GsapClipTrack} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism, useVal} from '@unseenco/theatre-react'
+import DopeSnap from '@unseenco/theatre-studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
+import KeyframeSnapTarget, {
+  collectSequenceEditorSnapPositions,
+  gsapClipEdgeTimes,
+  snapPositionsStateD,
+  snapToNone,
+  snapToSome,
+} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {val} from '@unseenco/theatre-dataverse'
-import React, {useMemo} from 'react'
+import React, {useCallback, useMemo} from 'react'
 import styled from 'styled-components'
 import RightRow from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/Row'
 import getStudio from '@unseenco/theatre-studio/getStudio'
@@ -13,7 +21,10 @@ import useDrag from '@unseenco/theatre-studio/uiComponents/useDrag'
 import {useCssCursorLock} from '@unseenco/theatre-studio/uiComponents/PointerEventsHandler'
 import type {CommitOrDiscard} from '@unseenco/theatre-studio/StudioStore/StudioStore'
 import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
-import {getSequenceStateFromSheet} from '@unseenco/theatre-studio/utils/sequenceVariantHelpers'
+import {
+  getSequenceStateFromSheet,
+  valTracksByObjectForSheetVariant,
+} from '@unseenco/theatre-studio/utils/sequenceVariantHelpers'
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
 import useContextMenu from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import type {IContextMenuItem} from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
@@ -112,6 +123,17 @@ const GsapClipTrackBar: React.VFC<{
     }),
     [layoutP],
   )
+  const snapPositionsState = useVal(snapPositionsStateD)
+
+  const snapPositions =
+    (snapPositionsState.mode === 'snapToSome'
+      ? snapPositionsState.positions[leaf.sheetObject.address.objectKey]?.[
+          leaf.trackId
+        ]
+      : undefined) ?? []
+
+  const snapToAllClipEdges = snapPositionsState.mode === 'snapToAll'
+  const ownClipEdgePositions = gsapClipEdgeTimes(trackData)
 
   const {leftPx, widthPx} = gsapClipBarLayoutInScaledSpace(trackData, scaledSpace)
 
@@ -127,6 +149,26 @@ const GsapClipTrackBar: React.VFC<{
     sequenceVariant,
   })
 
+  const beginGsapClipSnapTargets = useCallback(() => {
+    const sheetStatePointer =
+      getStudio()!.atomP.historic.coreByProject[
+        leaf.sheetObject.address.projectId
+      ].sheetsById[leaf.sheetObject.address.sheetId]
+    const tracksByObject =
+      valTracksByObjectForSheetVariant(sheetStatePointer, sequenceVariant) ?? {}
+
+    snapToSome(
+      collectSequenceEditorSnapPositions(tracksByObject, {
+        shouldIncludeKeyframe() {
+          return true
+        },
+        shouldIncludeGsapClip(_clip, {trackId}) {
+          return trackId !== leaf.trackId
+        },
+      }),
+    )
+  }, [leaf, sequenceVariant])
+
   const moveOpts: DragOpts = useMemo(() => {
     let temp: CommitOrDiscard | undefined
     const startAtDrag = trackData.start
@@ -135,11 +177,17 @@ const GsapClipTrackBar: React.VFC<{
       debugName: 'gsapClipMove',
       lockCSSCursorTo: 'ew-resize',
       onDragStart() {
+        beginGsapClipSnapTargets()
         return {
-          onDrag(dx: number) {
+          onDrag(dx: number, _dy: number, event: MouseEvent) {
             const delta = toUnitSpace(dx)
             temp?.discard()
-            const nextStart = Math.max(0, startAtDrag + delta)
+            const nextStart = Math.max(
+              0,
+              DopeSnap.checkIfMouseEventSnapToPos(event, {
+                ignore: barNode,
+              }) ?? startAtDrag + delta,
+            )
             temp = getStudio()!.tempTransaction(({stateEditors}) => {
               stateEditors.coreByProject.historic.sheetsById.sequence.setGsapClipTrackTiming(
                 {
@@ -160,11 +208,20 @@ const GsapClipTrackBar: React.VFC<{
             if (dragHappened) temp?.commit()
             else temp?.discard()
             temp = undefined
+            snapToNone()
           },
         }
       },
     }
-  }, [leaf, layoutP, sequenceVariant, trackData.start])
+  }, [
+    barNode,
+    beginGsapClipSnapTargets,
+    leaf,
+    layoutP,
+    sequenceVariant,
+    trackData.duration,
+    trackData.start,
+  ])
 
   const resizeStartOpts: DragOpts = useMemo(() => {
     let temp: CommitOrDiscard | undefined
@@ -175,11 +232,20 @@ const GsapClipTrackBar: React.VFC<{
       debugName: 'gsapClipResizeStart',
       lockCSSCursorTo: 'ew-resize',
       onDragStart() {
+        beginGsapClipSnapTargets()
         return {
-          onDrag(dx: number) {
+          onDrag(dx: number, _dy: number, event: MouseEvent) {
             const delta = toUnitSpace(dx)
-            const newStart = Math.max(0, startAtDrag + delta)
-            const newDuration = Math.max(0.01, durationAtDrag - delta)
+            const newStart = Math.max(
+              0,
+              DopeSnap.checkIfMouseEventSnapToPos(event, {
+                ignore: startHandleNode,
+              }) ?? startAtDrag + delta,
+            )
+            const newDuration = Math.max(
+              0.01,
+              durationAtDrag - (newStart - startAtDrag),
+            )
             temp?.discard()
             temp = getStudio()!.tempTransaction(({stateEditors}) => {
               stateEditors.coreByProject.historic.sheetsById.sequence.setGsapClipTrackTiming(
@@ -202,23 +268,42 @@ const GsapClipTrackBar: React.VFC<{
             if (dragHappened) temp?.commit()
             else temp?.discard()
             temp = undefined
+            snapToNone()
           },
         }
       },
     }
-  }, [leaf, layoutP, sequenceVariant, trackData.duration, trackData.start])
+  }, [
+    beginGsapClipSnapTargets,
+    leaf,
+    layoutP,
+    sequenceVariant,
+    startHandleNode,
+    trackData.duration,
+    trackData.start,
+  ])
 
   const resizeEndOpts: DragOpts = useMemo(() => {
     let temp: CommitOrDiscard | undefined
     const startDuration = trackData.duration
+    const clipStart = trackData.start
     const toUnitSpace = val(layoutP.scaledSpace.toUnitSpace)
     return {
       debugName: 'gsapClipResize',
       lockCSSCursorTo: 'ew-resize',
       onDragStart() {
+        beginGsapClipSnapTargets()
         return {
-          onDrag(dx: number) {
-            const newDuration = Math.max(0.01, startDuration + toUnitSpace(dx))
+          onDrag(dx: number, _dy: number, event: MouseEvent) {
+            const snappedEnd = DopeSnap.checkIfMouseEventSnapToPos(event, {
+              ignore: endHandleNode,
+            })
+            const newDuration = Math.max(
+              0.01,
+              snappedEnd != null
+                ? snappedEnd - clipStart
+                : startDuration + toUnitSpace(dx),
+            )
             temp?.discard()
             temp = getStudio()!.tempTransaction(({stateEditors}) => {
               stateEditors.coreByProject.historic.sheetsById.sequence.setGsapClipTrackTiming(
@@ -232,7 +317,7 @@ const GsapClipTrackBar: React.VFC<{
             })
             previewGsapClipsAtCurrentPlayhead(leaf.sheetObject, {
               trackId: leaf.trackId,
-              start: trackData.start,
+              start: clipStart,
               duration: newDuration,
             })
           },
@@ -240,23 +325,55 @@ const GsapClipTrackBar: React.VFC<{
             if (dragHappened) temp?.commit()
             else temp?.discard()
             temp = undefined
+            snapToNone()
           },
         }
       },
     }
-  }, [leaf, sequenceVariant, trackData.duration, layoutP])
+  }, [
+    beginGsapClipSnapTargets,
+    endHandleNode,
+    leaf,
+    layoutP,
+    sequenceVariant,
+    trackData.duration,
+    trackData.start,
+  ])
 
   const [isDraggingMove] = useDrag(barNode, moveOpts)
   const [isDraggingStart] = useDrag(startHandleNode, resizeStartOpts)
   const [isDraggingEnd] = useDrag(endHandleNode, resizeEndOpts)
+  const isDraggingClip = isDraggingMove || isDraggingStart || isDraggingEnd
   useCssCursorLock(
-    isDraggingMove || isDraggingStart || isDraggingEnd,
-    'draggingGsapClip',
+    isDraggingClip,
+    'draggingGsapClip draggingPositionInSequenceEditor',
     'ew-resize',
   )
 
+  const snapTargets = snapPositions.map((position) => (
+    <KeyframeSnapTarget
+      key={`gsap-snap-target-${position}`}
+      layoutP={layoutP}
+      leaf={leaf}
+      position={position}
+    />
+  ))
+
+  const additionalSnapTargets = !snapToAllClipEdges
+    ? null
+    : ownClipEdgePositions.map((position) => (
+        <KeyframeSnapTarget
+          key={`gsap-additional-snap-target-${position}`}
+          layoutP={layoutP}
+          leaf={leaf}
+          position={position}
+        />
+      ))
+
   return (
     <Container>
+      {snapTargets}
+      {additionalSnapTargets}
       {contextMenu}
       <ClipBar
         ref={barRef}

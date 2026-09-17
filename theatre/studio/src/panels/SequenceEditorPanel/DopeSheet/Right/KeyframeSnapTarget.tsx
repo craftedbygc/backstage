@@ -11,9 +11,12 @@ import type {
 } from '@unseenco/theatre-shared/utils/ids'
 import type {
   BasicKeyframedTrack,
+  GsapClipTrack,
   HistoricPositionalSequence,
   Keyframe,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
+import {isGsapClipTrack} from '@unseenco/theatre-shared/sequence/trackData'
+import {uniq} from 'lodash-es'
 
 const HitZone = styled.div`
   z-index: 1;
@@ -133,6 +136,98 @@ export function collectKeyframeSnapPositions(
           ),
         ),
       ],
+    ),
+  )
+}
+
+export function gsapClipEdgeTimes(clip: Pick<GsapClipTrack, 'start' | 'duration'>): [
+  number,
+  number,
+] {
+  return [clip.start, clip.start + clip.duration]
+}
+
+export function collectGsapClipEdgeSnapPositions(
+  tracksByObject: HistoricPositionalSequence['tracksByObject'],
+  shouldIncludeClip?: (
+    clip: GsapClipTrack,
+    track: {
+      trackId: SequenceTrackId
+      objectKey: ObjectAddressKey
+    },
+  ) => boolean,
+): KeyframeSnapPositions {
+  return Object.fromEntries(
+    Object.entries(tracksByObject ?? {}).map(
+      ([objectKey, trackDataAndTrackIdByPropPath]) => [
+        objectKey,
+        Object.fromEntries(
+          Object.entries(trackDataAndTrackIdByPropPath!.trackData).flatMap(
+            ([trackId, track]) => {
+              if (!track || !isGsapClipTrack(track)) return []
+              if (
+                shouldIncludeClip &&
+                !shouldIncludeClip(track, {trackId, objectKey})
+              ) {
+                return []
+              }
+              return [[trackId, gsapClipEdgeTimes(track)]]
+            },
+          ),
+        ),
+      ],
+    ),
+  )
+}
+
+export function mergeKeyframeSnapPositions(
+  ...positionMaps: KeyframeSnapPositions[]
+): KeyframeSnapPositions {
+  const merged: KeyframeSnapPositions = {}
+
+  for (const positionMap of positionMaps) {
+    for (const [objectKey, tracks] of Object.entries(positionMap)) {
+      if (!merged[objectKey]) {
+        merged[objectKey] = {}
+      }
+      for (const [trackId, positions] of Object.entries(tracks)) {
+        const existing = merged[objectKey]![trackId] ?? []
+        merged[objectKey]![trackId] = uniq([...existing, ...positions])
+      }
+    }
+  }
+
+  return merged
+}
+
+export function collectSequenceEditorSnapPositions(
+  tracksByObject: HistoricPositionalSequence['tracksByObject'],
+  options: {
+    shouldIncludeKeyframe: (
+      kf: Keyframe,
+      track: {
+        trackId: SequenceTrackId
+        trackData: BasicKeyframedTrack
+        objectKey: ObjectAddressKey
+      },
+    ) => boolean
+    shouldIncludeGsapClip?: (
+      clip: GsapClipTrack,
+      track: {
+        trackId: SequenceTrackId
+        objectKey: ObjectAddressKey
+      },
+    ) => boolean
+  },
+): KeyframeSnapPositions {
+  return mergeKeyframeSnapPositions(
+    collectKeyframeSnapPositions(
+      tracksByObject,
+      options.shouldIncludeKeyframe,
+    ),
+    collectGsapClipEdgeSnapPositions(
+      tracksByObject,
+      options.shouldIncludeGsapClip,
     ),
   )
 }
