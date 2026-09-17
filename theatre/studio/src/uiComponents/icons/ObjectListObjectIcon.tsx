@@ -10,10 +10,14 @@ const IconWrap = styled.span`
   line-height: 0;
 `
 
-/** Default outline leaf icon: filled square (sheet object). */
-function ObjectListObjectIcon() {
-  const size = 7 * 0.75
-  const offset = (16 - size) / 2
+const UNSAVED_FILL = '#f59e0b'
+
+/**
+ * Outline leaf icon: filled circle — white when clean, orange when diverged from
+ * saved project state.
+ */
+function ObjectListObjectIcon(props: {unsaved?: boolean}) {
+  const {unsaved = false} = props
   return (
     <IconWrap aria-hidden>
       <svg
@@ -23,13 +27,11 @@ function ObjectListObjectIcon() {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <rect
-          x={offset}
-          y={offset}
-          width={size}
-          height={size}
-          rx={0.75}
-          fill="currentColor"
+        <circle
+          cx={8}
+          cy={8}
+          r={3.5}
+          fill={unsaved ? UNSAVED_FILL : '#ffffff'}
         />
       </svg>
     </IconWrap>

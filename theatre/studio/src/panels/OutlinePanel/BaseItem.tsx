@@ -4,7 +4,6 @@ import styled, {css} from 'styled-components'
 import noop from '@unseenco/theatre-shared/utils/noop'
 import {pointerEventsAutoInNormalMode} from '@unseenco/theatre-studio/css'
 import {ChevronDown, Package} from '@unseenco/theatre-studio/uiComponents/icons'
-import UnsavedChangesDot from '@unseenco/theatre-studio/uiComponents/UnsavedChangesDot'
 
 export const Container = styled.li`
   margin: 0;
@@ -79,13 +78,6 @@ const Head_Label = styled.span`
   line-height: 1;
 `
 
-const OutlineItemUnsavedDot = styled(UnsavedChangesDot)`
-  position: absolute;
-  left: -2px;
-  top: -2px;
-  pointer-events: none;
-`
-
 const Head_IconContainer = styled.div`
   font-weight: 500;
   display: flex;
@@ -143,8 +135,6 @@ const BaseItem: React.FC<{
   headerRef?: React.Ref<HTMLDivElement>
   /** Replaces the default leaf Package icon when the item has no children. */
   leafIcon?: React.ReactNode
-  /** Orange dot at top-left of the row when diverged from saved state. */
-  showUnsavedIndicator?: boolean
 }> = ({
   label,
   children,
@@ -156,7 +146,6 @@ const BaseItem: React.FC<{
   setIsCollapsed,
   headerRef,
   leafIcon,
-  showUnsavedIndicator = false,
 }) => {
   const canContainChildren = children !== undefined
 
@@ -174,7 +163,6 @@ const BaseItem: React.FC<{
         onClick={select ?? noop}
         data-header
       >
-        {showUnsavedIndicator ? <OutlineItemUnsavedDot /> : null}
         <Head_IconContainer>
           {canContainChildren ? (
             <Head_Icon_WithDescendants
