@@ -1,9 +1,7 @@
 import * as React from 'react'
-import UnsavedChangesDot from '@unseenco/theatre-studio/uiComponents/UnsavedChangesDot'
 import styled from 'styled-components'
 
 const IconWrap = styled.span`
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,18 +10,10 @@ const IconWrap = styled.span`
   line-height: 0;
 `
 
-const BadgeAnchor = styled.span`
-  position: absolute;
-  right: -2px;
-  top: -2px;
-`
-
-/**
- * Default outline leaf icon: filled square (sheet object). Orange dot when diverged
- * from saved project state.
- */
-function ObjectListObjectIcon(props: {unsaved?: boolean}) {
-  const {unsaved = false} = props
+/** Default outline leaf icon: filled square (sheet object). */
+function ObjectListObjectIcon() {
+  const size = 7 * 0.75
+  const offset = (16 - size) / 2
   return (
     <IconWrap aria-hidden>
       <svg
@@ -33,13 +23,15 @@ function ObjectListObjectIcon(props: {unsaved?: boolean}) {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <rect x={4.5} y={4.5} width={7} height={7} rx={1} fill="currentColor" />
+        <rect
+          x={offset}
+          y={offset}
+          width={size}
+          height={size}
+          rx={0.75}
+          fill="currentColor"
+        />
       </svg>
-      {unsaved ? (
-        <BadgeAnchor>
-          <UnsavedChangesDot />
-        </BadgeAnchor>
-      ) : null}
     </IconWrap>
   )
 }

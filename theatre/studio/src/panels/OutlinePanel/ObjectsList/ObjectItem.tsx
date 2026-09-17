@@ -139,6 +139,7 @@ export const ObjectItem: React.VFC<{
         depth={depth}
         selectionStatus={selectionStatus}
         headerRef={mergeRefs([headerRef, targetRef])}
+        showUnsavedIndicator={hasDivergedFromSavedState}
         leafIcon={
           <span
             title={
@@ -148,7 +149,7 @@ export const ObjectItem: React.VFC<{
             }
             style={{display: 'flex', lineHeight: 0}}
           >
-            <ObjectListObjectIcon unsaved={hasDivergedFromSavedState} />
+            <ObjectListObjectIcon />
           </span>
         }
       />
