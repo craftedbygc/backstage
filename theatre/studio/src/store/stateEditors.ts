@@ -6,7 +6,10 @@ import type {
   KeyframeType,
   SheetState_Historic,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
-import {isBasicKeyframedTrack} from '@unseenco/theatre-shared/sequence/trackData'
+import {
+  gsapClipEndTime,
+  isBasicKeyframedTrack,
+} from '@unseenco/theatre-shared/sequence/trackData'
 import type {SheetAhistoricState} from '@unseenco/theatre-core/projects/store/storeTypes'
 // stateEditors mutates core historic sheet state, so it needs these runtime helpers.
 // eslint-disable-next-line no-restricted-syntax
@@ -1324,6 +1327,27 @@ namespace stateEditors {
             track.keyframes = sorted
           }
 
+          function _extendSequenceLengthForGsapClipEnd(
+            p: WithoutSheetInstance<SheetObjectAddress> & {
+              sequenceVariant?: SequenceVariantId
+            },
+            clipEnd: number,
+          ) {
+            const variantId = effectiveSequenceVariantForObjectKey(
+              p.objectKey,
+              p.sequenceVariant,
+            )
+            const seq =
+              stateEditors.coreByProject.historic.sheetsById.sequence._ensure({
+                ...p,
+                sequenceVariant: variantId,
+              })
+            const needed = parseFloat(clipEnd.toFixed(2))
+            if (needed > seq.length) {
+              seq.length = needed
+            }
+          }
+
           export function addGsapClipTrack(
             p: WithoutSheetInstance<SheetObjectAddress> & {
               gsapAnimationId: string
@@ -1344,6 +1368,7 @@ namespace stateEditors {
               __debugName: `gsap:${p.gsapAnimationId}`,
             }
             tracks.trackData[trackId] = track
+            _extendSequenceLengthForGsapClipEnd(p, gsapClipEndTime(track))
             return trackId
           }
 
@@ -1363,6 +1388,7 @@ namespace stateEditors {
             if (typeof p.duration === 'number') {
               track.duration = Math.max(p.duration, 0.01)
             }
+            _extendSequenceLengthForGsapClipEnd(p, gsapClipEndTime(track))
           }
 
           export function deleteGsapClipTrack(

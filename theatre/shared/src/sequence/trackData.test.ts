@@ -1,8 +1,10 @@
 import {
+  gsapClipEndTime,
   gsapClipLocalProgress,
   gsapClipSyncProgress,
   isBasicKeyframedTrack,
   isGsapClipTrack,
+  maxGsapClipEndTime,
 } from './trackData'
 
 describe('trackData helpers', () => {
@@ -20,6 +22,23 @@ describe('trackData helpers', () => {
     expect(gsapClipSyncProgress(6, clip)).toBe(1)
     expect(gsapClipSyncProgress(7, clip)).toBe(1)
     expect(gsapClipSyncProgress(100, clip)).toBe(1)
+  })
+
+  test('gsapClipSyncProgress at clip end and one step before', () => {
+    const clip = {start: 8, duration: 0.35}
+    const end = gsapClipEndTime(clip)
+    expect(gsapClipSyncProgress(end, clip)).toBe(1)
+    expect(gsapClipSyncProgress(end - 1 / 30, clip)).toBeLessThan(1)
+    expect(gsapClipSyncProgress(end + 1e-4, clip)).toBe(1)
+  })
+
+  test('maxGsapClipEndTime', () => {
+    expect(
+      maxGsapClipEndTime([
+        {start: 0, duration: 2},
+        {start: 8, duration: 0.35},
+      ]),
+    ).toBe(8.35)
   })
 
   test('type guards', () => {

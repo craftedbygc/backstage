@@ -1,6 +1,8 @@
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import type {IPlaybackRange} from '@unseenco/theatre-core/sequences/Sequence'
 import type Sequence from '@unseenco/theatre-core/sequences/Sequence'
+import {maxGsapClipEndTime} from '@unseenco/theatre-shared/sequence/trackData'
+import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 import type {Prism} from '@unseenco/theatre-dataverse'
 import {Atom, prism, val} from '@unseenco/theatre-dataverse'
 import memoizeFn from '@unseenco/theatre-shared/utils/memoizeFn'
@@ -117,7 +119,27 @@ export function jumpToStart(sequence: Sequence) {
 }
 
 export function jumpToEnd(sequence: Sequence) {
-  sequence.position = getJumpRange(sequence)[1]
+  const [, rangeEnd] = getJumpRange(sequence)
+  const clipEnd = maxGsapClipEndTime(
+    sequence.publicApi.__experimental_getGsapClips().map(({clip}) => clip),
+  )
+  const targetEnd = Math.max(rangeEnd, clipEnd)
+
+  if (targetEnd > sequence.length) {
+    const studio = getStudio()
+    if (studio) {
+      studio.transaction(({stateEditors}) => {
+        stateEditors.coreByProject.historic.sheetsById.sequence.setLength({
+          projectId: sequence.address.projectId,
+          sheetId: sequence.address.sheetId,
+          sequenceVariant: getStudioActiveSequenceVariant(sequence.address),
+          length: targetEnd,
+        })
+      })
+    }
+  }
+
+  sequence.position = targetEnd
 }
 
 export function stepFrame(sequence: Sequence, direction: -1 | 1) {

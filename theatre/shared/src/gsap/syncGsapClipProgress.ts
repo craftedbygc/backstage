@@ -24,16 +24,32 @@ function getGsapAnimationTargetKey(
   return fallbackAnimationId
 }
 
+const GSAP_CLIP_TIME_EPS = 1e-5
+
 function pickActiveClipForTarget(
   group: EnrichedClip[],
   sequencePosition: number,
 ): EnrichedClip {
   const sorted = [...group].sort((a, b) => a.start - b.start)
-  const started = sorted.filter((clip) => sequencePosition >= clip.start)
+
+  for (const clip of sorted) {
+    const end = clip.start + clip.duration
+    if (
+      sequencePosition + GSAP_CLIP_TIME_EPS >= clip.start &&
+      sequencePosition <= end + GSAP_CLIP_TIME_EPS
+    ) {
+      return clip
+    }
+  }
+
+  const started = sorted.filter(
+    (clip) => sequencePosition + GSAP_CLIP_TIME_EPS >= clip.start,
+  )
   if (started.length > 0) {
     return started[started.length - 1]!
   }
-  return sorted[0]!
+
+  return sorted[sorted.length - 1]!
 }
 
 /** Updates registered GSAP tween progress for each clip at `sequencePosition`. */
