@@ -8,19 +8,33 @@ describe('subscribeGsapClipSyncAtPlayhead', () => {
     }
   }
 
+  function setRegistry(
+    entries: Record<string, {animation: unknown; targets?: unknown[]}>,
+  ) {
+    g.__unseenco_theatre_gsap_animationRegistry__ = {
+      byId: new Map(
+        Object.entries(entries).map(([id, {animation}]) => [
+          id,
+          {id, label: id, animation},
+        ]),
+      ),
+    }
+    for (const [, {animation, targets}] of Object.entries(entries)) {
+      if (targets) {
+        ;(animation as {targets: () => unknown[]}).targets = () => targets
+      }
+    }
+  }
+
   test('click-equivalent playhead jump past hide end syncs on same turn', () => {
     const show = {progress: jest.fn()}
     const hide = {progress: jest.fn()}
     const panel = {}
 
-    g.__unseenco_theatre_gsap_animationRegistry__ = {
-      byId: new Map([
-        ['show', {id: 'show', label: 'show', animation: show}],
-        ['hide', {id: 'hide', label: 'hide', animation: hide}],
-      ]),
-    }
-    ;(show as {targets: () => unknown[]}).targets = () => [panel]
-    ;(hide as {targets: () => unknown[]}).targets = () => [panel]
+    setRegistry({
+      show: {animation: show, targets: [panel]},
+      hide: {animation: hide, targets: [panel]},
+    })
 
     const showDuration = 0.45
     const hideStart = showDuration
