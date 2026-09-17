@@ -97,8 +97,7 @@ void project.ready.then(() => {
     .to(box, {rotation: 90, duration: 0.5, ease: 'power2.inOut'}, '+=0.1')
 
   registerGsapAnimation(boxChoreoTimeline, sheet, {
-    label: 'Box choreo',
-    id: 'gsap-box-choreo',
+    label: 'Box timeline',
     onRebuildTimeline: () => {
       boxChoreoTimeline = gsap.timeline({paused: true})
       boxChoreoTimeline

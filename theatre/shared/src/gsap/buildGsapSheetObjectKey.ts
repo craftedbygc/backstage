@@ -6,7 +6,7 @@ import {validateAndSanitiseSlashedPathOrThrow} from '@unseenco/theatre-shared/ut
  */
 export function buildGsapSheetObjectKey(namespace: string, label: string): string {
   return validateAndSanitiseSlashedPathOrThrow(
-    `${namespace}/${label}`,
+    `${namespace} / ${label}`,
     'buildGsapSheetObjectKey',
   )
 }
