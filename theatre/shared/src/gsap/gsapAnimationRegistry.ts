@@ -1,6 +1,7 @@
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import {bumpGsapStudioRegistryRevision} from './gsapStudioRegistryRevision'
 import {registerGsapObjectBinding} from './gsapObjectBinding'
+import {readGsapTweenTimelineDuration} from './syncGsapClipProgress'
 
 const REGISTRY_KEY = '__unseenco_theatre_gsap_animationRegistry__'
 
@@ -47,14 +48,7 @@ export function registerAnimationInRegistry(
     store.idBySheetObject.set(entry.sheetObject, entry.id)
     store.idByAddressKey.set(sheetObjectAddressKey(entry.sheetObject), entry.id)
     const duration =
-      entry.defaultDuration ??
-      (typeof (entry.animation as {duration?: () => number} | undefined)
-        ?.duration === 'function'
-        ? (() => {
-            const d = (entry.animation as {duration: () => number}).duration()
-            return d > 0 ? d : 1
-          })()
-        : 1)
+      entry.defaultDuration ?? readGsapTweenTimelineDuration(entry.animation)
     registerGsapObjectBinding(entry.sheetObject, {
       gsapAnimationId: entry.id,
       defaultDuration: duration,

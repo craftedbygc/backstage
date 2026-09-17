@@ -7,6 +7,7 @@ import {
   listAnimationEntries as listSharedAnimationEntries,
   registerAnimationInRegistry as registerSharedAnimationInRegistry,
 } from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import {readGsapTweenTimelineDuration} from '@unseenco/theatre-shared/gsap/syncGsapClipProgress'
 
 export type GsapAnimationRegistryEntry = {
   id: string
@@ -28,8 +29,7 @@ export function registerAnimationInRegistry(
 }
 
 function defaultClipDuration(animation: GsapTweenLike): number {
-  const d = animation.duration()
-  return d > 0 ? d : 1
+  return readGsapTweenTimelineDuration(animation)
 }
 
 export function getAnimationEntryById(

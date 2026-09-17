@@ -31,3 +31,24 @@ export function gsapClipLocalProgress(
   if (raw >= 1) return 1
   return raw
 }
+
+/**
+ * Like {@link gsapClipLocalProgress}, but returns `null` once the playhead is
+ * past the clip end. Used when driving GSAP tweens so finished clips (e.g.
+ * Panel show) do not keep applying progress 1 while a later clip (Panel hide)
+ * runs on the same target.
+ */
+export function gsapClipSyncProgress(
+  sequencePosition: number,
+  clip: Pick<GsapClipTrack, 'start' | 'duration'>,
+): number | null {
+  if (clip.duration <= 0) return 0
+  if (sequencePosition < clip.start) return 0
+  const clipEnd = clip.start + clip.duration
+  if (sequencePosition > clipEnd) return null
+  if (sequencePosition >= clipEnd - 1e-5) return 1
+  const raw = (sequencePosition - clip.start) / clip.duration
+  if (raw <= 0) return 0
+  if (raw >= 1) return 1
+  return raw
+}
