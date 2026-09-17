@@ -1,5 +1,5 @@
 import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
-import {useEffect} from 'react'
+import {useEffect, useRef} from 'react'
 
 export default function useOnClickOutside(
   container: Element | null | (Element | null)[],
@@ -8,6 +8,9 @@ export default function useOnClickOutside(
   // Can be used e.g. to prevent unexpected closing-reopening when clicking on a
   // popover's trigger.
 ) {
+  const onOutsideRef = useRef(onOutside)
+  onOutsideRef.current = onOutside
+
   useEffect(() => {
     if (!container || enabled === false) return
 
@@ -19,7 +22,7 @@ export default function useOnClickOutside(
       if (
         containers.every((container) => !e.composedPath().includes(container))
       ) {
-        onOutside(e)
+        onOutsideRef.current(e)
       }
     }
 

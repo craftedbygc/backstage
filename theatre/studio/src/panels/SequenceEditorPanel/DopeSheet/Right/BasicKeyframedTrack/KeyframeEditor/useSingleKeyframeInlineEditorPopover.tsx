@@ -1,6 +1,7 @@
-import React from 'react'
+import React, {useCallback, useEffect} from 'react'
 import styled from 'styled-components'
 import usePopover from '@unseenco/theatre-studio/uiComponents/Popover/usePopover'
+import type {CloseFn, OpenFn} from '@unseenco/theatre-studio/uiComponents/Popover/usePopover'
 import BasicPopover from '@unseenco/theatre-studio/uiComponents/Popover/BasicPopover'
 import {DeterminePropEditorForKeyframeTree} from './DeterminePropEditorForSingleKeyframe'
 import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
@@ -31,29 +32,97 @@ const KeyframeInlineEditorPopover = styled(BasicPopover)`
     border: none;
     border-radius: var(--studio-radius, 4px);
     padding: 0;
-    overflow: visible;
+    overflow: hidden;
+    min-width: 200px;
   }
 `
+
+let openKeyframeInlineEditorPopoverClose: CloseFn | null = null
+
+function closeOpenKeyframeInlineEditorPopover(reason: string) {
+  openKeyframeInlineEditorPopoverClose?.(reason)
+  openKeyframeInlineEditorPopoverClose = null
+}
 
 /** The editor that pops up when directly clicking a Keyframe. */
 export function useKeyframeInlineEditorPopover(
   props: EditingOptionsTree[] | null,
 ) {
-  return usePopover({debugName: 'useKeyframeInlineEditorPopover'}, () => (
-    <KeyframeInlineEditorPopover showPopoverEdgeTriangle>
-      {!Array.isArray(props)
-        ? undefined
-        : props.map((prop, i) => (
-            <DeterminePropEditorForKeyframeTree
-              key={i}
-              {...prop}
-              // Don't autofocus the value — leave the popover ready for scrub
-              // or a deliberate click-to-type on the value.
-              indent={0}
-            />
-          ))}
-    </KeyframeInlineEditorPopover>
-  ))
+  const popover = usePopover(
+    {
+      debugName: 'useKeyframeInlineEditorPopover',
+      closeWhenPointerIsDistant: false,
+    },
+    () => (
+      <KeyframeInlineEditorPopover showPopoverEdgeTriangle>
+        {!Array.isArray(props)
+          ? undefined
+          : props.map((prop, i) => (
+              <DeterminePropEditorForKeyframeTree
+                key={i}
+                {...prop}
+                // Don't autofocus the value — leave the popover ready for scrub
+                // or a deliberate click-to-type on the value.
+                indent={0}
+              />
+            ))}
+      </KeyframeInlineEditorPopover>
+    ),
+  )
+
+  const releaseIfActive = useCallback((close: CloseFn) => {
+    if (openKeyframeInlineEditorPopoverClose === close) {
+      openKeyframeInlineEditorPopoverClose = null
+    }
+  }, [])
+
+  const close = useCallback<CloseFn>(
+    (reason) => {
+      releaseIfActive(close)
+      popover.close(reason)
+    },
+    [popover.close, releaseIfActive],
+  )
+
+  const open = useCallback<OpenFn>(
+    (e, target) => {
+      closeOpenKeyframeInlineEditorPopover(
+        'replaced by another keyframe inline editor',
+      )
+      popover.open(e, target)
+      openKeyframeInlineEditorPopoverClose = close
+    },
+    [popover.open, close],
+  )
+
+  const toggle = useCallback<OpenFn>(
+    (e, target) => {
+      if (popover.isOpen) {
+        close('toggled')
+      } else {
+        closeOpenKeyframeInlineEditorPopover(
+          'replaced by another keyframe inline editor',
+        )
+        popover.open(e, target)
+        openKeyframeInlineEditorPopoverClose = close
+      }
+    },
+    [popover.isOpen, popover.open, close],
+  )
+
+  useEffect(() => {
+    if (!popover.isOpen) {
+      releaseIfActive(close)
+    }
+  }, [popover.isOpen, close, releaseIfActive])
+
+  useEffect(() => {
+    return () => {
+      releaseIfActive(close)
+    }
+  }, [close, releaseIfActive])
+
+  return {...popover, open, toggle, close}
 }
 
 export type EditingOptionsTree =
