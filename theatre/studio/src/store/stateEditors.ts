@@ -1,6 +1,7 @@
 import type {
   BasicKeyframedTrack,
   GsapClipTrack,
+  GsapTimelineChildClip,
   HistoricPositionalSequence,
   Keyframe,
   KeyframeType,
@@ -1353,6 +1354,8 @@ namespace stateEditors {
               gsapAnimationId: string
               start: number
               duration: number
+              timelineChildren?: GsapTimelineChildClip[]
+              timelineSpan?: number
               sequenceVariant?: SequenceVariantId
             },
           ): SequenceTrackId {
@@ -1367,9 +1370,46 @@ namespace stateEditors {
               duration,
               __debugName: `gsap:${p.gsapAnimationId}`,
             }
+            if (p.timelineChildren && p.timelineChildren.length > 0) {
+              track.timelineChildren = p.timelineChildren
+              track.timelineSpan = p.timelineSpan ?? duration
+            }
             tracks.trackData[trackId] = track
             _extendSequenceLengthForGsapClipEnd(p, gsapClipEndTime(track))
             return trackId
+          }
+
+          export function setGsapTimelineChildTiming(
+            p: WithoutSheetInstance<SheetObjectAddress> & {
+              trackId: SequenceTrackId
+              childId: string
+              localStart?: number
+              localDuration?: number
+              timelineSpan?: number
+              parentDuration?: number
+              sequenceVariant?: SequenceVariantId
+            },
+          ) {
+            const track = _getTrack(p)
+            if (!track || track.type !== 'GsapClipTrack') return
+            if (!track.timelineChildren?.length) return
+            const child = track.timelineChildren.find(
+              (c) => c.childId === p.childId,
+            )
+            if (!child) return
+            if (typeof p.localStart === 'number') {
+              child.localStart = Math.max(p.localStart, 0)
+            }
+            if (typeof p.localDuration === 'number') {
+              child.localDuration = Math.max(p.localDuration, 0.01)
+            }
+            if (typeof p.timelineSpan === 'number') {
+              track.timelineSpan = Math.max(p.timelineSpan, 0.01)
+            }
+            if (typeof p.parentDuration === 'number') {
+              track.duration = Math.max(p.parentDuration, 0.01)
+            }
+            _extendSequenceLengthForGsapClipEnd(p, gsapClipEndTime(track))
           }
 
           export function setGsapClipTrackTiming(

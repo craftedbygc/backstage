@@ -1,10 +1,14 @@
+import type {GsapTimelineChildClip} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import {gsapClipSyncProgress} from '@unseenco/theatre-shared/sequence/trackData'
+import {applyTimelineChildTimingToGsap} from './applyTimelineChildTiming'
 import {getAnimationEntryById} from './gsapAnimationRegistry'
 
 export type GsapClipTiming = {
   gsapAnimationId: string
   start: number
   duration: number
+  timelineChildren?: ReadonlyArray<GsapTimelineChildClip>
+  timelineSpan?: number
 }
 
 type EnrichedClip = GsapClipTiming & {
@@ -57,10 +61,33 @@ export function syncRegisteredGsapAnimationsForClips(
     // tween at a stale partial progress that overrides a later clip.
     for (const clip of sorted) {
       const progress = gsapClipSyncProgress(sequencePosition, clip)
-      const animation = clip.entry.animation as {
-        progress: (progress: number, suppressEvents?: boolean) => void
+      const entry = clip.entry
+      const animation = entry.animation as {
+        progress?: (progress: number, suppressEvents?: boolean) => number
+        time?: (time: number, suppressEvents?: boolean) => number
       }
-      animation.progress(progress, true)
+      if (
+        entry.kind === 'timeline' &&
+        clip.timelineChildren &&
+        clip.timelineChildren.length > 0
+      ) {
+        applyTimelineChildTimingToGsap(
+          entry.animation,
+          clip.timelineChildren,
+          entry.timelineChildById,
+          entry.onRebuildTimeline,
+        )
+        const span =
+          clip.timelineSpan ?? readGsapTweenTimelineDuration(entry.animation)
+        const t = progress * Math.max(span, 0.01)
+        if (typeof animation.time === 'function') {
+          animation.time(t, true)
+        } else {
+          animation.progress?.(progress, true)
+        }
+      } else {
+        animation.progress?.(progress, true)
+      }
     }
   }
 }

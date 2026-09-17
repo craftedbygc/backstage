@@ -1,36 +1,59 @@
 import type {SequenceEditorTree_GsapClipTrack} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import React from 'react'
-import styled from 'styled-components'
-import {BaseHeader, LeftRowContainer} from './AnyCompositeRow'
-import {propNameTextCSS} from '@unseenco/theatre-studio/propEditors/utils/propNameTextCSS'
+import AnyCompositeRow from './AnyCompositeRow'
+import GsapChildClipLeftRow from './GsapChildClipRow'
+import {setCollapsedSheetItem} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/setCollapsedSheetObjectOrCompoundProp'
+import getStudio from '@unseenco/theatre-studio/getStudio'
+import type {SequenceEditorTree_GsapChildClip} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 
-const Label = styled.span`
-  ${propNameTextCSS};
-  color: #9a9a9a;
-`
+const GsapClipTrackLeftRow: React.VFC<{
+  leaf: SequenceEditorTree_GsapClipTrack
+}> = ({leaf}) => {
+  const hasChildren = leaf.children.length > 0
 
-const Header = styled(BaseHeader)`
-  padding-left: calc(0px + var(--depth) * 20px);
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
-`
-
-const GsapClipTrackRow: React.VFC<{leaf: SequenceEditorTree_GsapClipTrack}> = ({
-  leaf,
-}) => {
-  if (!leaf.shouldRender) return null
+  if (!hasChildren) {
+    if (!leaf.shouldRender) return null
+    return (
+      <AnyCompositeRow
+        leaf={leaf}
+        label={leaf.displayLabel}
+        isCollapsed={false}
+        toggleSelect={() => {
+          getStudio().transaction(({stateEditors}) => {
+            stateEditors.studio.historic.panels.outline.selection.set([
+              leaf.sheetObject,
+            ])
+          })
+        }}
+        toggleCollapsed={() => {}}
+      />
+    )
+  }
 
   return (
-    <LeftRowContainer depth={leaf.depth}>
-      <Header
-        isEven={leaf.n % 2 === 0}
-        style={{height: leaf.nodeHeight + 'px'}}
-      >
-        <Label title={leaf.trackData.gsapAnimationId}>GSAP clip</Label>
-      </Header>
-    </LeftRowContainer>
+    <AnyCompositeRow
+      leaf={leaf}
+      label={leaf.displayLabel}
+      isCollapsed={leaf.isCollapsed}
+      toggleSelect={() => {
+        getStudio().transaction(({stateEditors}) => {
+          stateEditors.studio.historic.panels.outline.selection.set([
+            leaf.sheetObject,
+          ])
+        })
+      }}
+      toggleCollapsed={() =>
+        setCollapsedSheetItem(!leaf.isCollapsed, {
+          sheetAddress: leaf.sheetObject.address,
+          sheetItemKey: leaf.sheetItemKey,
+        })
+      }
+    >
+      {leaf.children.map((child: SequenceEditorTree_GsapChildClip) => (
+        <GsapChildClipLeftRow leaf={child} key={child.childId} />
+      ))}
+    </AnyCompositeRow>
   )
 }
 
-export default GsapClipTrackRow
+export default GsapClipTrackLeftRow

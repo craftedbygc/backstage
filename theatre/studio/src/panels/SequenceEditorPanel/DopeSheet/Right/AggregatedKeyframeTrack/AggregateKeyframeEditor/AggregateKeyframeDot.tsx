@@ -45,6 +45,7 @@ function sheetObjectBuild(
   const children = viewModel.children
     .map((a) => {
       if (a.type === 'gsapClipTrack') return null
+      if (a.type === 'gsapChildClip') return null
       return a.type === 'propWithChildren'
         ? propWithChildrenBuild(a, keyframes)
         : primitivePropBuild(a, keyframes)

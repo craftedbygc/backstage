@@ -24,12 +24,16 @@ export function previewGsapClipsAtCurrentPlayhead(
           gsapAnimationId: clip.gsapAnimationId,
           start: clipOverride.start,
           duration: clipOverride.duration,
+          timelineChildren: clip.timelineChildren,
+          timelineSpan: clip.timelineSpan,
         }
       }
       return {
         gsapAnimationId: clip.gsapAnimationId,
         start: clip.start,
         duration: clip.duration,
+        timelineChildren: clip.timelineChildren,
+        timelineSpan: clip.timelineSpan,
       }
     })
   syncGsapClipsAtSequencePosition(position, clips)

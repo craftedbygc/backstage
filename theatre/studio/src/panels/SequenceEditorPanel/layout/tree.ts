@@ -32,6 +32,8 @@ import type {
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import {getSequenceStateFromSheet} from '@unseenco/theatre-studio/utils/sequenceVariantHelpers'
 import {isGsapClipTrack} from '@unseenco/theatre-shared/sequence/trackData'
+import {getAnimationEntryForSheetObject} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import type {GsapTimelineChildClip} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 
 /**
  * Base "view model" for each row with common
@@ -85,6 +87,7 @@ export type SequenceEditorTree_SheetObject =
       | SequenceEditorTree_PropWithChildren
       | SequenceEditorTree_PrimitiveProp
       | SequenceEditorTree_GsapClipTrack
+      | SequenceEditorTree_GsapChildClip
     >
   }
 
@@ -110,9 +113,22 @@ export type SequenceEditorTree_PrimitiveProp =
 
 export type SequenceEditorTree_GsapClipTrack =
   SequenceEditorTree_Row<'gsapClipTrack'> & {
+    isCollapsed: boolean
     sheetObject: SheetObject
     trackId: SequenceTrackId
     trackData: GsapClipTrack
+    displayLabel: string
+    children: SequenceEditorTree_GsapChildClip[]
+  }
+
+export type SequenceEditorTree_GsapChildClip =
+  SequenceEditorTree_Row<'gsapChildClip'> & {
+    sheetObject: SheetObject
+    parentTrackId: SequenceTrackId
+    parentTrackData: GsapClipTrack
+    childId: string
+    childData: GsapTimelineChildClip
+    displayLabel: string
   }
 
 export type SequenceEditorTree_AllRowTypes =
@@ -121,6 +137,7 @@ export type SequenceEditorTree_AllRowTypes =
   | SequenceEditorTree_PropWithChildren
   | SequenceEditorTree_PrimitiveProp
   | SequenceEditorTree_GsapClipTrack
+  | SequenceEditorTree_GsapChildClip
 
 const HEIGHT_OF_ANY_TITLE = 28
 
@@ -309,8 +326,21 @@ export const calculateSequenceEditorTree = (
     shouldRender: boolean,
   ) {
     for (const {trackId, trackData} of clips) {
+      const entry = getAnimationEntryForSheetObject(sheetObject)
+      const displayLabel = entry?.label ?? trackData.gsapAnimationId
+      const hasTimelineChildren = (trackData.timelineChildren?.length ?? 0) > 0
+      const isCollapsedP =
+        collapsableItemSetP.byId[
+          createStudioSheetItemKey.forSheetObjectGsapClipTrack(
+            sheetObject,
+            trackId,
+          )
+        ].isCollapsed
+      const isCollapsed = pointerToPrism(isCollapsedP).getValue() ?? false
+
       const row: SequenceEditorTree_GsapClipTrack = {
         type: 'gsapClipTrack',
+        isCollapsed,
         depth: level,
         sheetItemKey: createStudioSheetItemKey.forSheetObjectGsapClipTrack(
           sheetObject,
@@ -319,17 +349,53 @@ export const calculateSequenceEditorTree = (
         sheetObject,
         trackId,
         trackData,
+        displayLabel,
         shouldRender,
         top: topSoFar,
         nodeHeight: shouldRender ? HEIGHT_OF_ANY_TITLE : 0,
-        heightIncludingChildren: shouldRender ? HEIGHT_OF_ANY_TITLE : 0,
+        heightIncludingChildren: -1,
+        children: [],
         n: nSoFar,
       }
       arrayOfChildren.push(row)
+
       if (shouldRender) {
         nSoFar += 1
         topSoFar += row.nodeHeight
       }
+
+      if (hasTimelineChildren && trackData.timelineChildren) {
+        for (const childData of trackData.timelineChildren) {
+          const childRow: SequenceEditorTree_GsapChildClip = {
+            type: 'gsapChildClip',
+            depth: level + 1,
+            sheetItemKey: createStudioSheetItemKey.forSheetObjectGsapChildClip(
+              sheetObject,
+              trackId,
+              childData.childId,
+            ),
+            sheetObject,
+            parentTrackId: trackId,
+            parentTrackData: trackData,
+            childId: childData.childId,
+            childData,
+            displayLabel: childData.label,
+            shouldRender: shouldRender && !isCollapsed,
+            top: topSoFar,
+            nodeHeight: shouldRender && !isCollapsed ? HEIGHT_OF_ANY_TITLE : 0,
+            heightIncludingChildren:
+              shouldRender && !isCollapsed ? HEIGHT_OF_ANY_TITLE : 0,
+            n: nSoFar,
+          }
+          row.children.push(childRow)
+          if (shouldRender && !isCollapsed) {
+            nSoFar += 1
+            topSoFar += childRow.nodeHeight
+          }
+        }
+      }
+
+      row.heightIncludingChildren = topSoFar - row.top
     }
   }
 

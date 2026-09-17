@@ -100,6 +100,23 @@ void project.ready.then(() => {
     id: 'gsap-box-move',
   })
 
+  let boxChoreoTimeline = gsap.timeline({paused: true})
+  boxChoreoTimeline
+    .to(box, {x: 80, duration: 0.6, ease: 'power2.out'})
+    .to(box, {rotation: 90, duration: 0.5, ease: 'power2.inOut'}, '+=0.1')
+
+  registerGsapAnimation(boxChoreoTimeline, sheet, {
+    label: 'Box choreo',
+    id: 'gsap-box-choreo',
+    onRebuildTimeline: () => {
+      boxChoreoTimeline = gsap.timeline({paused: true})
+      boxChoreoTimeline
+        .to(box, {x: 80, duration: 0.6, ease: 'power2.out'})
+        .to(box, {rotation: 90, duration: 0.5, ease: 'power2.inOut'}, '+=0.1')
+      return boxChoreoTimeline
+    },
+  })
+
   const regularObject = sheet.object('Regular Theatre Object', {
     x: types.number(0, {range: [-80, 80], label: 'X'}),
     y: types.number(0, {range: [-80, 80], label: 'Y'}),

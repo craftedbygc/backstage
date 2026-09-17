@@ -15,6 +15,7 @@ export type GsapAnimationRegistryEntry = {
   animation: GsapTweenLike
   sheetObject?: SheetObject
   defaultDuration?: number
+  onRebuildTimeline?: () => GsapTweenLike
 }
 
 export function registerAnimationInRegistry(
@@ -24,7 +25,9 @@ export function registerAnimationInRegistry(
     ...entry,
     animation: entry.animation,
     defaultDuration:
-      entry.defaultDuration ?? defaultClipDuration(entry.animation),
+      entry.defaultDuration ??
+      defaultClipDuration(entry.animation as GsapTweenLike),
+    onRebuildTimeline: entry.onRebuildTimeline,
   })
 }
 

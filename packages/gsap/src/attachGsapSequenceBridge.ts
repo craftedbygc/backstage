@@ -16,6 +16,8 @@ export function attachGsapSequenceBridge(sheet: ISheet): () => void {
         gsapAnimationId: clip.gsapAnimationId,
         start: clip.start,
         duration: clip.duration,
+        timelineChildren: clip.timelineChildren,
+        timelineSpan: clip.timelineSpan,
       })),
   })
 }

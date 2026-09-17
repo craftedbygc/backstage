@@ -30,6 +30,7 @@ import useContextMenu from '@unseenco/theatre-studio/uiComponents/simpleContextM
 import type {IContextMenuItem} from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import {previewGsapClipsAtCurrentPlayhead} from '@unseenco/theatre-studio/gsap/previewGsapClipsAtPlayhead'
 import {gsapClipBarLayoutInScaledSpace} from './gsapClipBarLayout'
+import GsapChildClipTrackRow from './GsapChildClipTrackRow'
 
 const Container = styled.div`
   position: relative;
@@ -37,16 +38,32 @@ const Container = styled.div`
   width: 100%;
 `
 
-const ClipBar = styled.div`
+const ClipBar = styled.div<{$isTimeline?: boolean}>`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   height: 14px;
   border-radius: 3px;
-  background: #6b8f71;
+  background: ${(p) => (p.$isTimeline ? '#5a735e' : '#6b8f71')};
   border: 1px solid #8fb396;
   box-sizing: border-box;
   cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+`
+
+const ClipBarLabel = styled.span`
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.85);
+  pointer-events: none;
+  user-select: none;
+  padding: 0 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 `
 
 const EdgeHandle = styled.div<{$side: 'left' | 'right'}>`
@@ -103,10 +120,22 @@ const GsapClipTrackRow: React.VFC<{
         layoutP={layoutP}
         trackData={trackData}
         sequenceVariant={trackVariant}
+        displayLabel={leaf.displayLabel}
       />
     )
 
-    return <RightRow leaf={leaf} isCollapsed={false} node={node} />
+    return (
+      <RightRow leaf={leaf} isCollapsed={leaf.isCollapsed} node={node}>
+        {leaf.children.map((child) => (
+          <GsapChildClipTrackRow
+            key={child.childId}
+            leaf={child}
+            layoutP={layoutP}
+            sequenceVariant={trackVariant}
+          />
+        ))}
+      </RightRow>
+    )
   }, [leaf, layoutP])
 }
 
@@ -115,7 +144,9 @@ const GsapClipTrackBar: React.VFC<{
   layoutP: Pointer<SequenceEditorPanelLayout>
   trackData: GsapClipTrack
   sequenceVariant: string
-}> = ({leaf, layoutP, trackData, sequenceVariant}) => {
+  displayLabel: string
+}> = ({leaf, layoutP, trackData, sequenceVariant, displayLabel}) => {
+  const isTimeline = (trackData.timelineChildren?.length ?? 0) > 0
   const scaledSpace = usePrism(
     () => ({
       fromUnitSpace: val(layoutP.scaledSpace.fromUnitSpace),
@@ -135,7 +166,10 @@ const GsapClipTrackBar: React.VFC<{
   const snapToAllClipEdges = snapPositionsState.mode === 'snapToAll'
   const ownClipEdgePositions = gsapClipEdgeTimes(trackData)
 
-  const {leftPx, widthPx} = gsapClipBarLayoutInScaledSpace(trackData, scaledSpace)
+  const {leftPx, widthPx} = gsapClipBarLayoutInScaledSpace(
+    trackData,
+    scaledSpace,
+  )
 
   const [barRef, barNode] = useRefAndState<HTMLDivElement | null>(null)
   const [startHandleRef, startHandleNode] =
@@ -376,7 +410,9 @@ const GsapClipTrackBar: React.VFC<{
         ref={barRef}
         style={{left: leftPx, width: widthPx}}
         title={trackData.gsapAnimationId}
+        $isTimeline={isTimeline}
       >
+        <ClipBarLabel>{displayLabel}</ClipBarLabel>
         <EdgeHandle ref={startHandleRef} $side="left" />
         <EdgeHandle ref={endHandleRef} $side="right" />
       </ClipBar>

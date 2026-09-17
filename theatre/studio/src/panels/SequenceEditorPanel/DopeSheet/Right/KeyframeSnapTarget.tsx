@@ -16,6 +16,7 @@ import type {
   Keyframe,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import {isGsapClipTrack} from '@unseenco/theatre-shared/sequence/trackData'
+import {gsapTimelineChildClipInSequenceSpace} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/GsapClipTrack/gsapTimelineChildBarLayout'
 import {uniq} from 'lodash-es'
 
 const HitZone = styled.div`
@@ -140,10 +141,9 @@ export function collectKeyframeSnapPositions(
   )
 }
 
-export function gsapClipEdgeTimes(clip: Pick<GsapClipTrack, 'start' | 'duration'>): [
-  number,
-  number,
-] {
+export function gsapClipEdgeTimes(
+  clip: Pick<GsapClipTrack, 'start' | 'duration'>,
+): [number, number] {
   return [clip.start, clip.start + clip.duration]
 }
 
@@ -171,7 +171,19 @@ export function collectGsapClipEdgeSnapPositions(
               ) {
                 return []
               }
-              return [[trackId, gsapClipEdgeTimes(track)]]
+              const positions: number[] = [...gsapClipEdgeTimes(track)]
+              if (track.timelineChildren?.length) {
+                const span = track.timelineSpan ?? track.duration
+                for (const child of track.timelineChildren) {
+                  const seq = gsapTimelineChildClipInSequenceSpace(
+                    track,
+                    child,
+                    span,
+                  )
+                  positions.push(seq.start, seq.start + seq.duration)
+                }
+              }
+              return [[trackId, uniq(positions)]]
             },
           ),
         ),
@@ -221,10 +233,7 @@ export function collectSequenceEditorSnapPositions(
   },
 ): KeyframeSnapPositions {
   return mergeKeyframeSnapPositions(
-    collectKeyframeSnapPositions(
-      tracksByObject,
-      options.shouldIncludeKeyframe,
-    ),
+    collectKeyframeSnapPositions(tracksByObject, options.shouldIncludeKeyframe),
     collectGsapClipEdgeSnapPositions(
       tracksByObject,
       options.shouldIncludeGsapClip,

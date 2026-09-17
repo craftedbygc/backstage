@@ -116,6 +116,7 @@ function collectAggregateKeyframesCompoundOrObject(
 ): TrackWithId[] {
   return leaf.children.flatMap((childLeaf) => {
     if (childLeaf.type === 'gsapClipTrack') return []
+    if (childLeaf.type === 'gsapChildClip') return []
     return childLeaf.type === 'propWithChildren'
       ? collectAggregateKeyframesCompoundOrObject(childLeaf)
       : collectAggregateKeyframesPrimitiveProp(childLeaf)
@@ -167,6 +168,7 @@ export function collectAggregateSnapPositionsObjectOrCompound(
   return uniq(
     leaf.children.flatMap((childLeaf) => {
       if (childLeaf.type === 'gsapClipTrack') return []
+      if (childLeaf.type === 'gsapChildClip') return []
       return childLeaf.type === 'propWithChildren'
         ? collectAggregateSnapPositionsObjectOrCompound(
             childLeaf,

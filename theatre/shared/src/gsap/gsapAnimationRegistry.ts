@@ -1,6 +1,10 @@
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
-import {bumpGsapStudioRegistryRevision} from './gsapStudioRegistryRevision'
 import {registerGsapObjectBinding} from './gsapObjectBinding'
+import {bumpGsapStudioRegistryRevision} from './gsapStudioRegistryRevision'
+import {
+  isGsapTimeline,
+  linkGsapTimelineChildAnimations,
+} from './introspectGsapTimelineChildren'
 import {readGsapTweenTimelineDuration} from './syncGsapClipProgress'
 
 const REGISTRY_KEY = '__unseenco_theatre_gsap_animationRegistry__'
@@ -12,6 +16,9 @@ export type GsapAnimationRegistryEntry = {
   animation?: unknown
   sheetObject?: SheetObject
   defaultDuration?: number
+  kind?: 'tween' | 'timeline'
+  timelineChildById?: Map<string, unknown>
+  onRebuildTimeline?: () => unknown
 }
 
 type RegistryStore = {
@@ -43,7 +50,18 @@ export function registerAnimationInRegistry(
   entry: GsapAnimationRegistryEntry,
 ): void {
   const store = getStore()
-  store.byId.set(entry.id, entry)
+  const kind =
+    entry.animation && isGsapTimeline(entry.animation) ? 'timeline' : 'tween'
+  const timelineChildById =
+    kind === 'timeline' && entry.animation
+      ? linkGsapTimelineChildAnimations(entry.animation)
+      : undefined
+  const normalized: GsapAnimationRegistryEntry = {
+    ...entry,
+    kind,
+    timelineChildById,
+  }
+  store.byId.set(entry.id, normalized)
   if (entry.sheetObject) {
     store.idBySheetObject.set(entry.sheetObject, entry.id)
     store.idByAddressKey.set(sheetObjectAddressKey(entry.sheetObject), entry.id)

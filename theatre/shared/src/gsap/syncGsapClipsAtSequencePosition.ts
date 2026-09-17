@@ -1,3 +1,4 @@
+import type {GsapTimelineChildClip} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type {GsapClipTiming} from './syncGsapClipProgress'
 import {syncRegisteredGsapAnimationsForClips} from './syncGsapClipProgress'
 
@@ -5,6 +6,8 @@ export type GsapClipTimingSource = {
   gsapAnimationId: string
   start: number
   duration: number
+  timelineChildren?: ReadonlyArray<GsapTimelineChildClip>
+  timelineSpan?: number
 }
 
 /** Drives registered GSAP tweens from sequence playhead + clip list. */

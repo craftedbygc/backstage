@@ -63,7 +63,8 @@ const LeftRowHead_Icon = styled.span<{isCollapsed: boolean}>`
   flex: 0 0 auto;
   cursor: pointer;
 
-  transition: transform 0.05s ease-out, color 0.1s ease-out, opacity 0.1s ease-out;
+  transition: transform 0.05s ease-out, color 0.1s ease-out,
+    opacity 0.1s ease-out;
   transform: rotateZ(${(props) => (props.isCollapsed ? 0 : 90)}deg);
   color: #8b8e92;
   opacity: ${(props) => (props.isCollapsed ? 1 : 0.7)};
@@ -90,6 +91,7 @@ const AnyCompositeRow: React.FC<{
     | SequenceEditorTree_PrimitiveProp
     | SequenceEditorTree_PropWithChildren
     | SequenceEditorTree_SheetObject
+    | import('@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree').SequenceEditorTree_GsapClipTrack
   label: React.ReactNode
   toggleSelect?: VoidFn
   toggleCollapsed: VoidFn
@@ -125,15 +127,19 @@ const AnyCompositeRow: React.FC<{
         onClick={toggleSelect}
         isEven={leaf.n % 2 === 0}
       >
-        <LeftRowHead_Icon
-          isCollapsed={isCollapsed}
-          onClick={(e) => {
-            e.stopPropagation()
-            toggleCollapsed()
-          }}
-        >
-          <HiOutlineChevronRight />
-        </LeftRowHead_Icon>
+        {hasChildren ? (
+          <LeftRowHead_Icon
+            isCollapsed={isCollapsed}
+            onClick={(e) => {
+              e.stopPropagation()
+              toggleCollapsed()
+            }}
+          >
+            <HiOutlineChevronRight />
+          </LeftRowHead_Icon>
+        ) : (
+          <span style={{width: 18, flex: '0 0 auto'}} />
+        )}
         <LeftRowHead_Label>{label}</LeftRowHead_Label>
       </LeftRowHeader>
       {hasChildren && <LeftRowChildren>{children}</LeftRowChildren>}

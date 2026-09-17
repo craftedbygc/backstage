@@ -145,6 +145,17 @@ export type BasicKeyframedTrack = TrackDataCommon<'BasicKeyframedTrack'> & {
  * A GSAP tween segment on the Theatre sequence timeline, bridged at runtime
  * via `@unseenco/theatre-gsap`.
  */
+export type GsapTimelineChildClip = {
+  /** Stable id for this child tween within the parent timeline clip. */
+  childId: string
+  /** Display label in the sequence editor. */
+  label: string
+  /** Start time in seconds on the parent GSAP timeline (at progress 0). */
+  localStart: number
+  /** Duration in seconds on the parent GSAP timeline. */
+  localDuration: number
+}
+
 export type GsapClipTrack = TrackDataCommon<'GsapClipTrack'> & {
   /** Id from {@link registerGsapAnimation} / the global GSAP animation registry. */
   gsapAnimationId: string
@@ -152,4 +163,14 @@ export type GsapClipTrack = TrackDataCommon<'GsapClipTrack'> & {
   start: number
   /** Clip length on the sequence timeline. Must be &gt; 0. */
   duration: number
+  /**
+   * One-level child tweens when the registered animation is a GSAP timeline.
+   * Omitted for single tweens.
+   */
+  timelineChildren?: GsapTimelineChildClip[]
+  /**
+   * Parent timeline total duration in seconds when {@link timelineChildren} was
+   * last synced (used to map child local times into sequence space).
+   */
+  timelineSpan?: number
 }

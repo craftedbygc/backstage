@@ -21,6 +21,8 @@ export type RegisterGsapAnimationOptions = {
   id?: string
   /** Clip length when adding to the sequence (defaults to tween duration). */
   defaultDuration?: number
+  /** Rebuild the timeline when native child timing edits fail. */
+  onRebuildTimeline?: () => GsapTweenLike
 }
 
 export type RegisterGsapAnimationResult = {
@@ -63,6 +65,7 @@ export function registerGsapAnimation(
       animation,
       sheetObject: existing.sheetObject,
       defaultDuration: options.defaultDuration,
+      onRebuildTimeline: options.onRebuildTimeline,
     })
     return {id, sheetObject: sheetObjectPublic}
   }
@@ -80,6 +83,7 @@ export function registerGsapAnimation(
     animation,
     sheetObject: sheetObjectInternal,
     defaultDuration: options.defaultDuration,
+    onRebuildTimeline: options.onRebuildTimeline,
   })
 
   return {id, sheetObject: sheetObjectPublic}
