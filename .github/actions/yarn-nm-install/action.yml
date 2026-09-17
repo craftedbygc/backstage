@@ -1,12 +1,5 @@
 name: yarn-nm-install
 description: Installs deps via yarn and re-uses the cache
-inputs:
-  installPlaywright:
-    description: >-
-      When true, downloads Playwright browsers (and system deps) after yarn install.
-      Only enable for jobs that run Playwright e2e tests.
-    required: false
-    default: 'false'
 runs:
   using: composite
   steps:
@@ -14,7 +7,7 @@ runs:
     # This will skip the install step if the cache is hit.
     - name: Restore node_modules
       id: yarn-node-modules-cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           **/node_modules
@@ -36,31 +29,12 @@ runs:
           '.yarnrc.yml', 'package.json', '*/package.json', '*/*/package.json')
           }}
 
-    # Thanks to https://github.com/rafaelbiten for this step https://github.com/microsoft/playwright/issues/7249#issuecomment-1385567519
-    - name: Cache Playwright Browsers for Playwright's Version
-      id: cache-playwright-browsers
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/ms-playwright
-        key: ${{ runner.os }}-playwright-${{ hashFiles('yarn.lock') }}
-
     # This step is only needed if the cache was not hit.
     - run: yarn install --immutable --inline-builds
       if: steps.yarn-node-modules-cache.outputs.cache-hit != 'true'
       shell: bash
       env:
         YARN_NM_MODE: 'hardlinks-local'
-
-    # This step is only needed if the job runs playwright tests. But we have
-    # to include it in all jobs. The reason is, both `yarn install` and `yarn run playwright install`
-    # modify the `~/.cache/ms-playwright` folder. If we don't include this step in all jobs,
-    # then the cache will change in some jobs and not in others, which would make the cache useless.
-    - name: Download playwright
-      if: >-
-        inputs.installPlaywright == 'true' &&
-        steps.cache-playwright-browsers.outputs.cache-hit != 'true'
-      shell: bash
-      run: yarn workspace playground run playwright install --with-deps
 
     # - name: Update browserlist
     #   shell: bash

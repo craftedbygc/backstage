@@ -1,11 +1,32 @@
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
-import type {SheetState_Historic} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
+import type {
+  HistoricPositionalSequence,
+  SheetState_Historic,
+  TrackData,
+} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
-import {getSequenceStateFromSheet} from '@unseenco/theatre-core/sequences/sequenceVariants'
-import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
+import type {
+  ObjectAddressKey,
+  SequenceTrackId,
+} from '@unseenco/theatre-shared/utils/ids'
 import {isGsapClipTrack} from '@unseenco/theatre-shared/sequence/trackData'
 import {getAnimationEntryForSheetObject} from './gsapAnimationRegistry'
 import {getGsapObjectBinding} from './gsapObjectBinding'
+
+const DEFAULT_SEQUENCE_VARIANT = 'default'
+
+function sequenceStateForVariant(
+  sheetState: SheetState_Historic,
+  variantId: SequenceVariantId,
+): HistoricPositionalSequence | undefined {
+  if (sheetState.sequencesById?.[variantId]) {
+    return sheetState.sequencesById[variantId]
+  }
+  if (variantId === DEFAULT_SEQUENCE_VARIANT && sheetState.sequence) {
+    return sheetState.sequence
+  }
+  return undefined
+}
 
 export function resolveGsapAnimationIdForSheetObject(
   sheetObject: SheetObject,
@@ -21,15 +42,13 @@ export function resolveGsapAnimationIdForSheetObject(
  */
 export function listGsapClipTrackIdsOnSequence(
   sheetState: SheetState_Historic | undefined,
-  objectKey: string,
+  objectKey: ObjectAddressKey,
   sequenceVariant: SequenceVariantId,
   gsapAnimationId?: string,
 ): SequenceTrackId[] {
   if (!sheetState) return []
-  const tracksOfObject = getSequenceStateFromSheet(
-    sheetState,
-    sequenceVariant,
-  )?.tracksByObject[objectKey]
+  const tracksOfObject = sequenceStateForVariant(sheetState, sequenceVariant)
+    ?.tracksByObject[objectKey]
   if (!tracksOfObject) return []
 
   const linkedTrackIds = new Set(
@@ -37,13 +56,19 @@ export function listGsapClipTrackIdsOnSequence(
   )
 
   const trackIds: SequenceTrackId[] = []
-  for (const [trackId, trackData] of Object.entries(tracksOfObject.trackData)) {
-    if (linkedTrackIds.has(trackId as SequenceTrackId)) continue
+  for (const trackId of Object.keys(
+    tracksOfObject.trackData,
+  ) as SequenceTrackId[]) {
+    const trackData: TrackData | undefined = tracksOfObject.trackData[trackId]
+    if (linkedTrackIds.has(trackId)) continue
     if (!trackData || !isGsapClipTrack(trackData)) continue
-    if (gsapAnimationId != null && trackData.gsapAnimationId !== gsapAnimationId) {
+    if (
+      gsapAnimationId != null &&
+      trackData.gsapAnimationId !== gsapAnimationId
+    ) {
       continue
     }
-    trackIds.push(trackId as SequenceTrackId)
+    trackIds.push(trackId)
   }
   return trackIds
 }

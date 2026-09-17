@@ -701,7 +701,7 @@ val(double)
 - [API Reference](./api/README.md)
 - [The exhaustive guide to dataverse](./src/dataverse.test.ts)
 - It's also fun to
-  [open the monorepo](https://github1s.com/theatre-js/theatre/blob/main/packages/dataverse/src/index.ts)
+  [open the monorepo](https://github.com/craftedbygc/theatre/tree/main/packages/dataverse/src/index.ts)
   in VSCode and look up references to `Atom`, `prism()` and other dataverse
   methods. Since dataverse is used internally in Theatre.js, there are a lot of
   examples of how to use it.

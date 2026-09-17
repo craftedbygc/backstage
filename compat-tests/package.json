@@ -8,7 +8,7 @@
   "dependencies": {
     "@cspotcode/zx": "^6.1.2",
     "@verdaccio/types": "^10.8.0",
-    "esbuild": "^0.18.18",
+    "esbuild": "^0.25.0",
     "esbuild-register": "^3.4.2",
     "node-cleanup": "^2.1.2",
     "playwright": "^1.29.1",

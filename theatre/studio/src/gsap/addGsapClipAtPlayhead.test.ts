@@ -6,7 +6,10 @@ import {addGsapClipAtPlayhead} from './addGsapClipAtPlayhead'
 
 function sheetObjectWithHistoric(
   overrides: Record<string, unknown> = {},
-  sheetState: SheetState_Historic = {sequencesById: {}} as SheetState_Historic,
+  sheetState: SheetState_Historic = {
+    staticOverrides: {byObject: {}},
+    sequencesById: {},
+  } as unknown as SheetState_Historic,
 ) {
   const sheetStateAtom = new Atom(sheetState)
   return {
@@ -109,29 +112,27 @@ describe('addGsapClipAtPlayhead', () => {
   })
 
   test('does not add when clip already exists on sequence', () => {
-    const sheetObject = sheetObjectWithHistoric(
-      {},
-      {
-        sequencesById: {
-          default: {
-            length: 10,
-            tracksByObject: {
-              o: {
-                trackIdByPropPath: {},
-                trackData: {
-                  t1: {
-                    type: 'GsapClipTrack',
-                    gsapAnimationId: 'hide',
-                    start: 0,
-                    duration: 1,
-                  },
+    const sheetObject = sheetObjectWithHistoric({}, {
+      staticOverrides: {byObject: {}},
+      sequencesById: {
+        default: {
+          length: 10,
+          tracksByObject: {
+            o: {
+              trackIdByPropPath: {},
+              trackData: {
+                t1: {
+                  type: 'GsapClipTrack' as const,
+                  gsapAnimationId: 'hide',
+                  start: 0,
+                  duration: 1,
                 },
               },
             },
           },
         },
-      } as SheetState_Historic,
-    )
+      },
+    } as unknown as SheetState_Historic)
 
     registerGsapObjectBinding(sheetObject as never, {
       gsapAnimationId: 'hide',

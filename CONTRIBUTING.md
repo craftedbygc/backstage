@@ -4,28 +4,19 @@
 
 ### Setting up the environment
 
-Make sure you have [`node 14+`](https://nodejs.org/) installed:
+Make sure you have [**Node 22**](https://nodejs.org/) (or Node 18+) installed:
 
 ```sh
 $ node -v
-> v14.0.0
+> v22.x.x
 ```
 
-and [`yarn 1.22+`](https://classic.yarnpkg.com/en/):
-
-```sh
-$ yarn -v
-> 1.22.10
-```
+This repo uses **Yarn 3** via Corepack (`packageManager` in root `package.json`). After cloning, run `yarn` from the repo root; Yarn 3.2 is used automatically.
 
 Then clone the repo:
 
 ```sh
-# for SSH:
-$ git clone git@github.com:<github-username>/theatre.git
-# for HTTPS:
-$ git clone https://github.com/<github-username>/theatre.git
-
+$ git clone https://github.com/craftedbygc/theatre.git
 $ cd theatre
 ```
 
@@ -35,13 +26,7 @@ And fetch the dependencies with yarn:
 $ yarn
 ```
 
-- Notes about Yarn:
-  - This project uses [yarn workspaces](https://yarnpkg.com/features/workspaces)
-    so `npm install` will not work.
-  - This repo uses Yarn v2. You don't have to install yarn v2 globally. If you
-    do have yarn 1.22.10+ on your machine, yarn will automatically switch to v2
-    when you `cd` into theatre. Read more about Yarn v2
-    [here](https://yarnpkg.com/).
+- This project uses [Yarn workspaces](https://yarnpkg.com/features/workspaces); `npm install` at the monorepo root will not work for development.
 
 ### Hacking with `playground`
 
@@ -57,7 +42,7 @@ $ yarn playground
 ```
 
 The playground is a bunch of ready-made projects that you can run to experiment
-with Theatre.js. It also contains the project's end-to-end tests.
+with Theatre.js.
 
 Read more at
 [`./packages/playground/README.md`](./packages/playground/README.md).
@@ -65,8 +50,8 @@ Read more at
 ### Hacking with `examples/`
 
 Other than `playground`, the [`examples/`](./examples) folder contains a few
-small projects that use Theatre.js with [parcel](https://parceljs.org),
-[Create react app](create-react-app.dev), and other build tools. This means that
+small projects that use Theatre.js with [Vite](https://vitejs.dev) and other
+build tools. This means that
 unlike `playground`, you have to build all the packages before running the
 examples.
 
@@ -78,8 +63,8 @@ $ yarn cli build
 
 Then build any of the examples:
 
-```
-$ cd examples/dom-cra
+```sh
+$ cd examples/basic-dom
 $ yarn start
 ```
 
@@ -96,11 +81,6 @@ $ yarn test
 # or run them in watch mode:
 $ yarn test --watch
 ```
-
-### Running end-to-end tests
-
-End-to-end tests are hosted in the playground package. More details
-[there](./packages/playground/README.md).
 
 ### Type checking
 
@@ -213,10 +193,14 @@ $ yarn cli build
 The libraries come bundled with typescript definitions with TSDoc comments. You
 can explore the API if your editor is configured to display TSDoc comments.
 
-Other references
+Documentation (in-repo VitePress):
 
-- [Documentation: https://www.theatrejs.com/docs](https://www.theatrejs.com/docs)
-- [API docs: https://www.theatrejs.com/docs/latest/api](https://www.theatrejs.com/docs/latest/api)
+```sh
+$ yarn docs:dev    # guides + generated API reference
+$ yarn docs:build  # production build
+```
+
+Published site is built with `yarn build:site` (docs + playground) for Netlify.
 
 ## What to contribute
 
@@ -225,8 +209,7 @@ You can contribute with:
 - Bug fixes
 - Feature suggestions
 - Features implementations
-- [Documentation](https://github.com/theatre-js/website/) (or write/record
-  tutorials of your own which we'll showcase)
+- Documentation in `docs/` (or write/record tutorials of your own which we'll showcase)
 - Create examples projects for your own particular dev stack (eg. using
   Pixie/Vue/THREE.js/Babylon/etc)
 
@@ -237,10 +220,7 @@ ideas.
 ### Helping with outstanding issues
 
 Feel free to chime in on any
-[issue](https://github.com/theatre-js/theatre/issues). We have labeled some with
-["Help wanted"](https://github.com/theatre-js/theatre/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3A%22help+wanted%22)
-or
-["Good first issue"](https://github.com/theatre-js/theatre/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3A%22good+first+issue%22)
+[issue](https://github.com/craftedbygc/theatre/issues).
 if you're just getting started with the codebase.
 
 ## Sending pull requests

@@ -3,7 +3,6 @@ import type {GsapTweenLike} from './gsapTypes'
 import {
   clearAnimationRegistryForTests as clearSharedAnimationRegistryForTests,
   getAnimationEntry as getSharedAnimationEntry,
-  getAnimationEntryById as getSharedAnimationEntryById,
   getAnimationEntryForSheetObject as getSharedAnimationEntryForSheetObject,
   listAnimationEntries as listSharedAnimationEntries,
   registerAnimationInRegistry as registerSharedAnimationInRegistry,
@@ -37,7 +36,7 @@ function defaultClipDuration(animation: GsapTweenLike): number {
 }
 
 function toPackageEntry(
-  entry: ReturnType<typeof getSharedAnimationEntryById>,
+  entry: ReturnType<typeof getSharedAnimationEntryForSheetObject>,
 ): GsapAnimationRegistryEntry | undefined {
   if (!entry || !entry.animation) return undefined
   return {
@@ -46,7 +45,9 @@ function toPackageEntry(
     animation: entry.animation as GsapTweenLike,
     sheetObject: entry.sheetObject,
     defaultDuration: entry.defaultDuration,
-    onRebuildTimeline: entry.onRebuildTimeline as (() => GsapTweenLike) | undefined,
+    onRebuildTimeline: entry.onRebuildTimeline as
+      | (() => GsapTweenLike)
+      | undefined,
   }
 }
 
@@ -60,7 +61,9 @@ export function getAnimationEntry(
 export function getAnimationEntryById(
   id: string,
 ): GsapAnimationRegistryEntry | undefined {
-  return toPackageEntry(getSharedAnimationEntryById(id))
+  return toPackageEntry(
+    listSharedAnimationEntries().find((entry) => entry.id === id),
+  )
 }
 
 export function getAnimationEntryForSheetObject(

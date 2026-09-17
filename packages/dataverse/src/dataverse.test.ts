@@ -1289,6 +1289,6 @@ describe(`The exhaustive guide to dataverse`, () => {
 
   // What's next?
   // At this point we have covered all of `@unseenco/theatre-dataverse`.
-  // If you're planning to use Dataverse with React, have a look at [`@unseenco/theatre-react`](https://github.com/theatre-js/theatre/tree/main/packages/react)
+  // If you're planning to use Dataverse with React, have a look at [`@unseenco/theatre-react`](https://github.com/craftedbygc/theatre/tree/main/packages/react)
   // which provides a React integration for Dataverse as well.
 })

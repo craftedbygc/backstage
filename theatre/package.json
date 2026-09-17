@@ -1,7 +1,7 @@
 {
   "name": "theatre",
   "private": true,
-  "version": "0.2.3",
+  "version": "0.3.0",
   "workspaces": [
     "./shared",
     "./core",
@@ -46,7 +46,7 @@
     "@unseenco/theatre-react": "workspace:*",
     "blob-compare": "1.1.0",
     "cross-env": "^7.0.3",
-    "esbuild": "^0.18.17",
+    "esbuild": "^0.25.0",
     "esbuild-register": "^2.5.0",
     "fs-extra": "^10.0.0",
     "idb-keyval": "^6.2.0",
@@ -83,7 +83,7 @@
     "shallowequal": "^1.1.0",
     "styled-components": "^5.3.11",
     "timing-function": "^0.2.3",
-    "typescript": "5.1.6",
+    "typescript": "5.3.3",
     "uuid": "^8.3.2"
   },
   "dependencies": {

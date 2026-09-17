@@ -8,6 +8,6 @@
     "composite": true,
     "noEmit": true
   },
-  "files": ["index.tsx", "Scene.tsx", "useDrag.ts"],
+  "files": ["index.tsx", "Scene.tsx", "useDrag.ts", "vite.config.ts"],
   "references": [{"path": "../../theatre"}]
 }

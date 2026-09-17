@@ -11,7 +11,7 @@ export type OpenFn = (
   e: React.MouseEvent | MouseEvent | {clientX: number; clientY: number},
   target: HTMLElement | SVGElement | Element,
 ) => void
-type CloseFn = (reason: string) => void
+export type CloseFn = (reason: string) => void
 type State =
   | {isOpen: false}
   | {

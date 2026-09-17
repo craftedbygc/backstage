@@ -1,4 +1,5 @@
 import type {PropTypeConfig} from '@unseenco/theatre-core/propTypes'
+import type {SheetState_Historic} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
 import {encodePathToProp} from '@unseenco/theatre-shared/utils/addresses'
 import {
@@ -175,6 +176,19 @@ describe('transientPropPaths', () => {
       expect(
         sheetState.sequence!.tracksByObject.obj.trackData.track2,
       ).toBeDefined()
+    })
+
+    it('does not throw when staticOverrides is missing', () => {
+      const prefixes = normalizeTransientPropPaths(['foo.bar'], config, 'obj')
+      const sheetState = {} as SheetState_Historic
+
+      expect(() =>
+        stripTransientPropsFromObjectInSheetState(
+          sheetState,
+          'obj' as ObjectAddressKey,
+          prefixes,
+        ),
+      ).not.toThrow()
     })
   })
 })

@@ -60,7 +60,7 @@ export function getAllPossibleAssetIDs(project: Project, type?: string) {
   )
 
   const staticValues = sheets
-    .flatMap((sheet) => Object.values(sheet?.staticOverrides.byObject ?? {}))
+    .flatMap((sheet) => Object.values(sheet?.staticOverrides?.byObject ?? {}))
     .concat(
       sheets.flatMap((sheet) =>
         Object.values(sheet?.staticOverridesByVariant ?? {}).flatMap(
@@ -70,7 +70,7 @@ export function getAllPossibleAssetIDs(project: Project, type?: string) {
     )
     .concat(
       ahistoricSheets.flatMap((sheet) =>
-        Object.values(sheet?.staticOverrides.byObject ?? {}),
+        Object.values(sheet?.staticOverrides?.byObject ?? {}),
       ),
     )
     .flatMap((overrides) => Object.values(overrides ?? {}))

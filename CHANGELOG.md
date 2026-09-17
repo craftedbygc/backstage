@@ -1,5 +1,17 @@
 # Theatre.js changelog
 
+## 0.3.0
+
+- Maintenance
+  - **CI / tooling:** GitHub Actions on **Node 22** with **actions v4**; new **Documentation site** job (`yarn docs:build`). Netlify build uses Node 22.
+  - **Docs:** In-repo **VitePress** site (`docs/`) with unified `yarn build:site` deploy (`/docs/` + `/playground/`). Package API reference generated via api-extractor + api-documenter (including **dataverse** through `docs/scripts/generate-api-reference.mjs`). Removed committed TypeDoc output under `packages/dataverse/api/`.
+  - **Compatibility tests:** Verdaccio publish flow includes **threejs**; primary fixture is **Vite + React 18** (`vite-react18`) with isolated `npm install` + production build. Raised Verdaccio `max_body_size` for large studio tarballs.
+  - **Tooling:** TypeScript **5.3.3**, esbuild **0.25**; monorepo version alignment and release CLI publish path updates. Removed **lerna.json** (versions managed via release CLI).
+  - **Examples:** `examples/basic-dom` migrated from Parcel to **Vite** (drops native **deasync** dependency that failed on Windows/modern Node).
+  - **DX:** `AGENTS.md` / `CONTRIBUTING.md` refreshed; repository URL sweep to `craftedbygc/theatre`; husky pre-commit is **lint-staged** only (dataverse TypeDoc no longer regenerated on every commit).
+  - **Removed:** `examples/dom-cra`, `packages/dataverse-experiments`, playground **Playwright** e2e / visual regression tests and related CI job (to be reintroduced when Studio UI stabilizes).
+  - **Cleanup:** Playwright browser install removed from default CI install action; optional composite input removed with the visual-regression job.
+
 ## 0.2.3
 
 - Bug fixes

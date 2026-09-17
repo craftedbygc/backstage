@@ -1,19 +1,20 @@
-import { Clock } from 'three'
+import {Clock} from 'three'
 import studio from '@unseenco/theatre-studio'
 import {
   createRafDriver,
   getProject,
   setCoreRafDriver,
 } from '@unseenco/theatre-core'
-import { configureTheatreThreejs } from '@unseenco/theatre-threejs'
-import { buildExtension } from '@unseenco/theatre-threejs/extension'
-import { bindDockedThreeViewport } from '../utils/bindDockedThreeViewport'
-import { createThreeScenes } from './ThreeScene.js'
+import {configureTheatreThreejs} from '@unseenco/theatre-threejs'
+import {buildExtension} from '@unseenco/theatre-threejs/extension'
+import {bindDockedThreeViewport} from '../utils/bindDockedThreeViewport'
+import {createThreeScenes} from './ThreeScene.js'
+import state from './three-basic-vanilla-devtools.theatre-project-state.json'
 
-const rafDriver = createRafDriver({ name: 'three-basic-vanilla-devtools' })
+const rafDriver = createRafDriver({name: 'three-basic-vanilla-devtools'})
 setCoreRafDriver(rafDriver)
 
-studio.initialize({ __experimental_rafDriver: rafDriver })
+studio.initialize({__experimental_rafDriver: rafDriver})
 
 configureTheatreThreejs({
   autoAddObject: {
@@ -24,11 +25,14 @@ configureTheatreThreejs({
 })
 
 async function main() {
+  // Baseline state for Studio dirty indicators (outline dots, scene flyout).
+  // Edit props in Studio, then use "Export project state" to refresh the JSON if needed.
   const project = getProject('Three Basic Vanilla Devtools', {
-    assets: { baseUrl: '/public' },
+    assets: {baseUrl: '/public'},
+    state,
   })
   await project.ready
-  const { renderer, scenes, onFrame } = await createThreeScenes(project)
+  const {renderer, scenes, onFrame} = await createThreeScenes(project)
   const clock = new Clock()
 
   let activeScene = scenes[0].scene
@@ -50,7 +54,7 @@ async function main() {
   bindDockedThreeViewport({
     canvas: document.getElementById('canvas'),
     renderer,
-    cameras: scenes.map(({ camera }) => camera),
+    cameras: scenes.map(({camera}) => camera),
   })
 
   function render(time) {

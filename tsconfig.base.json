@@ -27,10 +27,7 @@
       "@unseenco/theatre-threejs/extension": [
         "./packages/threejs/src/extension.ts"
       ],
-      "@unseenco/theatre-gsap": ["./packages/gsap/src/index.ts"],
-      "@unseenco/theatre-dataverse-experiments": [
-        "./packages/dataverse-experiments/src/index.ts"
-      ]
+      "@unseenco/theatre-gsap": ["./packages/gsap/src/index.ts"]
     },
     "forceConsistentCasingInFileNames": true
   },

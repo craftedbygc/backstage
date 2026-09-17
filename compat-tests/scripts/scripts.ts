@@ -267,6 +267,7 @@ const packagesToPublish = [
   '@unseenco/theatre-dataverse',
   '@unseenco/theatre-react',
   '@unseenco/theatre-browser-bundles',
+  '@unseenco/theatre-threejs',
 ]
 
 /**

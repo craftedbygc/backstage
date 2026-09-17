@@ -47,7 +47,7 @@ const MenuTitle = styled.div`
 `
 
 type MenuItem = {
-  label: string | ElementType
+  label: string | ElementType | React.ReactNode
   callback?: (e: React.MouseEvent) => void
   enabled?: boolean
   // subs?: Item[]
