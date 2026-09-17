@@ -1,7 +1,19 @@
+import {buildGsapSheetObjectKey} from './buildGsapSheetObjectKey'
 import {
   isGsapSheetObjectKey,
   setConfiguredGsapSheetObjectNamespace,
 } from './gsapSheetObjectKey'
+
+describe('buildGsapSheetObjectKey', () => {
+  test('matches sheet.object sanitisation', () => {
+    expect(buildGsapSheetObjectKey('GSAP', 'Panel show')).toBe(
+      'GSAP / Panel show',
+    )
+    expect(buildGsapSheetObjectKey('GSAP', 'Panel / nested')).toBe(
+      'GSAP / Panel / nested',
+    )
+  })
+})
 
 describe('isGsapSheetObjectKey', () => {
   afterEach(() => {

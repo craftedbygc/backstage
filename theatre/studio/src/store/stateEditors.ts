@@ -13,7 +13,7 @@ import {
   buildGsapClipBaselineTiming,
   resolveGsapClipBaselineTiming,
 } from '@unseenco/theatre-shared/gsap/gsapClipBaseline'
-import {getAnimationEntryById} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import {getAnimationEntryForAddress} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
 import {
   gsapClipEndTime,
   isBasicKeyframedTrack,
@@ -1463,7 +1463,7 @@ namespace stateEditors {
             if (!track || track.type !== 'GsapClipTrack') return false
             const baseline = resolveGsapClipBaselineTiming(
               track,
-              getAnimationEntryById(track.gsapAnimationId),
+              getAnimationEntryForAddress(p, track.gsapAnimationId),
             )
             if (!baseline) return false
             applyGsapClipBaselineToTrack(track, baseline)
@@ -1482,7 +1482,7 @@ namespace stateEditors {
             if (!track || track.type !== 'GsapClipTrack') return false
             const baseline = resolveGsapClipBaselineTiming(
               track,
-              getAnimationEntryById(track.gsapAnimationId),
+              getAnimationEntryForAddress(p, track.gsapAnimationId),
             )
             if (!baseline) return false
             const ok = applyGsapTimelineChildBaselineToTrack(

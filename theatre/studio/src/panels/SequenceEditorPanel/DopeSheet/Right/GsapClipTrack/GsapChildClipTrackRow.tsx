@@ -29,10 +29,7 @@ import {
   applyTimelineChildTimingToGsap,
   readTimelineSpanSeconds,
 } from '@unseenco/theatre-shared/gsap/applyTimelineChildTiming'
-import {
-  getAnimationEntryForSheetObject,
-  getAnimationEntryById,
-} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import {getAnimationEntry} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
 
 const Container = styled.div`
   position: relative;
@@ -146,7 +143,7 @@ const GsapChildClipBar: React.VFC<{
   }, [leaf, sequenceVariant])
 
   const commitChildTimingToGsap = useCallback(() => {
-    const entry = getAnimationEntryForSheetObject(leaf.sheetObject)
+    const entry = getAnimationEntry(leaf.sheetObject)
     if (!entry?.animation) return
     const sheetState = val(
       getStudio()!.atomP.historic.coreByProject[
@@ -413,7 +410,10 @@ function useGsapChildClipContextMenu(
           )?.tracksByObject[opts.leaf.sheetObject.address.objectKey]
             ?.trackData[opts.leaf.parentTrackId]
           if (track?.type === 'GsapClipTrack') {
-            const entry = getAnimationEntryById(track.gsapAnimationId)
+            const entry = getAnimationEntry(
+              opts.leaf.sheetObject,
+              track.gsapAnimationId,
+            )
             if (entry?.animation) {
               applyTimelineChildTimingToGsap(
                 entry.animation,

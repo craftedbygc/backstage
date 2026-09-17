@@ -1,28 +1,44 @@
 import {syncRegisteredGsapAnimationsForClips} from './syncGsapClipProgress'
 
 describe('syncRegisteredGsapAnimationsForClips', () => {
+  const SHEET_KEY = 'p|s|si|gsap'
+
   const g = globalThis as typeof globalThis & {
     __unseenco_theatre_gsap_animationRegistry__?: {
-      byId: Map<string, {id: string; label: string; animation: unknown}>
+      bySheetAddress: Map<
+        string,
+        Map<string, {id: string; label: string; animation: unknown}>
+      >
     }
   }
 
   function setRegistry(
     entries: Record<string, {animation: unknown; targets?: unknown[]}>,
   ) {
+    const byAnim = new Map(
+      Object.entries(entries).map(([id, {animation}]) => [
+        id,
+        {id, label: id, animation},
+      ]),
+    )
     g.__unseenco_theatre_gsap_animationRegistry__ = {
-      byId: new Map(
-        Object.entries(entries).map(([id, {animation}]) => [
-          id,
-          {id, label: id, animation},
-        ]),
-      ),
+      bySheetAddress: new Map([[SHEET_KEY, byAnim]]),
     }
-    for (const [id, {animation, targets}] of Object.entries(entries)) {
+    for (const [, {animation, targets}] of Object.entries(entries)) {
       if (targets) {
         ;(animation as {targets: () => unknown[]}).targets = () => targets
       }
     }
+  }
+
+  function clip(
+    timing: {
+      gsapAnimationId: string
+      start: number
+      duration: number
+    },
+  ) {
+    return {sheetObjectAddressKey: SHEET_KEY, ...timing}
   }
 
   test('past hide end on shared target: all clips synced in order, hide last', () => {
@@ -36,8 +52,8 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
     })
 
     syncRegisteredGsapAnimationsForClips(10, [
-      {gsapAnimationId: 'show', start: 0, duration: 2},
-      {gsapAnimationId: 'hide', start: 8, duration: 2},
+      clip({gsapAnimationId: 'show', start: 0, duration: 2}),
+      clip({gsapAnimationId: 'hide', start: 8, duration: 2}),
     ])
 
     expect(show.progress).toHaveBeenCalledWith(1, true)
@@ -52,7 +68,7 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
     setRegistry({move: {animation: tween}})
 
     syncRegisteredGsapAnimationsForClips(50, [
-      {gsapAnimationId: 'move', start: 0, duration: 2},
+      clip({gsapAnimationId: 'move', start: 0, duration: 2}),
     ])
 
     expect(tween.progress).toHaveBeenCalledWith(1, true)
@@ -67,8 +83,8 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
     })
 
     syncRegisteredGsapAnimationsForClips(100, [
-      {gsapAnimationId: 'a', start: 0, duration: 1},
-      {gsapAnimationId: 'b', start: 5, duration: 1},
+      clip({gsapAnimationId: 'a', start: 0, duration: 1}),
+      clip({gsapAnimationId: 'b', start: 5, duration: 1}),
     ])
 
     expect(a.progress).toHaveBeenCalledWith(1, true)
@@ -86,8 +102,8 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
     })
 
     syncRegisteredGsapAnimationsForClips(10, [
-      {gsapAnimationId: 'show', start: 0, duration: 2},
-      {gsapAnimationId: 'hide', start: 8, duration: 2},
+      clip({gsapAnimationId: 'show', start: 0, duration: 2}),
+      clip({gsapAnimationId: 'hide', start: 8, duration: 2}),
     ])
 
     expect(show.progress).toHaveBeenCalledWith(1, true)
@@ -103,7 +119,7 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
     })
 
     syncRegisteredGsapAnimationsForClips(8, [
-      {gsapAnimationId: 'hide', start: 8, duration: 0.35},
+      clip({gsapAnimationId: 'hide', start: 8, duration: 0.35}),
     ])
 
     expect(hide.progress).toHaveBeenCalledWith(0, true)
@@ -118,7 +134,7 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
     })
 
     syncRegisteredGsapAnimationsForClips(8.35, [
-      {gsapAnimationId: 'hide', start: 8, duration: 0.35},
+      clip({gsapAnimationId: 'hide', start: 8, duration: 0.35}),
     ])
 
     expect(hide.progress).toHaveBeenCalledWith(1, true)
@@ -141,8 +157,8 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
     const positionAfterHide = hideEnd + 1e-4
 
     syncRegisteredGsapAnimationsForClips(positionAfterHide, [
-      {gsapAnimationId: 'show', start: 0, duration: showDuration},
-      {gsapAnimationId: 'hide', start: hideStart, duration: hideDuration},
+      clip({gsapAnimationId: 'show', start: 0, duration: showDuration}),
+      clip({gsapAnimationId: 'hide', start: hideStart, duration: hideDuration}),
     ])
 
     expect(show.progress).toHaveBeenCalledWith(1, true)
@@ -160,8 +176,8 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
     })
 
     syncRegisteredGsapAnimationsForClips(0.801, [
-      {gsapAnimationId: 'show', start: 0, duration: 1},
-      {gsapAnimationId: 'hide', start: 0.45, duration: 0.35},
+      clip({gsapAnimationId: 'show', start: 0, duration: 1}),
+      clip({gsapAnimationId: 'hide', start: 0.45, duration: 0.35}),
     ])
 
     expect(show.progress).toHaveBeenCalledWith(0.801, true)
@@ -182,8 +198,8 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
     })
 
     syncRegisteredGsapAnimationsForClips(1, [
-      {gsapAnimationId: 'show', start: 0, duration: 2},
-      {gsapAnimationId: 'hide', start: 8, duration: 2},
+      clip({gsapAnimationId: 'show', start: 0, duration: 2}),
+      clip({gsapAnimationId: 'hide', start: 8, duration: 2}),
     ])
 
     expect(show.progress).toHaveBeenCalledWith(0.5, true)
@@ -204,8 +220,8 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
     })
 
     const clips = [
-      {gsapAnimationId: 'show', start: 0, duration: 0.45},
-      {gsapAnimationId: 'hide', start: 0.45, duration: 0.35},
+      clip({gsapAnimationId: 'show', start: 0, duration: 0.45}),
+      clip({gsapAnimationId: 'hide', start: 0.45, duration: 0.35}),
     ]
 
     syncRegisteredGsapAnimationsForClips(0.2, clips)

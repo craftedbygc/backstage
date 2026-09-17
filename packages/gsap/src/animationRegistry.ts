@@ -2,6 +2,7 @@ import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import type {GsapTweenLike} from './gsapTypes'
 import {
   clearAnimationRegistryForTests as clearSharedAnimationRegistryForTests,
+  getAnimationEntry as getSharedAnimationEntry,
   getAnimationEntryById as getSharedAnimationEntryById,
   getAnimationEntryForSheetObject as getSharedAnimationEntryForSheetObject,
   listAnimationEntries as listSharedAnimationEntries,
@@ -35,30 +36,37 @@ function defaultClipDuration(animation: GsapTweenLike): number {
   return readGsapTweenTimelineDuration(animation)
 }
 
-export function getAnimationEntryById(
-  id: string,
+function toPackageEntry(
+  entry: ReturnType<typeof getSharedAnimationEntryById>,
 ): GsapAnimationRegistryEntry | undefined {
-  const entry = getSharedAnimationEntryById(id)
   if (!entry || !entry.animation) return undefined
   return {
     id: entry.id,
     label: entry.label,
     animation: entry.animation as GsapTweenLike,
     sheetObject: entry.sheetObject,
+    defaultDuration: entry.defaultDuration,
+    onRebuildTimeline: entry.onRebuildTimeline as (() => GsapTweenLike) | undefined,
   }
+}
+
+export function getAnimationEntry(
+  sheetObject: SheetObject,
+  animationId?: string,
+): GsapAnimationRegistryEntry | undefined {
+  return toPackageEntry(getSharedAnimationEntry(sheetObject, animationId))
+}
+
+export function getAnimationEntryById(
+  id: string,
+): GsapAnimationRegistryEntry | undefined {
+  return toPackageEntry(getSharedAnimationEntryById(id))
 }
 
 export function getAnimationEntryForSheetObject(
   sheetObject: SheetObject,
 ): GsapAnimationRegistryEntry | undefined {
-  const entry = getSharedAnimationEntryForSheetObject(sheetObject)
-  if (!entry || !entry.animation) return undefined
-  return {
-    id: entry.id,
-    label: entry.label,
-    animation: entry.animation as GsapTweenLike,
-    sheetObject: entry.sheetObject,
-  }
+  return toPackageEntry(getSharedAnimationEntryForSheetObject(sheetObject))
 }
 
 export function listAnimationEntries(): GsapAnimationRegistryEntry[] {

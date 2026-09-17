@@ -1,7 +1,7 @@
 import type {GsapTweenLike} from './gsapTypes'
 import {
   clearAnimationRegistryForTests,
-  getAnimationEntryById,
+  getAnimationEntry,
   registerAnimationInRegistry,
 } from './animationRegistry'
 
@@ -10,17 +10,27 @@ describe('animationRegistry', () => {
     clearAnimationRegistryForTests()
   })
 
-  test('stores entries by id', () => {
+  test('stores entries scoped to sheet object', () => {
     const animation = {
       pause: jest.fn(),
       progress: jest.fn(),
       duration: () => 1,
     } as GsapTweenLike
+    const sheetObject = {
+      address: {
+        projectId: 'p',
+        sheetId: 's',
+        sheetInstanceId: 'si',
+        objectKey: 'GSAP / Intro',
+      },
+    } as never
+
     registerAnimationInRegistry({
-      id: 'anim-1',
+      id: 'GSAP / Intro',
       label: 'Intro',
       animation,
+      sheetObject,
     })
-    expect(getAnimationEntryById('anim-1')?.label).toBe('Intro')
+    expect(getAnimationEntry(sheetObject, 'GSAP / Intro')?.label).toBe('Intro')
   })
 })

@@ -1,5 +1,14 @@
 import type {GsapClipBaselineTiming} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
+import type {SheetObjectAddress} from '@unseenco/theatre-shared/utils/addresses'
+import type {
+  ObjectAddressKey,
+  ProjectId,
+  SheetId,
+  SheetInstanceId,
+} from '@unseenco/theatre-shared/utils/ids'
+
+const DEFAULT_SHEET_INSTANCE_ID = 'default' as SheetInstanceId
 import {buildGsapClipBaselineTiming} from './gsapClipBaseline'
 import {registerGsapObjectBinding} from './gsapObjectBinding'
 import {bumpGsapStudioRegistryRevision} from './gsapStudioRegistryRevision'
@@ -27,14 +36,25 @@ export type GsapAnimationRegistryEntry = {
 }
 
 type RegistryStore = {
-  byId: Map<string, GsapAnimationRegistryEntry>
-  idBySheetObject: WeakMap<SheetObject, string>
-  idByAddressKey: Map<string, string>
+  bySheetAddress: Map<string, Map<string, GsapAnimationRegistryEntry>>
+}
+
+export type SheetObjectAddressKeyParts = {
+  projectId: ProjectId
+  sheetId: SheetId
+  objectKey: ObjectAddressKey
+  sheetInstanceId?: SheetInstanceId
+}
+
+export function sheetObjectAddressKeyFromParts(
+  address: SheetObjectAddressKeyParts,
+): string {
+  const sheetInstanceId = address.sheetInstanceId ?? DEFAULT_SHEET_INSTANCE_ID
+  return `${address.projectId}|${address.sheetId}|${sheetInstanceId}|${address.objectKey}`
 }
 
 export function sheetObjectAddressKey(sheetObject: SheetObject): string {
-  const a = sheetObject.address
-  return `${a.projectId}|${a.sheetId}|${a.sheetInstanceId}|${a.objectKey}`
+  return sheetObjectAddressKeyFromParts(sheetObject.address)
 }
 
 function getStore(): RegistryStore {
@@ -43,18 +63,25 @@ function getStore(): RegistryStore {
   }
   if (!g[REGISTRY_KEY]) {
     g[REGISTRY_KEY] = {
-      byId: new Map(),
-      idBySheetObject: new WeakMap(),
-      idByAddressKey: new Map(),
+      bySheetAddress: new Map(),
     }
   }
   return g[REGISTRY_KEY]!
 }
 
+function getSheetEntryMap(sheetKey: string): Map<string, GsapAnimationRegistryEntry> {
+  const store = getStore()
+  let map = store.bySheetAddress.get(sheetKey)
+  if (!map) {
+    map = new Map()
+    store.bySheetAddress.set(sheetKey, map)
+  }
+  return map
+}
+
 export function registerAnimationInRegistry(
   entry: GsapAnimationRegistryEntry,
 ): void {
-  const store = getStore()
   const kind =
     entry.animation && isGsapTimeline(entry.animation) ? 'timeline' : 'tween'
   const timelineChildById =
@@ -86,41 +113,71 @@ export function registerAnimationInRegistry(
     timelineChildById,
     originalTiming,
   }
-  store.byId.set(entry.id, normalized)
+
   if (entry.sheetObject) {
-    store.idBySheetObject.set(entry.sheetObject, entry.id)
-    store.idByAddressKey.set(sheetObjectAddressKey(entry.sheetObject), entry.id)
+    const sheetKey = sheetObjectAddressKey(entry.sheetObject)
+    getSheetEntryMap(sheetKey).set(entry.id, normalized)
     registerGsapObjectBinding(entry.sheetObject, {
       gsapAnimationId: entry.id,
       defaultDuration,
     })
   }
+
   bumpGsapStudioRegistryRevision()
 }
 
-export function getAnimationEntryById(
-  id: string,
+export function getAnimationEntryForAddress(
+  address: SheetObjectAddressKeyParts,
+  animationId?: string,
 ): GsapAnimationRegistryEntry | undefined {
-  return getStore().byId.get(id)
+  const animId = animationId ?? address.objectKey
+  const sheetKey = sheetObjectAddressKeyFromParts(address)
+  return getStore().bySheetAddress.get(sheetKey)?.get(animId)
 }
 
+export function getAnimationEntry(
+  sheetObject: SheetObject,
+  animationId?: string,
+): GsapAnimationRegistryEntry | undefined {
+  return getAnimationEntryForAddress(
+    sheetObject.address,
+    animationId ?? sheetObject.address.objectKey,
+  )
+}
+
+/** Default registry entry for a GSAP sheet object (id defaults to `objectKey`). */
 export function getAnimationEntryForSheetObject(
   sheetObject: SheetObject,
 ): GsapAnimationRegistryEntry | undefined {
-  const store = getStore()
-  const fromWeak = store.idBySheetObject.get(sheetObject)
-  const id =
-    fromWeak ?? store.idByAddressKey.get(sheetObjectAddressKey(sheetObject))
-  if (!id) return undefined
-  return store.byId.get(id)
+  return getAnimationEntry(sheetObject)
+}
+
+export function getAnimationEntryBySheetAddressKey(
+  sheetObjectAddressKey: string,
+  animationId: string,
+): GsapAnimationRegistryEntry | undefined {
+  return getStore().bySheetAddress.get(sheetObjectAddressKey)?.get(animationId)
+}
+
+/** @internal Prefer sheet-scoped lookup; scans all sheets when id alone is known. */
+export function getAnimationEntryById(
+  id: string,
+): GsapAnimationRegistryEntry | undefined {
+  for (const byAnim of getStore().bySheetAddress.values()) {
+    const entry = byAnim.get(id)
+    if (entry) return entry
+  }
+  return undefined
 }
 
 export function listAnimationEntries(): GsapAnimationRegistryEntry[] {
-  return [...getStore().byId.values()]
+  const entries: GsapAnimationRegistryEntry[] = []
+  for (const byAnim of getStore().bySheetAddress.values()) {
+    entries.push(...byAnim.values())
+  }
+  return entries
 }
 
 export function clearAnimationRegistryForTests(): void {
-  const store = getStore()
-  store.byId.clear()
-  store.idByAddressKey.clear()
+  getStore().bySheetAddress.clear()
 }

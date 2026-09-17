@@ -1,6 +1,7 @@
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
-import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
+import type {ObjectAddressKey, SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
 import {val} from '@unseenco/theatre-dataverse'
+import {sheetObjectAddressKeyFromParts} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
 import {syncGsapClipsAtSequencePosition} from '@unseenco/theatre-shared/gsap/syncGsapClipsAtSequencePosition'
 
 export type GsapClipTimingOverride = {
@@ -18,9 +19,14 @@ export function previewGsapClipsAtCurrentPlayhead(
   const position = val(sequence.pointer.position)
   const clips = sequence
     .__experimental_getGsapClips()
-    .map(({clip, trackId}) => {
+    .map(({objectKey, clip, trackId}) => {
+      const sheetObjectAddressKeyForClip = sheetObjectAddressKeyFromParts({
+        ...sheetObject.address,
+        objectKey: objectKey as ObjectAddressKey,
+      })
       if (clipOverride && clipOverride.trackId === trackId) {
         return {
+          sheetObjectAddressKey: sheetObjectAddressKeyForClip,
           gsapAnimationId: clip.gsapAnimationId,
           start: clipOverride.start,
           duration: clipOverride.duration,
@@ -29,6 +35,7 @@ export function previewGsapClipsAtCurrentPlayhead(
         }
       }
       return {
+        sheetObjectAddressKey: sheetObjectAddressKeyForClip,
         gsapAnimationId: clip.gsapAnimationId,
         start: clip.start,
         duration: clip.duration,

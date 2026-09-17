@@ -3,6 +3,7 @@ import type {GsapClipTiming} from './syncGsapClipProgress'
 import {syncRegisteredGsapAnimationsForClips} from './syncGsapClipProgress'
 
 export type GsapClipTimingSource = {
+  sheetObjectAddressKey: string
   gsapAnimationId: string
   start: number
   duration: number

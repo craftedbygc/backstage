@@ -1,9 +1,12 @@
 import type {GsapTimelineChildClip} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import {gsapClipSyncProgress} from '@unseenco/theatre-shared/sequence/trackData'
 import {applyTimelineChildTimingToGsap} from './applyTimelineChildTiming'
-import {getAnimationEntryById} from './gsapAnimationRegistry'
+import {getAnimationEntryBySheetAddressKey} from './gsapAnimationRegistry'
+import type {GsapAnimationRegistryEntry} from './gsapAnimationRegistry'
 
 export type GsapClipTiming = {
+  /** From {@link sheetObjectAddressKey} / {@link sheetObjectAddressKeyFromParts}. */
+  sheetObjectAddressKey: string
   gsapAnimationId: string
   start: number
   duration: number
@@ -12,7 +15,7 @@ export type GsapClipTiming = {
 }
 
 type EnrichedClip = GsapClipTiming & {
-  entry: NonNullable<ReturnType<typeof getAnimationEntryById>>
+  entry: GsapAnimationRegistryEntry
   targetKey: unknown
 }
 
@@ -35,7 +38,10 @@ export function syncRegisteredGsapAnimationsForClips(
 ): void {
   const enriched: EnrichedClip[] = []
   for (const clip of clips) {
-    const entry = getAnimationEntryById(clip.gsapAnimationId)
+    const entry = getAnimationEntryBySheetAddressKey(
+      clip.sheetObjectAddressKey,
+      clip.gsapAnimationId,
+    )
     if (!entry?.animation) continue
     enriched.push({
       ...clip,

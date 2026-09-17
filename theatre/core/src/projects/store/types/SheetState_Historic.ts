@@ -164,7 +164,11 @@ export type GsapClipBaselineTiming = {
 }
 
 export type GsapClipTrack = TrackDataCommon<'GsapClipTrack'> & {
-  /** Id from {@link registerGsapAnimation} / the global GSAP animation registry. */
+  /**
+   * Registry animation id for this clip. Defaults to the sanitised GSAP sheet
+   * object key (e.g. `GSAP / Panel show`) when set via Studio; may differ if
+   * {@link registerGsapAnimation} was called with an explicit `id` override.
+   */
   gsapAnimationId: string
   /** Sequence position where the clip starts (same units as the sequence). */
   start: number

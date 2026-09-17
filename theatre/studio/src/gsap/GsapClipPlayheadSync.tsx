@@ -1,4 +1,6 @@
 import {usePrism} from '@unseenco/theatre-react'
+import {sheetObjectAddressKeyFromParts} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
 import {subscribeGsapClipSyncAtPlayhead} from '@unseenco/theatre-shared/gsap/subscribeGsapClipSyncAtPlayhead'
 import {resolveSequenceEditorSheet} from '@unseenco/theatre-studio/selectors'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
@@ -19,11 +21,18 @@ const GsapClipPlayheadSync: React.VFC = () => {
     if (!sheet) return
 
     const sequence = getStudioSequence(sheet)
+    const sheetAddress = sheet.address
 
     return subscribeGsapClipSyncAtPlayhead({
       pointer: sequence.publicApi.pointer,
       getGsapClipTimings: () =>
-        sequence.publicApi.__experimental_getGsapClips().map(({clip}) => ({
+        sequence.publicApi.__experimental_getGsapClips().map(({objectKey, clip}) => ({
+          sheetObjectAddressKey: sheetObjectAddressKeyFromParts({
+            projectId: sheetAddress.projectId,
+            sheetId: sheetAddress.sheetId,
+            sheetInstanceId: sheetAddress.sheetInstanceId,
+            objectKey: objectKey as ObjectAddressKey,
+          }),
           gsapAnimationId: clip.gsapAnimationId,
           start: clip.start,
           duration: clip.duration,
