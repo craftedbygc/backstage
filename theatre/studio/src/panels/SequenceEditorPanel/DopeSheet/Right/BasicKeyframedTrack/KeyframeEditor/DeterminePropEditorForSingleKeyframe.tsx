@@ -82,7 +82,6 @@ const Row = styled.div`
  * chip surface (see KeyframeInlineEditorPopover); this only lays out label + value.
  */
 const Chip = styled.div<{
-  $ownsLabel: boolean
   $interactive: boolean
   $paddingLeftPx: number
 }>`
@@ -94,10 +93,9 @@ const Chip = styled.div<{
   display: flex;
   align-items: stretch;
   gap: 12px;
-  padding: ${(props) =>
-    props.$ownsLabel
-      ? `0 0 0 ${props.$paddingLeftPx}px`
-      : `0 10px 0 ${props.$paddingLeftPx}px`};
+  /* Same horizontal inset for every row; number rows must not double-apply the
+     10px base inset (BasicNumberInput Content padding) on top of chip padding. */
+  padding: 0 10px 0 ${(props) => props.$paddingLeftPx}px;
   box-sizing: border-box;
   background: transparent;
   border-radius: var(--studio-radius);
@@ -256,7 +254,6 @@ function PrimitivePropEditor(
     <Row>
       <Chip
         data-detail-prop-chip=""
-        $ownsLabel={ownsLabel}
         $interactive={interactive}
         $paddingLeftPx={propRowPaddingLeft(p.indent)}
         onClick={
@@ -276,7 +273,13 @@ function PrimitivePropEditor(
             propConfig={p.propConfig}
             value={valueInProp(p.keyframe.value, p.propConfig)}
             autoFocus={p.autoFocusInput}
-            {...(ownsLabel ? {label: labelText, embedded: true} : {})}
+            {...(ownsLabel
+              ? {
+                  label: labelText,
+                  embedded: true,
+                  contentPadding: '0',
+                }
+              : {})}
             {...(interactive ? {hostClickRef} : {})}
           />
         </InputSlot>
