@@ -1,5 +1,11 @@
 import gsap from 'gsap'
-import {getProject, onChange, types} from '@unseenco/theatre-core'
+import {
+  createRafDriver,
+  getProject,
+  onChange,
+  setCoreRafDriver,
+  types,
+} from '@unseenco/theatre-core'
 import studio from '@unseenco/theatre-studio'
 import {
   attachGsapSequenceBridge,
@@ -8,12 +14,21 @@ import {
 } from '@unseenco/theatre-gsap'
 import {buildExtension} from '@unseenco/theatre-gsap/extension'
 
+const rafDriver = createRafDriver({name: 'gsap-time-mode'})
+setCoreRafDriver(rafDriver)
+
+// Drive GSAP from Theatre's rAF loop (not GSAP's internal ticker).
+gsap.ticker.remove(gsap.updateRoot)
+gsap.ticker.fps(-1)
+gsap.ticker.lagSmoothing(0)
+gsap.ticker.sleep()
+
 configureTheatreGsap({
   namespace: 'GSAP',
   outlineNamespace: {defaultCollapsed: false},
 })
 
-studio.initialize()
+studio.initialize({__experimental_rafDriver: rafDriver})
 
 const project = getProject('Theatre × GSAP demo')
 const sheet = project.sheet('Main')
@@ -47,6 +62,19 @@ toggle.addEventListener('click', () => {
   menuOpen = !menuOpen
   syncPanelRuntimeState()
 })
+
+function detachGsapTickerFromRaf() {
+  gsap.ticker.remove(gsap.updateRoot)
+  gsap.ticker.sleep()
+}
+
+function onAnimationFrame(time: number) {
+  requestAnimationFrame(onAnimationFrame)
+  rafDriver.tick(time)
+  gsap.updateRoot(time / 1000)
+}
+
+requestAnimationFrame(onAnimationFrame)
 
 void project.ready.then(() => {
   const panelShow = gsap.fromTo(panel, panelHidden, {
@@ -85,6 +113,8 @@ void project.ready.then(() => {
     label: 'Box move',
     id: 'gsap-box-move',
   })
+
+  detachGsapTickerFromRaf()
 
   const regularObject = sheet.object('Regular Theatre Object', {
     x: types.number(0, {range: [-80, 80], label: 'X'}),
