@@ -84,6 +84,105 @@ export function applyGsapClipBaselineToTrack(
   }
 }
 
+function baselineDurationSeconds(duration: number): number {
+  return Math.max(duration, 0.01)
+}
+
+function baselineTimelineSpanSeconds(baseline: GsapClipBaselineTiming): number {
+  return Math.max(baseline.timelineSpan ?? baseline.duration, 0.01)
+}
+
+function trackTimelineSpanSeconds(track: GsapClipTrack): number {
+  return Math.max(track.timelineSpan ?? track.duration, 0.01)
+}
+
+function timelineChildTimingMatches(
+  trackChild: GsapTimelineChildClip,
+  baselineChild: GsapTimelineChildClip,
+): boolean {
+  return (
+    trackChild.localStart === baselineChild.localStart &&
+    trackChild.localDuration === baselineChild.localDuration
+  )
+}
+
+/** True when clip duration / timeline span / child local timing differs from baseline. */
+export function gsapClipTimingDeviatesFromBaseline(
+  track: GsapClipTrack,
+  baseline: GsapClipBaselineTiming,
+): boolean {
+  if (
+    track.duration !== baselineDurationSeconds(baseline.duration)
+  ) {
+    return true
+  }
+
+  const baselineChildren = baseline.timelineChildren
+  const hasBaselineTimeline =
+    baselineChildren !== undefined && baselineChildren.length > 0
+  const trackChildren = track.timelineChildren
+  const hasTrackTimeline =
+    trackChildren !== undefined && trackChildren.length > 0
+
+  if (hasBaselineTimeline !== hasTrackTimeline) {
+    return true
+  }
+
+  if (!hasBaselineTimeline) {
+    return false
+  }
+
+  if (trackTimelineSpanSeconds(track) !== baselineTimelineSpanSeconds(baseline)) {
+    return true
+  }
+
+  for (const baselineChild of baselineChildren!) {
+    const trackChild = trackChildren!.find(
+      (c) => c.childId === baselineChild.childId,
+    )
+    if (!trackChild || !timelineChildTimingMatches(trackChild, baselineChild)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+/** True when the given child's local timing differs from baseline for that child. */
+export function gsapTimelineChildTimingDeviatesFromBaseline(
+  track: GsapClipTrack,
+  childId: string,
+  baseline: GsapClipBaselineTiming,
+): boolean {
+  const baselineChild = baseline.timelineChildren?.find(
+    (c) => c.childId === childId,
+  )
+  const trackChild = track.timelineChildren?.find((c) => c.childId === childId)
+  if (!baselineChild || !trackChild) {
+    return false
+  }
+  return !timelineChildTimingMatches(trackChild, baselineChild)
+}
+
+export function gsapClipDeviatesFromBaseline(
+  track: GsapClipTrack,
+  entry?: GsapAnimationRegistryEntry,
+): boolean {
+  const baseline = resolveGsapClipBaselineTiming(track, entry)
+  if (!baseline) return false
+  return gsapClipTimingDeviatesFromBaseline(track, baseline)
+}
+
+export function gsapTimelineChildDeviatesFromBaseline(
+  track: GsapClipTrack,
+  childId: string,
+  entry?: GsapAnimationRegistryEntry,
+): boolean {
+  const baseline = resolveGsapClipBaselineTiming(track, entry)
+  if (!baseline) return false
+  return gsapTimelineChildTimingDeviatesFromBaseline(track, childId, baseline)
+}
+
 export function applyGsapTimelineChildBaselineToTrack(
   track: GsapClipTrack,
   childId: string,

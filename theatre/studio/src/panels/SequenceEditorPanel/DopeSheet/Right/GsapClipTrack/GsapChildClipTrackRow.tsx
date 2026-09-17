@@ -30,6 +30,10 @@ import {
   readTimelineSpanSeconds,
 } from '@unseenco/theatre-shared/gsap/applyTimelineChildTiming'
 import {getAnimationEntry} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import {
+  gsapTimelineChildTimingDeviatesFromBaseline,
+  resolveGsapClipBaselineTiming,
+} from '@unseenco/theatre-shared/gsap/gsapClipBaseline'
 
 const Container = styled.div`
   position: relative;
@@ -380,53 +384,84 @@ function useGsapChildClipContextMenu(
 ) {
   return useContextMenu(node, {
     displayName: 'GSAP child clip',
-    menuItems: (): IContextMenuItem[] => [
-      {
-        type: 'normal',
-        label: 'Reset to original state',
-        callback: () => {
-          const address = {
-            ...opts.leaf.sheetObject.address,
-            trackId: opts.leaf.parentTrackId,
-            childId: opts.leaf.childId,
-            sequenceVariant: opts.sequenceVariant,
-          }
-          let didReset = false
-          getStudio().transaction(({stateEditors}) => {
-            didReset =
-              stateEditors.coreByProject.historic.sheetsById.sequence.resetGsapTimelineChildToOriginal(
-                address,
-              )
-          })
-          if (!didReset) return
-          const sheetState = val(
-            getStudio()!.atomP.historic.coreByProject[
-              opts.leaf.sheetObject.address.projectId
-            ].sheetsById[opts.leaf.sheetObject.address.sheetId],
-          )
-          const track = getSequenceStateFromSheet(
-            sheetState,
-            opts.sequenceVariant,
-          )?.tracksByObject[opts.leaf.sheetObject.address.objectKey]
-            ?.trackData[opts.leaf.parentTrackId]
-          if (track?.type === 'GsapClipTrack') {
-            const entry = getAnimationEntry(
-              opts.leaf.sheetObject,
-              track.gsapAnimationId,
-            )
-            if (entry?.animation) {
-              applyTimelineChildTimingToGsap(
-                entry.animation,
-                track.timelineChildren ?? [],
-                entry.timelineChildById,
-                entry.onRebuildTimeline,
-              )
+    menuItems: (): IContextMenuItem[] => {
+      const sheetState = val(
+        getStudio()!.atomP.historic.coreByProject[
+          opts.leaf.sheetObject.address.projectId
+        ].sheetsById[opts.leaf.sheetObject.address.sheetId],
+      )
+      const track = getSequenceStateFromSheet(
+        sheetState,
+        opts.sequenceVariant,
+      )?.tracksByObject[opts.leaf.sheetObject.address.objectKey]?.trackData[
+        opts.leaf.parentTrackId
+      ]
+      if (track?.type !== 'GsapClipTrack') {
+        return []
+      }
+      const entry = getAnimationEntry(
+        opts.leaf.sheetObject,
+        track.gsapAnimationId,
+      )
+      const baseline = resolveGsapClipBaselineTiming(track, entry)
+      if (
+        !baseline ||
+        !gsapTimelineChildTimingDeviatesFromBaseline(
+          track,
+          opts.leaf.childId,
+          baseline,
+        )
+      ) {
+        return []
+      }
+      return [
+        {
+          type: 'normal',
+          label: 'Reset to original state',
+          callback: () => {
+            const address = {
+              ...opts.leaf.sheetObject.address,
+              trackId: opts.leaf.parentTrackId,
+              childId: opts.leaf.childId,
+              sequenceVariant: opts.sequenceVariant,
             }
-          }
-          previewGsapClipsAtCurrentPlayhead(opts.leaf.sheetObject)
+            let didReset = false
+            getStudio().transaction(({stateEditors}) => {
+              didReset =
+                stateEditors.coreByProject.historic.sheetsById.sequence.resetGsapTimelineChildToOriginal(
+                  address,
+                )
+            })
+            if (!didReset) return
+            const sheetStateAfter = val(
+              getStudio()!.atomP.historic.coreByProject[
+                opts.leaf.sheetObject.address.projectId
+              ].sheetsById[opts.leaf.sheetObject.address.sheetId],
+            )
+            const trackAfter = getSequenceStateFromSheet(
+              sheetStateAfter,
+              opts.sequenceVariant,
+            )?.tracksByObject[opts.leaf.sheetObject.address.objectKey]
+              ?.trackData[opts.leaf.parentTrackId]
+            if (trackAfter?.type === 'GsapClipTrack') {
+              const entryAfter = getAnimationEntry(
+                opts.leaf.sheetObject,
+                trackAfter.gsapAnimationId,
+              )
+              if (entryAfter?.animation) {
+                applyTimelineChildTimingToGsap(
+                  entryAfter.animation,
+                  trackAfter.timelineChildren ?? [],
+                  entryAfter.timelineChildById,
+                  entryAfter.onRebuildTimeline,
+                )
+              }
+            }
+            previewGsapClipsAtCurrentPlayhead(opts.leaf.sheetObject)
+          },
         },
-      },
-    ],
+      ]
+    },
   })
 }
 

@@ -3,6 +3,8 @@ import {
   applyGsapClipBaselineToTrack,
   applyGsapTimelineChildBaselineToTrack,
   buildGsapClipBaselineTiming,
+  gsapClipTimingDeviatesFromBaseline,
+  gsapTimelineChildTimingDeviatesFromBaseline,
 } from './gsapClipBaseline'
 
 describe('gsapClipBaseline', () => {
@@ -123,5 +125,87 @@ describe('gsapClipBaseline', () => {
     expect(track.timelineChildren![0].localDuration).toBe(1)
     expect(track.timelineChildren![1].localStart).toBe(2)
     expect(track.timelineChildren![1].localDuration).toBe(2)
+  })
+
+  it('detects parent clip deviation from baseline', () => {
+    const baseline = buildGsapClipBaselineTiming({
+      duration: 2,
+      timelineSpan: 2,
+      timelineChildren: [
+        {
+          childId: 'child_0',
+          label: 'A',
+          localStart: 0,
+          localDuration: 1,
+        },
+      ],
+    })
+    const atBaseline: GsapClipTrack = {
+      type: 'GsapClipTrack',
+      gsapAnimationId: 'anim-1',
+      start: 0,
+      duration: 2,
+      timelineSpan: 2,
+      timelineChildren: baseline.timelineChildren,
+      baselineTiming: baseline,
+    }
+    expect(gsapClipTimingDeviatesFromBaseline(atBaseline, baseline)).toBe(false)
+
+    const editedDuration = {...atBaseline, duration: 3}
+    expect(gsapClipTimingDeviatesFromBaseline(editedDuration, baseline)).toBe(
+      true,
+    )
+
+    const editedChild: GsapClipTrack = {
+      ...atBaseline,
+      timelineChildren: [
+        {
+          childId: 'child_0',
+          label: 'A',
+          localStart: 0.5,
+          localDuration: 1,
+        },
+      ],
+    }
+    expect(gsapClipTimingDeviatesFromBaseline(editedChild, baseline)).toBe(true)
+  })
+
+  it('detects child clip deviation from baseline', () => {
+    const baseline = buildGsapClipBaselineTiming({
+      duration: 2,
+      timelineSpan: 2,
+      timelineChildren: [
+        {
+          childId: 'child_0',
+          label: 'A',
+          localStart: 0,
+          localDuration: 1,
+        },
+      ],
+    })
+    const track: GsapClipTrack = {
+      type: 'GsapClipTrack',
+      gsapAnimationId: 'anim-1',
+      start: 0,
+      duration: 2,
+      timelineSpan: 2,
+      timelineChildren: [
+        {
+          childId: 'child_0',
+          label: 'A',
+          localStart: 0,
+          localDuration: 1,
+        },
+      ],
+      baselineTiming: baseline,
+    }
+    expect(
+      gsapTimelineChildTimingDeviatesFromBaseline(track, 'child_0', baseline),
+    ).toBe(false)
+
+    track.timelineChildren![0].localStart = 0.25
+    expect(
+      gsapTimelineChildTimingDeviatesFromBaseline(track, 'child_0', baseline),
+    ).toBe(true)
   })
 })
