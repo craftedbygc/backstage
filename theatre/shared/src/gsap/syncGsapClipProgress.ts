@@ -32,16 +32,9 @@ function pickActiveClipForTarget(
 ): EnrichedClip {
   const sorted = [...group].sort((a, b) => a.start - b.start)
 
-  for (const clip of sorted) {
-    const end = clip.start + clip.duration
-    if (
-      sequencePosition + GSAP_CLIP_TIME_EPS >= clip.start &&
-      sequencePosition <= end + GSAP_CLIP_TIME_EPS
-    ) {
-      return clip
-    }
-  }
-
+  // Same-target clips are sequential: the latest clip whose start has passed
+  // drives the tween (including hold-at-end after its bar). An earlier clip
+  // with a longer sequencer bar must not win once a later clip has started.
   const started = sorted.filter(
     (clip) => sequencePosition + GSAP_CLIP_TIME_EPS >= clip.start,
   )
@@ -49,7 +42,7 @@ function pickActiveClipForTarget(
     return started[started.length - 1]!
   }
 
-  return sorted[sorted.length - 1]!
+  return sorted[0]!
 }
 
 /** Updates registered GSAP tween progress for each clip at `sequencePosition`. */

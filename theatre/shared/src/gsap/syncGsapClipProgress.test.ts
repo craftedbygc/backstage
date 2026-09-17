@@ -121,6 +121,50 @@ describe('syncRegisteredGsapAnimationsForClips', () => {
     expect(hide.progress).toHaveBeenCalledWith(1, true)
   })
 
+  test('back-to-back show then hide: after hide end applies hide at progress 1', () => {
+    const show = {progress: jest.fn()}
+    const hide = {progress: jest.fn()}
+    const panel = {}
+
+    setRegistry({
+      show: {animation: show, targets: [panel]},
+      hide: {animation: hide, targets: [panel]},
+    })
+
+    const showDuration = 0.45
+    const hideStart = showDuration
+    const hideDuration = 0.35
+    const hideEnd = hideStart + hideDuration
+    const positionAfterHide = hideEnd + 1e-4
+
+    syncRegisteredGsapAnimationsForClips(positionAfterHide, [
+      {gsapAnimationId: 'show', start: 0, duration: showDuration},
+      {gsapAnimationId: 'hide', start: hideStart, duration: hideDuration},
+    ])
+
+    expect(hide.progress).toHaveBeenCalledWith(1, true)
+    expect(show.progress).not.toHaveBeenCalled()
+  })
+
+  test('longer show bar after hide started: hide still wins past hide end', () => {
+    const show = {progress: jest.fn()}
+    const hide = {progress: jest.fn()}
+    const panel = {}
+
+    setRegistry({
+      show: {animation: show, targets: [panel]},
+      hide: {animation: hide, targets: [panel]},
+    })
+
+    syncRegisteredGsapAnimationsForClips(0.801, [
+      {gsapAnimationId: 'show', start: 0, duration: 1},
+      {gsapAnimationId: 'hide', start: 0.45, duration: 0.35},
+    ])
+
+    expect(hide.progress).toHaveBeenCalledWith(1, true)
+    expect(show.progress).not.toHaveBeenCalled()
+  })
+
   test('during first clip on shared target, later clip does not override', () => {
     const show = {progress: jest.fn()}
     const hide = {progress: jest.fn()}
