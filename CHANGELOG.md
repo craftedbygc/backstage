@@ -1,5 +1,22 @@
 # Theatre.js changelog
 
+## 0.4.0
+
+- New features
+  - **GSAP (`@unseenco/theatre-gsap`):** Sequence **time-mode** bridge for GSAP tweens and timelines (v1). `configureTheatreGsap()`, `registerGsapAnimation()`, and `attachGsapSequenceBridge()` register paused animations on sheet proxy objects under a configurable outline namespace (default `GSAP / …`), drive `progress` from the sequence playhead, and expose clip layout via `sheet.sequence.__experimental_getGsapClips()`. Optional `onRebuildTimeline` for timelines whose child spans are edited natively in Studio.
+  - **Studio (GSAP):** Built-in GSAP authoring — no separate `studio.extend()` package entry. Outline and detail-panel actions **Add to sequence at playhead** / **Remove from sequence**; **GsapClipTrack** rows in the sequence editor with nested child rows for GSAP timeline children (drag/resize, baseline timing, **Reset to original state** when timing diverges). Outline labels with `/` nest in the sequence tree like other namespaces. One clip per registered animation (toggle add/remove).
+  - **Core:** `GsapClipTrack` sequence track type and editors for add/update/remove GSAP clips and child timing.
+  - **Playground:** [`/shared/gsap-time-mode/`](./packages/playground/src/shared/gsap-time-mode/) — DOM demo with GSAP ticker as master clock (`createRafDriver` + `setCoreRafDriver`), nested `UI / …` labels, and rebuildable timeline choreo.
+  - **Three.js Package:** Multi-scene toolbar flyout shows the global unsaved-state dot on the trigger and per-scene dots when registered objects in that scene diverge from the JSON state passed to `getProject()` (`sceneSavedStateDivergence` helpers).
+  - **Studio:** Outline object rows use a neutral square list icon; objects that diverge from saved project JSON show an orange **unsaved** dot on the row corner (replaces the filled/hollow dirty circle on the icon).
+- Bug fixes
+  - **Studio:** Keyframe diamond popover — full-width rows, hierarchy labels, aligned number/boolean/dropdown chips, full-bleed slider track in the popover, reliable anchor positioning when layout bounds are missing, and improved dismiss (outside click / shadow DOM, single open popover).
+  - **Core / Studio:** Partial sheet records without `staticOverrides.byObject` no longer crash asset setup or transient-prop stripping (e.g. devtools baseline JSON before objects attach).
+  - **Playground:** Three.js devtools demo loads baseline `theatre-project-state.json` into `getProject()` so unsaved indicators compare against saved state.
+- Docs
+  - **Guide:** [GSAP extension](./docs/guide/extensions/gsap.md) under Extensions; cross-links from concepts, extension overview, and Studio manual.
+  - **API reference:** `@unseenco/theatre-gsap` included in `yarn workspace @unseenco/theatre-docs run generate:api` and VitePress sidebar (`/docs/api/theatre-gsap`).
+
 ## 0.3.0
 
 - Maintenance
