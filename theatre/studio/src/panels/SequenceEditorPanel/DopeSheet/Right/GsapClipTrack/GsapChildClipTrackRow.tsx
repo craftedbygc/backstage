@@ -55,6 +55,17 @@ const EdgeHandle = styled.div<{$side: 'left' | 'right'}>`
   cursor: ew-resize;
   z-index: 1;
   ${(props) => (props.$side === 'left' ? 'left: 0;' : 'right: 0;')}
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    bottom: 5px;
+    width: 2px;
+    border-radius: 1px;
+    background: rgba(255, 255, 255, 0.35);
+    ${(props) => (props.$side === 'left' ? 'left: 3px;' : 'right: 3px;')}
+  }
 `
 
 const GsapChildClipTrackRow: React.VFC<{

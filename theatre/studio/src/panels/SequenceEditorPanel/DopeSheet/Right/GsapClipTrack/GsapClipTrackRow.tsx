@@ -87,7 +87,7 @@ const EdgeHandle = styled.div<{$side: 'left' | 'right'}>`
   }
 `
 
-const GsapClipTrackRow: React.VFC<{
+export const GsapClipTrackBarForTreeLeaf: React.VFC<{
   leaf: SequenceEditorTree_GsapClipTrack
   layoutP: Pointer<SequenceEditorPanelLayout>
 }> = ({leaf, layoutP}) => {
@@ -111,10 +111,10 @@ const GsapClipTrackRow: React.VFC<{
     ]
 
     if (!trackData || trackData.type !== 'GsapClipTrack') {
-      return <RightRow leaf={leaf} isCollapsed={false} node={<div />} />
+      return <div />
     }
 
-    const node = (
+    return (
       <GsapClipTrackBar
         leaf={leaf}
         layoutP={layoutP}
@@ -123,6 +123,24 @@ const GsapClipTrackRow: React.VFC<{
         displayLabel={leaf.displayLabel}
       />
     )
+  }, [leaf, layoutP])
+}
+
+const GsapClipTrackRow: React.VFC<{
+  leaf: SequenceEditorTree_GsapClipTrack
+  layoutP: Pointer<SequenceEditorPanelLayout>
+}> = ({leaf, layoutP}) => {
+  return usePrism(() => {
+    const activeVariant = getStudioActiveSequenceVariant(
+      leaf.sheetObject.sheet.address,
+    )
+    const trackVariant =
+      leaf.sheetObject.template.getSequenceVariantOwningTrack(
+        leaf.trackId,
+        activeVariant,
+      ) ?? activeVariant
+
+    const node = <GsapClipTrackBarForTreeLeaf leaf={leaf} layoutP={layoutP} />
 
     return (
       <RightRow leaf={leaf} isCollapsed={leaf.isCollapsed} node={node}>

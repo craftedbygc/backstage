@@ -32,6 +32,7 @@ import type {
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import {getSequenceStateFromSheet} from '@unseenco/theatre-studio/utils/sequenceVariantHelpers'
 import {isGsapClipTrack} from '@unseenco/theatre-shared/sequence/trackData'
+import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
 import {getAnimationEntryForSheetObject} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
 import type {GsapTimelineChildClip} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 
@@ -77,12 +78,24 @@ export type SequenceEditorTree_Sheet = SequenceEditorTree_Row<'sheet'> & {
   children: SequenceEditorTree_SheetObject[]
 }
 
+export type SequenceEditorTree_SheetObjectInlineGsapClip = {
+  trackId: SequenceTrackId
+  trackData: GsapClipTrack
+  displayLabel: string
+  isCollapsed: boolean
+}
+
 export type SequenceEditorTree_SheetObject =
   SequenceEditorTree_Row<'sheetObject'> & {
     isCollapsed: boolean
     sheetObject: SheetObject
     /** When set, used instead of `objectKey` in the sequence editor left column. */
     displayLabel?: string
+    /**
+     * GSAP proxy objects show their parent clip bar on this row instead of a nested
+     * `gsapClipTrack` row with a duplicate label.
+     */
+    gsapClip?: SequenceEditorTree_SheetObjectInlineGsapClip
     children: Array<
       | SequenceEditorTree_PropWithChildren
       | SequenceEditorTree_PrimitiveProp
@@ -278,15 +291,96 @@ export const calculateSequenceEditorTree = (
       shouldRender && !isCollapsed,
     )
 
+    const isGsapProxy = isGsapSheetObjectKey(sheetObject.address.objectKey)
+    const gsapClipsForSeparateRows: Array<{
+      trackId: SequenceTrackId
+      trackData: GsapClipTrack
+    }> = []
+
+    if (isGsapProxy && gsapClipEntries.length > 0) {
+      const [firstClip, ...restClips] = gsapClipEntries
+      attachInlineGsapClipToSheetObject(
+        sheetObject,
+        firstClip,
+        row,
+        level + 1,
+        shouldRender && !isCollapsed,
+      )
+      gsapClipsForSeparateRows.push(...restClips)
+    } else {
+      gsapClipsForSeparateRows.push(...gsapClipEntries)
+    }
+
     addGsapClipTrackRows(
       sheetObject,
-      gsapClipEntries,
+      gsapClipsForSeparateRows,
       row.children,
       level + 2,
       shouldRender && !isCollapsed,
     )
 
     row.heightIncludingChildren = topSoFar - row.top
+  }
+
+  function attachInlineGsapClipToSheetObject(
+    sheetObject: SheetObject,
+    clip: {trackId: SequenceTrackId; trackData: GsapClipTrack},
+    sheetObjectRow: SequenceEditorTree_SheetObject,
+    childLevel: number,
+    shouldRenderChildren: boolean,
+  ) {
+    const {trackId, trackData} = clip
+    const entry = getAnimationEntryForSheetObject(sheetObject)
+    const displayLabel = entry?.label ?? trackData.gsapAnimationId
+    const isCollapsedP =
+      collapsableItemSetP.byId[
+        createStudioSheetItemKey.forSheetObjectGsapClipTrack(
+          sheetObject,
+          trackId,
+        )
+      ].isCollapsed
+    const clipIsCollapsed = pointerToPrism(isCollapsedP).getValue() ?? false
+
+    sheetObjectRow.gsapClip = {
+      trackId,
+      trackData,
+      displayLabel,
+      isCollapsed: clipIsCollapsed,
+    }
+
+    if (!trackData.timelineChildren?.length) {
+      return
+    }
+
+    for (const childData of trackData.timelineChildren) {
+      const childRow: SequenceEditorTree_GsapChildClip = {
+        type: 'gsapChildClip',
+        depth: childLevel,
+        sheetItemKey: createStudioSheetItemKey.forSheetObjectGsapChildClip(
+          sheetObject,
+          trackId,
+          childData.childId,
+        ),
+        sheetObject,
+        parentTrackId: trackId,
+        parentTrackData: trackData,
+        childId: childData.childId,
+        childData,
+        displayLabel: childData.label,
+        shouldRender: shouldRenderChildren && !clipIsCollapsed,
+        top: topSoFar,
+        nodeHeight:
+          shouldRenderChildren && !clipIsCollapsed ? HEIGHT_OF_ANY_TITLE : 0,
+        heightIncludingChildren:
+          shouldRenderChildren && !clipIsCollapsed ? HEIGHT_OF_ANY_TITLE : 0,
+        n: nSoFar,
+      }
+      sheetObjectRow.children.push(childRow)
+      if (shouldRenderChildren && !clipIsCollapsed) {
+        nSoFar += 1
+        topSoFar += childRow.nodeHeight
+      }
+    }
   }
 
   function listGsapClipTracksForObject(
@@ -553,4 +647,37 @@ export const calculateSequenceEditorTree = (
   }
 
   return tree
+}
+
+/** View-model for rendering a GSAP parent clip bar on a sheet object row. */
+export function sequenceEditorTreeGsapClipTrackLeafFromSheetObject(
+  sheetRow: SequenceEditorTree_SheetObject,
+): SequenceEditorTree_GsapClipTrack | null {
+  const gsapClip = sheetRow.gsapClip
+  if (!gsapClip) return null
+
+  const timelineChildren = sheetRow.children.filter(
+    (child): child is SequenceEditorTree_GsapChildClip =>
+      child.type === 'gsapChildClip',
+  )
+
+  return {
+    type: 'gsapClipTrack',
+    isCollapsed: gsapClip.isCollapsed,
+    depth: sheetRow.depth,
+    sheetItemKey: createStudioSheetItemKey.forSheetObjectGsapClipTrack(
+      sheetRow.sheetObject,
+      gsapClip.trackId,
+    ),
+    sheetObject: sheetRow.sheetObject,
+    trackId: gsapClip.trackId,
+    trackData: gsapClip.trackData,
+    displayLabel: gsapClip.displayLabel,
+    shouldRender: sheetRow.shouldRender,
+    top: sheetRow.top,
+    nodeHeight: sheetRow.nodeHeight,
+    heightIncludingChildren: sheetRow.heightIncludingChildren,
+    children: timelineChildren,
+    n: sheetRow.n,
+  }
 }
