@@ -28,6 +28,7 @@ import {
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
 import useContextMenu from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import type {IContextMenuItem} from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
+import {applyGsapClipTrackToAnimation} from '@unseenco/theatre-studio/gsap/applyGsapClipTrackToAnimation'
 import {previewGsapClipsAtCurrentPlayhead} from '@unseenco/theatre-studio/gsap/previewGsapClipsAtPlayhead'
 import {gsapClipBarLayoutInScaledSpace} from './gsapClipBarLayout'
 import GsapChildClipTrackRow from './GsapChildClipTrackRow'
@@ -448,6 +449,39 @@ function useGsapClipContextMenu(
   return useContextMenu(node, {
     displayName: 'GSAP clip',
     menuItems: (): IContextMenuItem[] => [
+      {
+        type: 'normal',
+        label: 'Reset to original state',
+        callback: () => {
+          const address = {
+            ...opts.leaf.sheetObject.address,
+            trackId: opts.leaf.trackId,
+            sequenceVariant: opts.sequenceVariant,
+          }
+          let didReset = false
+          getStudio().transaction(({stateEditors}) => {
+            didReset =
+              stateEditors.coreByProject.historic.sheetsById.sequence.resetGsapClipTrackToOriginal(
+                address,
+              )
+          })
+          if (!didReset) return
+          const sheetState = val(
+            getStudio()!.atomP.historic.coreByProject[
+              opts.leaf.sheetObject.address.projectId
+            ].sheetsById[opts.leaf.sheetObject.address.sheetId],
+          )
+          const track = getSequenceStateFromSheet(
+            sheetState,
+            opts.sequenceVariant,
+          )?.tracksByObject[opts.leaf.sheetObject.address.objectKey]
+            ?.trackData[opts.leaf.trackId]
+          if (track && track.type === 'GsapClipTrack') {
+            applyGsapClipTrackToAnimation(opts.leaf.sheetObject, track)
+          }
+          previewGsapClipsAtCurrentPlayhead(opts.leaf.sheetObject)
+        },
+      },
       {
         type: 'normal',
         label: 'Remove from sequence',

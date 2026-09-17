@@ -8,6 +8,13 @@ import type {
   SheetState_Historic,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import {
+  applyGsapClipBaselineToTrack,
+  applyGsapTimelineChildBaselineToTrack,
+  buildGsapClipBaselineTiming,
+  resolveGsapClipBaselineTiming,
+} from '@unseenco/theatre-shared/gsap/gsapClipBaseline'
+import {getAnimationEntryById} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import {
   gsapClipEndTime,
   isBasicKeyframedTrack,
 } from '@unseenco/theatre-shared/sequence/trackData'
@@ -1371,9 +1378,14 @@ namespace stateEditors {
               __debugName: `gsap:${p.gsapAnimationId}`,
             }
             if (p.timelineChildren && p.timelineChildren.length > 0) {
-              track.timelineChildren = p.timelineChildren
+              track.timelineChildren = p.timelineChildren.map((c) => ({...c}))
               track.timelineSpan = p.timelineSpan ?? duration
             }
+            track.baselineTiming = buildGsapClipBaselineTiming({
+              duration,
+              timelineSpan: track.timelineSpan,
+              timelineChildren: track.timelineChildren,
+            })
             tracks.trackData[trackId] = track
             _extendSequenceLengthForGsapClipEnd(p, gsapClipEndTime(track))
             return trackId
@@ -1439,6 +1451,49 @@ namespace stateEditors {
           ) {
             const tracks = _ensureTracksOfObject(p)
             delete tracks.trackData[p.trackId]
+          }
+
+          export function resetGsapClipTrackToOriginal(
+            p: WithoutSheetInstance<SheetObjectAddress> & {
+              trackId: SequenceTrackId
+              sequenceVariant?: SequenceVariantId
+            },
+          ): boolean {
+            const track = _getTrack(p)
+            if (!track || track.type !== 'GsapClipTrack') return false
+            const baseline = resolveGsapClipBaselineTiming(
+              track,
+              getAnimationEntryById(track.gsapAnimationId),
+            )
+            if (!baseline) return false
+            applyGsapClipBaselineToTrack(track, baseline)
+            _extendSequenceLengthForGsapClipEnd(p, gsapClipEndTime(track))
+            return true
+          }
+
+          export function resetGsapTimelineChildToOriginal(
+            p: WithoutSheetInstance<SheetObjectAddress> & {
+              trackId: SequenceTrackId
+              childId: string
+              sequenceVariant?: SequenceVariantId
+            },
+          ): boolean {
+            const track = _getTrack(p)
+            if (!track || track.type !== 'GsapClipTrack') return false
+            const baseline = resolveGsapClipBaselineTiming(
+              track,
+              getAnimationEntryById(track.gsapAnimationId),
+            )
+            if (!baseline) return false
+            const ok = applyGsapTimelineChildBaselineToTrack(
+              track,
+              p.childId,
+              baseline,
+            )
+            if (ok) {
+              _extendSequenceLengthForGsapClipEnd(p, gsapClipEndTime(track))
+            }
+            return ok
           }
         }
 

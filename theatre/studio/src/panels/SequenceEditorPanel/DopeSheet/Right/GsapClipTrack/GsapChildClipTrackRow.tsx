@@ -12,6 +12,8 @@ import useDrag from '@unseenco/theatre-studio/uiComponents/useDrag'
 import {useCssCursorLock} from '@unseenco/theatre-studio/uiComponents/PointerEventsHandler'
 import type {CommitOrDiscard} from '@unseenco/theatre-studio/StudioStore/StudioStore'
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
+import useContextMenu from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
+import type {IContextMenuItem} from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import DopeSnap from '@unseenco/theatre-studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
 import {
   collectSequenceEditorSnapPositions,
@@ -27,7 +29,10 @@ import {
   applyTimelineChildTimingToGsap,
   readTimelineSpanSeconds,
 } from '@unseenco/theatre-shared/gsap/applyTimelineChildTiming'
-import {getAnimationEntryForSheetObject} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import {
+  getAnimationEntryForSheetObject,
+  getAnimationEntryById,
+} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
 
 const Container = styled.div`
   position: relative;
@@ -114,6 +119,11 @@ const GsapChildClipBar: React.VFC<{
   const [endHandleRef, endHandleNode] = useRefAndState<HTMLDivElement | null>(
     null,
   )
+
+  const [contextMenu] = useGsapChildClipContextMenu(barNode, {
+    leaf,
+    sequenceVariant,
+  })
 
   const beginSnapTargets = useCallback(() => {
     const sheetStatePointer =
@@ -355,12 +365,69 @@ const GsapChildClipBar: React.VFC<{
 
   return (
     <Container>
+      {contextMenu}
       <ClipBar ref={barRef} style={{left: leftPx, width: widthPx}}>
         <EdgeHandle ref={startHandleRef} $side="left" />
         <EdgeHandle ref={endHandleRef} $side="right" />
       </ClipBar>
     </Container>
   )
+}
+
+function useGsapChildClipContextMenu(
+  node: HTMLDivElement | null,
+  opts: {
+    leaf: SequenceEditorTree_GsapChildClip
+    sequenceVariant: string
+  },
+) {
+  return useContextMenu(node, {
+    displayName: 'GSAP child clip',
+    menuItems: (): IContextMenuItem[] => [
+      {
+        type: 'normal',
+        label: 'Reset to original state',
+        callback: () => {
+          const address = {
+            ...opts.leaf.sheetObject.address,
+            trackId: opts.leaf.parentTrackId,
+            childId: opts.leaf.childId,
+            sequenceVariant: opts.sequenceVariant,
+          }
+          let didReset = false
+          getStudio().transaction(({stateEditors}) => {
+            didReset =
+              stateEditors.coreByProject.historic.sheetsById.sequence.resetGsapTimelineChildToOriginal(
+                address,
+              )
+          })
+          if (!didReset) return
+          const sheetState = val(
+            getStudio()!.atomP.historic.coreByProject[
+              opts.leaf.sheetObject.address.projectId
+            ].sheetsById[opts.leaf.sheetObject.address.sheetId],
+          )
+          const track = getSequenceStateFromSheet(
+            sheetState,
+            opts.sequenceVariant,
+          )?.tracksByObject[opts.leaf.sheetObject.address.objectKey]
+            ?.trackData[opts.leaf.parentTrackId]
+          if (track?.type === 'GsapClipTrack') {
+            const entry = getAnimationEntryById(track.gsapAnimationId)
+            if (entry?.animation) {
+              applyTimelineChildTimingToGsap(
+                entry.animation,
+                track.timelineChildren ?? [],
+                entry.timelineChildById,
+                entry.onRebuildTimeline,
+              )
+            }
+          }
+          previewGsapClipsAtCurrentPlayhead(opts.leaf.sheetObject)
+        },
+      },
+    ],
+  })
 }
 
 export default GsapChildClipTrackRow

@@ -5,6 +5,7 @@ import {val} from '@unseenco/theatre-dataverse'
 import {EXTENSION_ID} from './constants'
 import type {TheatreExtension} from './types'
 import {getAnimationEntryForSheetObject} from './animationRegistry'
+import {introspectGsapTimelineChildren} from '@unseenco/theatre-shared/gsap/introspectGsapTimelineChildren'
 import {readGsapTweenTimelineDuration} from '@unseenco/theatre-shared/gsap/syncGsapClipProgress'
 import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/sequence/trackData'
 
@@ -38,12 +39,19 @@ export function buildExtension(
                   sheetObject.sheet.publicApi.sequence.pointer.position,
                 )
                 const duration = readGsapTweenTimelineDuration(entry.animation)
+                const timelineChildren = introspectGsapTimelineChildren(
+                  entry.animation,
+                )
+                const timelineSpan = duration
                 stateEditors.coreByProject.historic.sheetsById.sequence.addGsapClipTrack(
                   {
                     ...sheetObject.address,
                     gsapAnimationId: entry.id,
                     start: position,
                     duration,
+                    ...(timelineChildren.length > 0
+                      ? {timelineChildren, timelineSpan}
+                      : {}),
                   },
                 )
               },

@@ -1,7 +1,10 @@
+import type {GsapClipBaselineTiming} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
+import {buildGsapClipBaselineTiming} from './gsapClipBaseline'
 import {registerGsapObjectBinding} from './gsapObjectBinding'
 import {bumpGsapStudioRegistryRevision} from './gsapStudioRegistryRevision'
 import {
+  introspectGsapTimelineChildren,
   isGsapTimeline,
   linkGsapTimelineChildAnimations,
 } from './introspectGsapTimelineChildren'
@@ -19,6 +22,8 @@ export type GsapAnimationRegistryEntry = {
   kind?: 'tween' | 'timeline'
   timelineChildById?: Map<string, unknown>
   onRebuildTimeline?: () => unknown
+  /** Introspected timing at registration; fallback when clip has no baselineTiming. */
+  originalTiming?: GsapClipBaselineTiming
 }
 
 type RegistryStore = {
@@ -56,20 +61,38 @@ export function registerAnimationInRegistry(
     kind === 'timeline' && entry.animation
       ? linkGsapTimelineChildAnimations(entry.animation)
       : undefined
+  const defaultDuration =
+    entry.defaultDuration ?? readGsapTweenTimelineDuration(entry.animation)
+  const timelineChildren =
+    kind === 'timeline' && entry.animation
+      ? introspectGsapTimelineChildren(entry.animation)
+      : []
+  const originalTiming =
+    entry.originalTiming ??
+    (entry.animation
+      ? buildGsapClipBaselineTiming({
+          duration: defaultDuration,
+          ...(timelineChildren.length > 0
+            ? {
+                timelineSpan: readGsapTweenTimelineDuration(entry.animation),
+                timelineChildren,
+              }
+            : {}),
+        })
+      : undefined)
   const normalized: GsapAnimationRegistryEntry = {
     ...entry,
     kind,
     timelineChildById,
+    originalTiming,
   }
   store.byId.set(entry.id, normalized)
   if (entry.sheetObject) {
     store.idBySheetObject.set(entry.sheetObject, entry.id)
     store.idByAddressKey.set(sheetObjectAddressKey(entry.sheetObject), entry.id)
-    const duration =
-      entry.defaultDuration ?? readGsapTweenTimelineDuration(entry.animation)
     registerGsapObjectBinding(entry.sheetObject, {
       gsapAnimationId: entry.id,
-      defaultDuration: duration,
+      defaultDuration,
     })
   }
   bumpGsapStudioRegistryRevision()

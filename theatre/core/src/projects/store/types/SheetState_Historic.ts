@@ -156,6 +156,13 @@ export type GsapTimelineChildClip = {
   localDuration: number
 }
 
+/** Timing snapshot captured when a GSAP clip is first added to the sequence. */
+export type GsapClipBaselineTiming = {
+  duration: number
+  timelineSpan?: number
+  timelineChildren?: GsapTimelineChildClip[]
+}
+
 export type GsapClipTrack = TrackDataCommon<'GsapClipTrack'> & {
   /** Id from {@link registerGsapAnimation} / the global GSAP animation registry. */
   gsapAnimationId: string
@@ -173,4 +180,8 @@ export type GsapClipTrack = TrackDataCommon<'GsapClipTrack'> & {
    * last synced (used to map child local times into sequence space).
    */
   timelineSpan?: number
+  /**
+   * Default clip timing before Studio edits; used by "Reset to original state".
+   */
+  baselineTiming?: GsapClipBaselineTiming
 }
