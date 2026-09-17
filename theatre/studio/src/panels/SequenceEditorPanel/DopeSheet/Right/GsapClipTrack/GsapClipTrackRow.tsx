@@ -175,7 +175,6 @@ const GsapClipTrackBar: React.VFC<{
     const toUnitSpace = val(layoutP.scaledSpace.toUnitSpace)
     return {
       debugName: 'gsapClipMove',
-      lockCSSCursorTo: 'ew-resize',
       onDragStart() {
         beginGsapClipSnapTargets()
         return {
@@ -230,7 +229,6 @@ const GsapClipTrackBar: React.VFC<{
     const toUnitSpace = val(layoutP.scaledSpace.toUnitSpace)
     return {
       debugName: 'gsapClipResizeStart',
-      lockCSSCursorTo: 'ew-resize',
       onDragStart() {
         beginGsapClipSnapTargets()
         return {
@@ -290,7 +288,6 @@ const GsapClipTrackBar: React.VFC<{
     const toUnitSpace = val(layoutP.scaledSpace.toUnitSpace)
     return {
       debugName: 'gsapClipResize',
-      lockCSSCursorTo: 'ew-resize',
       onDragStart() {
         beginGsapClipSnapTargets()
         return {
