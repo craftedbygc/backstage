@@ -58,8 +58,11 @@ describe('subscribeGsapClipSyncAtPlayhead', () => {
 
     positionAtom.setByPointer((p) => p.position, jumpPosition)
 
+    expect(show.progress).toHaveBeenCalledWith(1, true)
     expect(hide.progress).toHaveBeenCalledWith(1, true)
-    expect(show.progress).not.toHaveBeenCalled()
+    expect(show.progress.mock.invocationCallOrder[0]).toBeLessThan(
+      hide.progress.mock.invocationCallOrder[0]!,
+    )
 
     untap()
   })
