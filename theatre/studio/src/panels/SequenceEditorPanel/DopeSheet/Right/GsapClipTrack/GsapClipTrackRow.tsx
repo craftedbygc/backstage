@@ -1,7 +1,7 @@
 import type {GsapClipTrack} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import type {SequenceEditorTree_GsapClipTrack} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
-import {usePrism, useVal} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/theatre-react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {val} from '@unseenco/theatre-dataverse'
 import React, {useMemo} from 'react'
@@ -18,6 +18,7 @@ import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
 import useContextMenu from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import type {IContextMenuItem} from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import {previewGsapClipsAtCurrentPlayhead} from '@unseenco/theatre-studio/gsap/previewGsapClipsAtPlayhead'
+import {gsapClipBarLayoutInScaledSpace} from './gsapClipBarLayout'
 
 const Container = styled.div`
   position: relative;
@@ -104,13 +105,15 @@ const GsapClipTrackBar: React.VFC<{
   trackData: GsapClipTrack
   sequenceVariant: string
 }> = ({leaf, layoutP, trackData, sequenceVariant}) => {
-  const fromUnitSpace = useVal(layoutP.scaledSpace.fromUnitSpace)
-
-  const leftPx = fromUnitSpace(trackData.start)
-  const widthPx = Math.max(
-    fromUnitSpace(trackData.start + trackData.duration) - leftPx,
-    4,
+  const scaledSpace = usePrism(
+    () => ({
+      fromUnitSpace: val(layoutP.scaledSpace.fromUnitSpace),
+      leftPadding: val(layoutP.scaledSpace.leftPadding),
+    }),
+    [layoutP],
   )
+
+  const {leftPx, widthPx} = gsapClipBarLayoutInScaledSpace(trackData, scaledSpace)
 
   const [barRef, barNode] = useRefAndState<HTMLDivElement | null>(null)
   const [startHandleRef, startHandleNode] =
