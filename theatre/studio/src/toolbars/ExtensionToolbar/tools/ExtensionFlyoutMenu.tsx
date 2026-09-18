@@ -10,7 +10,9 @@ import BaseMenu from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/Co
 import usePopover from '@unseenco/theatre-studio/uiComponents/Popover/usePopover'
 import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
 import FlyoutMenuLabel from './FlyoutMenuLabel'
-import UnsavedChangesDot from '@unseenco/theatre-studio/uiComponents/UnsavedChangesDot'
+import UnsavedChangesDot, {
+  statusDotTopLeft,
+} from '@unseenco/theatre-studio/uiComponents/UnsavedChangesDot'
 
 const FlyoutTriggerButton = styled(ToolbarIconButton)`
   ${pointerEventsAutoInNormalMode};
@@ -22,10 +24,7 @@ const FlyoutTriggerButton = styled(ToolbarIconButton)`
 `
 
 const FlyoutTriggerUnsavedDot = styled(UnsavedChangesDot)`
-  position: absolute;
-  left: -3px;
-  top: -3px;
-  pointer-events: none;
+  ${statusDotTopLeft}
 `
 
 const ExtensionFlyoutMenu: React.FC<{

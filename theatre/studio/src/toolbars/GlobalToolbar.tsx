@@ -35,6 +35,11 @@ import {
 } from '@unseenco/theatre-studio/UIRoot/dockedLayoutConstants'
 import {studioHasDivergedFromSavedState} from '@unseenco/theatre-studio/propEditors/projectHasDivergedFromSavedState'
 import {DIVERGED_FROM_SAVED_STATE_TITLE} from '@unseenco/theatre-studio/propEditors/SavedStateDiamondWrapper'
+import {
+  STATUS_DOT_SIZE_PX,
+  statusDotTopLeft,
+  statusDotTopRight,
+} from '@unseenco/theatre-studio/uiComponents/UnsavedChangesDot'
 
 const Container = styled.div<{$docked: boolean}>`
   pointer-events: none;
@@ -58,47 +63,28 @@ const Container = styled.div<{$docked: boolean}>`
         `};
 `
 
-const NumberOfConflictsIndicator = styled.div`
-  color: white;
-  width: 14px;
-  height: 14px;
-  background: #d00;
-  border-radius: var(--studio-radius);
-  text-align: center;
-  line-height: 14px;
-  font-weight: 600;
-  font-size: 8px;
-  position: relative;
-  left: -6px;
-  top: -11px;
-  margin-right: -14px;
-`
-
 const SubContainer = styled.div`
   display: flex;
   gap: 8px;
 `
 
 const HasUpdatesBadge = styled.div<{
-  type: 'info' | 'warning'
+  type: 'info' | 'warning' | 'error'
   $corner?: 'top-left' | 'top-right'
 }>`
   position: absolute;
   background: ${({type}) =>
-    type === 'info' ? 'var(--studio-accent-soft)' : '#f59e0b'};
-  width: 6px;
-  height: 6px;
+    type === 'info'
+      ? 'var(--studio-accent-soft)'
+      : type === 'error'
+      ? '#d00'
+      : '#f59e0b'};
+  width: ${STATUS_DOT_SIZE_PX}px;
+  height: ${STATUS_DOT_SIZE_PX}px;
   border-radius: 50%;
+  pointer-events: none;
   ${({$corner}) =>
-    $corner === 'top-left'
-      ? css`
-          top: -3px;
-          left: -3px;
-        `
-      : css`
-          top: -2px;
-          right: -2px;
-        `};
+    $corner === 'top-left' ? statusDotTopLeft : statusDotTopRight};
 `
 
 const GroupDivider = styled.div`
@@ -189,12 +175,14 @@ const GlobalToolbar: React.FC = () => {
               data-testid="OutlinePanel-UnsavedIndicator"
             />
           ) : null}
+          {conflicts.length > 0 ? (
+            <HasUpdatesBadge
+              type="error"
+              $corner="top-right"
+              data-testid="OutlinePanel-ConflictIndicator"
+            />
+          ) : null}
         </PinButton>
-        {conflicts.length > 0 ? (
-          <NumberOfConflictsIndicator>
-            {conflicts.length}
-          </NumberOfConflictsIndicator>
-        ) : null}
         <PinButton
           title="Toggle Timeline"
           onClick={() => {
