@@ -4404,6 +4404,7 @@ __metadata:
     "@types/node": ^15.6.2
     "@types/three": ^0.185.1
     "@unseenco/theatre-core": "workspace:*"
+    "@unseenco/theatre-dataverse": "workspace:*"
     "@unseenco/theatre-studio": "workspace:*"
     esbuild: ^0.25.0
     esbuild-register: ^2.5.0
