@@ -1,7 +1,7 @@
 import {usePrism} from '@unseenco/theatre-react'
 import {sheetObjectAddressKeyFromParts} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
 import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
-import {subscribeGsapClipSyncAtPlayhead} from '@unseenco/theatre-shared/gsap/subscribeGsapClipSyncAtPlayhead'
+import {subscribeGsapClipSyncAtPlayhead} from '@unseenco/theatre-core'
 import {resolveSequenceEditorSheet} from '@unseenco/theatre-studio/selectors'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 import type React from 'react'
