@@ -87,6 +87,24 @@ export {
   isRemoteEditorOpen,
   onRemoteEditorOpenChange,
 } from '@unseenco/theatre-studio/remoteEditor'
+
+/**
+ * Returns the Studio singleton. Extension packages (e.g. `@unseenco/theatre-threejs`)
+ * import this from `@unseenco/theatre-studio` so they share the same instance as the
+ * default export.
+ */
+export {default as getStudio, setStudio} from './getStudio'
+
+/** Compare live Studio state to on-disk project JSON (`config.state`). */
+export {
+  projectHasDivergedFromSavedState,
+  studioHasDivergedFromSavedState,
+} from './propEditors/projectHasDivergedFromSavedState'
+export {
+  objectHasDivergedFromSavedState,
+  sheetObjectDivergesFromSavedState,
+} from './propEditors/objectHasDivergedFromSavedState'
+
 export type {IScrub} from '@unseenco/theatre-studio/Scrub'
 export type {
   IStudio,

@@ -3,10 +3,10 @@ import {isRemoteEditorWindow} from '@unseenco/theatre-core'
 import {
   isRemoteEditorOpen,
   onRemoteEditorOpenChange,
+  getStudio,
+  studioHasDivergedFromSavedState,
 } from '@unseenco/theatre-studio'
-import getStudio from '@unseenco/theatre-studio/getStudio'
 import {pointerToPrism} from '@unseenco/theatre-dataverse'
-import {studioHasDivergedFromSavedState} from '@unseenco/theatre-studio/propEditors/projectHasDivergedFromSavedState'
 import {OrthographicCamera, PerspectiveCamera, CameraHelper} from 'three'
 import type {Camera, Scene} from 'three'
 import type {ThreejsRenderer} from './types'
