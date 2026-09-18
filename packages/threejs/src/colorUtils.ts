@@ -4,12 +4,17 @@ type TheatreRgba = {r: number; g: number; b: number; a: number}
 
 const tempColor = new Color()
 
+/** Match 8-bit sRGB channels so Theatre's rgba hex display (truncates) stays accurate. */
+function quantizeSrgbChannel(value: number): number {
+  return Math.round(value * 255) / 255
+}
+
 export function colorToTheatreRgba(color: Color): TheatreRgba {
   tempColor.copy(color).convertLinearToSRGB()
   return {
-    r: tempColor.r,
-    g: tempColor.g,
-    b: tempColor.b,
+    r: quantizeSrgbChannel(tempColor.r),
+    g: quantizeSrgbChannel(tempColor.g),
+    b: quantizeSrgbChannel(tempColor.b),
     a: 1,
   }
 }
