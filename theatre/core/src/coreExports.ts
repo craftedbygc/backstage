@@ -31,10 +31,6 @@ export type {IRafDriver} from './rafDrivers'
 export {setCoreRafDriver} from './coreTicker'
 export {isRemoteEditorWindow} from './internal/remoteEditor'
 export {attachGsapSequenceBridge} from './gsap/attachGsapSequenceBridge'
-export {
-  subscribeGsapClipSyncAtPlayhead,
-  type GsapClipSyncSequenceSource,
-} from './gsap/subscribeGsapClipSyncAtPlayhead'
 
 /**
  * Returns a project of the given id, or creates one if it doesn't already exist.

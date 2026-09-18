@@ -1,7 +1,7 @@
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {pointerToPrism, prism, val} from '@unseenco/theatre-dataverse'
-import type {GsapClipTimingSource} from '@unseenco/theatre-shared/gsap/syncGsapClipsAtSequencePosition'
-import {syncGsapClipsAtSequencePosition} from '@unseenco/theatre-shared/gsap/syncGsapClipsAtSequencePosition'
+import type {GsapClipTimingSource} from './syncGsapClipsAtSequencePosition'
+import {syncGsapClipsAtSequencePosition} from './syncGsapClipsAtSequencePosition'
 
 export type GsapClipSyncSequenceSource = {
   readonly pointer: {readonly position: Pointer<number>}
