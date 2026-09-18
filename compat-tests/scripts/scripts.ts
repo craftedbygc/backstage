@@ -268,6 +268,7 @@ const packagesToPublish = [
   '@unseenco/theatre-react',
   '@unseenco/theatre-browser-bundles',
   '@unseenco/theatre-threejs',
+  '@unseenco/theatre-gsap',
 ]
 
 /**

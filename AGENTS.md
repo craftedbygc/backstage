@@ -56,7 +56,7 @@ TypeScript path aliases (`tsconfig.base.json`) map `@unseenco/theatre-*` directl
 - Jest config picks up `packages/*/src/**/*.test.ts`, `theatre/*/src/**/*.test.ts`, `devEnv/**/*.test.ts`. Compat tests use a **separate** config (`jest.compat-tests.config.js`) — `yarn test` will not run them.
 - `moduleNameMapper` rewrites ES-module-only deps (`uuid`, `nanoid`, `lodash-es`, `react-use/esm`, css/svg/png) — if a test fails on a missing ESM export, add the mapping here rather than changing the import.
 - `setupFiles: theatre/shared/src/setupTestEnv.ts` is loaded for every unit test.
-- **Compat tests** are two-phase: `test:compat:install` spins up verdaccio, publishes a real build, and runs `npm install` in each `compat-tests/fixtures/*/package`. Primary fixture: **Vite + React 18** (`vite-react18`).
+- **Compat tests** are two-phase: `test:compat:install` spins up verdaccio, publishes a real build, and runs `npm install` in each `compat-tests/fixtures/*/package`. Fixtures: **Vite + React 18** (`vite-react18`); **full stack** (`vite-theatre-full-stack`) — core, studio, threejs extension, `@unseenco/theatre-gsap`, `three`, and `gsap`.
 
 ## Pre-commit hook
 

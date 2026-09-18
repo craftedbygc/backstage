@@ -38,7 +38,9 @@ async function createBundles() {
     mainFields: ['browser', 'module', 'main'],
     target: 'es2020',
     conditions: ['browser', 'node'],
-    plugins: [externalPlugin([/^[\@a-zA-Z]+/])],
+    plugins: [
+      externalPlugin([/^@unseenco\/theatre-core(\/|$)/, /^gsap(\/|$)/]),
+    ],
   }
 
   await Promise.all(

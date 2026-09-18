@@ -22,6 +22,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
+    },
+    "./privateAPIs": {
+      "types": "./dist/privateAPIs.d.ts",
+      "import": "./dist/privateAPIs.mjs",
+      "require": "./dist/privateAPIs.js"
     }
   },
   "files": [
