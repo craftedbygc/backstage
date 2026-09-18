@@ -1,5 +1,14 @@
 # Theatre.js changelog
 
+## 0.4.3
+
+- Bug fixes
+  - **GSAP / Core:** `attachGsapSequenceBridge()` is implemented in `@unseenco/theatre-core` (still exported from `@unseenco/theatre-gsap`) so sequence playhead sync uses the same dataverse instance as Theatre pointers — fixes `pointerToPrism` / `PointerToPrismProvider` errors in Vite/Nuxt apps without consumer-side dependency deduping.
+  - **Three.js package:** Material color props are quantized before hex display in Studio so swatches match authored values more accurately.
+- Maintenance
+  - **Compatibility tests:** New **Vite full-stack** fixture (`vite-theatre-full-stack`) runs `vite optimize` against published `@unseenco/theatre-core`, `@unseenco/theatre-studio`, `@unseenco/theatre-gsap`, and `@unseenco/theatre-threejs/extension` (including `attachGsapSequenceBridge` at runtime).
+  - **GSAP / Core publish graph:** `@unseenco/theatre-gsap` build keeps `@unseenco/*` external; core declares `@unseenco/theatre-dataverse` for bundled graph consistency.
+
 ## 0.4.0
 
 - New features
