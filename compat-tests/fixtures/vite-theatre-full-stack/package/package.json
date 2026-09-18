@@ -1,0 +1,24 @@
+{
+  "name": "theatre-compat-vite-theatre-full-stack",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check-deps": "node scripts/run-vite-optimize.mjs"
+  },
+  "dependencies": {
+    "@unseenco/theatre-core": "0.0.1-COMPAT.1",
+    "@unseenco/theatre-studio": "0.0.1-COMPAT.1",
+    "@unseenco/theatre-threejs": "0.0.1-COMPAT.1",
+    "@unseenco/theatre-gsap": "0.0.1-COMPAT.1",
+    "gsap": "^3.12.5",
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.170.0",
+    "typescript": "5.3.3",
+    "vite": "^5.4.11"
+  }
+}

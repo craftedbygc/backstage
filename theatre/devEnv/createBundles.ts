@@ -3,6 +3,22 @@ import fs from 'fs'
 import * as esbuild from 'esbuild'
 import {definedGlobals} from './definedGlobals'
 
+function writeCorePrivateAPIsShim(pathToPackage: string) {
+  const dist = path.join(pathToPackage, 'dist')
+  fs.writeFileSync(
+    path.join(dist, 'privateAPIs.mjs'),
+    `export { privateAPI, setPrivateAPI } from './index.mjs';\n`,
+  )
+  fs.writeFileSync(
+    path.join(dist, 'privateAPIs.js'),
+    `'use strict';\nconst index = require('./index.js');\nexports.privateAPI = index.privateAPI;\nexports.setPrivateAPI = index.setPrivateAPI;\n`,
+  )
+  fs.writeFileSync(
+    path.join(dist, 'privateAPIs.d.ts'),
+    `export { privateAPI, setPrivateAPI } from './index';\n`,
+  )
+}
+
 /** Re-export shims so deep imports (e.g. from published `@unseenco/theatre-threejs`) resolve to the main bundle singleton. */
 function writeStudioSubpathShims(pathToPackage: string) {
   const dist = path.join(pathToPackage, 'dist')
@@ -130,8 +146,13 @@ export async function createBundles(watch: boolean) {
       }
     }
 
-    if (which === 'studio' && !watch) {
-      writeStudioSubpathShims(pathToPackage)
+    if (!watch) {
+      if (which === 'core') {
+        writeCorePrivateAPIsShim(pathToPackage)
+      }
+      if (which === 'studio') {
+        writeStudioSubpathShims(pathToPackage)
+      }
     }
   }
 }

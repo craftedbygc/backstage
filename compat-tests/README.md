@@ -5,6 +5,7 @@ This setup tests whether published `@unseenco/theatre-*` packages install and bu
 ## Fixtures
 
 - **`vite-react18/`** — Vite + React 18 + `@unseenco/theatre-core` and `@unseenco/theatre-studio` installed from a local Verdaccio registry (primary fixture for 1.0).
+- **`vite-theatre-full-stack/`** — Vite + `@unseenco/theatre-core`, `@unseenco/theatre-studio`, `@unseenco/theatre-threejs` (including `@unseenco/theatre-threejs/extension`), `@unseenco/theatre-gsap`, `three`, and `gsap`. Runs production `vite build` and a dependency pre-bundle check (same failure mode as `vite dev` / missing `package.json` `exports`).
 
 Each fixture has:
 

@@ -237,3 +237,9 @@ export function val<T>(pointer: PointerType<T>): T {
     throw new Error(`Called val(p) where p is not a pointer.`)
   }
 }
+
+/**
+ * @internal Used by extension packages (`@unseenco/theatre-gsap`, etc.). Not part of the
+ * public API; exported only so published subpath `./privateAPIs` shares the main bundle singleton.
+ */
+export {privateAPI, setPrivateAPI} from './privateAPIs'
