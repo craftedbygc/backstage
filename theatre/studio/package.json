@@ -21,6 +21,21 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
+    },
+    "./getStudio": {
+      "types": "./dist/getStudio.d.ts",
+      "import": "./dist/getStudio.mjs",
+      "require": "./dist/getStudio.js"
+    },
+    "./propEditors/projectHasDivergedFromSavedState": {
+      "types": "./dist/propEditors/projectHasDivergedFromSavedState.d.ts",
+      "import": "./dist/propEditors/projectHasDivergedFromSavedState.mjs",
+      "require": "./dist/propEditors/projectHasDivergedFromSavedState.js"
+    },
+    "./propEditors/objectHasDivergedFromSavedState": {
+      "types": "./dist/propEditors/objectHasDivergedFromSavedState.d.ts",
+      "import": "./dist/propEditors/objectHasDivergedFromSavedState.mjs",
+      "require": "./dist/propEditors/objectHasDivergedFromSavedState.js"
     }
   },
   "files": [

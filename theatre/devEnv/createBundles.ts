@@ -1,6 +1,64 @@
 import path from 'path'
+import fs from 'fs'
 import * as esbuild from 'esbuild'
 import {definedGlobals} from './definedGlobals'
+
+/** Re-export shims so deep imports (e.g. from published `@unseenco/theatre-threejs`) resolve to the main bundle singleton. */
+function writeStudioSubpathShims(pathToPackage: string) {
+  const dist = path.join(pathToPackage, 'dist')
+  fs.mkdirSync(path.join(dist, 'propEditors'), {recursive: true})
+
+  fs.writeFileSync(
+    path.join(dist, 'getStudio.mjs'),
+    `export { getStudio as default, setStudio } from './index.mjs';\n`,
+  )
+  fs.writeFileSync(
+    path.join(dist, 'getStudio.js'),
+    `'use strict';\nconst index = require('./index.js');\nexports.default = index.getStudio;\nexports.setStudio = index.setStudio;\n`,
+  )
+  fs.writeFileSync(
+    path.join(dist, 'getStudio.d.ts'),
+    `export { getStudio as default, setStudio } from './index';\n`,
+  )
+
+  fs.writeFileSync(
+    path.join(dist, 'propEditors/projectHasDivergedFromSavedState.mjs'),
+    `export {
+  projectHasDivergedFromSavedState,
+  studioHasDivergedFromSavedState,
+} from '../index.mjs';\n`,
+  )
+  fs.writeFileSync(
+    path.join(dist, 'propEditors/projectHasDivergedFromSavedState.js'),
+    `'use strict';\nconst index = require('../index.js');\nexports.projectHasDivergedFromSavedState = index.projectHasDivergedFromSavedState;\nexports.studioHasDivergedFromSavedState = index.studioHasDivergedFromSavedState;\n`,
+  )
+  fs.writeFileSync(
+    path.join(dist, 'propEditors/projectHasDivergedFromSavedState.d.ts'),
+    `export {
+  projectHasDivergedFromSavedState,
+  studioHasDivergedFromSavedState,
+} from '../index';\n`,
+  )
+
+  fs.writeFileSync(
+    path.join(dist, 'propEditors/objectHasDivergedFromSavedState.mjs'),
+    `export {
+  objectHasDivergedFromSavedState,
+  sheetObjectDivergesFromSavedState,
+} from '../index.mjs';\n`,
+  )
+  fs.writeFileSync(
+    path.join(dist, 'propEditors/objectHasDivergedFromSavedState.js'),
+    `'use strict';\nconst index = require('../index.js');\nexports.objectHasDivergedFromSavedState = index.objectHasDivergedFromSavedState;\nexports.sheetObjectDivergesFromSavedState = index.sheetObjectDivergesFromSavedState;\n`,
+  )
+  fs.writeFileSync(
+    path.join(dist, 'propEditors/objectHasDivergedFromSavedState.d.ts'),
+    `export {
+  objectHasDivergedFromSavedState,
+  sheetObjectDivergesFromSavedState,
+} from '../index';\n`,
+  )
+}
 
 export async function createBundles(watch: boolean) {
   for (const which of ['core', 'studio']) {
@@ -70,6 +128,10 @@ export async function createBundles(watch: boolean) {
         await ctx.rebuild()
         await ctx.dispose()
       }
+    }
+
+    if (which === 'studio' && !watch) {
+      writeStudioSubpathShims(pathToPackage)
     }
   }
 }
