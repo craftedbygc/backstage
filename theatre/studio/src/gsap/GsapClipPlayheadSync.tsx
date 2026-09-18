@@ -26,17 +26,19 @@ const GsapClipPlayheadSync: React.VFC = () => {
     return subscribeGsapClipSyncAtPlayhead({
       pointer: sequence.publicApi.pointer,
       getGsapClipTimings: () =>
-        sequence.publicApi.__experimental_getGsapClips().map(({objectKey, clip}) => ({
-          sheetObjectAddressKey: sheetObjectAddressKeyFromParts({
-            projectId: sheetAddress.projectId,
-            sheetId: sheetAddress.sheetId,
-            sheetInstanceId: sheetAddress.sheetInstanceId,
-            objectKey: objectKey as ObjectAddressKey,
-          }),
-          gsapAnimationId: clip.gsapAnimationId,
-          start: clip.start,
-          duration: clip.duration,
-        })),
+        sequence.publicApi
+          .__experimental_getGsapClips()
+          .map(({objectKey, clip}) => ({
+            sheetObjectAddressKey: sheetObjectAddressKeyFromParts({
+              projectId: sheetAddress.projectId,
+              sheetId: sheetAddress.sheetId,
+              sheetInstanceId: sheetAddress.sheetInstanceId,
+              objectKey: objectKey as ObjectAddressKey,
+            }),
+            gsapAnimationId: clip.gsapAnimationId,
+            start: clip.start,
+            duration: clip.duration,
+          })),
     })
   }, [sheet])
 
