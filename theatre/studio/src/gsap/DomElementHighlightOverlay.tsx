@@ -6,6 +6,10 @@ import React, {
   useState,
 } from 'react'
 import styled from 'styled-components'
+import {
+  getOffViewportSides,
+  intersectRectWithViewport,
+} from './domElementHighlightViewport'
 
 type DomElementHighlightContextValue = {
   showElementHighlight: (element: Element) => void
@@ -53,26 +57,6 @@ export function useDomElementHighlight(): DomElementHighlightContextValue {
     )
   }
   return ctx
-}
-
-type OffViewportSides = {
-  top: boolean
-  bottom: boolean
-  left: boolean
-  right: boolean
-}
-
-function getOffViewportSides(rect: DOMRect): OffViewportSides {
-  if (typeof window === 'undefined') {
-    return {top: false, bottom: false, left: false, right: false}
-  }
-  const {innerWidth, innerHeight} = window
-  return {
-    top: rect.top < 0,
-    bottom: rect.bottom > innerHeight,
-    left: rect.left < 0,
-    right: rect.right > innerWidth,
-  }
 }
 
 const EdgeArrow = styled.div<{
@@ -124,6 +108,7 @@ const ARROW_GLYPH = {
 
 const DomElementHighlightOverlay: React.VFC<{rect: DOMRect}> = ({rect}) => {
   const offViewport = getOffViewportSides(rect)
+  const visibleRect = intersectRectWithViewport(rect)
   const showArrows =
     offViewport.top ||
     offViewport.bottom ||
@@ -132,21 +117,23 @@ const DomElementHighlightOverlay: React.VFC<{rect: DOMRect}> = ({rect}) => {
 
   return (
     <>
-      <div
-        data-theatre-gsap-target-highlight=""
-        style={{
-          position: 'fixed',
-          top: rect.top,
-          left: rect.left,
-          width: rect.width,
-          height: rect.height,
-          boxSizing: 'border-box',
-          border: '2px solid rgba(0, 180, 255, 0.85)',
-          borderRadius: 2,
-          pointerEvents: 'none',
-          zIndex: 1,
-        }}
-      />
+      {visibleRect ? (
+        <div
+          data-theatre-gsap-target-highlight=""
+          style={{
+            position: 'fixed',
+            top: visibleRect.top,
+            left: visibleRect.left,
+            width: visibleRect.width,
+            height: visibleRect.height,
+            boxSizing: 'border-box',
+            border: '2px solid rgba(0, 180, 255, 0.85)',
+            borderRadius: 2,
+            pointerEvents: 'none',
+            zIndex: 1,
+          }}
+        />
+      ) : null}
       {showArrows ? (
         <>
           {offViewport.top ? (
