@@ -101,7 +101,7 @@ registerGsapAnimation(animation, sheet, {
 
 | Option | Purpose |
 | --- | --- |
-| **`label`** | Shown after the namespace; `/` segments nest in the outline and sequence tree (e.g. `UI / Panel show`). |
+| **`label`** | Shown after the namespace; `/` segments nest in the outline and sequence tree. Optional — when omitted, Theatre uses the GSAP tween/timeline **`vars.id`** if set. |
 | **`id`** | Stable clip id on the sheet object. Defaults to the sanitised object key (`GSAP / …`). Re-registering with the same id updates the registry entry. |
 | **`defaultDuration`** | Clip length when first added to the sequence (defaults to tween duration). |
 | **`onRebuildTimeline`** | Rebuild callback when native child timing edits cannot be applied in place (timelines with editable child spans). |
