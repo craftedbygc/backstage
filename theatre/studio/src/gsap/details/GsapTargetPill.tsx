@@ -10,7 +10,7 @@ const Pill = styled.button<{kind: 'element' | 'object'}>`
   align-items: center;
   gap: 4px;
   max-width: 100%;
-  margin: 0 4px 4px 0;
+  margin: 0 4px 0 0;
   padding: 2px 6px;
   border-radius: 999px;
   border: 1px solid
@@ -44,12 +44,13 @@ const KindTag = styled.span`
 
 const PreviewList = styled.dl`
   margin: 0;
-  padding: 4px 0;
-  max-width: 240px;
+  padding: 0;
   display: grid;
-  grid-template-columns: minmax(0, 40%) minmax(0, 1fr);
-  gap: 2px 8px;
+  grid-template-columns: auto auto;
+  gap: 2px 10px;
   font-size: 10px;
+  width: max-content;
+  max-width: 280px;
 `
 
 const PreviewKey = styled.dt`
@@ -126,6 +127,8 @@ const GsapTargetPill: React.VFC<{target: GsapTargetDescriptor}> = ({
           background: '#2a2a2a',
           border: '1px solid rgba(255,255,255,0.12)',
           borderRadius: 4,
+          width: 'max-content',
+          maxWidth: 280,
         }}
       >
         <GsapObjectPreviewPopover value={target.value} />

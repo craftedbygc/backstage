@@ -173,6 +173,8 @@ export function introspectGsapAnimationDetails(
   }
 }
 
+const OBJECT_PREVIEW_SKIP_KEYS = new Set(['_gsap'])
+
 /** Top-level enumerable keys on a non-DOM target (depth 1). */
 export function readGsapObjectPreviewEntries(
   value: unknown,
@@ -183,6 +185,7 @@ export function readGsapObjectPreviewEntries(
   }
   const entries: {key: string; displayValue: string}[] = []
   for (const key of Object.keys(value as object).sort()) {
+    if (OBJECT_PREVIEW_SKIP_KEYS.has(key)) continue
     if (entries.length >= maxEntries) break
     entries.push({
       key,

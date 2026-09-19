@@ -17,7 +17,7 @@ describe('introspectScrollTriggerDetails', () => {
       trigger: triggerEl,
       start: 0,
       end: 500,
-      vars: {scrub: true, animation: tween},
+      vars: {scrub: true, animation: tween, trigger: triggerEl},
     }
     const entry: GsapScrollTriggerRegistryEntry = {
       id: 'st_1',
@@ -35,6 +35,7 @@ describe('introspectScrollTriggerDetails', () => {
       label: '#hero',
     })
     expect(details.vars.some((row) => row.key === 'scrub')).toBe(true)
+    expect(details.vars.some((row) => row.key === 'trigger')).toBe(false)
     expect(details.linkedAnimationBlocks).toHaveLength(1)
     expect(details.linkedAnimationBlocks[0]?.vars).toEqual([
       {key: 'duration', displayValue: '2'},

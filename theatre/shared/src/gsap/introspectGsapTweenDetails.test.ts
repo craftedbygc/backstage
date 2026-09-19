@@ -69,4 +69,10 @@ describe('introspectGsapTweenDetails', () => {
       {key: 'b', displayValue: 'two'},
     ])
   })
+
+  test('readGsapObjectPreviewEntries skips _gsap', () => {
+    expect(readGsapObjectPreviewEntries({_gsap: {x: 1}, value: 0})).toEqual([
+      {key: 'value', displayValue: '0'},
+    ])
+  })
 })

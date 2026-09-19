@@ -14,6 +14,7 @@ import type {GsapScrollTriggerRegistryEntry} from './scrollTriggerRegistry'
 
 const SCROLL_TRIGGER_VARS_SKIP_KEYS = new Set([
   'animation',
+  'trigger',
   'onEnter',
   'onLeave',
   'onEnterBack',

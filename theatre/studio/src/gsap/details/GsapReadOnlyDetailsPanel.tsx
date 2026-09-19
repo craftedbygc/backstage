@@ -14,8 +14,8 @@ import {usePrism} from '@unseenco/theatre-react'
 import {val} from '@unseenco/theatre-dataverse'
 import React from 'react'
 import styled from 'styled-components'
+import GsapInlineTargetRow from './GsapInlineTargetRow'
 import GsapTweenBlockSection from './GsapTweenBlockSection'
-import GsapTargetPill from './GsapTargetPill'
 import GsapVarsList from './GsapVarsList'
 
 const Message = styled.p`
@@ -43,12 +43,6 @@ const SubHeading = styled.div`
   padding: 4px 8px 2px;
   font-size: 10px;
   color: #8a8a8a;
-`
-
-const TargetRow = styled.div`
-  padding: 2px 8px 6px;
-  display: flex;
-  flex-wrap: wrap;
 `
 
 const GsapScrollTriggerDetailsView: React.VFC<{
@@ -79,21 +73,7 @@ const GsapScrollTriggerDetailsView: React.VFC<{
     <>
       <Section>
         <Legend>{details.label}</Legend>
-        <SubHeading>trigger</SubHeading>
-        <TargetRow>
-          {details.triggerTargets.length === 0 ? (
-            <span style={{fontSize: 10, color: '#777', paddingLeft: 4}}>
-              (none)
-            </span>
-          ) : (
-            details.triggerTargets.map((target, index) => (
-              <GsapTargetPill
-                key={`${target.kind}-${target.label}-${index}`}
-                target={target}
-              />
-            ))
-          )}
-        </TargetRow>
+        <GsapInlineTargetRow label="trigger" targets={details.triggerTargets} />
         <SubHeading>vars</SubHeading>
         <GsapVarsList rows={details.vars} />
       </Section>

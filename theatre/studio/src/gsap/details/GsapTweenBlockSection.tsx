@@ -1,7 +1,7 @@
 import type {GsapTweenDetailsBlock} from '@unseenco/theatre-shared/gsap/introspectGsapTweenDetails'
 import React from 'react'
 import styled from 'styled-components'
-import GsapTargetPill from './GsapTargetPill'
+import GsapInlineTargetRow from './GsapInlineTargetRow'
 import GsapVarsList from './GsapVarsList'
 
 const Block = styled.fieldset`
@@ -19,13 +19,6 @@ const Legend = styled.legend`
   color: #a9a9a9;
 `
 
-const TargetRow = styled.div`
-  padding: 2px 8px 6px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-`
-
 const SubHeading = styled.div`
   padding: 4px 8px 2px;
   font-size: 10px;
@@ -39,21 +32,7 @@ const GsapTweenBlockSection: React.VFC<{block: GsapTweenDetailsBlock}> = ({
   return (
     <Block>
       <Legend>{block.name}</Legend>
-      <SubHeading>targets</SubHeading>
-      <TargetRow>
-        {block.targets.length === 0 ? (
-          <span style={{fontSize: 10, color: '#777', paddingLeft: 4}}>
-            (none)
-          </span>
-        ) : (
-          block.targets.map((target, index) => (
-            <GsapTargetPill
-              key={`${target.kind}-${target.label}-${index}`}
-              target={target}
-            />
-          ))
-        )}
-      </TargetRow>
+      <GsapInlineTargetRow label="targets" targets={block.targets} />
       <SubHeading>vars</SubHeading>
       <GsapVarsList rows={block.vars} />
     </Block>
