@@ -54,6 +54,13 @@
         opacity: 0;
         transform: translateY(40px);
       }
+      #st-target {
+        width: 96px;
+        height: 96px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #3b82f6, #06b6d4);
+        margin-top: 2rem;
+      }
       .hint {
         position: fixed;
         bottom: 12px;
@@ -79,8 +86,15 @@
       <p>Keep scrolling — animations are placed by percent of page height.</p>
       <div id="mid-panel">Panel reveal (GSAP clip ~15–35%)</div>
     </section>
+    <section class="section" id="st-section">
+      <h1>ScrollTrigger section</h1>
+      <p>
+        Two ScrollTriggers (create API + timeline vars) — read-only bars in the
+        sequencer under <code>GSAP / ScrollTrigger / …</code>.
+      </p>
+      <div id="st-target"></div>
+    </section>
     <section class="section">
-      <h1>Section 3</h1>
       <p>End of demo page. Sequence length is locked at 100% in Studio.</p>
     </section>
     <div class="hint">Open Studio → pin sequence editor</div>

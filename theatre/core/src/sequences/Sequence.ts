@@ -21,8 +21,13 @@ import type {
 } from './playbackControllers/DefaultPlaybackController'
 import DefaultPlaybackController from './playbackControllers/DefaultPlaybackController'
 import TheatreSequence from './TheatreSequence'
+import {
+  listScrollTriggerEntriesForSheet,
+  sheetAddressKey,
+} from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
 import type {
   GsapClipTrack,
+  GsapTimelineChildClip,
   Keyframe,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import {
@@ -241,6 +246,33 @@ export default class Sequence implements PointerToPrismProvider {
     }
 
     return result.sort((a, b) => a.clip.start - b.clip.start)
+  }
+
+  getGsapScrollTriggers(): Array<{
+    objectKey: ObjectAddressKey
+    scrollTriggerId: string
+    label: string
+    layout: {start: number; duration: number}
+    kind: 'tween' | 'timeline'
+    animationSpanSeconds: number
+    timelineChildren: GsapTimelineChildClip[]
+  }> {
+    if (this._sheet.getSequenceMode() !== 'page') {
+      return []
+    }
+
+    const key = sheetAddressKey(this._sheet.address)
+    return listScrollTriggerEntriesForSheet(key)
+      .filter((entry) => entry.sheetObject != null)
+      .map((entry) => ({
+        objectKey: entry.sheetObject!.address.objectKey as ObjectAddressKey,
+        scrollTriggerId: entry.id,
+        label: entry.label,
+        layout: entry.layout,
+        kind: entry.kind,
+        animationSpanSeconds: entry.animationSpanSeconds,
+        timelineChildren: entry.timelineChildren,
+      }))
   }
 
   get positionFormatter(): ISequencePositionFormatter {

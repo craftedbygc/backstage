@@ -33,6 +33,7 @@ import {DOCKED_PANE_BACKGROUND} from '@unseenco/theatre-studio/UIRoot/dockedLayo
 import PlaybackControls from './PlaybackControls/PlaybackControls'
 import {transportStripHeight} from './PlaybackControls/constants'
 import GsapClipPlayheadSync from '@unseenco/theatre-studio/gsap/GsapClipPlayheadSync'
+import GsapScrollTriggerLayoutSync from '@unseenco/theatre-studio/gsap/GsapScrollTriggerLayoutSync'
 
 const Container = styled(PanelWrapper)<{$docked?: boolean}>`
   z-index: ${panelZIndexes.sequenceEditorPanel};
@@ -135,9 +136,7 @@ const Content: React.VFC<{}> = () => {
         if (isDocked) {
           const measuredWidth = containerNode?.clientWidth
           const width =
-            measuredWidth && measuredWidth > 0
-              ? measuredWidth
-              : dims.width
+            measuredWidth && measuredWidth > 0 ? measuredWidth : dims.width
           const height = sequencerHeight
           const screenY =
             typeof window !== 'undefined'
@@ -220,6 +219,7 @@ const Content: React.VFC<{}> = () => {
         />
         <FrameStampPositionProvider layoutP={layoutP}>
           <GsapClipPlayheadSync />
+          <GsapScrollTriggerLayoutSync />
           <PlaybackControls layoutP={layoutP} docked={isDocked} />
           <Header layoutP={layoutP} />
           <DopeSheet

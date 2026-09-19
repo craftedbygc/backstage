@@ -1,11 +1,15 @@
 import type {
   SequenceEditorTree_GsapChildClip,
   SequenceEditorTree_GsapClipTrack,
+  SequenceEditorTree_GsapScrollTriggerChild,
+  SequenceEditorTree_GsapScrollTriggerTrack,
   SequenceEditorTree_PrimitiveProp,
   SequenceEditorTree_PropWithChildren,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import GsapClipTrackRow from './GsapClipTrackRow'
 import GsapChildClipLeftRow from './GsapChildClipRow'
+import GsapScrollTriggerTrackLeftRow from './GsapScrollTriggerTrackRow'
+import GsapScrollTriggerChildLeftRow from './GsapScrollTriggerChildRow'
 import React from 'react'
 import AnyCompositeRow from './AnyCompositeRow'
 import PrimitivePropRow from './PrimitivePropRow'
@@ -17,8 +21,26 @@ export const decideSheetObjectChildRow = (
     | SequenceEditorTree_PropWithChildren
     | SequenceEditorTree_PrimitiveProp
     | SequenceEditorTree_GsapClipTrack
-    | SequenceEditorTree_GsapChildClip,
+    | SequenceEditorTree_GsapChildClip
+    | SequenceEditorTree_GsapScrollTriggerTrack
+    | SequenceEditorTree_GsapScrollTriggerChild,
 ): React.ReactElement => {
+  if (leaf.type === 'gsapScrollTriggerTrack') {
+    return (
+      <GsapScrollTriggerTrackLeftRow
+        leaf={leaf}
+        key={'st-' + leaf.scrollTriggerId}
+      />
+    )
+  }
+  if (leaf.type === 'gsapScrollTriggerChild') {
+    return (
+      <GsapScrollTriggerChildLeftRow
+        leaf={leaf}
+        key={'st-child-' + leaf.childId}
+      />
+    )
+  }
   if (leaf.type === 'gsapChildClip') {
     return (
       <GsapChildClipLeftRow leaf={leaf} key={'gsap-child-' + leaf.childId} />

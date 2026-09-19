@@ -3,6 +3,15 @@ export type {
   RegisterGsapAnimationOptions,
   RegisterGsapAnimationResult,
 } from './registerGsapAnimation'
+export {registerGsapScrollTrigger} from './registerGsapScrollTrigger'
+export type {
+  RegisterGsapScrollTriggerOptions,
+  RegisterGsapScrollTriggerResult,
+} from './registerGsapScrollTrigger'
+export {registerAllGsapScrollTriggers} from './registerAllGsapScrollTriggers'
+export type {RegisterAllGsapScrollTriggersResult} from './registerAllGsapScrollTriggers'
+export {refreshRegisteredGsapScrollTriggerLayouts} from './registerGsapScrollTrigger'
+export type {GsapScrollTriggerLike} from './gsapScrollTriggerTypes'
 export {attachGsapSequenceBridge} from './attachGsapSequenceBridge'
 export {configureTheatreGsap, getTheatreGsapConfig} from './config'
 export type {TheatreGsapConfig} from './config'

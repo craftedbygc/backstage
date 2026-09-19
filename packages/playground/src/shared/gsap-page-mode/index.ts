@@ -1,10 +1,15 @@
 import gsap from 'gsap'
+import {ScrollTrigger} from 'gsap/ScrollTrigger'
 import {getProject, types} from '@unseenco/theatre-core'
 import studio from '@unseenco/theatre-studio'
 import {
   configureTheatreGsap,
+  registerAllGsapScrollTriggers,
   registerGsapAnimation,
+  registerGsapScrollTrigger,
 } from '@unseenco/theatre-gsap'
+
+gsap.registerPlugin(ScrollTrigger)
 
 configureTheatreGsap({
   namespace: 'GSAP',
@@ -18,6 +23,8 @@ const sheet = project.sheet('Main', {sequenceMode: 'page', gsap: true})
 
 const heroBox = document.getElementById('hero-box')!
 const midPanel = document.getElementById('mid-panel')!
+const stSection = document.getElementById('st-section')!
+const stTarget = document.getElementById('st-target')!
 
 void project.ready.then(() => {
   sheet.object(
@@ -54,4 +61,42 @@ void project.ready.then(() => {
     label: 'Mid / Panel reveal',
     defaultDuration: 20,
   })
+
+  // ScrollTrigger.create({ animation }) style
+  const stTween = gsap.to(stTarget, {
+    rotation: 360,
+    scale: 1.2,
+    duration: 1,
+    paused: true,
+  })
+
+  const stCreate = ScrollTrigger.create({
+    trigger: stSection,
+    start: 'top center',
+    end: 'bottom center',
+    scrub: true,
+    animation: stTween,
+    id: 'st-create-demo',
+  })
+
+  registerGsapScrollTrigger(stCreate, sheet, {
+    label: 'Create API scrub',
+  })
+
+  // vars.scrollTrigger on timeline style
+  const stTimeline = gsap.timeline({
+    scrollTrigger: {
+      trigger: stSection,
+      start: 'center center',
+      end: '+=600',
+      scrub: true,
+      id: 'st-vars-demo',
+    },
+    paused: true,
+  })
+  stTimeline
+    .to(stTarget, {x: 80, duration: 0.5, ease: 'none'})
+    .to(stTarget, {x: -40, duration: 0.5, ease: 'none'})
+
+  registerAllGsapScrollTriggers(sheet)
 })

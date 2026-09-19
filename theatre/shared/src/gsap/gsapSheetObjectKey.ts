@@ -30,3 +30,10 @@ export function isGsapSheetObjectKey(objectKey: string): boolean {
   const namespace = getConfiguredGsapSheetObjectNamespace()
   return firstSlashedPathSegment(objectKey) === namespace
 }
+
+/** GSAP outline proxy for a registered ScrollTrigger (`GSAP / ScrollTrigger / …`). */
+export function isGsapScrollTriggerSheetObjectKey(objectKey: string): boolean {
+  if (!isGsapSheetObjectKey(objectKey)) return false
+  const segments = objectKey.split(/\s*\/\s*/g).map((s) => s.trim())
+  return segments[1] === 'ScrollTrigger'
+}

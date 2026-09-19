@@ -6,7 +6,10 @@ import type {
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import type {IPropPathToTrackIdTree} from '@unseenco/theatre-core/sheetObjects/SheetObjectTemplate'
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
-import type {PathToProp, SheetAddress} from '@unseenco/theatre-shared/utils/addresses'
+import type {
+  PathToProp,
+  SheetAddress,
+} from '@unseenco/theatre-shared/utils/addresses'
 import type {
   SequenceTrackId,
   StudioSheetItemKey,
@@ -33,7 +36,15 @@ import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceV
 import {getSequenceStateFromSheet} from '@unseenco/theatre-studio/utils/sequenceVariantHelpers'
 import {isGsapClipTrack} from '@unseenco/theatre-shared/sequence/trackData'
 import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
+import {isGsapScrollTriggerSheetObjectKey} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
 import {getAnimationEntryForSheetObject} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
+import {
+  scrollTriggerChildInSequenceSpace,
+  scrollTriggerTweenChildInSequenceSpace,
+} from '@unseenco/theatre-shared/gsap/extractScrollTriggerLayout'
+import {listScrollTriggerEntriesForSheet} from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
+import {sheetAddressKey} from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
 import type {GsapTimelineChildClip} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type {NamespacedObjects} from '@unseenco/theatre-studio/panels/OutlinePanel/outlinePanelUtils'
 import {buildSequenceEditorNamespaceMap} from './sequenceEditorObjectNamespaces'
@@ -117,6 +128,7 @@ export type SequenceEditorTree_SheetObject =
       | SequenceEditorTree_PrimitiveProp
       | SequenceEditorTree_GsapClipTrack
       | SequenceEditorTree_GsapChildClip
+      | SequenceEditorTree_GsapScrollTriggerTrack
     >
   }
 
@@ -160,6 +172,28 @@ export type SequenceEditorTree_GsapChildClip =
     displayLabel: string
   }
 
+export type SequenceEditorTree_GsapScrollTriggerTrack =
+  SequenceEditorTree_Row<'gsapScrollTriggerTrack'> & {
+    isCollapsed: boolean
+    sheetObject: SheetObject
+    scrollTriggerId: string
+    layout: {start: number; duration: number}
+    kind: 'tween' | 'timeline'
+    animationSpanSeconds: number
+    displayLabel: string
+    children: SequenceEditorTree_GsapScrollTriggerChild[]
+  }
+
+export type SequenceEditorTree_GsapScrollTriggerChild =
+  SequenceEditorTree_Row<'gsapScrollTriggerChild'> & {
+    sheetObject: SheetObject
+    scrollTriggerId: string
+    parentLayout: {start: number; duration: number}
+    childId: string
+    displayLabel: string
+    layout: {start: number; duration: number}
+  }
+
 export type SequenceEditorTree_AllRowTypes =
   | SequenceEditorTree_Sheet
   | SequenceEditorTree_ObjectNamespace
@@ -168,6 +202,8 @@ export type SequenceEditorTree_AllRowTypes =
   | SequenceEditorTree_PrimitiveProp
   | SequenceEditorTree_GsapClipTrack
   | SequenceEditorTree_GsapChildClip
+  | SequenceEditorTree_GsapScrollTriggerTrack
+  | SequenceEditorTree_GsapScrollTriggerChild
 
 /** Flatten sheet-level tree children into sheet object rows (namespace folders expanded). */
 export function collectSheetObjectsFromSheetChildren(
@@ -194,6 +230,7 @@ export const calculateSequenceEditorTree = (
   studio: Studio,
 ): SequenceEditorTree => {
   prism.ensurePrism()
+  val(gsapStudioRegistryRevisionPointer)
   const rootShouldRender = true
   let topSoFar =
     transportStripHeight +
@@ -260,7 +297,9 @@ export const calculateSequenceEditorTree = (
   )
   tree.heightIncludingChildren = topSoFar - tree.top
 
-  function sheetObjectHasSequenceEditorContent(sheetObject: SheetObject): boolean {
+  function sheetObjectHasSequenceEditorContent(
+    sheetObject: SheetObject,
+  ): boolean {
     const trackSetups = val(
       sheetObject.template.getMapOfValidSequenceTracks_forStudio(
         isSheetPropsObjectKey(sheetObject.address.objectKey)
@@ -279,9 +318,7 @@ export const calculateSequenceEditorTree = (
         ? DEFAULT_SEQUENCE_VARIANT
         : activeSequenceVariant,
     )
-    return (
-      Object.keys(trackSetups).length > 0 || gsapClipEntries.length > 0
-    )
+    return Object.keys(trackSetups).length > 0 || gsapClipEntries.length > 0
   }
 
   function appendNamespacedObjectsToTree(
@@ -419,9 +456,18 @@ export const calculateSequenceEditorTree = (
 
     if (shouldRender) {
       nSoFar += 1
-      // As we add rows to the tree, top to bottom, we accumulate the pixel
-      // distance to the top of the tree from the bottom of the current row:
       topSoFar += row.nodeHeight
+    }
+
+    if (isGsapScrollTriggerSheetObjectKey(sheetObject.address.objectKey)) {
+      addGsapScrollTriggerTrackRow(
+        sheetObject,
+        row,
+        level + 1,
+        shouldRender && !isCollapsed,
+      )
+      row.heightIncludingChildren = topSoFar - row.top
+      return
     }
 
     addProps(
@@ -475,9 +521,7 @@ export const calculateSequenceEditorTree = (
     const {trackId, trackData} = clip
     const entry = getAnimationEntryForSheetObject(sheetObject)
     const displayLabel =
-      sheetObjectRow.displayLabel ??
-      entry?.label ??
-      trackData.gsapAnimationId
+      sheetObjectRow.displayLabel ?? entry?.label ?? trackData.gsapAnimationId
     const isCollapsedP =
       collapsableItemSetP.byId[
         createStudioSheetItemKey.forSheetObjectGsapClipTrack(
@@ -556,6 +600,131 @@ export const calculateSequenceEditorTree = (
     }
     entries.sort((a, b) => a.trackData.start - b.trackData.start)
     return entries
+  }
+
+  function findScrollTriggerEntryForObject(
+    sheetObject: SheetObject,
+  ): ReturnType<typeof listScrollTriggerEntriesForSheet>[number] | undefined {
+    const key = sheetAddressKey(sheetObject.address)
+    for (const entry of listScrollTriggerEntriesForSheet(key)) {
+      if (
+        entry.sheetObject?.address.objectKey === sheetObject.address.objectKey
+      ) {
+        return entry
+      }
+    }
+    return undefined
+  }
+
+  function addGsapScrollTriggerTrackRow(
+    sheetObject: SheetObject,
+    sheetObjectRow: SequenceEditorTree_SheetObject,
+    level: number,
+    shouldRender: boolean,
+  ) {
+    const entry = findScrollTriggerEntryForObject(sheetObject)
+    if (!entry) return
+
+    const isCollapsedP =
+      collapsableItemSetP.byId[
+        createStudioSheetItemKey.forSheetObjectGsapScrollTriggerTrack(
+          sheetObject,
+          entry.id,
+        )
+      ].isCollapsed
+    const isCollapsed = pointerToPrism(isCollapsedP).getValue() ?? false
+
+    const row: SequenceEditorTree_GsapScrollTriggerTrack = {
+      type: 'gsapScrollTriggerTrack',
+      isCollapsed,
+      depth: level,
+      sheetItemKey:
+        createStudioSheetItemKey.forSheetObjectGsapScrollTriggerTrack(
+          sheetObject,
+          entry.id,
+        ),
+      sheetObject,
+      scrollTriggerId: entry.id,
+      layout: entry.layout,
+      kind: entry.kind,
+      animationSpanSeconds: entry.animationSpanSeconds,
+      displayLabel: entry.label,
+      shouldRender,
+      top: topSoFar,
+      nodeHeight: shouldRender ? HEIGHT_OF_ANY_TITLE : 0,
+      heightIncludingChildren: -1,
+      children: [],
+      n: nSoFar,
+    }
+    sheetObjectRow.children.push(row)
+
+    if (shouldRender) {
+      nSoFar += 1
+      topSoFar += row.nodeHeight
+    }
+
+    const childSpecs: Array<{
+      childId: string
+      label: string
+      layout: {start: number; duration: number}
+    }> = []
+
+    if (entry.kind === 'timeline' && entry.timelineChildren.length > 0) {
+      for (const childData of entry.timelineChildren) {
+        childSpecs.push({
+          childId: childData.childId,
+          label: childData.label,
+          layout: scrollTriggerChildInSequenceSpace(
+            entry.layout.start,
+            entry.layout.duration,
+            entry.animationSpanSeconds,
+            childData,
+          ),
+        })
+      }
+    } else {
+      childSpecs.push({
+        childId: 'tween',
+        label: entry.label,
+        layout: scrollTriggerTweenChildInSequenceSpace(
+          entry.layout.start,
+          entry.layout.duration,
+          entry.animationSpanSeconds,
+        ),
+      })
+    }
+
+    for (const spec of childSpecs) {
+      const childRow: SequenceEditorTree_GsapScrollTriggerChild = {
+        type: 'gsapScrollTriggerChild',
+        depth: level + 1,
+        sheetItemKey:
+          createStudioSheetItemKey.forSheetObjectGsapScrollTriggerChild(
+            sheetObject,
+            entry.id,
+            spec.childId,
+          ),
+        sheetObject,
+        scrollTriggerId: entry.id,
+        parentLayout: entry.layout,
+        childId: spec.childId,
+        displayLabel: spec.label,
+        layout: spec.layout,
+        shouldRender: shouldRender && !isCollapsed,
+        top: topSoFar,
+        nodeHeight: shouldRender && !isCollapsed ? HEIGHT_OF_ANY_TITLE : 0,
+        heightIncludingChildren:
+          shouldRender && !isCollapsed ? HEIGHT_OF_ANY_TITLE : 0,
+        n: nSoFar,
+      }
+      row.children.push(childRow)
+      if (shouldRender && !isCollapsed) {
+        nSoFar += 1
+        topSoFar += childRow.nodeHeight
+      }
+    }
+
+    row.heightIncludingChildren = topSoFar - row.top
   }
 
   function addGsapClipTrackRows(
