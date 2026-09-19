@@ -4,6 +4,7 @@ import {
   limitGsapClipMoveStart,
   limitGsapClipResizeEndDuration,
   limitGsapClipResizeStart,
+  limitKeyframeGroupTranslate,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/sequenceEditLimits'
 
 const sheetStub = {
@@ -40,5 +41,11 @@ describe('sequenceEditLimits', () => {
       start: 65,
       duration: 5,
     })
+  })
+
+  test('limitKeyframeGroupTranslate preserves spacing at bounds', () => {
+    expect(limitKeyframeGroupTranslate([5, 15], -10, 100)).toBe(-5)
+    expect(limitKeyframeGroupTranslate([5, 15], 100, 100)).toBe(85)
+    expect(limitKeyframeGroupTranslate([80, 90], 20, 100)).toBe(10)
   })
 })

@@ -77,10 +77,12 @@ import getStudio from '@unseenco/theatre-studio/getStudio'
 import {isSheetInPageMode} from '@unseenco/theatre-studio/sheets/sheetSequenceMode'
 import {
   clampSequenceEditorPosition,
+  getSequenceEditorLengthCap,
   limitGsapClipEndWithoutResizingPastDrag,
   limitGsapClipMoveStart,
   limitGsapClipResizeEndDuration,
   limitGsapClipResizeStart,
+  limitKeyframeGroupTranslate,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/sequenceEditLimits'
 import {graphEditorColors} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/GraphEditor/GraphEditor'
 import type {
@@ -1168,12 +1170,31 @@ namespace stateEditors {
               p.keyframeIds.includes(kf.id),
             )
 
+            const sheet = _sheetForObjectAddress(p)
+            const cap = sheet ? getSequenceEditorLengthCap(sheet) : Infinity
+            const positionsAtStart = selectedKeyframes.map((kf) => kf.position)
+            const limitedTranslate =
+              p.scale === 1 && p.origin === 0
+                ? limitKeyframeGroupTranslate(
+                    positionsAtStart,
+                    p.translate,
+                    cap,
+                  )
+                : p.translate
+
             const transformed = selectedKeyframes.map((untransformedKf) => {
-              const oldPosition = untransformedKf.position
               const newPosition = p.snappingFunction(
-                transformNumber(oldPosition, p),
+                transformNumber(untransformedKf.position, {
+                  ...p,
+                  translate: limitedTranslate,
+                }),
               )
-              return {...untransformedKf, position: newPosition}
+              return {
+                ...untransformedKf,
+                position: sheet
+                  ? clampSequenceEditorPosition(newPosition, sheet)
+                  : newPosition,
+              }
             })
 
             replaceKeyframes({...p, keyframes: transformed})

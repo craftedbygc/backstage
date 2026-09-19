@@ -16,6 +16,21 @@ export function clampSequenceEditorPosition(
   return clamp(position, 0, getSequenceEditorLengthCap(sheet))
 }
 
+/**
+ * When moving multiple keyframes together (connector drag, selection), limit
+ * translation so the group stops at 0 / sequence end without compressing spacing.
+ */
+export function limitKeyframeGroupTranslate(
+  positionsAtStart: number[],
+  translate: number,
+  cap: number,
+): number {
+  if (positionsAtStart.length === 0) return translate
+  const minPos = Math.min(...positionsAtStart)
+  const maxPos = Math.max(...positionsAtStart)
+  return clamp(translate, -minPos, cap - maxPos)
+}
+
 /** Move whole clip: only `start` changes; duration stays fixed at the drag start. */
 export function limitGsapClipMoveStart(
   proposedStart: number,
