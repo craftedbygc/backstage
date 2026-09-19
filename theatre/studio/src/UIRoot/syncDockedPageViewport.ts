@@ -17,7 +17,7 @@ html.${HTML_CLASS} {
 }
 
 html.${HTML_CLASS} body {
-  position: fixed !important;
+  position: absolute !important;
   top: var(--theatre-dock-top) !important;
   left: var(--theatre-dock-left) !important;
   width: var(--theatre-dock-width) !important;
