@@ -16,6 +16,15 @@ export function getZoomExtents(
   return {minWidth, maxWidth}
 }
 
+/** Default sequencer viewport when no zoom/scroll preference is persisted. */
+export function defaultClippedSpaceRange(
+  sequenceLength: number,
+  subUnitsPerUnit: number,
+): IRange {
+  const {maxWidth} = getZoomExtents(sequenceLength, subUnitsPerUnit)
+  return {start: 0, end: maxWidth}
+}
+
 /**
  * Maps visible range width to a 0..1 zoom level (0 = zoomed out, 1 = zoomed in)
  * using a logarithmic scale so mid-slider feels natural.
