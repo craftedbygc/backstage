@@ -7,6 +7,7 @@ import React from 'react'
 import styled, {css} from 'styled-components'
 import useChordial from '@unseenco/theatre-studio/uiComponents/chordial/useChodrial'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {isSheetInPageMode} from '@unseenco/theatre-studio/sheets/sheetSequenceMode'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import PanelDragZone from '@unseenco/theatre-studio/panels/BasePanel/PanelDragZone'
 import Play from '@unseenco/theatre-studio/uiComponents/icons/Play'
@@ -183,8 +184,9 @@ const IconButton: React.FC<{
   title: string
   onClick: () => void
   selected?: boolean
+  disabled?: boolean
   children: React.ReactNode
-}> = ({title, onClick, selected, children}) => {
+}> = ({title, onClick, selected, disabled, children}) => {
   const c = useChordial(() => ({
     title,
     items: [],
@@ -196,8 +198,10 @@ const IconButton: React.FC<{
       type="button"
       title={title}
       className={selected ? 'selected' : undefined}
-      onClick={onClick}
+      disabled={disabled}
+      onClick={disabled ? undefined : onClick}
       onMouseDown={stopPanelDrag}
+      style={disabled ? {opacity: 0.35, cursor: 'not-allowed'} : undefined}
     >
       {children}
     </TransportButton>
@@ -217,6 +221,7 @@ const PlaybackControls: React.FC<{
   return usePrism(() => {
     const sheet = val(layoutP.sheet)
     const sequence = getStudioSequence(sheet)
+    const pageMode = isSheetInPageMode(sheet)
     const playing = val(sequence.pointer.playing)
     const looping = getSequenceLooping(sequence)
     const clippedSpaceRange = val(layoutP.clippedSpace.range)
@@ -246,7 +251,14 @@ const PlaybackControls: React.FC<{
           <StepPrev />
         </IconButton>
         <IconButton
-          title={playing ? 'Pause' : 'Play'}
+          title={
+            pageMode
+              ? 'Playback disabled in page mode (use scroll or scrub)'
+              : playing
+              ? 'Pause'
+              : 'Play'
+          }
+          disabled={pageMode}
           onClick={() => toggleSequencePlayback(sequence)}
         >
           {playing ? <Pause /> : <Play />}

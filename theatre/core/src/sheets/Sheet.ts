@@ -31,6 +31,11 @@ import {
   getSequenceStateFromSheet,
   validateSequenceVariantIdOrThrow,
 } from '@unseenco/theatre-core/sequences/sequenceVariants'
+import type {SheetSequenceMode} from '@unseenco/theatre-core/sheets/sheetSequenceMode'
+import {
+  PAGE_MODE_SEQUENCE_LENGTH,
+  PAGE_MODE_SUB_UNITS_PER_UNIT,
+} from '@unseenco/theatre-core/sheets/sheetSequenceMode'
 
 type SheetObjectMap = StrictRecord<ObjectAddressKey, SheetObject>
 
@@ -57,6 +62,8 @@ export default class Sheet {
   private readonly _studioPreviewVariantOverride = new Atom<
     SequenceVariantId | undefined
   >(undefined)
+  private readonly _sequenceMode = new Atom<SheetSequenceMode>('time')
+  readonly sequenceModeP = this._sequenceMode.pointer
   readonly activeSequenceVariantP = this._activeSequenceVariant.pointer
   readonly effectiveActiveSequenceVariantD: Prism<SequenceVariantId>
   readonly address: SheetAddress
@@ -170,6 +177,9 @@ export default class Sheet {
     const variantId = variant ?? val(this._activeSequenceVariant.pointer)
     if (!this._sequences[variantId]) {
       const lengthD = prism(() => {
+        if (val(this._sequenceMode.pointer) === 'page') {
+          return PAGE_MODE_SEQUENCE_LENGTH
+        }
         const sheetState = val(
           this.project.pointers.historic.sheetsById[this.address.sheetId],
         )
@@ -181,6 +191,9 @@ export default class Sheet {
       })
 
       const subUnitsPerUnitD = prism(() => {
+        if (val(this._sequenceMode.pointer) === 'page') {
+          return PAGE_MODE_SUB_UNITS_PER_UNIT
+        }
         const sheetState = val(
           this.project.pointers.historic.sheetsById[this.address.sheetId],
         )
@@ -243,6 +256,14 @@ export default class Sheet {
       )
     }
     this._studioPreviewVariantOverride.set(variantId)
+  }
+
+  getSequenceMode(): SheetSequenceMode {
+    return this._sequenceMode.get()
+  }
+
+  setSequenceMode(mode: SheetSequenceMode): void {
+    this._sequenceMode.set(mode)
   }
 }
 

@@ -33,6 +33,7 @@ import {DOCKED_PANE_BACKGROUND} from '@unseenco/theatre-studio/UIRoot/dockedLayo
 import PlaybackControls from './PlaybackControls/PlaybackControls'
 import {transportStripHeight} from './PlaybackControls/constants'
 import GsapClipPlayheadSync from '@unseenco/theatre-studio/gsap/GsapClipPlayheadSync'
+import SheetPageScrollSync from '@unseenco/theatre-studio/sheets/SheetPageScrollSync'
 
 const Container = styled(PanelWrapper)<{$docked?: boolean}>`
   z-index: ${panelZIndexes.sequenceEditorPanel};
@@ -217,6 +218,7 @@ const Content: React.VFC<{}> = () => {
         />
         <FrameStampPositionProvider layoutP={layoutP}>
           <GsapClipPlayheadSync />
+          <SheetPageScrollSync />
           <PlaybackControls layoutP={layoutP} docked={isDocked} />
           <Header layoutP={layoutP} />
           <DopeSheet key={key + '-dopeSheet'} layoutP={layoutP} />

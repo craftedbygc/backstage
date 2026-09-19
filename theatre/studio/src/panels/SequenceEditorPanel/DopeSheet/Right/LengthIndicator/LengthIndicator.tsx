@@ -21,6 +21,7 @@ import LengthEditorPopover from './LengthEditorPopover'
 import {pointerEventsAutoInNormalMode} from '@unseenco/theatre-studio/css'
 import BasicPopover from '@unseenco/theatre-studio/uiComponents/Popover/BasicPopover'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {isSheetInPageMode} from '@unseenco/theatre-studio/sheets/sheetSequenceMode'
 
 const coverWidth = 1000
 
@@ -154,6 +155,9 @@ const LengthIndicator: React.FC<IProps> = ({layoutP}) => {
 
   return usePrism(() => {
     const sheet = val(layoutP.sheet)
+    if (isSheetInPageMode(sheet)) {
+      return null
+    }
     const height = val(layoutP.rightDims.height)
 
     const sequence = getStudioSequence(sheet)

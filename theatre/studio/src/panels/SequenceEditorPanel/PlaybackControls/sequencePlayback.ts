@@ -125,6 +125,11 @@ export function jumpToEnd(sequence: Sequence) {
   )
   const targetEnd = Math.max(rangeEnd, clipEnd)
 
+  if (sequence._sheet.getSequenceMode() === 'page') {
+    sequence.position = Math.min(targetEnd, sequence.length)
+    return
+  }
+
   if (targetEnd > sequence.length) {
     const studio = getStudio()
     if (studio) {
@@ -150,6 +155,9 @@ export function stepFrame(sequence: Sequence, direction: -1 | 1) {
 }
 
 export function toggleSequencePlayback(seq: Sequence) {
+  if (seq._sheet.getSequenceMode() === 'page') {
+    return
+  }
   if (seq.playing) {
     seq.pause()
     return

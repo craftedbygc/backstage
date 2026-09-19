@@ -64,7 +64,9 @@ export function registerGsapAnimation(
     label: options.label,
     animation,
     sheetObject: sheetObjectInternal,
-    defaultDuration: options.defaultDuration,
+    defaultDuration:
+      options.defaultDuration ??
+      (sheet.getSequenceMode() === 'page' ? 10 : undefined),
     onRebuildTimeline: options.onRebuildTimeline,
   })
 

@@ -10,9 +10,7 @@ import type {SheetAddress} from '@unseenco/theatre-shared/utils/addresses'
 import {InvalidArgumentError} from '@unseenco/theatre-shared/utils/errors'
 import {validateAndSanitiseSlashedPathOrThrow} from '@unseenco/theatre-shared/utils/slashedPaths'
 import {parseOutlineNamespacePath} from '@unseenco/theatre-shared/utils/outlineNamespaces'
-import type {
-  $IntentionalAny,
-} from '@unseenco/theatre-shared/utils/types'
+import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
 import userReadableTypeOfValue from '@unseenco/theatre-shared/utils/userReadableTypeOfValue'
 import deepEqual from 'fast-deep-equal'
 import type {
@@ -295,6 +293,18 @@ export interface ISheet {
    * Returns the currently active sequence variant name.
    */
   getActiveSequenceVariant(): SequenceVariantId
+
+  /**
+   * Whether the sequence uses wall-clock time (default) or page-scroll percent units.
+   * Page mode is runtime-only and not persisted in project state.
+   */
+  getSequenceMode(): 'time' | 'page'
+
+  /**
+   * Switches sequence units: `time` (seconds) or `page` (0–100 = scroll percent).
+   * In page mode, length is fixed at 100 and snap grid uses 0.1% steps.
+   */
+  setSequenceMode(mode: 'time' | 'page'): void
 }
 
 export default class TheatreSheet implements ISheet {
@@ -537,6 +547,14 @@ export default class TheatreSheet implements ISheet {
 
   getActiveSequenceVariant(): SequenceVariantId {
     return privateAPI(this).getActiveSequenceVariant()
+  }
+
+  getSequenceMode(): 'time' | 'page' {
+    return privateAPI(this).getSequenceMode()
+  }
+
+  setSequenceMode(mode: 'time' | 'page'): void {
+    privateAPI(this).setSequenceMode(mode)
   }
 
   get project(): IProject {
