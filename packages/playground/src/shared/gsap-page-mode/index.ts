@@ -49,12 +49,11 @@ void project.ready.then(() => {
     defaultDuration: 25,
   })
 
-  const panelReveal = gsap.to(midPanel, {
+  const panelReveal = gsap.to([midPanel, heroBox], {
     autoAlpha: 1,
     y: 0,
     duration: 1,
-    paused: true,
-    id: 'reveal',
+    paused: true
   })
 
   registerGsapAnimation(panelReveal, sheet, {
