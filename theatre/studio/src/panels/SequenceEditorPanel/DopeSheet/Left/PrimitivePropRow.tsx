@@ -14,7 +14,7 @@ import {graphEditorColors} from '@unseenco/theatre-studio/panels/SequenceEditorP
 import {BaseHeader, LeftRowContainer as BaseContainer} from './AnyCompositeRow'
 import {propNameTextCSS} from '@unseenco/theatre-studio/propEditors/utils/propNameTextCSS'
 import {usePropHighlightMouseEnter} from './usePropHighlightMouseEnter'
-import {useSequenceEditorPaneLayout} from '../SequenceEditorPaneLayoutContext'
+import {useSequenceEditorPaneLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/SequenceEditorPaneLayoutContext'
 import NextPrevKeyframeCursors from '@unseenco/theatre-studio/propEditors/NextPrevKeyframeCursors'
 
 const theme = {

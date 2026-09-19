@@ -5,7 +5,7 @@ import {val} from '@unseenco/theatre-dataverse'
 import React from 'react'
 import styled from 'styled-components'
 import SheetRow from './SheetRow'
-import {useSequenceEditorPaneLayout} from '../SequenceEditorPaneLayoutContext'
+import {useSequenceEditorPaneLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/SequenceEditorPaneLayoutContext'
 
 const Container = styled.div<{$clipHorizontalOverflow?: boolean}>`
   position: absolute;
