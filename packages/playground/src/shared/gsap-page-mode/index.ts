@@ -49,7 +49,7 @@ void project.ready.then(() => {
     defaultDuration: 25,
   })
 
-  const panelReveal = gsap.timeline().to(midPanel, {
+  const panelReveal = gsap.to(midPanel, {
     autoAlpha: 1,
     y: 0,
     duration: 1,
@@ -58,8 +58,7 @@ void project.ready.then(() => {
   })
 
   registerGsapAnimation(panelReveal, sheet, {
-    label: 'Mid / Panel reveal',
-    defaultDuration: 20,
+    label: 'Mid / Panel reveal'
   })
 
   // ScrollTrigger.create({ animation }) style
