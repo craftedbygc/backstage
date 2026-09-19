@@ -14,6 +14,9 @@ import {Atom, prism, val} from '@unseenco/theatre-dataverse'
 import type {SequenceEditorTree} from './tree'
 import {calculateSequenceEditorTree} from './tree'
 import {clamp} from 'lodash-es'
+import {isSheetInPageMode} from '@unseenco/theatre-studio/sheets/sheetSequenceMode'
+import {clampRangeToSequence} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/PlaybackControls/sequenceZoom'
+import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 import type {
   KeyframeId,
   ObjectAddressKey,
@@ -306,9 +309,16 @@ export function sequenceEditorPanelLayout(
 
     const unitSpace = {}
 
-    const clippedSpaceRange =
+    const clippedSpaceRangeRaw =
       val(ahistoricStateP.sequence.clippedSpaceRange) ??
       initialClippedSpaceRange
+
+    const clippedSpaceRange = isSheetInPageMode(sheet)
+      ? clampRangeToSequence(
+          clippedSpaceRangeRaw,
+          getStudioSequence(sheet).length,
+        )
+      : clippedSpaceRangeRaw
 
     const scaledSpace: SequenceEditorPanelLayout['scaledSpace'] = prism.memo(
       'scaledSpace',
@@ -324,6 +334,8 @@ export function sequenceEditorPanelLayout(
         const pixelToUnitRatio =
           pixelsShownInClippedSpace / unitsShownInClippedSpace
 
+        const pageMode = isSheetInPageMode(sheet)
+
         return {
           fromUnitSpace(u: number): number {
             return u * pixelToUnitRatio
@@ -331,10 +343,10 @@ export function sequenceEditorPanelLayout(
           toUnitSpace(s: number): number {
             return s * unitToPixelRatio
           },
-          leftPadding: 10,
+          leftPadding: pageMode ? 0 : 10,
         }
       },
-      [clippedSpaceRange, rightDims.width],
+      [clippedSpaceRange, rightDims.width, sheet],
     )
 
     const setClippedSpaceRange = prism.memo(
@@ -352,13 +364,20 @@ export function sequenceEditorPanelLayout(
               range.end = length
             }
 
+            if (isSheetInPageMode(sheet)) {
+              const sequenceLength = getStudioSequence(sheet).length
+              const clamped = clampRangeToSequence(range, sequenceLength)
+              range.start = clamped.start
+              range.end = clamped.end
+            }
+
             stateEditors.studio.ahistoric.projects.stateByProjectId.stateBySheetId.sequence.clippedSpaceRange.set(
               {...sheet.address, range},
             )
           })
         }
       },
-      [],
+      [sheet],
     )
 
     const clippedSpace: SequenceEditorPanelLayout['clippedSpace'] = prism.memo(

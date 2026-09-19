@@ -12,6 +12,7 @@ import {includeLockFrameStampAttrs} from '@unseenco/theatre-studio/panels/Sequen
 import {pointerEventsAutoInNormalMode} from '@unseenco/theatre-studio/css'
 import useDrag from '@unseenco/theatre-studio/uiComponents/useDrag'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {isSheetInPageMode} from '@unseenco/theatre-studio/sheets/sheetSequenceMode'
 
 const Container = styled.div`
   --threadHeight: 6px;
@@ -131,12 +132,13 @@ const HorizontalScrollbar: React.FC<{
       prism(() => {
         const rightWidth = val(layoutP.rightDims.width) - 25
         const clippedSpaceRange = val(layoutP.clippedSpace.range)
-        const sequenceLength = getStudioSequence(val(layoutP.sheet)).length
+        const sheet = val(layoutP.sheet)
+        const sequenceLength = getStudioSequence(sheet).length
+        const pageMode = isSheetInPageMode(sheet)
 
-        const assumedLengthOfSequence = Math.max(
-          clippedSpaceRange.end,
-          sequenceLength,
-        )
+        const assumedLengthOfSequence = pageMode
+          ? sequenceLength
+          : Math.max(clippedSpaceRange.end, sequenceLength)
 
         const rangeStartX =
           (clippedSpaceRange.start / assumedLengthOfSequence) * rightWidth

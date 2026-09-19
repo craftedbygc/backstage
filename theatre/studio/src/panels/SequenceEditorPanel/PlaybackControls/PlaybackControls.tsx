@@ -230,6 +230,7 @@ const PlaybackControls: React.FC<{
       clippedSpaceRange,
       sequence.length,
       sequence.subUnitsPerUnit,
+      {pageMode},
     )
 
     const StripComponent = docked ? Strip : StripDrag
@@ -300,6 +301,7 @@ const PlaybackControls: React.FC<{
                   val(layoutP.clippedSpace.range),
                   sequence.length,
                   sequence.subUnitsPerUnit,
+                  {pageMode},
                 ),
               )
             }}

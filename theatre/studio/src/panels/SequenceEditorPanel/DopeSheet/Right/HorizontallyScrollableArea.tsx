@@ -12,6 +12,7 @@ import {pointerEventsAutoInNormalMode} from '@unseenco/theatre-studio/css'
 import type {IRange} from '@unseenco/theatre-shared/utils/types'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 import {isSheetInPageMode} from '@unseenco/theatre-studio/sheets/sheetSequenceMode'
+import {clampRangeToSequence} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/PlaybackControls/sequenceZoom'
 import {useDragPlayheadHandlers} from './useDragPlayheadHandlers'
 
 const Container = styled.div`
@@ -111,9 +112,12 @@ function useHandlePanAndZoom(
           ? sequenceLength
           : sequenceLength + sequenceLength * 0.25
 
-        val(layoutP.clippedSpace.setRange)(
-          normalizeRange(newRange, [0, maxEnd]),
-        )
+        const setRange = val(layoutP.clippedSpace.setRange)
+        if (pageMode) {
+          setRange(clampRangeToSequence(newRange, sequenceLength))
+        } else {
+          setRange(normalizeRange(newRange, [0, maxEnd]))
+        }
         return
       }
       // panning
@@ -229,28 +233,6 @@ function normalizeRange(
   minMax: [min: number, max: number],
 ) {
   return mapValues(range, (pos) => normalize(pos, minMax))
-}
-
-function clampRangeToSequence(
-  range: IRange<number>,
-  sequenceLength: number,
-): IRange<number> {
-  const windowSize = range.end - range.start
-  let start = range.start
-  let end = range.end
-  if (end > sequenceLength) {
-    end = sequenceLength
-    start = end - windowSize
-  }
-  if (start < 0) {
-    start = 0
-    end = windowSize
-  }
-  if (end > sequenceLength) {
-    end = sequenceLength
-    start = Math.max(0, end - windowSize)
-  }
-  return {start, end}
 }
 
 function useUpdateScrollFromClippedSpaceRange(

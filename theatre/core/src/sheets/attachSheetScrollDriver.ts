@@ -12,6 +12,7 @@ export type ScrollDriver = {
 /** Native `window` / `documentElement` vertical scroll. */
 export function createNativeDocumentScrollDriver(): ScrollDriver {
   let suppressScrollEvents = false
+  let suppressGeneration = 0
 
   const getMaxScroll = (): number => {
     const el = document.documentElement
@@ -21,32 +22,54 @@ export function createNativeDocumentScrollDriver(): ScrollDriver {
   const getProgress = (): number => {
     const max = getMaxScroll()
     if (max <= 0) return 0
-    return window.scrollY / max
+    const y = window.scrollY
+    // Snap to exact ends — avoids playhead stuck below 0% / above 100% on fast scroll.
+    if (y <= 1) return 0
+    if (y >= max - 1) return 1
+    return y / max
   }
 
   const setProgress = (progress: number): void => {
     const max = getMaxScroll()
     const clamped = Math.max(0, Math.min(1, progress))
+    const gen = ++suppressGeneration
     suppressScrollEvents = true
     window.scrollTo({top: clamped * max, behavior: 'instant'})
-    requestAnimationFrame(() => {
-      suppressScrollEvents = false
-    })
+    const release = () => {
+      if (gen === suppressGeneration) {
+        suppressScrollEvents = false
+      }
+    }
+    requestAnimationFrame(() => requestAnimationFrame(release))
   }
 
   return {
     getProgress,
     setProgress,
     subscribe(onProgressChange): () => void {
-      const handler = () => {
+      let rafId = 0
+      const flush = () => {
+        rafId = 0
         if (suppressScrollEvents) return
         onProgressChange(getProgress())
       }
+      const scheduleFlush = () => {
+        if (rafId !== 0) return
+        rafId = requestAnimationFrame(flush)
+      }
+      const handler = () => scheduleFlush()
       window.addEventListener('scroll', handler, {passive: true})
       window.addEventListener('resize', handler)
+      if ('onscrollend' in window) {
+        window.addEventListener('scrollend', () => {
+          suppressScrollEvents = false
+          onProgressChange(getProgress())
+        })
+      }
       return () => {
         window.removeEventListener('scroll', handler)
         window.removeEventListener('resize', handler)
+        if (rafId !== 0) cancelAnimationFrame(rafId)
       }
     },
   }
@@ -61,29 +84,26 @@ export function attachSheetScrollDriver(
   driver: ScrollDriver = createNativeDocumentScrollDriver(),
 ): () => void {
   const sequence = sheet.sequence
-  let applyingFromScroll = false
-  let applyingFromPosition = false
+  /** Incremented while updating position from scroll (blocks feedback scrollTo). */
+  let scrollSyncDepth = 0
 
   const syncPositionFromScroll = (progress: number) => {
     const length = val(sequence.pointer.length)
     if (length <= 0) return
-    applyingFromScroll = true
+    scrollSyncDepth++
     sequence.position = progress * length
-    applyingFromScroll = false
+    scrollSyncDepth--
   }
 
   const untapScroll = driver.subscribe((progress) => {
-    if (applyingFromPosition) return
     syncPositionFromScroll(progress)
   })
 
   const untapPosition = onChange(sequence.pointer.position, (position) => {
-    if (applyingFromScroll) return
+    if (scrollSyncDepth > 0) return
     const length = val(sequence.pointer.length)
     if (length <= 0) return
-    applyingFromPosition = true
     driver.setProgress(position / length)
-    applyingFromPosition = false
   })
 
   syncPositionFromScroll(driver.getProgress())
