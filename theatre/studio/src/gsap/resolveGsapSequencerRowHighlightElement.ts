@@ -1,5 +1,9 @@
 import {getAnimationEntryForSheetObject} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
 import {
+  isGsapScrollTriggerSheetObjectKey,
+  isGsapSheetObjectKey,
+} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
+import {
   getScrollTriggerEntryForSheetObject,
   introspectScrollTriggerDetails,
 } from '@unseenco/theatre-shared/gsap/introspectScrollTriggerDetails'
@@ -25,6 +29,26 @@ export function resolveGsapSequencerRowHighlightElement(
   leaf: SequenceEditorTree_AllRowTypes,
 ): Element | null {
   switch (leaf.type) {
+    case 'sheetObject': {
+      if (
+        leaf.gsapScrollTrigger ||
+        isGsapScrollTriggerSheetObjectKey(leaf.sheetObject.address.objectKey)
+      ) {
+        const entry = getScrollTriggerEntryForSheetObject(leaf.sheetObject)
+        if (!entry) return null
+        const {triggerTargets} = introspectScrollTriggerDetails(entry)
+        return firstConnectedElementTarget(triggerTargets)
+      }
+      if (
+        leaf.gsapClip ||
+        isGsapSheetObjectKey(leaf.sheetObject.address.objectKey)
+      ) {
+        const entry = getAnimationEntryForSheetObject(leaf.sheetObject)
+        if (!entry?.animation) return null
+        return firstConnectedElementTarget(readGsapTargets(entry.animation))
+      }
+      return null
+    }
     case 'gsapClipTrack': {
       const entry = getAnimationEntryForSheetObject(leaf.sheetObject)
       if (!entry?.animation) return null
@@ -61,6 +85,13 @@ export function resolveGsapSequencerRowHighlightElement(
 function isGsapSequencerHighlightRow(
   leaf: SequenceEditorTree_AllRowTypes,
 ): boolean {
+  if (leaf.type === 'sheetObject') {
+    return (
+      !!leaf.gsapClip ||
+      !!leaf.gsapScrollTrigger ||
+      isGsapSheetObjectKey(leaf.sheetObject.address.objectKey)
+    )
+  }
   return (
     leaf.type === 'gsapClipTrack' ||
     leaf.type === 'gsapChildClip' ||
