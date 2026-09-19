@@ -10,8 +10,9 @@ import {useSequenceEditorPaneLayout} from '@unseenco/theatre-studio/panels/Seque
 const Container = styled.div<{$clipHorizontalOverflow?: boolean}>`
   position: absolute;
   left: 0;
-  overflow-x: ${(props) =>
+  overflow: ${(props) =>
     props.$clipHorizontalOverflow ? 'hidden' : 'visible'};
+  z-index: 1;
 `
 
 const ListContainer = styled.ul`

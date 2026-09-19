@@ -24,7 +24,7 @@ export type NearbyKeyframesControls = {
   }
 }
 
-const Container = styled.div`
+const Container = styled.div<{$compact?: boolean}>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -37,14 +37,14 @@ const Container = styled.div`
   height: 12px;
   margin: 0 0 0 2px;
   position: relative;
-  overflow: visible;
+  overflow: ${(props) => (props.$compact ? 'hidden' : 'visible')};
   z-index: 0;
 
   &:after {
     position: absolute;
     /* Keep horizontal overflow tight so hover chrome clears the pane’s left edge. */
-    left: -8px;
-    right: -8px;
+    left: ${(props) => (props.$compact ? -4 : -8)}px;
+    right: ${(props) => (props.$compact ? -2 : -8)}px;
     /* Optical icon center is ~1px below geometric mid (SVG content at y=7/12) */
     top: -3px;
     height: 20px;
@@ -161,8 +161,8 @@ const PrevOrNextButton = styled(Button)<{
   }
 `
 
-const prevHoverTranslateX = (compact: boolean) => (compact ? -6 : -11)
-const nextHoverTranslateX = (compact: boolean) => (compact ? 6 : 11)
+const prevHoverTranslateX = (compact: boolean) => (compact ? -4 : -11)
+const nextHoverTranslateX = (compact: boolean) => (compact ? 2 : 11)
 
 const Prev = styled(PrevOrNextButton)<{
   available: boolean
@@ -215,7 +215,7 @@ const NextPrevKeyframeCursors: React.VFC<
   const nextPresence = usePresence(props.next?.itemKey)
 
   return (
-    <Container>
+    <Container $compact={compact}>
       <Prev
         available={!!props.prev}
         onClick={props.prev?.jump}
