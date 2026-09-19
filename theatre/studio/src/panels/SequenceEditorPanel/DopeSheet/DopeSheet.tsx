@@ -7,6 +7,7 @@ import Left from './Left/Left'
 import DopeSheetBackground from './Right/DopeSheetBackground'
 import Right from './Right/Right'
 import VerticalScrollContainer from '@unseenco/theatre-studio/panels/SequenceEditorPanel/VerticalScrollContainer'
+import {SequenceEditorPaneLayoutProvider} from './SequenceEditorPaneLayoutContext'
 
 const Container = styled.div`
   position: absolute;
@@ -14,18 +15,21 @@ const Container = styled.div`
   right: 0;
 `
 
-const DopeSheet: React.VFC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({
-  layoutP,
-}) => {
+const DopeSheet: React.VFC<{
+  layoutP: Pointer<SequenceEditorPanelLayout>
+  isDocked: boolean
+}> = ({layoutP, isDocked}) => {
   const height = useVal(layoutP.dopeSheetDims.height)
 
   return (
     <Container style={{height: height + 'px'}}>
       <DopeSheetBackground layoutP={layoutP} />
-      <VerticalScrollContainer>
-        <Left layoutP={layoutP} />
-        <Right layoutP={layoutP} />
-      </VerticalScrollContainer>
+      <SequenceEditorPaneLayoutProvider isDocked={isDocked}>
+        <VerticalScrollContainer>
+          <Left layoutP={layoutP} />
+          <Right layoutP={layoutP} />
+        </VerticalScrollContainer>
+      </SequenceEditorPaneLayoutProvider>
     </Container>
   )
 }

@@ -180,9 +180,9 @@ const Content: React.VFC<{}> = () => {
       .memo(
         'layout',
         () => {
-          return sequenceEditorPanelLayout(sheet, panelSizeP)
+          return sequenceEditorPanelLayout(sheet, panelSizeP, {isDocked})
         },
-        [sheet, panelSizeP],
+        [sheet, panelSizeP, isDocked],
       )
       .getValue()
 
@@ -219,7 +219,11 @@ const Content: React.VFC<{}> = () => {
           <GsapClipPlayheadSync />
           <PlaybackControls layoutP={layoutP} docked={isDocked} />
           <Header layoutP={layoutP} />
-          <DopeSheet key={key + '-dopeSheet'} layoutP={layoutP} />
+          <DopeSheet
+            key={key + '-dopeSheet'}
+            layoutP={layoutP}
+            isDocked={isDocked}
+          />
           {graphEditorOpen && (
             <GraphEditor key={key + '-graphEditor'} layoutP={layoutP} />
           )}
