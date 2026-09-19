@@ -15,7 +15,7 @@ describe('scrollTriggerRegistry', () => {
       projectId: 'p' as const,
       sheetId: 's' as const,
       sheetInstanceId: 'default' as const,
-      objectKey: 'GSAP / ScrollTrigger / Demo',
+      objectKey: 'GSAP / ScrollTriggers / Demo',
     }
     const sheetObject = {address} as {address: typeof address}
     const sheetKey = sheetAddressKey({

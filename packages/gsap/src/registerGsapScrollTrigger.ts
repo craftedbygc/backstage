@@ -41,7 +41,7 @@ function sequenceLengthForSheet(sheet: ISheet): number {
 }
 
 function scrollTriggerObjectKey(namespace: string, label: string): string {
-  return buildGsapSheetObjectKey(namespace, `ScrollTrigger / ${label}`)
+  return buildGsapSheetObjectKey(namespace, `ScrollTriggers / ${label}`)
 }
 
 export function registerOneGsapScrollTriggerOnSheet(

@@ -54,6 +54,7 @@ void project.ready.then(() => {
     y: 0,
     duration: 1,
     paused: true,
+    id: 'reveal',
   })
 
   registerGsapAnimation(panelReveal, sheet, {

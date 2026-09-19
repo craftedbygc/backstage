@@ -31,9 +31,9 @@ export function isGsapSheetObjectKey(objectKey: string): boolean {
   return firstSlashedPathSegment(objectKey) === namespace
 }
 
-/** GSAP outline proxy for a registered ScrollTrigger (`GSAP / ScrollTrigger / …`). */
+/** GSAP outline proxy for a registered ScrollTrigger (`GSAP / ScrollTriggers / …`). */
 export function isGsapScrollTriggerSheetObjectKey(objectKey: string): boolean {
   if (!isGsapSheetObjectKey(objectKey)) return false
   const segments = objectKey.split(/\s*\/\s*/g).map((s) => s.trim())
-  return segments[1] === 'ScrollTrigger'
+  return segments[1] === 'ScrollTriggers'
 }

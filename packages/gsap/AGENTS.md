@@ -1,6 +1,6 @@
 # AGENTS.md — `@unseenco/theatre-gsap`
 
-Bridge GSAP tweens to Theatre.js **sequence time mode** (v1). ScrollTrigger / page scroll modes are planned for v2 — see notes at the end.
+Bridge GSAP tweens to Theatre.js **sequence time mode** (v1). ScrollTriggers / page scroll modes are planned for v2 — see notes at the end.
 
 ## Package layout
 

@@ -144,7 +144,7 @@ gsap.timeline({
 registerAllGsapScrollTriggers(sheet) // optional catch-all for getAll()
 ```
 
-Outline proxies appear under **`GSAP / ScrollTrigger / …`**. They **automatically** show as read-only bars in the page-mode sequencer (no **Add to sequence at playhead**). Controlled tweens/timelines show as **child rows** under each trigger bar.
+Outline proxies appear under **`GSAP / ScrollTriggers / …`**. They **automatically** show as read-only bars in the page-mode sequencer (no **Add to sequence at playhead**). Controlled tweens/timelines show as **child rows** under each trigger bar.
 
 ## configureTheatreGsap
 
