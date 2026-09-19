@@ -24,7 +24,7 @@ export type NearbyKeyframesControls = {
   }
 }
 
-const Container = styled.div<{$compact?: boolean}>`
+const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -37,14 +37,14 @@ const Container = styled.div<{$compact?: boolean}>`
   height: 12px;
   margin: 0 0 0 2px;
   position: relative;
-  overflow: ${(props) => (props.$compact ? 'hidden' : 'visible')};
+  overflow: visible;
   z-index: 0;
 
   &:after {
     position: absolute;
     /* Keep horizontal overflow tight so hover chrome clears the pane’s left edge. */
-    left: ${(props) => (props.$compact ? -4 : -8)}px;
-    right: ${(props) => (props.$compact ? -2 : -8)}px;
+    left: -8px;
+    right: -8px;
     /* Optical icon center is ~1px below geometric mid (SVG content at y=7/12) */
     top: -3px;
     height: 20px;
@@ -161,8 +161,8 @@ const PrevOrNextButton = styled(Button)<{
   }
 `
 
-const prevHoverTranslateX = (compact: boolean) => (compact ? -3 : -11)
-const nextHoverTranslateX = (compact: boolean) => (compact ? -1 : 11)
+const prevHoverTranslateX = (compact: boolean) => (compact ? -6 : -11)
+const nextHoverTranslateX = (compact: boolean) => (compact ? 6 : 11)
 
 const Prev = styled(PrevOrNextButton)<{
   available: boolean
@@ -176,10 +176,7 @@ const Prev = styled(PrevOrNextButton)<{
   transform: translate(-2px, -50%);
   ${Container}:hover & {
     /* Clear the diamond tip; may sit slightly past the tight hover chrome. */
-    transform: translate(
-      ${({$compact}) => prevHoverTranslateX($compact)}px,
-      -50%
-    );
+    transform: translate(${({$compact}) => prevHoverTranslateX($compact)}px, -50%);
   }
 `
 const Next = styled(PrevOrNextButton)<{
@@ -193,10 +190,7 @@ const Next = styled(PrevOrNextButton)<{
   top: 50%;
   transform: translate(2px, -50%);
   ${Container}:hover & {
-    transform: translate(
-      ${({$compact}) => nextHoverTranslateX($compact)}px,
-      -50%
-    );
+    transform: translate(${({$compact}) => nextHoverTranslateX($compact)}px, -50%);
   }
 `
 
@@ -215,7 +209,7 @@ const NextPrevKeyframeCursors: React.VFC<
   const nextPresence = usePresence(props.next?.itemKey)
 
   return (
-    <Container $compact={compact}>
+    <Container>
       <Prev
         available={!!props.prev}
         onClick={props.prev?.jump}

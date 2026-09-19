@@ -16,7 +16,6 @@ import {propNameTextCSS} from '@unseenco/theatre-studio/propEditors/utils/propNa
 import {usePropHighlightMouseEnter} from './usePropHighlightMouseEnter'
 import {useSequenceEditorPaneLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/SequenceEditorPaneLayoutContext'
 import NextPrevKeyframeCursors from '@unseenco/theatre-studio/propEditors/NextPrevKeyframeCursors'
-import {SEQUENCE_EDITOR_DOCKED_LEFT_HEAD_PADDING_RIGHT_PX} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/sequenceEditorLayoutConstants'
 
 const theme = {
   label: {
@@ -33,31 +32,17 @@ const PrimitivePropRowHead = styled(BaseHeader)<{
 }>`
   display: flex;
   color: ${theme.label.color};
-  padding-right: ${(props) =>
-    props.$docked
-      ? `${SEQUENCE_EDITOR_DOCKED_LEFT_HEAD_PADDING_RIGHT_PX}px`
-      : '12px'};
+  padding-right: ${(props) => (props.$docked ? '6px' : '12px')};
   align-items: center;
   justify-content: flex-end;
   box-sizing: border-box;
-  width: ${(props) => (props.$docked ? '100%' : 'auto')};
-  max-width: ${(props) => (props.$docked ? '100%' : 'none')};
   min-width: 0;
   overflow: ${(props) => (props.$docked ? 'hidden' : 'visible')};
-`
-
-const PrimitivePropRowHead_Controls = styled.div<{$docked?: boolean}>`
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  min-width: 0;
-  max-width: ${(props) => (props.$docked ? '100%' : 'none')};
 `
 
 const PrimitivePropRowIconContainer = styled.button<{
   isSelected: boolean
   graphEditorColor: keyof typeof graphEditorColors
-  $docked?: boolean
 }>`
   background: none;
   border: none;
@@ -67,8 +52,7 @@ const PrimitivePropRowIconContainer = styled.button<{
   font-size: 14px;
   align-items: center;
   height: 100%;
-  margin-left: ${(props) => (props.$docked ? '4px' : '12px')};
-  flex: 0 0 auto;
+  margin-left: 12px;
   color: ${(props) =>
     props.isSelected
       ? graphEditorColors[props.graphEditorColor].iconColor
@@ -95,14 +79,9 @@ const GraphIcon = () => (
   </svg>
 )
 
-const PrimitivePropRowHead_Label = styled.span<{$docked?: boolean}>`
+const PrimitivePropRowHead_Label = styled.span`
   margin-right: 4px;
   ${propNameTextCSS};
-  flex: ${(props) => (props.$docked ? '1 1 0' : '0 1 auto')};
-  min-width: 0;
-  overflow: ${(props) => (props.$docked ? 'hidden' : 'visible')};
-  text-overflow: ${(props) => (props.$docked ? 'ellipsis' : 'clip')};
-  white-space: nowrap;
 
   ${PrimitivePropRowHead}:hover & {
     color: #ccc;
@@ -189,14 +168,11 @@ const PrimitivePropRow: React.FC<{
         $docked={isDocked}
         onClick={selectParentObject}
       >
-        <PrimitivePropRowHead_Label $docked={isDocked}>
-          {label}
-        </PrimitivePropRowHead_Label>
-        <PrimitivePropRowHead_Controls $docked={isDocked}>
-          {controlIndicators.type === NextPrevKeyframeCursors
-            ? React.cloneElement(controlIndicators, {compact: isDocked})
-            : controlIndicators}
-          <PrimitivePropRowIconContainer
+        <PrimitivePropRowHead_Label>{label}</PrimitivePropRowHead_Label>
+        {controlIndicators.type === NextPrevKeyframeCursors
+          ? React.cloneElement(controlIndicators, {compact: isDocked})
+          : controlIndicators}
+        <PrimitivePropRowIconContainer
           onClick={(e) => {
             e.stopPropagation()
             toggleSelect()
@@ -205,11 +181,9 @@ const PrimitivePropRow: React.FC<{
           graphEditorColor={possibleColor ?? '1'}
           style={{opacity: isSelectable ? 1 : 0.25}}
           disabled={!isSelectable}
-          $docked={isDocked}
         >
-            <GraphIcon />
-          </PrimitivePropRowIconContainer>
-        </PrimitivePropRowHead_Controls>
+          <GraphIcon />
+        </PrimitivePropRowIconContainer>
       </PrimitivePropRowHead>
     </PrimitivePropRowContainer>
   )

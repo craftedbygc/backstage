@@ -10,21 +10,13 @@ import {useSequenceEditorPaneLayout} from '@unseenco/theatre-studio/panels/Seque
 const Container = styled.div<{$clipHorizontalOverflow?: boolean}>`
   position: absolute;
   left: 0;
-  box-sizing: border-box;
-  max-width: 100%;
-  overflow: ${(props) =>
-    props.$clipHorizontalOverflow ? 'hidden' : 'visible'};
-  z-index: 1;
-  contain: ${(props) => (props.$clipHorizontalOverflow ? 'paint' : 'none')};
+  overflow-x: ${(props) => (props.$clipHorizontalOverflow ? 'hidden' : 'visible')};
 `
 
-const ListContainer = styled.ul<{$clipHorizontalOverflow?: boolean}>`
+const ListContainer = styled.ul`
   margin: 0;
   padding: 0;
   list-style: none;
-  overflow: ${(props) =>
-    props.$clipHorizontalOverflow ? 'hidden' : 'visible'};
-  max-width: 100%;
 `
 
 const Left: React.VFC<{
@@ -41,7 +33,7 @@ const Left: React.VFC<{
         $clipHorizontalOverflow={isDocked}
         style={{width: width + 'px', top: tree.top + 'px'}}
       >
-        <ListContainer $clipHorizontalOverflow={isDocked}>
+        <ListContainer>
           <SheetRow leaf={tree} />
         </ListContainer>
       </Container>
