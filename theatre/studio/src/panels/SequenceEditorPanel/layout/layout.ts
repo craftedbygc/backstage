@@ -14,6 +14,8 @@ import {Atom, prism, val} from '@unseenco/theatre-dataverse'
 import type {SequenceEditorTree} from './tree'
 import {calculateSequenceEditorTree} from './tree'
 import {clamp} from 'lodash-es'
+import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {defaultClippedSpaceRange} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/PlaybackControls/sequenceZoom'
 import type {
   KeyframeId,
   ObjectAddressKey,
@@ -171,8 +173,6 @@ export type SequenceEditorPanelLayout = {
  */
 const panelSplitRatio = 0.2
 
-const initialClippedSpaceRange: IRange = {start: 0, end: 10}
-
 export function sequenceEditorPanelLayout(
   sheet: Sheet,
   panelDimsP: Pointer<PanelDims>,
@@ -306,9 +306,10 @@ export function sequenceEditorPanelLayout(
 
     const unitSpace = {}
 
+    const sequence = getStudioSequence(sheet)
     const clippedSpaceRange =
       val(ahistoricStateP.sequence.clippedSpaceRange) ??
-      initialClippedSpaceRange
+      defaultClippedSpaceRange(sequence.length, sequence.subUnitsPerUnit)
 
     const scaledSpace: SequenceEditorPanelLayout['scaledSpace'] = prism.memo(
       'scaledSpace',
