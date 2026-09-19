@@ -6,39 +6,21 @@ import React from 'react'
 import AnyCompositeRow from './AnyCompositeRow'
 import {setCollapsedSheetItem} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/setCollapsedSheetObjectOrCompoundProp'
 import getStudio from '@unseenco/theatre-studio/getStudio'
-
-const GsapScrollTriggerChildLeftRow: React.VFC<{
-  leaf: SequenceEditorTree_GsapScrollTriggerChild
-}> = ({leaf}) => {
-  if (!leaf.shouldRender) return null
-  return (
-    <AnyCompositeRow
-      leaf={leaf}
-      label={leaf.displayLabel}
-      isCollapsed={false}
-      toggleSelect={() => {
-        getStudio().transaction(({stateEditors}) => {
-          stateEditors.studio.historic.panels.outline.selection.set([
-            leaf.sheetObject,
-          ])
-        })
-      }}
-      toggleCollapsed={() => {}}
-    />
-  )
-}
+import {renderGsapListLabel} from '@unseenco/theatre-studio/gsap/GsapKindBadge'
+import GsapScrollTriggerChildLeftRow from './GsapScrollTriggerChildRow'
 
 const GsapScrollTriggerTrackLeftRow: React.VFC<{
   leaf: SequenceEditorTree_GsapScrollTriggerTrack
 }> = ({leaf}) => {
   const hasChildren = leaf.children.length > 0
+  const stLabel = renderGsapListLabel('ST', leaf.displayLabel)
   if (!leaf.shouldRender) return null
 
   if (!hasChildren) {
     return (
       <AnyCompositeRow
         leaf={leaf}
-        label={leaf.displayLabel}
+        label={stLabel}
         isCollapsed={false}
         toggleSelect={() => {
           getStudio().transaction(({stateEditors}) => {
@@ -55,7 +37,7 @@ const GsapScrollTriggerTrackLeftRow: React.VFC<{
   return (
     <AnyCompositeRow
       leaf={leaf}
-      label={leaf.displayLabel}
+      label={stLabel}
       isCollapsed={leaf.isCollapsed}
       toggleSelect={() => {
         getStudio().transaction(({stateEditors}) => {
