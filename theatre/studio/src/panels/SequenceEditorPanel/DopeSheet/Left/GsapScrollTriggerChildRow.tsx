@@ -1,9 +1,10 @@
 import type {SequenceEditorTree_GsapScrollTriggerChild} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
-import React from 'react'
+import React, {useState} from 'react'
 import styled from 'styled-components'
 import {BaseHeader, LeftRowContainer} from './AnyCompositeRow'
 import {propNameTextCSS} from '@unseenco/theatre-studio/propEditors/utils/propNameTextCSS'
 import {renderGsapListLabel} from '@unseenco/theatre-studio/gsap/GsapKindBadge'
+import {useGsapSequencerRowElementHighlight} from '@unseenco/theatre-studio/gsap/useGsapSequencerRowElementHighlight'
 
 const Label = styled.span`
   ${propNameTextCSS};
@@ -23,9 +24,13 @@ const GsapScrollTriggerChildLeftRow: React.VFC<{
 }> = ({leaf}) => {
   if (!leaf.shouldRender) return null
 
+  const [headerEl, setHeaderEl] = useState<HTMLDivElement | null>(null)
+  useGsapSequencerRowElementHighlight(headerEl, leaf)
+
   return (
     <LeftRowContainer depth={leaf.depth}>
       <Header
+        ref={setHeaderEl}
         isEven={leaf.n % 2 === 0}
         style={{height: leaf.nodeHeight + 'px'}}
       >

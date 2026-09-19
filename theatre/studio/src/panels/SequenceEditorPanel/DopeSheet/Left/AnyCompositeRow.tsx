@@ -10,11 +10,12 @@ import type {
   SequenceEditorTree_SheetObject,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import type {VoidFn} from '@unseenco/theatre-shared/utils/types'
-import React, {useRef} from 'react'
+import React, {useState} from 'react'
 import {HiOutlineChevronRight} from 'react-icons/all'
 import styled from 'styled-components'
 import {propNameTextCSS} from '@unseenco/theatre-studio/propEditors/utils/propNameTextCSS'
 import {usePropHighlightMouseEnter} from './usePropHighlightMouseEnter'
+import {useGsapSequencerRowElementHighlight} from '@unseenco/theatre-studio/gsap/useGsapSequencerRowElementHighlight'
 
 export const LeftRowContainer = styled.li<{depth: number}>`
   --depth: ${(props) => props.depth};
@@ -118,14 +119,15 @@ const AnyCompositeRow: React.FC<{
 }) => {
   const hasChildren = Array.isArray(children) && children.length > 0
 
-  const rowHeaderRef = useRef<HTMLDivElement | null>(null)
+  const [rowHeaderEl, setRowHeaderEl] = useState<HTMLDivElement | null>(null)
 
-  usePropHighlightMouseEnter(rowHeaderRef.current, leaf)
+  usePropHighlightMouseEnter(rowHeaderEl, leaf)
+  useGsapSequencerRowElementHighlight(rowHeaderEl, leaf)
 
   return leaf.shouldRender ? (
     <LeftRowContainer depth={leaf.depth}>
       <LeftRowHeader
-        ref={rowHeaderRef}
+        ref={setRowHeaderEl}
         style={{
           height: leaf.nodeHeight + 'px',
         }}
