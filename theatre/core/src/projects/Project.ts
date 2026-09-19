@@ -1,5 +1,7 @@
 import type {OnDiskState} from '@unseenco/theatre-core/projects/store/storeTypes'
 import type TheatreProject from '@unseenco/theatre-core/projects/TheatreProject'
+import type {ISheetOptions} from '@unseenco/theatre-core/projects/TheatreProject'
+import {applySheetRuntimeOptions} from '@unseenco/theatre-core/sheets/applySheetRuntimeOptions'
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
 import SheetTemplate from '@unseenco/theatre-core/sheets/SheetTemplate'
 import type {Studio} from '@unseenco/theatre-studio/Studio'
@@ -273,7 +275,7 @@ export default class Project {
   getOrCreateSheet(
     sheetId: SheetId,
     instanceId: SheetInstanceId = 'default' as SheetInstanceId,
-    opts?: {visible?: boolean},
+    opts?: ISheetOptions,
   ): Sheet {
     let template = this._sheetTemplates.get()[sheetId]
 
@@ -287,6 +289,7 @@ export default class Project {
     }
 
     const sheet = template.getInstance(instanceId)
+    applySheetRuntimeOptions(sheet, opts)
     this._remoteSync.registerSheet(sheet)
     return sheet
   }

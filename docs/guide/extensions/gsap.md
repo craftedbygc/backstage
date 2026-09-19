@@ -68,22 +68,19 @@ See the playground demo below for a full example with DOM targets and nested lab
 
 ## Page mode (scroll-driven sequence)
 
-When a sheet uses **`sheet.setSequenceMode('page')`**, the sequence uses **0–100** as percent of page scroll (length fixed at **100**, snap steps **0.1%**). Drive the playhead with native document scroll:
+Configure the sheet when you create it. **`sequenceMode: 'page'`** uses **0–100** as percent of page scroll (length fixed at **100**, snap steps **0.1%**). With **`gsap: true`**, the GSAP bridge and native document scroll sync are enabled automatically:
 
 ```ts
-import {
-  attachGsapSequenceBridge,
-  attachSheetScrollDriver,
-  getProject,
-} from '@unseenco/theatre-core'
+import {getProject} from '@unseenco/theatre-core'
 
-const sheet = getProject('My project').sheet('Main')
-sheet.setSequenceMode('page')
-attachSheetScrollDriver(sheet)
-attachGsapSequenceBridge(sheet)
+const sheet = getProject('My project').sheet('Main', {
+  sequenceMode: 'page',
+  gsap: true,
+})
 ```
 
-- **`attachSheetScrollDriver(sheet)`** — bidirectional sync between `window` scroll and `sequence.position` (custom scroll drivers later).
+You can also call **`sheet.setSequenceMode('page')`**, **`attachSheetScrollDriver(sheet)`**, and **`attachGsapSequenceBridge(sheet)`** separately if you need finer control.
+
 - **`sequence.play()`** is disabled in page mode; scrub the playhead or scroll the page.
 - GSAP clip **`defaultDuration`** should be set in **percent** when adding clips (defaults to **10** if omitted in page mode, not tween seconds).
 - **`sequence.attachAudio()`** is not supported in page mode.

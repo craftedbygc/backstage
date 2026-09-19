@@ -36,6 +36,9 @@ import {
   PAGE_MODE_SEQUENCE_LENGTH,
   PAGE_MODE_SUB_UNITS_PER_UNIT,
 } from '@unseenco/theatre-core/sheets/sheetSequenceMode'
+import {attachGsapSequenceBridge} from '@unseenco/theatre-core/gsap/attachGsapSequenceBridge'
+import {attachSheetScrollDriver} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
+import type {VoidFn} from '@unseenco/theatre-shared/utils/types'
 
 type SheetObjectMap = StrictRecord<ObjectAddressKey, SheetObject>
 
@@ -64,6 +67,8 @@ export default class Sheet {
   >(undefined)
   private readonly _sequenceMode = new Atom<SheetSequenceMode>('time')
   readonly sequenceModeP = this._sequenceMode.pointer
+  private _pageScrollDisposer: VoidFn | undefined
+  private _gsapBridgeDisposer: VoidFn | undefined
   readonly activeSequenceVariantP = this._activeSequenceVariant.pointer
   readonly effectiveActiveSequenceVariantD: Prism<SequenceVariantId>
   readonly address: SheetAddress
@@ -162,6 +167,7 @@ export default class Sheet {
    * this sheet instance from the project. Persisted state is kept.
    */
   unload() {
+    this.disposeRuntimeIntegrations()
     for (const sequence of Object.values(this._sequences)) {
       sequence.pause()
     }
@@ -263,7 +269,34 @@ export default class Sheet {
   }
 
   setSequenceMode(mode: SheetSequenceMode): void {
+    if (this._sequenceMode.get() === mode) return
     this._sequenceMode.set(mode)
+    this.syncPageScrollDriver()
+    if (this._gsapBridgeDisposer) {
+      this._gsapBridgeDisposer()
+      this._gsapBridgeDisposer = attachGsapSequenceBridge(this.publicApi)
+    }
+  }
+
+  enableGsapSequenceBridge(): void {
+    if (this._gsapBridgeDisposer) return
+    this._gsapBridgeDisposer = attachGsapSequenceBridge(this.publicApi)
+    this.syncPageScrollDriver()
+  }
+
+  disposeRuntimeIntegrations(): void {
+    this._pageScrollDisposer?.()
+    this._pageScrollDisposer = undefined
+    this._gsapBridgeDisposer?.()
+    this._gsapBridgeDisposer = undefined
+  }
+
+  private syncPageScrollDriver(): void {
+    this._pageScrollDisposer?.()
+    this._pageScrollDisposer = undefined
+    if (this.getSequenceMode() === 'page') {
+      this._pageScrollDisposer = attachSheetScrollDriver(this.publicApi)
+    }
   }
 }
 

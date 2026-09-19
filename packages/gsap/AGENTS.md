@@ -53,7 +53,7 @@ Register in root `devEnv/cli.ts`, `tsconfig.base.json`, and `devEnv/typecheck-al
 
 ## v2 notes (partial)
 
-- **Page mode (sequencer):** `sheet.setSequenceMode('page')`, `attachSheetScrollDriver`, percent-based sequencer UI — see `docs/guide/extensions/gsap.md` (Page mode section). Playground: `/shared/gsap-page-mode/`.
+- **Page mode (sequencer):** `project.sheet(id, { sequenceMode: 'page', gsap: true })` (or manual `setSequenceMode` / attach helpers) — see `docs/guide/extensions/gsap.md`. Playground: `/shared/gsap-page-mode/`.
 - **ScrollTrigger (next):** visualize ScrollTrigger instances in the sequencer (read-only first).
 - **Page / route modes (later):** multiple sequences per route; variant-aware binding.
 - Time mode playground: `/shared/gsap-time-mode/`

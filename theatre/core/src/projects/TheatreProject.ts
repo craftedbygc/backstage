@@ -13,6 +13,7 @@ import {validateInstanceId} from '@unseenco/theatre-shared/utils/sanitizers'
 import {validateAndSanitiseSlashedPathOrThrow} from '@unseenco/theatre-shared/utils/slashedPaths'
 import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
 import {notify} from '@unseenco/theatre-shared/notify'
+import type {SheetSequenceMode} from '@unseenco/theatre-core/sheets/sheetSequenceMode'
 
 /**
  * A project's config object (currently the only point of configuration is the project's state)
@@ -22,6 +23,18 @@ export type ISheetOptions = {
    * Whether the sheet appears in the Studio outline panel. Defaults to `true`.
    */
   visible?: boolean
+  /**
+   * How the sheet sequence maps to the sequencer UI and playback driver.
+   * In **`page`** mode the sequence length is fixed at **100** (percent scroll) with **0.1%** snap steps;
+   * native document scroll keeps the playhead in sync.
+   *
+   * @defaultValue `'time'`
+   */
+  sequenceMode?: SheetSequenceMode
+  /**
+   * When `true`, enables the GSAP sequence bridge for this sheet (required for `@unseenco/theatre-gsap`).
+   */
+  gsap?: boolean
 }
 
 /** Options passed to {@link getProject} when creating or attaching to a project. */
@@ -84,8 +97,8 @@ export interface IProject {
   /**
    * Creates a Sheet under the project
    * @param sheetId - Sheets are identified by their `sheetId`, which must be a string longer than 3 characters
-   * @param instanceIdOrOpts - Optionally provide an `instanceId` if you want to create multiple instances of the same Sheet, or pass `{ visible: false }` to hide the sheet from the Studio outline panel
-   * @param opts - Optionally provide `{ visible: false }` to hide the sheet from the Studio outline panel
+   * @param instanceIdOrOpts - Optionally provide an `instanceId`, or pass sheet options (e.g. `{ sequenceMode: 'page', gsap: true }`)
+   * @param opts - Sheet options such as `{ visible: false }`, `sequenceMode`, or `gsap`
    * @returns The newly created Sheet
    *
    * **Docs: https://www.theatrejs.com/docs/latest/manual/sheets**
@@ -96,7 +109,7 @@ export interface IProject {
    *
    * @param sheetId - Sheets are identified by their `sheetId`, which must be a string longer than 3 characters
    * @param instanceId - Instance id when creating multiple instances of the same sheet
-   * @param opts - Optionally provide `{ visible: false }` to hide the sheet from the Studio outline panel
+   * @param opts - Sheet options such as `{ visible: false }`, `sequenceMode`, or `gsap`
    * @returns The newly created Sheet
    */
   sheet(sheetId: string, instanceId: string, opts?: ISheetOptions): ISheet

@@ -1,10 +1,5 @@
 import gsap from 'gsap'
-import {
-  attachGsapSequenceBridge,
-  attachSheetScrollDriver,
-  getProject,
-  types,
-} from '@unseenco/theatre-core'
+import {getProject, types} from '@unseenco/theatre-core'
 import studio from '@unseenco/theatre-studio'
 import {
   configureTheatreGsap,
@@ -19,11 +14,7 @@ configureTheatreGsap({
 studio.initialize()
 
 const project = getProject('GSAP page mode demo')
-const sheet = project.sheet('Main')
-
-sheet.setSequenceMode('page')
-attachSheetScrollDriver(sheet)
-attachGsapSequenceBridge(sheet)
+const sheet = project.sheet('Main', {sequenceMode: 'page', gsap: true})
 
 const heroBox = document.getElementById('hero-box')!
 const midPanel = document.getElementById('mid-panel')!
