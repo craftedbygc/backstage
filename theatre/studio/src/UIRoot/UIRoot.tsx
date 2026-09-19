@@ -22,6 +22,7 @@ import {
 import {ProvideLogger} from '@unseenco/theatre-studio/uiComponents/useLogger'
 import {Notifier} from '@unseenco/theatre-studio/notify'
 import {useChordialCaptureEvents} from '@unseenco/theatre-studio/uiComponents/chordial/useChodrial'
+import {DomElementHighlightProvider} from '@unseenco/theatre-studio/gsap/DomElementHighlightOverlay'
 import {ChordialOverlay} from '@unseenco/theatre-studio/uiComponents/chordial/ChordialOverlay'
 
 const MakeRootHostContainStatic =
@@ -105,19 +106,21 @@ export default function UIRoot(props: {
                 // @ts-ignore
                 ref={chordialRootRef}
               >
-                <PortalLayer ref={portalLayerRef} />
-                <ChordialOverlay />
-                <LayoutModeProvider>
-                  {dockedMode ? (
-                    <DockedPanelsRoot />
-                  ) : (
-                    <>
-                      <GlobalToolbar />
-                      <PanelsRoot />
-                    </>
-                  )}
-                  <Notifier />
-                </LayoutModeProvider>
+                <DomElementHighlightProvider>
+                  <PortalLayer ref={portalLayerRef} />
+                  <ChordialOverlay />
+                  <LayoutModeProvider>
+                    {dockedMode ? (
+                      <DockedPanelsRoot />
+                    ) : (
+                      <>
+                        <GlobalToolbar />
+                        <PanelsRoot />
+                      </>
+                    )}
+                    <Notifier />
+                  </LayoutModeProvider>
+                </DomElementHighlightProvider>
               </Container>
             </>
           </ProvideStyles>

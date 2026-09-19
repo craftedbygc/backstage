@@ -8,7 +8,9 @@ import uniqueKeyForAnyObject from '@unseenco/theatre-shared/utils/uniqueKeyForAn
 import styled from 'styled-components'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/sequence/trackData'
+import {isGsapScrollTriggerSheetObjectKey} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
 import {getGsapStudioOutlineMenuItems} from '@unseenco/theatre-studio/gsap/gsapOutlineMenuItems'
+import GsapReadOnlyDetailsPanel from '@unseenco/theatre-studio/gsap/details/GsapReadOnlyDetailsPanel'
 import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
 import {val} from '@unseenco/theatre-dataverse'
 
@@ -137,24 +139,33 @@ const ObjectDetails: React.FC<{
     }))
   }, [obj])
 
+  const objectKey = obj.address.objectKey
+  const isGsapProxy = isGsapSheetObjectKey(objectKey)
+  const isGsapScrollTriggerProxy = isGsapScrollTriggerSheetObjectKey(objectKey)
+  const showGsapReadOnlyDetails = isGsapProxy
+
   return (
     <>
-      <DeterminePropEditorForDetail
-        // we don't use the object's address as the key because if a user calls `sheet.detachObject(key)` and later
-        // calls `sheet.object(key)` with the same key, we want to re-render the object details panel.
-        key={uniqueKeyForAnyObject(obj)}
-        obj={obj}
-        pointerToProp={obj.propsP as Pointer<$FixMe>}
-        propConfig={config}
-        visualIndentation={1}
-      />
+      {showGsapReadOnlyDetails ? (
+        <GsapReadOnlyDetailsPanel sheetObject={obj} />
+      ) : (
+        <DeterminePropEditorForDetail
+          // we don't use the object's address as the key because if a user calls `sheet.detachObject(key)` and later
+          // calls `sheet.object(key)` with the same key, we want to re-render the object details panel.
+          key={uniqueKeyForAnyObject(obj)}
+          obj={obj}
+          pointerToProp={obj.propsP as Pointer<$FixMe>}
+          propConfig={config}
+          visualIndentation={1}
+        />
+      )}
       {showPropsOf.map((source) => (
         <ShowPropsOfObjectSection
           key={uniqueKeyForAnyObject(source)}
           source={source}
         />
       ))}
-      {gsapActions.length > 0 ? (
+      {gsapActions.length > 0 && !isGsapScrollTriggerProxy ? (
         <ActionButtonContainer>
           {gsapActions.map((item) => (
             <ActionButton

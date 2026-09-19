@@ -162,7 +162,7 @@ Returns `{ reset }` to restore the previous config. Namespace and outline collap
 After registration, each animation appears as a **proxy sheet object** (no sequenced props). Built-in Studio UI provides:
 
 - **Outline** — nested `GSAP` namespace; context menu **Add to sequence at playhead** / **Remove from sequence** for clip proxies (not ScrollTrigger proxies in page mode).
-- **Detail panel** — same add/remove action when a GSAP object is selected.
+- **Detail panel** — same add/remove action when a GSAP object is selected. Selecting a registered tween, timeline, or ScrollTrigger proxy also shows **read-only** GSAP data: target pills (**Element** / **Object**), hover highlight on page elements (Element pills), and **vars** from the live GSAP instance (timeline children are grouped under the parent).
 - **Sequence editor** — **GsapClipTrack** rows aligned to the parent clip; GSAP **timelines** expose child rows mapped from `getChildren()` with drag/resize and **Reset to original state** when timing diverges from baseline.
 
 Only **one clip per registered animation** on the sequence at a time (toggle add/remove rather than stacking duplicates).
