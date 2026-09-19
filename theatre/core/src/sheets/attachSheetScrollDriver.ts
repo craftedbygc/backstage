@@ -1,5 +1,4 @@
 import type {ISheet} from '@unseenco/theatre-core/sheets/TheatreSheet'
-import {onChange} from '@unseenco/theatre-core/coreExports'
 import {val} from '@unseenco/theatre-dataverse'
 
 /** Maps page scroll progress (0–1) to sequence position and back. */
@@ -78,38 +77,39 @@ export function createNativeDocumentScrollDriver(): ScrollDriver {
 /**
  * Keeps `sheet.sequence.position` aligned with scroll progress in page mode.
  * Progress maps to `[0, sequence.length]` (length is 100 in page mode).
+ *
+ * Scroll drives the playhead only (scroll → position). To move the page when
+ * scrubbing in Studio, call {@link syncNativeDocumentScrollToSequencePosition}.
  */
 export function attachSheetScrollDriver(
   sheet: ISheet,
   driver: ScrollDriver = createNativeDocumentScrollDriver(),
 ): () => void {
   const sequence = sheet.sequence
-  /** Incremented while updating position from scroll (blocks feedback scrollTo). */
-  let scrollSyncDepth = 0
 
   const syncPositionFromScroll = (progress: number) => {
     const length = val(sequence.pointer.length)
     if (length <= 0) return
-    scrollSyncDepth++
     sequence.position = progress * length
-    scrollSyncDepth--
   }
 
   const untapScroll = driver.subscribe((progress) => {
     syncPositionFromScroll(progress)
   })
 
-  const untapPosition = onChange(sequence.pointer.position, (position) => {
-    if (scrollSyncDepth > 0) return
-    const length = val(sequence.pointer.length)
-    if (length <= 0) return
-    driver.setProgress(position / length)
-  })
-
   syncPositionFromScroll(driver.getProgress())
 
   return () => {
     untapScroll()
-    untapPosition()
   }
+}
+
+/** Scroll the native document to match the current sequence playhead (page mode UI). */
+export function syncNativeDocumentScrollToSequencePosition(
+  sheet: ISheet,
+): void {
+  const length = val(sheet.sequence.pointer.length)
+  if (length <= 0) return
+  const progress = sheet.sequence.position / length
+  createNativeDocumentScrollDriver().setProgress(progress)
 }

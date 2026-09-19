@@ -82,6 +82,7 @@ const sheet = getProject('My project').sheet('Main', {
 You can also call **`sheet.setSequenceMode('page')`**, **`attachSheetScrollDriver(sheet)`**, and **`attachGsapSequenceBridge(sheet)`** separately if you need finer control.
 
 - **`sequence.play()`** is disabled in page mode; scrub the playhead or scroll the page.
+- Page scroll drives the playhead; scrubbing the playhead in Studio scrolls the page (not the other way on every position change).
 - GSAP clip **`defaultDuration`** should be set in **percent** when adding clips (defaults to **10** if omitted in page mode, not tween seconds).
 - **`sequence.attachAudio()`** is not supported in page mode.
 

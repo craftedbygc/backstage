@@ -33,6 +33,7 @@ export {isRemoteEditorWindow} from './internal/remoteEditor'
 export {attachGsapSequenceBridge} from './gsap/attachGsapSequenceBridge'
 export {
   attachSheetScrollDriver,
+  syncNativeDocumentScrollToSequencePosition,
   createNativeDocumentScrollDriver,
 } from './sheets/attachSheetScrollDriver'
 export type {ScrollDriver} from './sheets/attachSheetScrollDriver'

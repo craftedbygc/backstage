@@ -31,6 +31,7 @@ import {generateSequenceMarkerId} from '@unseenco/theatre-shared/utils/ids'
 import useChordial from '@unseenco/theatre-studio/uiComponents/chordial/useChodrial'
 import {mergeRefs} from 'react-merge-refs'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {syncPageScrollToSequencePosition} from '@unseenco/theatre-studio/sheets/syncPageScrollToSequencePosition'
 import usePopover from '@unseenco/theatre-studio/uiComponents/Popover/usePopover'
 import {transportStripHeight} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/PlaybackControls/constants'
 
@@ -262,6 +263,7 @@ const Playhead: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({
                 DopeSnap.checkIfMouseEventSnapToPos(event, {
                   ignore: thumbNode,
                 }) ?? clamp(posBeforeSeek + deltaPos, 0, sequence.length)
+              syncPageScrollToSequencePosition(val(layoutP.sheet))
             },
             onDragEnd() {
               setIsSeeking(false)
