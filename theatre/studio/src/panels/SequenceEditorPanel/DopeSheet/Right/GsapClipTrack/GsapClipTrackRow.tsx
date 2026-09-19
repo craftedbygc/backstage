@@ -38,8 +38,9 @@ import {
   resolveGsapClipBaselineTiming,
 } from '@unseenco/theatre-shared/gsap/gsapClipBaseline'
 import {
-  clampGsapClipTiming,
-  MIN_GSAP_CLIP_DURATION,
+  limitGsapClipMoveStart,
+  limitGsapClipResizeEndDuration,
+  limitGsapClipResizeStart,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/sequenceEditLimits'
 
 const Container = styled.div`
@@ -249,7 +250,7 @@ const GsapClipTrackBar: React.VFC<{
               DopeSnap.checkIfMouseEventSnapToPos(event, {
                 ignore: barNode,
               }) ?? startAtDrag + delta
-            const {start: nextStart} = clampGsapClipTiming(
+            const nextStart = limitGsapClipMoveStart(
               Math.max(0, snapped),
               durationAtDrag,
               sheet,
@@ -301,20 +302,17 @@ const GsapClipTrackBar: React.VFC<{
         return {
           onDrag(dx: number, _dy: number, event: MouseEvent) {
             const delta = toUnitSpace(dx)
+            const fixedEnd = startAtDrag + durationAtDrag
             const newStartRaw = Math.max(
               0,
               DopeSnap.checkIfMouseEventSnapToPos(event, {
                 ignore: startHandleNode,
               }) ?? startAtDrag + delta,
             )
-            const newDurationRaw = Math.max(
-              MIN_GSAP_CLIP_DURATION,
-              durationAtDrag - (newStartRaw - startAtDrag),
-            )
             const {start: newStart, duration: newDuration} =
-              clampGsapClipTiming(
+              limitGsapClipResizeStart(
                 newStartRaw,
-                newDurationRaw,
+                fixedEnd,
                 leaf.sheetObject.sheet,
               )
             temp?.discard()
@@ -368,15 +366,11 @@ const GsapClipTrackBar: React.VFC<{
             const snappedEnd = DopeSnap.checkIfMouseEventSnapToPos(event, {
               ignore: endHandleNode,
             })
-            const newDurationRaw = Math.max(
-              MIN_GSAP_CLIP_DURATION,
+            const newDuration = limitGsapClipResizeEndDuration(
+              clipStart,
               snappedEnd != null
                 ? snappedEnd - clipStart
                 : startDuration + toUnitSpace(dx),
-            )
-            const {duration: newDuration} = clampGsapClipTiming(
-              clipStart,
-              newDurationRaw,
               leaf.sheetObject.sheet,
             )
             temp?.discard()

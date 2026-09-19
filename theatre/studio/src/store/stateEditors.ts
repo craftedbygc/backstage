@@ -76,8 +76,11 @@ import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import {isSheetInPageMode} from '@unseenco/theatre-studio/sheets/sheetSequenceMode'
 import {
-  clampGsapClipTiming,
   clampSequenceEditorPosition,
+  limitGsapClipEndWithoutResizingPastDrag,
+  limitGsapClipMoveStart,
+  limitGsapClipResizeEndDuration,
+  limitGsapClipResizeStart,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/sequenceEditLimits'
 import {graphEditorColors} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/GraphEditor/GraphEditor'
 import type {
@@ -1420,13 +1423,13 @@ namespace stateEditors {
             tracks.trackData[trackId] = track
             const sheet = _sheetForObjectAddress(p)
             if (sheet) {
-              const clamped = clampGsapClipTiming(
+              const limited = limitGsapClipEndWithoutResizingPastDrag(
                 track.start,
                 track.duration,
                 sheet,
               )
-              track.start = clamped.start
-              track.duration = clamped.duration
+              track.start = limited.start
+              track.duration = limited.duration
             }
             _extendSequenceLengthForGsapClipEnd(p, gsapClipEndTime(track))
             return trackId
@@ -1483,13 +1486,30 @@ namespace stateEditors {
             }
             const sheet = _sheetForObjectAddress(p)
             if (sheet) {
-              const clamped = clampGsapClipTiming(
-                track.start,
-                track.duration,
-                sheet,
-              )
-              track.start = clamped.start
-              track.duration = clamped.duration
+              const hasStart = typeof p.start === 'number'
+              const hasDuration = typeof p.duration === 'number'
+              if (hasStart && !hasDuration) {
+                track.start = limitGsapClipMoveStart(
+                  track.start,
+                  track.duration,
+                  sheet,
+                )
+              } else if (hasDuration && !hasStart) {
+                track.duration = limitGsapClipResizeEndDuration(
+                  track.start,
+                  track.duration,
+                  sheet,
+                )
+              } else if (hasStart && hasDuration) {
+                const fixedEnd = track.start + track.duration
+                const limited = limitGsapClipResizeStart(
+                  track.start,
+                  fixedEnd,
+                  sheet,
+                )
+                track.start = limited.start
+                track.duration = limited.duration
+              }
             }
             _extendSequenceLengthForGsapClipEnd(p, gsapClipEndTime(track))
           }
