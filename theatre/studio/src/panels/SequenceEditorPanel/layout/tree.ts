@@ -39,10 +39,7 @@ import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/gsap/gsapSheetObjec
 import {isGsapScrollTriggerSheetObjectKey} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
 import {getAnimationEntryForSheetObject} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
 import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
-import {
-  scrollTriggerChildInSequenceSpace,
-  scrollTriggerTweenChildInSequenceSpace,
-} from '@unseenco/theatre-shared/gsap/extractScrollTriggerLayout'
+import {scrollTriggerChildInSequenceSpace} from '@unseenco/theatre-shared/gsap/extractScrollTriggerLayout'
 import {
   isRegisteredScrollTriggerSheetObject,
   listScrollTriggerEntriesForSheet,
@@ -115,6 +112,15 @@ export type SequenceEditorTree_SheetObjectInlineGsapClip = {
   isCollapsed: boolean
 }
 
+export type SequenceEditorTree_SheetObjectInlineGsapScrollTrigger = {
+  scrollTriggerId: string
+  layout: {start: number; duration: number}
+  kind: 'tween' | 'timeline'
+  animationSpanSeconds: number
+  displayLabel: string
+  isCollapsed: boolean
+}
+
 export type SequenceEditorTree_SheetObject =
   SequenceEditorTree_Row<'sheetObject'> & {
     isCollapsed: boolean
@@ -126,12 +132,16 @@ export type SequenceEditorTree_SheetObject =
      * `gsapClipTrack` row with a duplicate label.
      */
     gsapClip?: SequenceEditorTree_SheetObjectInlineGsapClip
+    /**
+     * ScrollTrigger proxies show a read-only bar on this row (same pattern as GSAP clips).
+     */
+    gsapScrollTrigger?: SequenceEditorTree_SheetObjectInlineGsapScrollTrigger
     children: Array<
       | SequenceEditorTree_PropWithChildren
       | SequenceEditorTree_PrimitiveProp
       | SequenceEditorTree_GsapClipTrack
       | SequenceEditorTree_GsapChildClip
-      | SequenceEditorTree_GsapScrollTriggerTrack
+      | SequenceEditorTree_GsapScrollTriggerChild
     >
   }
 
@@ -467,7 +477,7 @@ export const calculateSequenceEditorTree = (
     }
 
     if (isGsapScrollTriggerSheetObjectKey(sheetObject.address.objectKey)) {
-      addGsapScrollTriggerTrackRow(
+      attachInlineGsapScrollTriggerToSheetObject(
         sheetObject,
         row,
         level + 1,
@@ -623,11 +633,11 @@ export const calculateSequenceEditorTree = (
     return undefined
   }
 
-  function addGsapScrollTriggerTrackRow(
+  function attachInlineGsapScrollTriggerToSheetObject(
     sheetObject: SheetObject,
     sheetObjectRow: SequenceEditorTree_SheetObject,
-    level: number,
-    shouldRender: boolean,
+    childLevel: number,
+    shouldRenderChildren: boolean,
   ) {
     const entry = findScrollTriggerEntryForObject(sheetObject)
     if (!entry) return
@@ -639,99 +649,57 @@ export const calculateSequenceEditorTree = (
           entry.id,
         )
       ].isCollapsed
-    const isCollapsed = pointerToPrism(isCollapsedP).getValue() ?? false
+    const stIsCollapsed = pointerToPrism(isCollapsedP).getValue() ?? false
 
-    const row: SequenceEditorTree_GsapScrollTriggerTrack = {
-      type: 'gsapScrollTriggerTrack',
-      isCollapsed,
-      depth: level,
-      sheetItemKey:
-        createStudioSheetItemKey.forSheetObjectGsapScrollTriggerTrack(
-          sheetObject,
-          entry.id,
-        ),
-      sheetObject,
+    sheetObjectRow.displayLabel = sheetObjectRow.displayLabel ?? entry.label
+    sheetObjectRow.gsapScrollTrigger = {
       scrollTriggerId: entry.id,
       layout: entry.layout,
       kind: entry.kind,
       animationSpanSeconds: entry.animationSpanSeconds,
       displayLabel: entry.label,
-      shouldRender,
-      top: topSoFar,
-      nodeHeight: shouldRender ? HEIGHT_OF_ANY_TITLE : 0,
-      heightIncludingChildren: -1,
-      children: [],
-      n: nSoFar,
-    }
-    sheetObjectRow.children.push(row)
-
-    if (shouldRender) {
-      nSoFar += 1
-      topSoFar += row.nodeHeight
+      isCollapsed: stIsCollapsed,
     }
 
-    const childSpecs: Array<{
-      childId: string
-      label: string
-      layout: {start: number; duration: number}
-    }> = []
-
-    if (entry.kind === 'timeline' && entry.timelineChildren.length > 0) {
-      for (const childData of entry.timelineChildren) {
-        childSpecs.push({
-          childId: childData.childId,
-          label: childData.label,
-          layout: scrollTriggerChildInSequenceSpace(
-            entry.layout.start,
-            entry.layout.duration,
-            entry.animationSpanSeconds,
-            childData,
-          ),
-        })
-      }
-    } else {
-      childSpecs.push({
-        childId: 'tween',
-        label: entry.label,
-        layout: scrollTriggerTweenChildInSequenceSpace(
-          entry.layout.start,
-          entry.layout.duration,
-          entry.animationSpanSeconds,
-        ),
-      })
+    if (entry.kind !== 'timeline' || entry.timelineChildren.length === 0) {
+      return
     }
 
-    for (const spec of childSpecs) {
+    for (const childData of entry.timelineChildren) {
       const childRow: SequenceEditorTree_GsapScrollTriggerChild = {
         type: 'gsapScrollTriggerChild',
-        depth: level + 1,
+        depth: childLevel,
         sheetItemKey:
           createStudioSheetItemKey.forSheetObjectGsapScrollTriggerChild(
             sheetObject,
             entry.id,
-            spec.childId,
+            childData.childId,
           ),
         sheetObject,
         scrollTriggerId: entry.id,
         parentLayout: entry.layout,
-        childId: spec.childId,
-        displayLabel: spec.label,
-        layout: spec.layout,
-        shouldRender: shouldRender && !isCollapsed,
+        childId: childData.childId,
+        displayLabel: childData.label,
+        layout: scrollTriggerChildInSequenceSpace(
+          entry.layout.start,
+          entry.layout.duration,
+          entry.animationSpanSeconds,
+          childData,
+        ),
+        shouldRender: shouldRenderChildren && !stIsCollapsed,
         top: topSoFar,
-        nodeHeight: shouldRender && !isCollapsed ? HEIGHT_OF_ANY_TITLE : 0,
+        nodeHeight:
+          shouldRenderChildren && !stIsCollapsed ? HEIGHT_OF_ANY_TITLE : 0,
         heightIncludingChildren:
-          shouldRender && !isCollapsed ? HEIGHT_OF_ANY_TITLE : 0,
+          shouldRenderChildren && !stIsCollapsed ? HEIGHT_OF_ANY_TITLE : 0,
         n: nSoFar,
       }
-      row.children.push(childRow)
-      if (shouldRender && !isCollapsed) {
+      sheetObjectRow.children.push(childRow)
+      if (shouldRenderChildren && !stIsCollapsed) {
         nSoFar += 1
         topSoFar += childRow.nodeHeight
       }
     }
-
-    row.heightIncludingChildren = topSoFar - row.top
   }
 
   function addGsapClipTrackRows(
@@ -995,6 +963,41 @@ export function sequenceEditorTreeGsapClipTrackLeafFromSheetObject(
     trackId: gsapClip.trackId,
     trackData: gsapClip.trackData,
     displayLabel: gsapClip.displayLabel,
+    shouldRender: sheetRow.shouldRender,
+    top: sheetRow.top,
+    nodeHeight: sheetRow.nodeHeight,
+    heightIncludingChildren: sheetRow.heightIncludingChildren,
+    children: timelineChildren,
+    n: sheetRow.n,
+  }
+}
+
+/** View-model for rendering a ScrollTrigger bar on a sheet object row. */
+export function sequenceEditorTreeGsapScrollTriggerTrackLeafFromSheetObject(
+  sheetRow: SequenceEditorTree_SheetObject,
+): SequenceEditorTree_GsapScrollTriggerTrack | null {
+  const inline = sheetRow.gsapScrollTrigger
+  if (!inline) return null
+
+  const timelineChildren = sheetRow.children.filter(
+    (child): child is SequenceEditorTree_GsapScrollTriggerChild =>
+      child.type === 'gsapScrollTriggerChild',
+  )
+
+  return {
+    type: 'gsapScrollTriggerTrack',
+    isCollapsed: inline.isCollapsed,
+    depth: sheetRow.depth,
+    sheetItemKey: createStudioSheetItemKey.forSheetObjectGsapScrollTriggerTrack(
+      sheetRow.sheetObject,
+      inline.scrollTriggerId,
+    ),
+    sheetObject: sheetRow.sheetObject,
+    scrollTriggerId: inline.scrollTriggerId,
+    layout: inline.layout,
+    kind: inline.kind,
+    animationSpanSeconds: inline.animationSpanSeconds,
+    displayLabel: inline.displayLabel,
     shouldRender: sheetRow.shouldRender,
     top: sheetRow.top,
     nodeHeight: sheetRow.nodeHeight,

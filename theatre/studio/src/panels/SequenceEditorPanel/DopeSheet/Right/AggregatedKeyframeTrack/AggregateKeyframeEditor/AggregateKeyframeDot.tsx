@@ -50,7 +50,7 @@ function sheetObjectBuild(
     .map((a) => {
       if (a.type === 'gsapClipTrack') return null
       if (a.type === 'gsapChildClip') return null
-      if (a.type === 'gsapScrollTriggerTrack') return null
+      if (a.type === 'gsapScrollTriggerChild') return null
       return a.type === 'propWithChildren'
         ? propWithChildrenBuild(a, keyframes)
         : primitivePropBuild(a, keyframes)

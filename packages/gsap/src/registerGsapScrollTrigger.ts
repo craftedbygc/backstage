@@ -3,6 +3,7 @@ import {privateAPI} from '@unseenco/theatre-core/privateAPIs'
 import {buildGsapSheetObjectKey} from '@unseenco/theatre-shared/gsap/buildGsapSheetObjectKey'
 import {extractScrollTriggerLayout} from '@unseenco/theatre-shared/gsap/extractScrollTriggerLayout'
 import {
+  findScrollTriggerEntryByInstance,
   registerScrollTriggerInRegistry,
   sheetAddressKey,
 } from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
@@ -54,6 +55,17 @@ export function registerOneGsapScrollTriggerOnSheet(
   const sheetInternal = privateAPI(sheet)
   const sheetKey = sheetAddressKey(sheetInternal.address)
   const sequenceLength = sequenceLengthForSheet(sheet)
+
+  const existingByInstance = findScrollTriggerEntryByInstance(sheetKey, st)
+  if (existingByInstance?.sheetObject) {
+    console.warn(
+      `[theatre-gsap] ScrollTrigger "${options.label}" is already registered for this sheet (id "${existingByInstance.id}"). Skipping duplicate registration.`,
+    )
+    return {
+      id: existingByInstance.id,
+      sheetObject: existingByInstance.sheetObject.publicApi,
+    }
+  }
 
   refreshGsapScrollTriggers()
 

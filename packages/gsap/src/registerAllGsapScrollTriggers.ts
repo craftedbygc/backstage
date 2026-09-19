@@ -1,8 +1,13 @@
 import type {ISheet} from '@unseenco/theatre-core'
+import {privateAPI} from '@unseenco/theatre-core/privateAPIs'
 import {defaultScrollTriggerLabel} from '@unseenco/theatre-shared/gsap/scrollTriggerGuards'
 import {registerOneGsapScrollTriggerOnSheet} from './registerGsapScrollTrigger'
 import type {RegisterGsapScrollTriggerResult} from './registerGsapScrollTrigger'
 import type {GsapScrollTriggerLike} from './gsapScrollTriggerTypes'
+import {
+  findScrollTriggerEntryByInstance,
+  sheetAddressKey,
+} from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
 import {
   refreshGsapScrollTriggers,
   requireGsapScrollTriggerPlugin,
@@ -28,11 +33,13 @@ export function registerAllGsapScrollTriggers(
   const ScrollTrigger = requireGsapScrollTriggerPlugin()
   refreshGsapScrollTriggers()
   const all = ScrollTrigger.getAll()
+  const sheetKey = sheetAddressKey(privateAPI(sheet).address)
 
   const registered: RegisterGsapScrollTriggerResult[] = []
   let skipped = 0
 
   all.forEach((st, index) => {
+    const already = findScrollTriggerEntryByInstance(sheetKey, st)
     const label = defaultScrollTriggerLabel(st, index)
     const id =
       typeof st.vars?.id === 'string' && st.vars.id.length > 0
@@ -44,10 +51,12 @@ export function registerAllGsapScrollTriggers(
       {label, id},
       index,
     )
-    if (result) {
-      registered.push(result)
-    } else {
+    if (!result) {
       skipped += 1
+    } else if (already) {
+      skipped += 1
+    } else {
+      registered.push(result)
     }
   })
 

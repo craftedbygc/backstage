@@ -56,9 +56,33 @@ function getSheetMap(key: string): Map<string, GsapScrollTriggerRegistryEntry> {
 export function registerScrollTriggerInRegistry(
   sheetKey: string,
   entry: GsapScrollTriggerRegistryEntry,
-): void {
-  getSheetMap(sheetKey).set(entry.id, entry)
+): 'registered' | 'duplicate' {
+  const map = getSheetMap(sheetKey)
+  for (const existing of map.values()) {
+    if (existing.scrollTrigger === entry.scrollTrigger) {
+      return 'duplicate'
+    }
+    if (existing.id === entry.id) {
+      return 'duplicate'
+    }
+  }
+  map.set(entry.id, entry)
   bumpGsapStudioRegistryRevision()
+  return 'registered'
+}
+
+export function findScrollTriggerEntryByInstance(
+  sheetKey: string,
+  scrollTrigger: unknown,
+): GsapScrollTriggerRegistryEntry | undefined {
+  const map = getStore().bySheetAddress.get(sheetKey)
+  if (!map) return undefined
+  for (const entry of map.values()) {
+    if (entry.scrollTrigger === scrollTrigger) {
+      return entry
+    }
+  }
+  return undefined
 }
 
 export function updateScrollTriggerLayoutInRegistry(
