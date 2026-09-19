@@ -14,6 +14,8 @@ import {graphEditorColors} from '@unseenco/theatre-studio/panels/SequenceEditorP
 import {BaseHeader, LeftRowContainer as BaseContainer} from './AnyCompositeRow'
 import {propNameTextCSS} from '@unseenco/theatre-studio/propEditors/utils/propNameTextCSS'
 import {usePropHighlightMouseEnter} from './usePropHighlightMouseEnter'
+import {useSequenceEditorPaneLayout} from '../SequenceEditorPaneLayoutContext'
+import NextPrevKeyframeCursors from '@unseenco/theatre-studio/propEditors/NextPrevKeyframeCursors'
 
 const theme = {
   label: {
@@ -26,13 +28,16 @@ const PrimitivePropRowContainer = styled(BaseContainer)<{}>``
 const PrimitivePropRowHead = styled(BaseHeader)<{
   isSelected: boolean
   isEven: boolean
+  $docked?: boolean
 }>`
   display: flex;
   color: ${theme.label.color};
-  padding-right: 12px;
+  padding-right: ${(props) => (props.$docked ? '6px' : '12px')};
   align-items: center;
   justify-content: flex-end;
   box-sizing: border-box;
+  min-width: 0;
+  overflow: ${(props) => (props.$docked ? 'hidden' : 'visible')};
 `
 
 const PrimitivePropRowIconContainer = styled.button<{
@@ -133,6 +138,8 @@ const PrimitivePropRow: React.FC<{
     })
   }, [leaf])
 
+  const {isDocked} = useSequenceEditorPaneLayout()
+
   const label =
     leaf.propConf.label ?? leaf.pathToProp[leaf.pathToProp.length - 1]
   const isSelectable = true
@@ -158,10 +165,13 @@ const PrimitivePropRow: React.FC<{
           height: leaf.nodeHeight + 'px',
         }}
         isSelected={isSelected === true}
+        $docked={isDocked}
         onClick={selectParentObject}
       >
         <PrimitivePropRowHead_Label>{label}</PrimitivePropRowHead_Label>
-        {controlIndicators}
+        {controlIndicators.type === NextPrevKeyframeCursors
+          ? React.cloneElement(controlIndicators, {compact: isDocked})
+          : controlIndicators}
         <PrimitivePropRowIconContainer
           onClick={(e) => {
             e.stopPropagation()

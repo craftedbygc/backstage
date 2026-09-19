@@ -5,11 +5,12 @@ import {val} from '@unseenco/theatre-dataverse'
 import React from 'react'
 import styled from 'styled-components'
 import SheetRow from './SheetRow'
+import {useSequenceEditorPaneLayout} from '../SequenceEditorPaneLayoutContext'
 
-const Container = styled.div`
+const Container = styled.div<{$clipHorizontalOverflow?: boolean}>`
   position: absolute;
   left: 0;
-  overflow-x: visible;
+  overflow-x: ${(props) => (props.$clipHorizontalOverflow ? 'hidden' : 'visible')};
 `
 
 const ListContainer = styled.ul`
@@ -21,18 +22,23 @@ const ListContainer = styled.ul`
 const Left: React.VFC<{
   layoutP: Pointer<SequenceEditorPanelLayout>
 }> = ({layoutP}) => {
+  const {isDocked} = useSequenceEditorPaneLayout()
+
   return usePrism(() => {
     const tree = val(layoutP.tree)
     const width = val(layoutP.leftDims.width)
 
     return (
-      <Container style={{width: width + 'px', top: tree.top + 'px'}}>
+      <Container
+        $clipHorizontalOverflow={isDocked}
+        style={{width: width + 'px', top: tree.top + 'px'}}
+      >
         <ListContainer>
           <SheetRow leaf={tree} />
         </ListContainer>
       </Container>
     )
-  }, [layoutP])
+  }, [layoutP, isDocked])
 }
 
 export default Left
