@@ -38,6 +38,7 @@ import {isGsapClipTrack} from '@unseenco/theatre-shared/sequence/trackData'
 import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
 import {isGsapScrollTriggerSheetObjectKey} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
 import {getAnimationEntryForSheetObject} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import {resolveGsapTimelineChildSequencerLabel} from '@unseenco/theatre-shared/gsap/gsapAnimationLabel'
 import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
 import {scrollTriggerChildInSequenceSpace} from '@unseenco/theatre-shared/gsap/extractScrollTriggerLayout'
 import {
@@ -573,7 +574,10 @@ export const calculateSequenceEditorTree = (
         parentTrackData: trackData,
         childId: childData.childId,
         childData,
-        displayLabel: childData.label,
+        displayLabel: resolveGsapTimelineChildSequencerLabel(
+          entry?.animation,
+          childData,
+        ),
         shouldRender: shouldRenderChildren && !clipIsCollapsed,
         top: topSoFar,
         nodeHeight:
@@ -763,7 +767,10 @@ export const calculateSequenceEditorTree = (
             parentTrackData: trackData,
             childId: childData.childId,
             childData,
-            displayLabel: childData.label,
+            displayLabel: resolveGsapTimelineChildSequencerLabel(
+              entry?.animation,
+              childData,
+            ),
             shouldRender: shouldRender && !isCollapsed,
             top: topSoFar,
             nodeHeight: shouldRender && !isCollapsed ? HEIGHT_OF_ANY_TITLE : 0,

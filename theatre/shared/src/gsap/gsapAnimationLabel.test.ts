@@ -1,6 +1,7 @@
 import {
   readGsapAnimationVarsId,
   resolveGsapAnimationRegistrationLabel,
+  resolveGsapTimelineChildSequencerLabel,
 } from './gsapAnimationLabel'
 
 describe('gsapAnimationLabel', () => {
@@ -25,5 +26,26 @@ describe('gsapAnimationLabel', () => {
         undefined,
       ),
     ).toBe('from-vars')
+  })
+
+  test('resolveGsapTimelineChildSequencerLabel uses child tween vars.id', () => {
+    const timeline = {
+      getChildren: () => [
+        {vars: {id: 'move-x'}, startTime: () => 0, duration: () => 1},
+        {vars: {id: 'spin'}, startTime: () => 1, duration: () => 0.5},
+      ],
+    }
+    expect(
+      resolveGsapTimelineChildSequencerLabel(timeline, {
+        childId: 'child_0',
+        label: 'Tween 1',
+      }),
+    ).toBe('move-x')
+    expect(
+      resolveGsapTimelineChildSequencerLabel(timeline, {
+        childId: 'child_1',
+        label: 'Tween 2',
+      }),
+    ).toBe('spin')
   })
 })

@@ -1,3 +1,6 @@
+import type {GsapTimelineChildClip} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
+import {introspectGsapTimelineChildren} from './introspectGsapTimelineChildren'
+
 /** Reads GSAP tween/timeline `vars.id` when present. */
 export function readGsapAnimationVarsId(
   animation: unknown,
@@ -22,4 +25,19 @@ export function resolveGsapAnimationRegistrationLabel(
     return optionsLabel
   }
   return readGsapAnimationVarsId(animation) ?? fallback
+}
+
+/** Sequencer label for a timeline child tween (prefers live `vars.id` from the animation). */
+export function resolveGsapTimelineChildSequencerLabel(
+  parentAnimation: unknown | undefined,
+  childData: Pick<GsapTimelineChildClip, 'childId' | 'label'>,
+): string {
+  if (parentAnimation) {
+    const freshChildren = introspectGsapTimelineChildren(parentAnimation)
+    const match = freshChildren.find((c) => c.childId === childData.childId)
+    if (match) {
+      return match.label
+    }
+  }
+  return childData.label
 }
