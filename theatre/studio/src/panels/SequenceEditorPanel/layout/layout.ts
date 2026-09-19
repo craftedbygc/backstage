@@ -340,21 +340,13 @@ export function sequenceEditorPanelLayout(
         const unitsShownInClippedSpace =
           clippedSpaceRange.end - clippedSpaceRange.start
 
-        const pageMode = isSheetInPageMode(sheet)
+        const leftPadding = layoutOptions.isDocked
+          ? SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_LEFT_PADDING
+          : SEQUENCE_EDITOR_SCALED_SPACE_LEFT_PADDING
 
-        const leftPadding =
-          pageMode && !layoutOptions.isDocked
-            ? 0
-            : layoutOptions.isDocked
-            ? SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_LEFT_PADDING
-            : SEQUENCE_EDITOR_SCALED_SPACE_LEFT_PADDING
-
-        const rightPadding =
-          pageMode && !layoutOptions.isDocked
-            ? 0
-            : layoutOptions.isDocked
-            ? SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_RIGHT_PADDING
-            : SEQUENCE_EDITOR_SCALED_SPACE_RIGHT_PADDING
+        const rightPadding = layoutOptions.isDocked
+          ? SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_RIGHT_PADDING
+          : SEQUENCE_EDITOR_SCALED_SPACE_RIGHT_PADDING
 
         // Timeline content sits between left/right padding; zoom must map units to
         // that inner width so the sequence end is reachable when scrolled to the max.
