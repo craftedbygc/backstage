@@ -1,6 +1,9 @@
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import type {SequenceEditorTree_SheetObject} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
-import {sequenceEditorTreeGsapClipTrackLeafFromSheetObject} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import {
+  sequenceEditorTreeGsapClipTrackLeafFromSheetObject,
+  sequenceEditorTreeGsapScrollTriggerTrackLeafFromSheetObject,
+} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import {usePrism} from '@unseenco/theatre-react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import React from 'react'
@@ -10,6 +13,8 @@ import {collectAggregateKeyframesInPrism} from './collectAggregateKeyframes'
 import AggregatedKeyframeTrack from './AggregatedKeyframeTrack/AggregatedKeyframeTrack'
 import {GsapClipTrackBarForTreeLeaf} from './GsapClipTrack/GsapClipTrackRow'
 import GsapChildClipTrackRow from './GsapClipTrack/GsapChildClipTrackRow'
+import {GsapScrollTriggerTrackBarForTreeLeaf} from './GsapScrollTriggerTrack/GsapScrollTriggerTrackRow'
+import {GsapScrollTriggerChildTrackRow} from './GsapScrollTriggerTrack/GsapScrollTriggerTrackRow'
 import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 
 const RightSheetObjectRow: React.VFC<{
@@ -19,10 +24,17 @@ const RightSheetObjectRow: React.VFC<{
   return usePrism(() => {
     const gsapClipLeaf =
       sequenceEditorTreeGsapClipTrackLeafFromSheetObject(leaf)
+    const gsapScrollTriggerLeaf =
+      sequenceEditorTreeGsapScrollTriggerTrackLeafFromSheetObject(leaf)
     const aggregatedKeyframes = collectAggregateKeyframesInPrism(leaf)
 
     const node = gsapClipLeaf ? (
       <GsapClipTrackBarForTreeLeaf leaf={gsapClipLeaf} layoutP={layoutP} />
+    ) : gsapScrollTriggerLeaf ? (
+      <GsapScrollTriggerTrackBarForTreeLeaf
+        leaf={gsapScrollTriggerLeaf}
+        layoutP={layoutP}
+      />
     ) : (
       <AggregatedKeyframeTrack
         layoutP={layoutP}
@@ -41,6 +53,8 @@ const RightSheetObjectRow: React.VFC<{
 
     const rowIsCollapsed = gsapClipLeaf
       ? gsapClipLeaf.isCollapsed
+      : gsapScrollTriggerLeaf
+      ? gsapScrollTriggerLeaf.isCollapsed
       : leaf.isCollapsed
 
     return (
@@ -53,6 +67,18 @@ const RightSheetObjectRow: React.VFC<{
                 leaf={child}
                 layoutP={layoutP}
                 sequenceVariant={trackVariant ?? ''}
+              />
+            )
+          }
+          if (
+            child.type === 'gsapScrollTriggerChild' &&
+            gsapScrollTriggerLeaf
+          ) {
+            return (
+              <GsapScrollTriggerChildTrackRow
+                key={child.childId}
+                leaf={child}
+                layoutP={layoutP}
               />
             )
           }

@@ -139,6 +139,28 @@ export const createStudioSheetItemKey = {
       c: childId,
     }) as StudioSheetItemKey
   },
+  forSheetObjectGsapScrollTriggerTrack(
+    obj: SheetObject,
+    scrollTriggerId: string,
+  ): StudioSheetItemKey {
+    return stableValueHash({
+      o: obj.address.objectKey,
+      g: 'gsapScrollTrigger',
+      id: scrollTriggerId,
+    }) as StudioSheetItemKey
+  },
+  forSheetObjectGsapScrollTriggerChild(
+    obj: SheetObject,
+    scrollTriggerId: string,
+    childId: string,
+  ): StudioSheetItemKey {
+    return stableValueHash({
+      o: obj.address.objectKey,
+      g: 'gsapScrollTriggerChild',
+      id: scrollTriggerId,
+      c: childId,
+    }) as StudioSheetItemKey
+  },
   forSheetObjectAggregateKeyframe(
     obj: SheetObject,
     position: number,

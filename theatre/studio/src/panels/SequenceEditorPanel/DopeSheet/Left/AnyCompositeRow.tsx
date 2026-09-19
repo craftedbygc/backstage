@@ -1,11 +1,13 @@
 import {theme} from '@unseenco/theatre-studio/css'
 import type {
   SequenceEditorTree_GsapClipTrack,
+  SequenceEditorTree_GsapScrollTriggerChild,
+  SequenceEditorTree_GsapScrollTriggerTrack,
+  SequenceEditorTree_ObjectNamespace,
   SequenceEditorTree_PrimitiveProp,
   SequenceEditorTree_PropWithChildren,
   SequenceEditorTree_Sheet,
   SequenceEditorTree_SheetObject,
-  SequenceEditorTree_ObjectNamespace,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import type {VoidFn} from '@unseenco/theatre-shared/utils/types'
 import React, {useRef} from 'react'
@@ -42,7 +44,7 @@ const LeftRowHeader = styled(BaseHeader)<{
 
 const LeftRowHead_Label = styled.span`
   ${propNameTextCSS};
-  overflow-x: hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   padding-right: 4px;
@@ -95,6 +97,8 @@ const AnyCompositeRow: React.FC<{
     | SequenceEditorTree_SheetObject
     | SequenceEditorTree_ObjectNamespace
     | SequenceEditorTree_GsapClipTrack
+    | SequenceEditorTree_GsapScrollTriggerTrack
+    | SequenceEditorTree_GsapScrollTriggerChild
   label: React.ReactNode
   toggleSelect?: VoidFn
   toggleCollapsed: VoidFn

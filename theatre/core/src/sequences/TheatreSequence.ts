@@ -4,6 +4,7 @@ import type Sequence from './Sequence'
 import type {IPlaybackDirection, IPlaybackRange} from './Sequence'
 import type {
   GsapClipTrack,
+  GsapTimelineChildClip,
   Keyframe,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
@@ -162,6 +163,21 @@ export interface ISequence {
     objectKey: string
     trackId: SequenceTrackId
     clip: GsapClipTrack
+  }>
+
+  /**
+   * Runtime ScrollTrigger registrations for page-mode visualization (read-only in Studio).
+   *
+   * @experimental
+   */
+  __experimental_getGsapScrollTriggers(): Array<{
+    objectKey: string
+    scrollTriggerId: string
+    label: string
+    layout: {start: number; duration: number}
+    kind: 'tween' | 'timeline'
+    animationSpanSeconds: number
+    timelineChildren: GsapTimelineChildClip[]
   }>
 
   /**
@@ -332,6 +348,18 @@ export default class TheatreSequence implements ISequence {
     clip: GsapClipTrack
   }> {
     return privateAPI(this).getGsapClips()
+  }
+
+  __experimental_getGsapScrollTriggers(): Array<{
+    objectKey: string
+    scrollTriggerId: string
+    label: string
+    layout: {start: number; duration: number}
+    kind: 'tween' | 'timeline'
+    animationSpanSeconds: number
+    timelineChildren: GsapTimelineChildClip[]
+  }> {
+    return privateAPI(this).getGsapScrollTriggers()
   }
 
   async attachAudio(args: IAttachAudioArgs): Promise<{

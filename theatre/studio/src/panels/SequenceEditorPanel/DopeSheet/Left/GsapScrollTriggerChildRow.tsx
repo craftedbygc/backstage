@@ -1,4 +1,4 @@
-import type {SequenceEditorTree_GsapChildClip} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import type {SequenceEditorTree_GsapScrollTriggerChild} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import React from 'react'
 import styled from 'styled-components'
 import {BaseHeader, LeftRowContainer} from './AnyCompositeRow'
@@ -18,8 +18,8 @@ const Header = styled(BaseHeader)`
   box-sizing: border-box;
 `
 
-const GsapChildClipLeftRow: React.VFC<{
-  leaf: SequenceEditorTree_GsapChildClip
+const GsapScrollTriggerChildLeftRow: React.VFC<{
+  leaf: SequenceEditorTree_GsapScrollTriggerChild
 }> = ({leaf}) => {
   if (!leaf.shouldRender) return null
 
@@ -37,4 +37,4 @@ const GsapChildClipLeftRow: React.VFC<{
   )
 }
 
-export default GsapChildClipLeftRow
+export default GsapScrollTriggerChildLeftRow

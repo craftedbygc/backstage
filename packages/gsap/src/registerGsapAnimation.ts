@@ -2,14 +2,18 @@ import type {ISheet, ISheetObject} from '@unseenco/theatre-core'
 import type {GsapTweenLike} from './gsapTypes'
 import {privateAPI} from '@unseenco/theatre-core/privateAPIs'
 import {buildGsapSheetObjectKey} from '@unseenco/theatre-shared/gsap/buildGsapSheetObjectKey'
+import {resolveGsapAnimationRegistrationLabel} from '@unseenco/theatre-shared/gsap/gsapAnimationLabel'
 import {getAnimationEntry} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
 import {getTheatreGsapConfig} from './config'
 import {registerAnimationInRegistry} from './animationRegistry'
 import {formatOutlineNamespacePathKey} from '@unseenco/theatre-shared/utils/outlineNamespaces'
 
 export type RegisterGsapAnimationOptions = {
-  /** Theatre object label (shown after the `GSAP/` namespace). */
-  label: string
+  /**
+   * Theatre object label (shown after the `GSAP/` namespace). When omitted,
+   * uses the tween/timeline `vars.id` if set.
+   */
+  label?: string
   /** Override namespace from {@link configureTheatreGsap}. */
   namespace?: string
   /**
@@ -42,7 +46,8 @@ export function registerGsapAnimation(
 ): RegisterGsapAnimationResult {
   const config = getTheatreGsapConfig()
   const namespace = options.namespace ?? config.namespace ?? 'GSAP'
-  const objectKey = buildGsapSheetObjectKey(namespace, options.label)
+  const label = resolveGsapAnimationRegistrationLabel(animation, options.label)
+  const objectKey = buildGsapSheetObjectKey(namespace, label)
   const id = options.id ?? objectKey
 
   animation.pause()
@@ -61,7 +66,7 @@ export function registerGsapAnimation(
 
   registerAnimationInRegistry({
     id,
-    label: options.label,
+    label,
     animation,
     sheetObject: sheetObjectInternal,
     defaultDuration:

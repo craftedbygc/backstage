@@ -271,7 +271,14 @@ const PlaybackControls: React.FC<{
           <JumpToEnd />
         </IconButton>
         <IconButton
-          title={looping ? 'Disable loop' : 'Enable loop'}
+          title={
+            pageMode
+              ? 'Loop disabled in page mode'
+              : looping
+              ? 'Disable loop'
+              : 'Enable loop'
+          }
+          disabled={pageMode}
           selected={looping}
           onClick={() =>
             setSequenceLooping(

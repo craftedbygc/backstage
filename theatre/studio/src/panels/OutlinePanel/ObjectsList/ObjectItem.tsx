@@ -24,6 +24,10 @@ import {getGsapStudioOutlineMenuItems} from '@unseenco/theatre-studio/gsap/gsapO
 import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/sequence/trackData'
 import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
 import {val} from '@unseenco/theatre-dataverse'
+import {
+  gsapKindBadgeForSheetObject,
+  renderGsapListLabel,
+} from '@unseenco/theatre-studio/gsap/GsapKindBadge'
 
 export const ObjectItem: React.VFC<{
   sheetObject: SheetObject
@@ -150,12 +154,19 @@ export const ObjectItem: React.VFC<{
     }
   })
 
+  const displayName = overrideLabel ?? sheetObject.address.objectKey
+  const gsapKind = usePrism(() => {
+    if (!isGsapSheetObjectKey(sheetObject.address.objectKey)) return null
+    val(gsapStudioRegistryRevisionPointer)
+    return gsapKindBadgeForSheetObject(sheetObject)
+  }, [sheetObject])
+
   return (
     <>
       {contextMenu}
       <BaseItem
         select={select}
-        label={overrideLabel ?? sheetObject.address.objectKey}
+        label={renderGsapListLabel(gsapKind, displayName)}
         depth={depth}
         selectionStatus={selectionStatus}
         headerRef={mergeRefs([headerRef, targetRef])}

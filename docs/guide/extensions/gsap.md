@@ -1,6 +1,6 @@
 # GSAP extension
 
-`@unseenco/theatre-gsap` bridges **GSAP** tweens and timelines to Theatre **sequence time mode** (v1). Register animations at runtime, then place them on the sheet sequence like keyframed props. **Page mode** (scroll-driven sequencer) is available via `@unseenco/theatre-core`; ScrollTrigger visualization in Studio is planned next.
+`@unseenco/theatre-gsap` bridges **GSAP** tweens and timelines to Theatre **sequence time mode** (v1). Register animations at runtime, then place them on the sheet sequence like keyframed props. **Page mode** (scroll-driven sequencer) is available via `@unseenco/theatre-core`. **ScrollTrigger** instances can be registered for **read-only** visualization on the page-mode sequencer (document vertical scroll only).
 
 Studio support for GSAP clips is **built into** `@unseenco/theatre-studio`. You do **not** call `studio.extend()` for GSAP.
 
@@ -101,12 +101,50 @@ registerGsapAnimation(animation, sheet, {
 
 | Option | Purpose |
 | --- | --- |
-| **`label`** | Shown after the namespace; `/` segments nest in the outline and sequence tree (e.g. `UI / Panel show`). |
+| **`label`** | Shown after the namespace; `/` segments nest in the outline and sequence tree. Optional — when omitted, Theatre uses the GSAP tween/timeline **`vars.id`** if set. |
 | **`id`** | Stable clip id on the sheet object. Defaults to the sanitised object key (`GSAP / …`). Re-registering with the same id updates the registry entry. |
 | **`defaultDuration`** | Clip length when first added to the sequence (defaults to tween duration). |
 | **`onRebuildTimeline`** | Rebuild callback when native child timing edits cannot be applied in place (timelines with editable child spans). |
 
 Animations are **paused** on registration so Theatre can set `progress` during sequence scrubbing and playback.
+
+## ScrollTrigger (page mode, read-only sequencer)
+
+Requires **`sequenceMode: 'page'`**, `gsap.registerPlugin(ScrollTrigger)`, and document vertical scroll (default window scroller). Theatre maps each trigger’s resolved **`start` / `end`** scroll pixels to **0–100%** on the sequence. Bars are **read-only** in Studio; GSAP still drives scrubbing on scroll.
+
+```ts
+import gsap from 'gsap'
+import {ScrollTrigger} from 'gsap/ScrollTrigger'
+import {
+  registerGsapScrollTrigger,
+  registerAllGsapScrollTriggers,
+} from '@unseenco/theatre-gsap'
+
+gsap.registerPlugin(ScrollTrigger)
+
+const sheet = project.sheet('Main', {sequenceMode: 'page', gsap: true})
+
+// ScrollTrigger.create({ animation })
+const tween = gsap.to('.box', {x: 200, duration: 1, paused: true})
+const st = ScrollTrigger.create({
+  trigger: '.section',
+  start: 'top center',
+  end: 'bottom center',
+  scrub: true,
+  animation: tween,
+})
+registerGsapScrollTrigger(st, sheet, {label: 'Box scrub'})
+
+// timeline vars.scrollTrigger
+gsap.timeline({
+  scrollTrigger: {trigger: '.section', start: 'top top', end: '+=500', scrub: true},
+  paused: true,
+}).to('.box', {y: 100})
+
+registerAllGsapScrollTriggers(sheet) // optional catch-all for getAll()
+```
+
+Outline proxies appear under **`GSAP / ScrollTriggers / …`**. They **automatically** show as read-only bars in the page-mode sequencer (no **Add to sequence at playhead**). Controlled tweens/timelines show as **child rows** under each trigger bar.
 
 ## configureTheatreGsap
 
@@ -123,7 +161,7 @@ Returns `{ reset }` to restore the previous config. Namespace and outline collap
 
 After registration, each animation appears as a **proxy sheet object** (no sequenced props). Built-in Studio UI provides:
 
-- **Outline** — nested `GSAP` namespace; context menu **Add to sequence at playhead** / **Remove from sequence**.
+- **Outline** — nested `GSAP` namespace; context menu **Add to sequence at playhead** / **Remove from sequence** for clip proxies (not ScrollTrigger proxies in page mode).
 - **Detail panel** — same add/remove action when a GSAP object is selected.
 - **Sequence editor** — **GsapClipTrack** rows aligned to the parent clip; GSAP **timelines** expose child rows mapped from `getChildren()` with drag/resize and **Reset to original state** when timing diverges from baseline.
 

@@ -6,10 +6,14 @@ import SavedStateDiamondWrapper from '@unseenco/theatre-studio/propEditors/Saved
 import {nextPrevCursorsTheme} from '@unseenco/theatre-studio/propEditors/NextPrevKeyframeCursors'
 import {addGsapClipAtPlayhead} from './addGsapClipAtPlayhead'
 import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/sequence/trackData'
+import {isGsapScrollTriggerSheetObjectKey} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
 import {usePrism} from '@unseenco/theatre-react'
 import {val} from '@unseenco/theatre-dataverse'
 import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
-import {readGsapClipIsOnSequence, removeGsapClipFromSequence} from './removeGsapClipFromSequence'
+import {
+  readGsapClipIsOnSequence,
+  removeGsapClipFromSequence,
+} from './removeGsapClipFromSequence'
 
 const Container = styled.div`
   width: 16px;
@@ -41,6 +45,10 @@ const GsapClipSequenceIndicator: React.FC<{sheetObject: SheetObject}> = ({
   }, [sheetObject])
 
   if (!isGsapSheetObjectKey(sheetObject.address.objectKey)) return null
+
+  if (isGsapScrollTriggerSheetObjectKey(sheetObject.address.objectKey)) {
+    return null
+  }
 
   const addTitle = 'Add GSAP clip at playhead'
   const removeTitle = 'Remove this GSAP animation from the sequence'

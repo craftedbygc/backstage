@@ -1,6 +1,6 @@
 # AGENTS.md — `@unseenco/theatre-gsap`
 
-Bridge GSAP tweens to Theatre.js **sequence time mode** (v1). ScrollTrigger / page scroll modes are planned for v2 — see notes at the end.
+Bridge GSAP tweens to Theatre.js **sequence time mode** (v1). ScrollTriggers / page scroll modes are planned for v2 — see notes at the end.
 
 ## Package layout
 
@@ -53,7 +53,7 @@ Register in root `devEnv/cli.ts`, `tsconfig.base.json`, and `devEnv/typecheck-al
 
 ## v2 notes (partial)
 
-- **Page mode (sequencer):** `project.sheet(id, { sequenceMode: 'page', gsap: true })` (or manual `setSequenceMode` / attach helpers) — see `docs/guide/extensions/gsap.md`. Playground: `/shared/gsap-page-mode/`.
-- **ScrollTrigger (next):** visualize ScrollTrigger instances in the sequencer (read-only first).
+- **Page mode (sequencer):** `project.sheet(id, { sequenceMode: 'page', gsap: true })` — see `docs/guide/extensions/gsap.md`. Playground: `/shared/gsap-page-mode/`.
+- **ScrollTrigger (page mode):** `registerGsapScrollTrigger()` / `registerAllGsapScrollTriggers()` — read-only sequencer bars (document vertical scroll only). Theatre resolves the plugin from `gsap/ScrollTrigger` (or `bindGsapScrollTriggerPlugin()` / `globalThis.ScrollTrigger`).
 - **Page / route modes (later):** multiple sequences per route; variant-aware binding.
 - Time mode playground: `/shared/gsap-time-mode/`

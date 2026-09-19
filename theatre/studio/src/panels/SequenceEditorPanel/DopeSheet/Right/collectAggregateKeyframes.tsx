@@ -75,8 +75,8 @@ export function collectAggregateKeyframesInPrism(
     leaf.type === 'sheet'
       ? collectAggregateKeyframesSheet(leaf)
       : leaf.type === 'objectNamespace'
-        ? collectAggregateKeyframesObjectNamespace(leaf)
-        : collectAggregateKeyframesCompoundOrObject(leaf)
+      ? collectAggregateKeyframesObjectNamespace(leaf)
+      : collectAggregateKeyframesCompoundOrObject(leaf)
 
   return {
     byPosition: keyframesByPositionFromTrackWithIds(tracks),
@@ -135,6 +135,7 @@ function collectAggregateKeyframesCompoundOrObject(
 ): TrackWithId[] {
   return leaf.children.flatMap((childLeaf) => {
     if (childLeaf.type === 'gsapClipTrack') return []
+    if (childLeaf.type === 'gsapScrollTriggerChild') return []
     if (childLeaf.type === 'gsapChildClip') return []
     return childLeaf.type === 'propWithChildren'
       ? collectAggregateKeyframesCompoundOrObject(childLeaf)
@@ -198,7 +199,10 @@ function collectAggregateSnapPositionsFromSheetChild(
   if (child.type === 'objectNamespace') {
     return uniq(
       child.children.flatMap((nested) =>
-        collectAggregateSnapPositionsFromSheetChild(nested, snapTargetPositions),
+        collectAggregateSnapPositionsFromSheetChild(
+          nested,
+          snapTargetPositions,
+        ),
       ),
     )
   }
@@ -215,6 +219,7 @@ export function collectAggregateSnapPositionsObjectOrCompound(
   return uniq(
     leaf.children.flatMap((childLeaf) => {
       if (childLeaf.type === 'gsapClipTrack') return []
+      if (childLeaf.type === 'gsapScrollTriggerChild') return []
       if (childLeaf.type === 'gsapChildClip') return []
       return childLeaf.type === 'propWithChildren'
         ? collectAggregateSnapPositionsObjectOrCompound(
