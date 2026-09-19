@@ -44,7 +44,7 @@ const LeftRowHeader = styled(BaseHeader)<{
 
 const LeftRowHead_Label = styled.span`
   ${propNameTextCSS};
-  overflow-x: hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   padding-right: 4px;

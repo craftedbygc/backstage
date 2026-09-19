@@ -14,17 +14,17 @@ const Badge = styled.span`
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  min-width: 18px;
   height: 14px;
-  padding: 0 3px;
+  width: 16px;
   box-sizing: border-box;
   border: 1px solid #6a6a6a;
   border-radius: 3px;
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 600;
   color: #a8a8a8;
   line-height: 1;
   letter-spacing: 0.02em;
+  font-family: monospace;
 `
 
 const LabelRow = styled.span`

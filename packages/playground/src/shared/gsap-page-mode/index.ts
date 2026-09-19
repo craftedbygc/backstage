@@ -38,8 +38,7 @@ void project.ready.then(() => {
   )
 
   const boxMove = gsap.to(heroBox, {
-    x: 160,
-    y: -80,
+    rotate: 360,
     scale: 1.25,
     duration: 1,
     paused: true,
@@ -50,7 +49,7 @@ void project.ready.then(() => {
     defaultDuration: 25,
   })
 
-  const panelReveal = gsap.to(midPanel, {
+  const panelReveal = gsap.timeline().to(midPanel, {
     autoAlpha: 1,
     y: 0,
     duration: 1,
@@ -80,7 +79,7 @@ void project.ready.then(() => {
   })
 
   registerGsapScrollTrigger(stCreate, sheet, {
-    label: 'Create API scrub',
+    label: 'Create API scrub example',
   })
 
   // vars.scrollTrigger on timeline style
@@ -95,8 +94,8 @@ void project.ready.then(() => {
     paused: true,
   })
   stTimeline
-    .to(stTarget, {x: 80, duration: 0.5, ease: 'none'})
-    .to(stTarget, {x: -40, duration: 0.5, ease: 'none'})
+    .to(stTarget, {x: 80, duration: 0.5, ease: 'none', id: 'move right'})
+    .to(stTarget, {x: -40, duration: 0.5, ease: 'none', id: 'move left'})
 
   registerAllGsapScrollTriggers(sheet)
 })
