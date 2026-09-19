@@ -108,7 +108,7 @@ const ARROW_GLYPH = {
 
 const DomElementHighlightOverlay: React.VFC<{rect: DOMRect}> = ({rect}) => {
   const offViewport = getOffViewportSides(rect)
-  const visibleRect = intersectRectWithViewport(rect)
+  const showHighlightOnScreen = intersectRectWithViewport(rect) !== null
   const showArrows =
     offViewport.top ||
     offViewport.bottom ||
@@ -117,15 +117,15 @@ const DomElementHighlightOverlay: React.VFC<{rect: DOMRect}> = ({rect}) => {
 
   return (
     <>
-      {visibleRect ? (
+      {showHighlightOnScreen ? (
         <div
           data-theatre-gsap-target-highlight=""
           style={{
             position: 'fixed',
-            top: visibleRect.top,
-            left: visibleRect.left,
-            width: visibleRect.width,
-            height: visibleRect.height,
+            top: rect.top,
+            left: rect.left,
+            width: rect.width,
+            height: rect.height,
             boxSizing: 'border-box',
             border: '2px solid rgba(0, 180, 255, 0.85)',
             borderRadius: 2,

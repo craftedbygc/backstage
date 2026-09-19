@@ -32,7 +32,7 @@ describe('domElementHighlightViewport', () => {
     })
   })
 
-  test('intersectRectWithViewport returns visible slice when partially on screen', () => {
+  test('intersectRectWithViewport detects any on-screen overlap', () => {
     const rect = {
       top: 50,
       left: -20,
@@ -48,7 +48,7 @@ describe('domElementHighlightViewport', () => {
     expect(visible.height).toBe(80)
   })
 
-  test('getOffViewportSides flags partial overflow', () => {
+  test('getOffViewportSides ignores partial overflow', () => {
     const rect = {
       top: 580,
       left: -10,
@@ -59,8 +59,25 @@ describe('domElementHighlightViewport', () => {
     } as DOMRect
     expect(getOffViewportSides(rect)).toEqual({
       top: false,
+      bottom: false,
+      left: false,
+      right: false,
+    })
+  })
+
+  test('getOffViewportSides when fully below viewport', () => {
+    const rect = {
+      top: 610,
+      left: 100,
+      right: 200,
+      bottom: 650,
+      width: 100,
+      height: 40,
+    } as DOMRect
+    expect(getOffViewportSides(rect)).toEqual({
+      top: false,
       bottom: true,
-      left: true,
+      left: false,
       right: false,
     })
   })

@@ -10,11 +10,12 @@ export function getOffViewportSides(rect: DOMRect): OffViewportSides {
     return {top: false, bottom: false, left: false, right: false}
   }
   const {innerWidth, innerHeight} = window
+  // Edge arrows only when the element is entirely past that viewport edge.
   return {
-    top: rect.top < 0,
-    bottom: rect.bottom > innerHeight,
-    left: rect.left < 0,
-    right: rect.right > innerWidth,
+    top: rect.bottom <= 0,
+    bottom: rect.top >= innerHeight,
+    left: rect.right <= 0,
+    right: rect.left >= innerWidth,
   }
 }
 
