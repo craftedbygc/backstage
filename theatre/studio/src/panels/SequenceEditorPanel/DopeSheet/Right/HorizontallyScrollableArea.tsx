@@ -37,9 +37,9 @@ const HorizontallyScrollableArea: React.FC<{
   height: number
   children: React.ReactNode
 }> = React.memo(({layoutP, children, height}) => {
-  const {width, unitSpaceToScaledSpaceMultiplier} = usePrism(
+  const {leftWidth, unitSpaceToScaledSpaceMultiplier} = usePrism(
     () => ({
-      width: val(layoutP.rightDims.width),
+      leftWidth: val(layoutP.leftDims.width),
       unitSpaceToScaledSpaceMultiplier: val(layoutP.scaledSpace.fromUnitSpace)(
         1,
       ),
@@ -59,7 +59,7 @@ const HorizontallyScrollableArea: React.FC<{
     <Container
       ref={containerRef}
       style={{
-        width: width + 'px',
+        left: leftWidth + 'px',
         height: height + 'px',
         // @ts-expect-error
         '--unitSpaceToScaledSpaceMultiplier': unitSpaceToScaledSpaceMultiplier,

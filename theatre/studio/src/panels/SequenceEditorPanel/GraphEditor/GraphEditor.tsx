@@ -94,10 +94,11 @@ const GraphEditor: React.FC<{
     }
 
     const width = val(layoutP.rightDims.width)
+    const leftWidth = val(layoutP.leftDims.width)
     return (
       <Container
         style={{
-          width: width + 'px',
+          left: leftWidth + 'px',
           height: height + 'px',
           // @ts-expect-error
           '--unitSpaceToScaledSpaceMultiplier':

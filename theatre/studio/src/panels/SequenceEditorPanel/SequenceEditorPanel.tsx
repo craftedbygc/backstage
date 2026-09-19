@@ -133,8 +133,11 @@ const Content: React.VFC<{}> = () => {
       'panelSize',
       (): PanelDims => {
         if (isDocked) {
+          const measuredWidth = containerNode?.clientWidth
           const width =
-            typeof window !== 'undefined' ? window.innerWidth : dims.width
+            measuredWidth && measuredWidth > 0
+              ? measuredWidth
+              : dims.width
           const height = sequencerHeight
           const screenY =
             typeof window !== 'undefined'
@@ -160,7 +163,7 @@ const Content: React.VFC<{}> = () => {
           screenY: dims.top,
         }
       },
-      [dims, isDocked, sequencerHeight],
+      [dims, isDocked, sequencerHeight, containerNode],
     )
 
     const sheet = resolveSequenceEditorSheet({

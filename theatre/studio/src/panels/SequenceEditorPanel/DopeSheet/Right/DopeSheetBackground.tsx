@@ -23,10 +23,11 @@ const DopeSheetBackground: React.FC<{
   layoutP: Pointer<SequenceEditorPanelLayout>
 }> = ({layoutP}) => {
   const width = useVal(layoutP.rightDims.width)
+  const leftWidth = useVal(layoutP.leftDims.width)
   const height = useVal(layoutP.panelDims.height)
 
   return (
-    <Container style={{width: width + 'px'}}>
+    <Container style={{left: leftWidth + 'px'}}>
       <FrameGrid width={width} height={height} layoutP={layoutP} />
     </Container>
   )

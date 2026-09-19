@@ -227,6 +227,9 @@ export function sequenceEditorPanelLayout(
     } = prism.memo(
       'leftDims',
       () => {
+        // Left labels use leftDims.width; the track column must anchor at the same
+        // offset (left: leftDims.width), not width:rightDims.width + right:0, so a
+        // narrower scrollport than panelDims.width does not pull tracks under props.
         const leftDims: DimsOfPanelPart = {
           width: Math.floor(panelDims.width * panelSplitRatio),
           height: panelDims.height,
