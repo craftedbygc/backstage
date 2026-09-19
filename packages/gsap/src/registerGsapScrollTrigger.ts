@@ -36,7 +36,7 @@ function assertPageMode(sheet: ISheet): void {
 }
 
 function sequenceLengthForSheet(sheet: ISheet): number {
-  return val(sheet.sequence.pointer.length)
+  return privateAPI(sheet).getSequence().length
 }
 
 function scrollTriggerObjectKey(namespace: string, label: string): string {

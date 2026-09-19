@@ -14,6 +14,7 @@ export {refreshRegisteredGsapScrollTriggerLayouts} from './registerGsapScrollTri
 export type {GsapScrollTriggerLike} from './gsapScrollTriggerTypes'
 export {attachGsapSequenceBridge} from './attachGsapSequenceBridge'
 export {configureTheatreGsap, getTheatreGsapConfig} from './config'
+export {bindGsapScrollTriggerPlugin} from './gsapScrollTriggerPlugin'
 export type {TheatreGsapConfig} from './config'
 export {
   getAnimationEntry,
