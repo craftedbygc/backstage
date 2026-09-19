@@ -351,11 +351,12 @@ export function sequenceEditorPanelLayout(
           toUnitSpace(s: number): number {
             return s * unitToPixelRatio
           },
-          leftPadding: pageMode
-            ? 0
-            : layoutOptions.isDocked
-            ? SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_LEFT_PADDING
-            : SEQUENCE_EDITOR_SCALED_SPACE_LEFT_PADDING,
+          leftPadding:
+            pageMode && !layoutOptions.isDocked
+              ? 0
+              : layoutOptions.isDocked
+              ? SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_LEFT_PADDING
+              : SEQUENCE_EDITOR_SCALED_SPACE_LEFT_PADDING,
         }
       },
       [clippedSpaceRange, rightDims.width, sheet, layoutOptions.isDocked],
