@@ -8,7 +8,6 @@ import {
 } from '@unseenco/theatre-core'
 import studio from '@unseenco/theatre-studio'
 import {
-  attachGsapSequenceBridge,
   configureTheatreGsap,
   registerGsapAnimation,
 } from '@unseenco/theatre-gsap'
@@ -24,9 +23,7 @@ configureTheatreGsap({
 studio.initialize({__experimental_rafDriver: rafDriver})
 
 const project = getProject('Theatre × GSAP demo')
-const sheet = project.sheet('Main')
-
-attachGsapSequenceBridge(sheet)
+const sheet = project.sheet('Main', {gsap: true})
 
 const panel = document.getElementById('panel')!
 const box = document.getElementById('box')!
