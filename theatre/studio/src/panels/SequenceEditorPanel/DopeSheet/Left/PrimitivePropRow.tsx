@@ -40,8 +40,18 @@ const PrimitivePropRowHead = styled(BaseHeader)<{
   align-items: center;
   justify-content: flex-end;
   box-sizing: border-box;
+  width: ${(props) => (props.$docked ? '100%' : 'auto')};
+  max-width: ${(props) => (props.$docked ? '100%' : 'none')};
   min-width: 0;
   overflow: ${(props) => (props.$docked ? 'hidden' : 'visible')};
+`
+
+const PrimitivePropRowHead_Controls = styled.div<{$docked?: boolean}>`
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  min-width: 0;
+  max-width: ${(props) => (props.$docked ? '100%' : 'none')};
 `
 
 const PrimitivePropRowIconContainer = styled.button<{
@@ -85,9 +95,14 @@ const GraphIcon = () => (
   </svg>
 )
 
-const PrimitivePropRowHead_Label = styled.span`
+const PrimitivePropRowHead_Label = styled.span<{$docked?: boolean}>`
   margin-right: 4px;
   ${propNameTextCSS};
+  flex: ${(props) => (props.$docked ? '1 1 0' : '0 1 auto')};
+  min-width: 0;
+  overflow: ${(props) => (props.$docked ? 'hidden' : 'visible')};
+  text-overflow: ${(props) => (props.$docked ? 'ellipsis' : 'clip')};
+  white-space: nowrap;
 
   ${PrimitivePropRowHead}:hover & {
     color: #ccc;
@@ -174,11 +189,14 @@ const PrimitivePropRow: React.FC<{
         $docked={isDocked}
         onClick={selectParentObject}
       >
-        <PrimitivePropRowHead_Label>{label}</PrimitivePropRowHead_Label>
-        {controlIndicators.type === NextPrevKeyframeCursors
-          ? React.cloneElement(controlIndicators, {compact: isDocked})
-          : controlIndicators}
-        <PrimitivePropRowIconContainer
+        <PrimitivePropRowHead_Label $docked={isDocked}>
+          {label}
+        </PrimitivePropRowHead_Label>
+        <PrimitivePropRowHead_Controls $docked={isDocked}>
+          {controlIndicators.type === NextPrevKeyframeCursors
+            ? React.cloneElement(controlIndicators, {compact: isDocked})
+            : controlIndicators}
+          <PrimitivePropRowIconContainer
           onClick={(e) => {
             e.stopPropagation()
             toggleSelect()
@@ -189,8 +207,9 @@ const PrimitivePropRow: React.FC<{
           disabled={!isSelectable}
           $docked={isDocked}
         >
-          <GraphIcon />
-        </PrimitivePropRowIconContainer>
+            <GraphIcon />
+          </PrimitivePropRowIconContainer>
+        </PrimitivePropRowHead_Controls>
       </PrimitivePropRowHead>
     </PrimitivePropRowContainer>
   )

@@ -161,8 +161,8 @@ const PrevOrNextButton = styled(Button)<{
   }
 `
 
-const prevHoverTranslateX = (compact: boolean) => (compact ? -4 : -11)
-const nextHoverTranslateX = (compact: boolean) => (compact ? 2 : 11)
+const prevHoverTranslateX = (compact: boolean) => (compact ? -3 : -11)
+const nextHoverTranslateX = (compact: boolean) => (compact ? -1 : 11)
 
 const Prev = styled(PrevOrNextButton)<{
   available: boolean
