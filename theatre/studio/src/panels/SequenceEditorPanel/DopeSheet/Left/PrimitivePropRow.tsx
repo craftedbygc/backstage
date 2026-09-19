@@ -32,7 +32,7 @@ const PrimitivePropRowHead = styled(BaseHeader)<{
 }>`
   display: flex;
   color: ${theme.label.color};
-  padding-right: ${(props) => (props.$docked ? '6px' : '12px')};
+  padding-right: ${(props) => (props.$docked ? '8px' : '12px')};
   align-items: center;
   justify-content: flex-end;
   box-sizing: border-box;
@@ -43,6 +43,7 @@ const PrimitivePropRowHead = styled(BaseHeader)<{
 const PrimitivePropRowIconContainer = styled.button<{
   isSelected: boolean
   graphEditorColor: keyof typeof graphEditorColors
+  $docked?: boolean
 }>`
   background: none;
   border: none;
@@ -52,7 +53,8 @@ const PrimitivePropRowIconContainer = styled.button<{
   font-size: 14px;
   align-items: center;
   height: 100%;
-  margin-left: 12px;
+  margin-left: ${(props) => (props.$docked ? '8px' : '12px')};
+  flex: 0 0 auto;
   color: ${(props) =>
     props.isSelected
       ? graphEditorColors[props.graphEditorColor].iconColor
@@ -181,6 +183,7 @@ const PrimitivePropRow: React.FC<{
           graphEditorColor={possibleColor ?? '1'}
           style={{opacity: isSelectable ? 1 : 0.25}}
           disabled={!isSelectable}
+          $docked={isDocked}
         >
           <GraphIcon />
         </PrimitivePropRowIconContainer>
