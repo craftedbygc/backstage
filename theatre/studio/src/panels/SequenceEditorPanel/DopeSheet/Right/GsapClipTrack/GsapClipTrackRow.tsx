@@ -37,6 +37,10 @@ import {
   gsapClipTimingDeviatesFromBaseline,
   resolveGsapClipBaselineTiming,
 } from '@unseenco/theatre-shared/gsap/gsapClipBaseline'
+import {
+  clampGsapClipTiming,
+  MIN_GSAP_CLIP_DURATION,
+} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/sequenceEditLimits'
 
 const Container = styled.div`
   position: relative;
@@ -230,6 +234,8 @@ const GsapClipTrackBar: React.VFC<{
   const moveOpts: DragOpts = useMemo(() => {
     let temp: CommitOrDiscard | undefined
     const startAtDrag = trackData.start
+    const durationAtDrag = trackData.duration
+    const sheet = leaf.sheetObject.sheet
     const toUnitSpace = val(layoutP.scaledSpace.toUnitSpace)
     return {
       debugName: 'gsapClipMove',
@@ -239,11 +245,14 @@ const GsapClipTrackBar: React.VFC<{
           onDrag(dx: number, _dy: number, event: MouseEvent) {
             const delta = toUnitSpace(dx)
             temp?.discard()
-            const nextStart = Math.max(
-              0,
+            const snapped =
               DopeSnap.checkIfMouseEventSnapToPos(event, {
                 ignore: barNode,
-              }) ?? startAtDrag + delta,
+              }) ?? startAtDrag + delta
+            const {start: nextStart} = clampGsapClipTiming(
+              Math.max(0, snapped),
+              durationAtDrag,
+              sheet,
             )
             temp = getStudio()!.tempTransaction(({stateEditors}) => {
               stateEditors.coreByProject.historic.sheetsById.sequence.setGsapClipTrackTiming(
@@ -292,16 +301,22 @@ const GsapClipTrackBar: React.VFC<{
         return {
           onDrag(dx: number, _dy: number, event: MouseEvent) {
             const delta = toUnitSpace(dx)
-            const newStart = Math.max(
+            const newStartRaw = Math.max(
               0,
               DopeSnap.checkIfMouseEventSnapToPos(event, {
                 ignore: startHandleNode,
               }) ?? startAtDrag + delta,
             )
-            const newDuration = Math.max(
-              0.01,
-              durationAtDrag - (newStart - startAtDrag),
+            const newDurationRaw = Math.max(
+              MIN_GSAP_CLIP_DURATION,
+              durationAtDrag - (newStartRaw - startAtDrag),
             )
+            const {start: newStart, duration: newDuration} =
+              clampGsapClipTiming(
+                newStartRaw,
+                newDurationRaw,
+                leaf.sheetObject.sheet,
+              )
             temp?.discard()
             temp = getStudio()!.tempTransaction(({stateEditors}) => {
               stateEditors.coreByProject.historic.sheetsById.sequence.setGsapClipTrackTiming(
@@ -353,11 +368,16 @@ const GsapClipTrackBar: React.VFC<{
             const snappedEnd = DopeSnap.checkIfMouseEventSnapToPos(event, {
               ignore: endHandleNode,
             })
-            const newDuration = Math.max(
-              0.01,
+            const newDurationRaw = Math.max(
+              MIN_GSAP_CLIP_DURATION,
               snappedEnd != null
                 ? snappedEnd - clipStart
                 : startDuration + toUnitSpace(dx),
+            )
+            const {duration: newDuration} = clampGsapClipTiming(
+              clipStart,
+              newDurationRaw,
+              leaf.sheetObject.sheet,
             )
             temp?.discard()
             temp = getStudio()!.tempTransaction(({stateEditors}) => {
@@ -459,10 +479,8 @@ function useGsapClipContextMenu(
           opts.leaf.sheetObject.address.projectId
         ].sheetsById[opts.leaf.sheetObject.address.sheetId],
       )
-      const track = getSequenceStateFromSheet(
-        sheetState,
-        opts.sequenceVariant,
-      )?.tracksByObject[opts.leaf.sheetObject.address.objectKey]?.trackData[
+      const track = getSequenceStateFromSheet(sheetState, opts.sequenceVariant)
+        ?.tracksByObject[opts.leaf.sheetObject.address.objectKey]?.trackData[
         opts.leaf.trackId
       ]
       const items: IContextMenuItem[] = []
@@ -472,10 +490,7 @@ function useGsapClipContextMenu(
           track.gsapAnimationId,
         )
         const baseline = resolveGsapClipBaselineTiming(track, entry)
-        if (
-          baseline &&
-          gsapClipTimingDeviatesFromBaseline(track, baseline)
-        ) {
+        if (baseline && gsapClipTimingDeviatesFromBaseline(track, baseline)) {
           items.push({
             type: 'normal',
             label: 'Reset to original state',

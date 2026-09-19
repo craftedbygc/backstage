@@ -32,6 +32,7 @@ import {
   getStudioSequence,
   getStudioTrackSequenceVariant,
 } from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {clampSequenceEditorPosition} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/sequenceEditLimits'
 import {valTracksByObjectForSheetVariant} from '@unseenco/theatre-studio/utils/sequenceVariantHelpers'
 
 export const DOT_SIZE_PX = 6
@@ -336,15 +337,11 @@ function useDragForSingleKeyframeDot(
           onDrag(dx, dy, event) {
             const original =
               propsAtStartOfDrag.track.data.keyframes[propsAtStartOfDrag.index]
-            const newPosition = Math.max(
-              // check if our event hoversover a [data-pos] element
+            const newPosition = clampSequenceEditorPosition(
               DopeSnap.checkIfMouseEventSnapToPos(event, {
                 ignore: node,
-              }) ??
-                // if we don't find snapping target, check the distance dragged + original position
-                original.position + toUnitSpace(dx),
-              // sanitize to minimum of zero
-              0,
+              }) ?? original.position + toUnitSpace(dx),
+              val(propsAtStartOfDrag.layoutP.sheet),
             )
 
             tempTransaction?.discard()

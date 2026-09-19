@@ -50,6 +50,7 @@ import type {
   ObjectAddressKey,
   SequenceMarkerId,
   SequenceTrackId,
+  SheetInstanceId,
   UIPanelId,
 } from '@unseenco/theatre-shared/utils/ids'
 import {
@@ -70,6 +71,14 @@ import keyBy from 'lodash-es/keyBy'
 import pullFromArray from 'lodash-es/pull'
 import set from 'lodash-es/set'
 import sortBy from 'lodash-es/sortBy'
+import {val} from '@unseenco/theatre-dataverse'
+import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
+import getStudio from '@unseenco/theatre-studio/getStudio'
+import {isSheetInPageMode} from '@unseenco/theatre-studio/sheets/sheetSequenceMode'
+import {
+  clampGsapClipTiming,
+  clampSequenceEditorPosition,
+} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/sequenceEditLimits'
 import {graphEditorColors} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/GraphEditor/GraphEditor'
 import type {
   KeyframeWithPathToPropFromCommonRoot,
@@ -1019,6 +1028,17 @@ namespace stateEditors {
             )
           }
 
+          function _sheetForObjectAddress(
+            p: WithoutSheetInstance<SheetObjectAddress>,
+          ): Sheet | undefined {
+            const studio = getStudio()
+            if (!studio) return undefined
+            const project = val(studio.projectsP)[p.projectId]
+            if (!project) return undefined
+            const template = val(project.sheetTemplatesP)[p.sheetId]
+            return template?.getInstance('default' as SheetInstanceId)
+          }
+
           function _getTrack(
             p: WithoutSheetInstance<SheetObjectAddress> & {
               trackId: SequenceTrackId
@@ -1307,7 +1327,14 @@ namespace stateEditors {
 
                 return true
               })
-              .map((kf) => ({...kf, position: p.snappingFunction(kf.position)}))
+              .map((kf) => {
+                const sheet = _sheetForObjectAddress(p)
+                let position = p.snappingFunction(kf.position)
+                if (sheet) {
+                  position = clampSequenceEditorPosition(position, sheet)
+                }
+                return {...kf, position}
+              })
 
             const newKeyframesById = keyBy(sanitizedKeyframes, 'id')
 
@@ -1341,6 +1368,10 @@ namespace stateEditors {
             },
             clipEnd: number,
           ) {
+            const sheet = _sheetForObjectAddress(p)
+            if (sheet && isSheetInPageMode(sheet)) {
+              return
+            }
             const variantId = effectiveSequenceVariantForObjectKey(
               p.objectKey,
               p.sequenceVariant,
@@ -1387,6 +1418,16 @@ namespace stateEditors {
               timelineChildren: track.timelineChildren,
             })
             tracks.trackData[trackId] = track
+            const sheet = _sheetForObjectAddress(p)
+            if (sheet) {
+              const clamped = clampGsapClipTiming(
+                track.start,
+                track.duration,
+                sheet,
+              )
+              track.start = clamped.start
+              track.duration = clamped.duration
+            }
             _extendSequenceLengthForGsapClipEnd(p, gsapClipEndTime(track))
             return trackId
           }
@@ -1439,6 +1480,16 @@ namespace stateEditors {
             }
             if (typeof p.duration === 'number') {
               track.duration = Math.max(p.duration, 0.01)
+            }
+            const sheet = _sheetForObjectAddress(p)
+            if (sheet) {
+              const clamped = clampGsapClipTiming(
+                track.start,
+                track.duration,
+                sheet,
+              )
+              track.start = clamped.start
+              track.duration = clamped.duration
             }
             _extendSequenceLengthForGsapClipEnd(p, gsapClipEndTime(track))
           }
