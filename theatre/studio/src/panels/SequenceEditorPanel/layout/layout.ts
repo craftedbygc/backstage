@@ -22,7 +22,9 @@ import {
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 import {
   SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_LEFT_PADDING,
+  SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_RIGHT_PADDING,
   SEQUENCE_EDITOR_SCALED_SPACE_LEFT_PADDING,
+  SEQUENCE_EDITOR_SCALED_SPACE_RIGHT_PADDING,
 } from './sequenceEditorLayoutConstants'
 import type {
   KeyframeId,
@@ -155,6 +157,7 @@ export type SequenceEditorPanelLayout = {
      * TODO - scaledSpace with and without leftPadding are two different spaces. See if we can divide them so
      */
     leftPadding: number
+    rightPadding: number
     fromUnitSpace(u: number): number
     toUnitSpace(s: number): number
   }
@@ -337,15 +340,34 @@ export function sequenceEditorPanelLayout(
         const unitsShownInClippedSpace =
           clippedSpaceRange.end - clippedSpaceRange.start
 
-        const pixelsShownInClippedSpace = rightDims.width
+        const pageMode = isSheetInPageMode(sheet)
+
+        const leftPadding =
+          pageMode && !layoutOptions.isDocked
+            ? 0
+            : layoutOptions.isDocked
+            ? SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_LEFT_PADDING
+            : SEQUENCE_EDITOR_SCALED_SPACE_LEFT_PADDING
+
+        const rightPadding =
+          pageMode && !layoutOptions.isDocked
+            ? 0
+            : layoutOptions.isDocked
+            ? SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_RIGHT_PADDING
+            : SEQUENCE_EDITOR_SCALED_SPACE_RIGHT_PADDING
+
+        // Timeline content sits between left/right padding; zoom must map units to
+        // that inner width so the sequence end is reachable when scrolled to the max.
+        const pixelsShownInClippedSpace = Math.max(
+          1,
+          rightDims.width - leftPadding - rightPadding,
+        )
 
         const unitToPixelRatio =
           unitsShownInClippedSpace / pixelsShownInClippedSpace
 
         const pixelToUnitRatio =
           pixelsShownInClippedSpace / unitsShownInClippedSpace
-
-        const pageMode = isSheetInPageMode(sheet)
 
         return {
           fromUnitSpace(u: number): number {
@@ -354,12 +376,8 @@ export function sequenceEditorPanelLayout(
           toUnitSpace(s: number): number {
             return s * unitToPixelRatio
           },
-          leftPadding:
-            pageMode && !layoutOptions.isDocked
-              ? 0
-              : layoutOptions.isDocked
-              ? SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_LEFT_PADDING
-              : SEQUENCE_EDITOR_SCALED_SPACE_LEFT_PADDING,
+          leftPadding,
+          rightPadding,
         }
       },
       [clippedSpaceRange, rightDims.width, sheet, layoutOptions.isDocked],
