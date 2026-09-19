@@ -43,8 +43,11 @@ import {
   scrollTriggerChildInSequenceSpace,
   scrollTriggerTweenChildInSequenceSpace,
 } from '@unseenco/theatre-shared/gsap/extractScrollTriggerLayout'
-import {listScrollTriggerEntriesForSheet} from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
-import {sheetAddressKey} from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
+import {
+  isRegisteredScrollTriggerSheetObject,
+  listScrollTriggerEntriesForSheet,
+  sheetAddressKey,
+} from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
 import type {GsapTimelineChildClip} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type {NamespacedObjects} from '@unseenco/theatre-studio/panels/OutlinePanel/outlinePanelUtils'
 import {buildSequenceEditorNamespaceMap} from './sequenceEditorObjectNamespaces'
@@ -318,7 +321,11 @@ export const calculateSequenceEditorTree = (
         ? DEFAULT_SEQUENCE_VARIANT
         : activeSequenceVariant,
     )
-    return Object.keys(trackSetups).length > 0 || gsapClipEntries.length > 0
+    return (
+      Object.keys(trackSetups).length > 0 ||
+      gsapClipEntries.length > 0 ||
+      isRegisteredScrollTriggerSheetObject(sheetObject)
+    )
   }
 
   function appendNamespacedObjectsToTree(

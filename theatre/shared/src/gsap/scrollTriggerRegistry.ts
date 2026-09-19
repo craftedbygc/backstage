@@ -2,6 +2,7 @@ import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import type {GsapTimelineChildClip} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type {SheetAddress} from '@unseenco/theatre-shared/utils/addresses'
 import type {SheetInstanceId} from '@unseenco/theatre-shared/utils/ids'
+import {isGsapScrollTriggerSheetObjectKey} from './gsapSheetObjectKey'
 import {bumpGsapStudioRegistryRevision} from './gsapStudioRegistryRevision'
 
 const DEFAULT_SHEET_INSTANCE_ID = 'default' as SheetInstanceId
@@ -80,6 +81,20 @@ export function listScrollTriggerEntriesForSheet(
   const map = getStore().bySheetAddress.get(sheetKey)
   if (!map) return []
   return [...map.values()].sort((a, b) => a.layout.start - b.layout.start)
+}
+
+/** Whether this GSAP ScrollTrigger proxy should appear in the page-mode sequencer. */
+export function isRegisteredScrollTriggerSheetObject(
+  sheetObject: Pick<SheetObject, 'address'>,
+): boolean {
+  if (!isGsapScrollTriggerSheetObjectKey(sheetObject.address.objectKey)) {
+    return false
+  }
+  const key = sheetAddressKey(sheetObject.address)
+  return listScrollTriggerEntriesForSheet(key).some(
+    (entry) =>
+      entry.sheetObject?.address.objectKey === sheetObject.address.objectKey,
+  )
 }
 
 export function getScrollTriggerEntry(

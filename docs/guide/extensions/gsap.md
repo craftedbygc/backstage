@@ -144,7 +144,7 @@ gsap.timeline({
 registerAllGsapScrollTriggers(sheet) // optional catch-all for getAll()
 ```
 
-Outline proxies appear under **`GSAP / ScrollTrigger / …`**. Controlled tweens/timelines show as **child rows** under each trigger bar.
+Outline proxies appear under **`GSAP / ScrollTrigger / …`**. They **automatically** show as read-only bars in the page-mode sequencer (no **Add to sequence at playhead**). Controlled tweens/timelines show as **child rows** under each trigger bar.
 
 ## configureTheatreGsap
 
@@ -161,7 +161,7 @@ Returns `{ reset }` to restore the previous config. Namespace and outline collap
 
 After registration, each animation appears as a **proxy sheet object** (no sequenced props). Built-in Studio UI provides:
 
-- **Outline** — nested `GSAP` namespace; context menu **Add to sequence at playhead** / **Remove from sequence**.
+- **Outline** — nested `GSAP` namespace; context menu **Add to sequence at playhead** / **Remove from sequence** for clip proxies (not ScrollTrigger proxies in page mode).
 - **Detail panel** — same add/remove action when a GSAP object is selected.
 - **Sequence editor** — **GsapClipTrack** rows aligned to the parent clip; GSAP **timelines** expose child rows mapped from `getChildren()` with drag/resize and **Reset to original state** when timing diverges from baseline.
 
