@@ -12,9 +12,9 @@ describe('sequenceZoom', () => {
     const {maxWidth} = getZoomExtents(sequenceLength, subUnitsPerUnit)
 
     expect(range).toEqual({start: 0, end: maxWidth})
-    expect(zoomLevelFromRange(range, sequenceLength, subUnitsPerUnit)).toBeCloseTo(
-      0,
-    )
+    expect(
+      zoomLevelFromRange(range, sequenceLength, subUnitsPerUnit),
+    ).toBeCloseTo(0)
   })
 
   it('defaultClippedSpaceRange uses sequence length (e.g. page-style 0–100)', () => {
@@ -24,8 +24,8 @@ describe('sequenceZoom', () => {
 
     expect(range.start).toBe(0)
     expect(range.end).toBe(125)
-    expect(zoomLevelFromRange(range, sequenceLength, subUnitsPerUnit)).toBeCloseTo(
-      0,
-    )
+    expect(
+      zoomLevelFromRange(range, sequenceLength, subUnitsPerUnit),
+    ).toBeCloseTo(0)
   })
 })

@@ -340,6 +340,16 @@ export default class TheatreSequence implements ISequence {
     destinationNode: AudioNode
     gainNode: GainNode
   }> {
+    const priv = privateAPI(this)
+    if (priv._sheet.getSequenceMode() === 'page') {
+      notify.warning(
+        'Audio is not supported in page mode',
+        'Sequence audio expects time in seconds. Use time mode for attachAudio(), or scrub scroll-driven animation without audio.',
+      )
+      return Promise.reject(
+        new Error('sequence.attachAudio() is not supported in page mode'),
+      )
+    }
     const {audioContext, destinationNode, decodedBuffer, gainNode} =
       await resolveAudioBuffer(args)
 
@@ -349,7 +359,7 @@ export default class TheatreSequence implements ISequence {
       gainNode,
     )
 
-    privateAPI(this).replacePlaybackController(playbackController)
+    priv.replacePlaybackController(playbackController)
 
     return {audioContext, destinationNode, decodedBuffer, gainNode}
   }

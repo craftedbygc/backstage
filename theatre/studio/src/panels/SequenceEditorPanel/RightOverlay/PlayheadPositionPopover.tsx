@@ -10,6 +10,7 @@ import {val} from '@unseenco/theatre-dataverse'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import clamp from 'lodash-es/clamp'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {syncPageScrollToSequencePosition} from '@unseenco/theatre-studio/sheets/syncPageScrollToSequencePosition'
 
 const greaterThanOrEqualToZero = (v: number) => isFinite(v) && v >= 0
 
@@ -48,6 +49,7 @@ const PlayheadPositionPopover: React.FC<{
         }
         tempPosition = clamp(newPosition, 0, sequence.length)
         sequence.position = tempPosition
+        syncPageScrollToSequencePosition(sheet)
       },
       discardTemporaryValue(): void {
         if (tempPosition) {
@@ -61,10 +63,11 @@ const PlayheadPositionPopover: React.FC<{
           tempPosition = undefined
         }
         sequence.position = clamp(newPosition, 0, sequence.length)
+        syncPageScrollToSequencePosition(sheet)
         onRequestClose('permanentlySetValue')
       },
     }
-  }, [layoutP, sequence])
+  }, [layoutP, sequence, sheet, onRequestClose])
 
   const inputRef = useRef<HTMLInputElement>(null)
   useLayoutEffect(() => {

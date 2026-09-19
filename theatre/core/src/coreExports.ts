@@ -31,6 +31,17 @@ export type {IRafDriver} from './rafDrivers'
 export {setCoreRafDriver} from './coreTicker'
 export {isRemoteEditorWindow} from './internal/remoteEditor'
 export {attachGsapSequenceBridge} from './gsap/attachGsapSequenceBridge'
+export {
+  attachSheetScrollDriver,
+  syncNativeDocumentScrollToSequencePosition,
+  createNativeDocumentScrollDriver,
+} from './sheets/attachSheetScrollDriver'
+export type {ScrollDriver} from './sheets/attachSheetScrollDriver'
+export type {SheetSequenceMode} from './sheets/sheetSequenceMode'
+export {
+  PAGE_MODE_SEQUENCE_LENGTH,
+  PAGE_MODE_SUB_UNITS_PER_UNIT,
+} from './sheets/sheetSequenceMode'
 
 /**
  * Returns a project of the given id, or creates one if it doesn't already exist.

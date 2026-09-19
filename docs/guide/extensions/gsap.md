@@ -1,6 +1,6 @@
 # GSAP extension
 
-`@unseenco/theatre-gsap` bridges **GSAP** tweens and timelines to Theatre **sequence time mode** (v1). Register animations at runtime, then place them on the sheet sequence like keyframed props. ScrollTrigger and page-scroll modes are not part of v1.
+`@unseenco/theatre-gsap` bridges **GSAP** tweens and timelines to Theatre **sequence time mode** (v1). Register animations at runtime, then place them on the sheet sequence like keyframed props. **Page mode** (scroll-driven sequencer) is available via `@unseenco/theatre-core`; ScrollTrigger visualization in Studio is planned next.
 
 Studio support for GSAP clips is **built into** `@unseenco/theatre-studio`. You do **not** call `studio.extend()` for GSAP.
 
@@ -65,6 +65,28 @@ gsap.ticker.add((time) => {
 ```
 
 See the playground demo below for a full example with DOM targets and nested labels.
+
+## Page mode (scroll-driven sequence)
+
+Configure the sheet when you create it. **`sequenceMode: 'page'`** uses **0–100** as percent of page scroll (length fixed at **100**, snap steps **0.1%**). With **`gsap: true`**, the GSAP bridge and native document scroll sync are enabled automatically:
+
+```ts
+import {getProject} from '@unseenco/theatre-core'
+
+const sheet = getProject('My project').sheet('Main', {
+  sequenceMode: 'page',
+  gsap: true,
+})
+```
+
+You can also call **`sheet.setSequenceMode('page')`**, **`attachSheetScrollDriver(sheet)`**, and **`attachGsapSequenceBridge(sheet)`** separately if you need finer control.
+
+- **`sequence.play()`** is disabled in page mode; scrub the playhead or scroll the page.
+- Page scroll drives the playhead; scrubbing the playhead in Studio scrolls the page (not the other way on every position change).
+- GSAP clip **`defaultDuration`** should be set in **percent** when adding clips (defaults to **10** if omitted in page mode, not tween seconds).
+- **`sequence.attachAudio()`** is not supported in page mode.
+
+Playground: **`/shared/gsap-page-mode/`**.
 
 ## registerGsapAnimation
 

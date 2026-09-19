@@ -4,13 +4,15 @@ import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
 import {usePrism} from '@unseenco/theatre-react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {prism, val} from '@unseenco/theatre-dataverse'
-import { mapValues} from 'lodash-es'
+import {mapValues} from 'lodash-es'
 import React, {useLayoutEffect, useMemo} from 'react'
 import styled from 'styled-components'
 import {useReceiveVerticalWheelEvent} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/VerticalScrollContainer'
 import {pointerEventsAutoInNormalMode} from '@unseenco/theatre-studio/css'
 import type {IRange} from '@unseenco/theatre-shared/utils/types'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {isSheetInPageMode} from '@unseenco/theatre-studio/sheets/sheetSequenceMode'
+import {clampRangeToSequence} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/PlaybackControls/sequenceZoom'
 import {useDragPlayheadHandlers} from './useDragPlayheadHandlers'
 
 const Container = styled.div`
@@ -35,9 +37,9 @@ const HorizontallyScrollableArea: React.FC<{
   height: number
   children: React.ReactNode
 }> = React.memo(({layoutP, children, height}) => {
-  const {width, unitSpaceToScaledSpaceMultiplier} = usePrism(
+  const {leftWidth, unitSpaceToScaledSpaceMultiplier} = usePrism(
     () => ({
-      width: val(layoutP.rightDims.width),
+      leftWidth: val(layoutP.leftDims.width),
       unitSpaceToScaledSpaceMultiplier: val(layoutP.scaledSpace.fromUnitSpace)(
         1,
       ),
@@ -57,7 +59,7 @@ const HorizontallyScrollableArea: React.FC<{
     <Container
       ref={containerRef}
       style={{
-        width: width + 'px',
+        left: leftWidth + 'px',
         height: height + 'px',
         // @ts-expect-error
         '--unitSpaceToScaledSpaceMultiplier': unitSpaceToScaledSpaceMultiplier,
@@ -103,13 +105,19 @@ function useHandlePanAndZoom(
         })
 
         // Set maximum scroll points based on the sequence length.
-        // This is to avoid zooming out to infinity.
-        const sequenceLength = getStudioSequence(val(layoutP.sheet)).length
-        const maxEnd = sequenceLength + sequenceLength * 0.25
+        const sheet = val(layoutP.sheet)
+        const pageMode = isSheetInPageMode(sheet)
+        const sequenceLength = getStudioSequence(sheet).length
+        const maxEnd = pageMode
+          ? sequenceLength
+          : sequenceLength + sequenceLength * 0.25
 
-        val(layoutP.clippedSpace.setRange)(
-          normalizeRange(newRange, [0, maxEnd]),
-        )
+        const setRange = val(layoutP.clippedSpace.setRange)
+        if (pageMode) {
+          setRange(clampRangeToSequence(newRange, sequenceLength))
+        } else {
+          setRange(normalizeRange(newRange, [0, maxEnd]))
+        }
         return
       }
       // panning
@@ -117,7 +125,9 @@ function useHandlePanAndZoom(
         event.preventDefault()
         event.stopPropagation()
 
-        const sequenceLength = getStudioSequence(val(layoutP.sheet)).length
+        const sheet = val(layoutP.sheet)
+        const pageMode = isSheetInPageMode(sheet)
+        const sequenceLength = getStudioSequence(sheet).length
         const oldRange = val(layoutP.clippedSpace.range)
         const windowSize = oldRange.end - oldRange.start
         const speed = windowSize / sequenceLength
@@ -135,13 +145,18 @@ function useHandlePanAndZoom(
           (originalPos) => originalPos + scaleFactor,
         )
 
-        val(layoutP.clippedSpace.setRange)(newRange)
+        val(layoutP.clippedSpace.setRange)(
+          pageMode ? clampRangeToSequence(newRange, sequenceLength) : newRange,
+        )
         return
       } else {
         receiveVerticalWheelEvent(event)
         event.preventDefault()
         event.stopPropagation()
 
+        const sheet = val(layoutP.sheet)
+        const pageMode = isSheetInPageMode(sheet)
+        const sequenceLength = getStudioSequence(sheet).length
         const scaledSpaceToUnitSpace = val(layoutP.scaledSpace.toUnitSpace)
         const deltaPos = scaledSpaceToUnitSpace(event.deltaX * 1)
         const oldRange = val(layoutP.clippedSpace.range)
@@ -149,7 +164,9 @@ function useHandlePanAndZoom(
 
         const setRange = val(layoutP.clippedSpace.setRange)
 
-        setRange(newRange)
+        setRange(
+          pageMode ? clampRangeToSequence(newRange, sequenceLength) : newRange,
+        )
 
         return
       }
@@ -187,7 +204,14 @@ function useHandlePanAndZoom(
                 (originalPos) => originalPos + delta,
               )
 
-              setRange(newRange)
+              setRange(
+                isSheetInPageMode(val(layoutP.sheet))
+                  ? clampRangeToSequence(
+                      newRange,
+                      getStudioSequence(val(layoutP.sheet)).length,
+                    )
+                  : newRange,
+              )
             },
           }
         },

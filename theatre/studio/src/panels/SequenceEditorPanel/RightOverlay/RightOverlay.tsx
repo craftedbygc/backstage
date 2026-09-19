@@ -27,10 +27,10 @@ const RightOverlay: React.FC<{
   layoutP: Pointer<SequenceEditorPanelLayout>
 }> = ({layoutP}) => {
   return usePrism(() => {
-    const width = val(layoutP.rightDims.width)
+    const leftWidth = val(layoutP.leftDims.width)
 
     return (
-      <Container style={{width: width + 'px'}}>
+      <Container style={{left: leftWidth + 'px'}}>
         <Playhead layoutP={layoutP} />
         <HorizontalScrollbar layoutP={layoutP} />
         <FrameStamp layoutP={layoutP} />

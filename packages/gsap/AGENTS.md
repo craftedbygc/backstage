@@ -51,8 +51,9 @@ User-facing docs: `docs/guide/extensions/gsap.md`.
 
 Register in root `devEnv/cli.ts`, `tsconfig.base.json`, and `devEnv/typecheck-all-projects/tsconfig.all.json` when adding exports (already done for this package).
 
-## v2 notes (not implemented)
+## v2 notes (partial)
 
-- **ScrollTrigger**: map scroll position instead of `sequence.pointer.position`.
-- **Page / route modes**: multiple sequences per route; clips may need variant-aware binding.
-- Manual playground: `yarn playground` → `/shared/gsap-time-mode/`
+- **Page mode (sequencer):** `project.sheet(id, { sequenceMode: 'page', gsap: true })` (or manual `setSequenceMode` / attach helpers) — see `docs/guide/extensions/gsap.md`. Playground: `/shared/gsap-page-mode/`.
+- **ScrollTrigger (next):** visualize ScrollTrigger instances in the sequencer (read-only first).
+- **Page / route modes (later):** multiple sequences per route; variant-aware binding.
+- Time mode playground: `/shared/gsap-time-mode/`

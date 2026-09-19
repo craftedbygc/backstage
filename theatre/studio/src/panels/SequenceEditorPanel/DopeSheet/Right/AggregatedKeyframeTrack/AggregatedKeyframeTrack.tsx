@@ -8,9 +8,7 @@ import type {
   SequenceEditorTree_Sheet,
   SequenceEditorTree_SheetObject,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
-import {
-  collectSheetObjectsFromSheetChildren,
-} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import {collectSheetObjectsFromSheetChildren} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import {
   isSequenceEditorSheetScopedAggregateViewModel,
   sequenceEditorAggregateViewModelSheetAddress,
@@ -48,6 +46,7 @@ import {
   getStudioSequence,
   pointerToActiveSheetSequence,
 } from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {clampSequenceEditorPosition} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/sequenceEditLimits'
 import type {SheetObjectAddress} from '@unseenco/theatre-shared/utils/addresses'
 import {
   decodePathToProp,
@@ -148,14 +147,11 @@ function AggregatedKeyframeTrack_memo(props: IAggregatedKeyframeTracksProps) {
       viewModel.type === 'sheet'
         ? collectAggregateSnapPositionsSheet(viewModel, snapPositions)
         : viewModel.type === 'objectNamespace'
-          ? collectAggregateSnapPositionsObjectNamespace(
-              viewModel,
-              snapPositions,
-            )
-          : collectAggregateSnapPositionsObjectOrCompound(
-              viewModel,
-              snapPositions,
-            ),
+        ? collectAggregateSnapPositionsObjectNamespace(viewModel, snapPositions)
+        : collectAggregateSnapPositionsObjectOrCompound(
+            viewModel,
+            snapPositions,
+          ),
     [snapPositions],
   )
 
@@ -414,7 +410,8 @@ function pasteKeyframesSheetScoped(
         ? viewModel.sheet.project
         : scopedRows[0]!.sheetObject.template.project
     const tracksByObject = pointerToPrism(
-      pointerToActiveSheetSequence(project, sheetId, sheetAddress).tracksByObject,
+      pointerToActiveSheetSequence(project, sheetId, sheetAddress)
+        .tracksByObject,
     ).getValue()
 
     const placeableKeyframes = keyframes
@@ -733,15 +730,11 @@ function useDragForAggregateKeyframeDot(
 
         return {
           onDrag(dx, dy, event) {
-            const newPosition = Math.max(
-              // check if our event hovers over a [data-pos] element
+            const newPosition = clampSequenceEditorPosition(
               DopeSnap.checkIfMouseEventSnapToPos(event, {
                 // ignore: node,
-              }) ??
-                // if we don't find snapping target, check the distance dragged + original position
-                keyframes[0].kf.position + toUnitSpace(dx),
-              // sanitize to minimum of zero
-              0,
+              }) ?? keyframes[0].kf.position + toUnitSpace(dx),
+              val(propsAtStartOfDrag.layoutP.sheet),
             )
 
             frameStampLock(true, newPosition)

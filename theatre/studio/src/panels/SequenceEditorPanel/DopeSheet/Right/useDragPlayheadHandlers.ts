@@ -10,6 +10,7 @@ import {
   snapToNone,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {syncPageScrollToSequencePosition} from '@unseenco/theatre-studio/sheets/syncPageScrollToSequencePosition'
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 
 export function useDragPlayheadHandlers(
@@ -44,9 +45,11 @@ export function useDragPlayheadHandlers(
         )
 
         const setIsSeeking = val(layoutP.seeker.setIsSeeking)
-        const sequence = getStudioSequence(val(layoutP.sheet))
+        const sheet = val(layoutP.sheet)
+        const sequence = getStudioSequence(sheet)
 
         sequence.position = initialPositionInUnitSpace
+        syncPageScrollToSequencePosition(sheet)
 
         const posBeforeSeek = initialPositionInUnitSpace
         const scaledSpaceToUnitSpace = val(layoutP.scaledSpace.toUnitSpace)
@@ -69,6 +72,7 @@ export function useDragPlayheadHandlers(
             }
 
             sequence.position = newPosition
+            syncPageScrollToSequencePosition(val(layoutP.sheet))
           },
           onDragEnd() {
             setIsSeeking(false)

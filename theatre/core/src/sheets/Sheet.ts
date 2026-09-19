@@ -31,6 +31,14 @@ import {
   getSequenceStateFromSheet,
   validateSequenceVariantIdOrThrow,
 } from '@unseenco/theatre-core/sequences/sequenceVariants'
+import type {SheetSequenceMode} from '@unseenco/theatre-core/sheets/sheetSequenceMode'
+import {
+  PAGE_MODE_SEQUENCE_LENGTH,
+  PAGE_MODE_SUB_UNITS_PER_UNIT,
+} from '@unseenco/theatre-core/sheets/sheetSequenceMode'
+import {attachGsapSequenceBridge} from '@unseenco/theatre-core/gsap/attachGsapSequenceBridge'
+import {attachSheetScrollDriver} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
+import type {VoidFn} from '@unseenco/theatre-shared/utils/types'
 
 type SheetObjectMap = StrictRecord<ObjectAddressKey, SheetObject>
 
@@ -57,6 +65,10 @@ export default class Sheet {
   private readonly _studioPreviewVariantOverride = new Atom<
     SequenceVariantId | undefined
   >(undefined)
+  private readonly _sequenceMode = new Atom<SheetSequenceMode>('time')
+  readonly sequenceModeP = this._sequenceMode.pointer
+  private _pageScrollDisposer: VoidFn | undefined
+  private _gsapBridgeDisposer: VoidFn | undefined
   readonly activeSequenceVariantP = this._activeSequenceVariant.pointer
   readonly effectiveActiveSequenceVariantD: Prism<SequenceVariantId>
   readonly address: SheetAddress
@@ -155,6 +167,7 @@ export default class Sheet {
    * this sheet instance from the project. Persisted state is kept.
    */
   unload() {
+    this.disposeRuntimeIntegrations()
     for (const sequence of Object.values(this._sequences)) {
       sequence.pause()
     }
@@ -170,6 +183,9 @@ export default class Sheet {
     const variantId = variant ?? val(this._activeSequenceVariant.pointer)
     if (!this._sequences[variantId]) {
       const lengthD = prism(() => {
+        if (val(this._sequenceMode.pointer) === 'page') {
+          return PAGE_MODE_SEQUENCE_LENGTH
+        }
         const sheetState = val(
           this.project.pointers.historic.sheetsById[this.address.sheetId],
         )
@@ -181,6 +197,9 @@ export default class Sheet {
       })
 
       const subUnitsPerUnitD = prism(() => {
+        if (val(this._sequenceMode.pointer) === 'page') {
+          return PAGE_MODE_SUB_UNITS_PER_UNIT
+        }
         const sheetState = val(
           this.project.pointers.historic.sheetsById[this.address.sheetId],
         )
@@ -243,6 +262,41 @@ export default class Sheet {
       )
     }
     this._studioPreviewVariantOverride.set(variantId)
+  }
+
+  getSequenceMode(): SheetSequenceMode {
+    return this._sequenceMode.get()
+  }
+
+  setSequenceMode(mode: SheetSequenceMode): void {
+    if (this._sequenceMode.get() === mode) return
+    this._sequenceMode.set(mode)
+    this.syncPageScrollDriver()
+    if (this._gsapBridgeDisposer) {
+      this._gsapBridgeDisposer()
+      this._gsapBridgeDisposer = attachGsapSequenceBridge(this.publicApi)
+    }
+  }
+
+  enableGsapSequenceBridge(): void {
+    if (this._gsapBridgeDisposer) return
+    this._gsapBridgeDisposer = attachGsapSequenceBridge(this.publicApi)
+    this.syncPageScrollDriver()
+  }
+
+  disposeRuntimeIntegrations(): void {
+    this._pageScrollDisposer?.()
+    this._pageScrollDisposer = undefined
+    this._gsapBridgeDisposer?.()
+    this._gsapBridgeDisposer = undefined
+  }
+
+  private syncPageScrollDriver(): void {
+    this._pageScrollDisposer?.()
+    this._pageScrollDisposer = undefined
+    if (this.getSequenceMode() === 'page') {
+      this._pageScrollDisposer = attachSheetScrollDriver(this.publicApi)
+    }
   }
 }
 

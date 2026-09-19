@@ -105,6 +105,9 @@ export default class Sequence implements PointerToPrismProvider {
 
     this._positionFormatterD = prism(() => {
       const subUnitsPerUnit = val(this._subUnitsPerUnitD)
+      if (this._sheet.getSequenceMode() === 'page') {
+        return new PercentBasedPositionFormatter(subUnitsPerUnit)
+      }
       return new TimeBasedPositionFormatter(subUnitsPerUnit)
     })
   }
@@ -344,6 +347,13 @@ export default class Sequence implements PointerToPrismProvider {
     }>,
     ticker: Ticker,
   ): Promise<boolean> {
+    if (this._sheet.getSequenceMode() === 'page') {
+      notify.warning(
+        'Playback is disabled in page mode',
+        'The sequence is driven by page scroll. Scrub the playhead or scroll the page instead of calling sequence.play().',
+      )
+      return false
+    }
     const sequenceDuration = this.length
     const range: IPlaybackRange =
       conf && conf.range ? conf.range : [0, sequenceDuration]
@@ -585,6 +595,36 @@ class TimeBasedPositionFormatter implements ISequencePositionFormatter {
 
   formatBasic(posInUnitSpace: number): string {
     return posInUnitSpace.toFixed(2) + 's'
+  }
+}
+
+class PercentBasedPositionFormatter implements ISequencePositionFormatter {
+  constructor(private readonly _subUnitsPerUnit: number) {}
+
+  formatSubUnitForGrid(posInUnitSpace: number): string {
+    const subUnitSize = 1 / this._subUnitsPerUnit
+    const withinUnit = posInUnitSpace % 1
+    const tenths = Math.round(withinUnit / subUnitSize)
+    return tenths + 't'
+  }
+
+  formatFullUnitForGrid(posInUnitSpace: number): string {
+    return Math.round(posInUnitSpace) + '%'
+  }
+
+  formatForPlayhead(posInUnitSpace: number): string {
+    const whole = Math.floor(posInUnitSpace)
+    const subUnitSize = 1 / this._subUnitsPerUnit
+    const withinUnit = posInUnitSpace - whole
+    const tenths = Math.round(withinUnit / subUnitSize)
+    if (tenths <= 0) {
+      return whole + '%'
+    }
+    return whole + '.' + tenths + '%'
+  }
+
+  formatBasic(posInUnitSpace: number): string {
+    return posInUnitSpace.toFixed(1) + '%'
   }
 }
 

@@ -14,11 +14,17 @@ import {Atom, prism, val} from '@unseenco/theatre-dataverse'
 import type {SequenceEditorTree} from './tree'
 import {calculateSequenceEditorTree} from './tree'
 import {clamp} from 'lodash-es'
+import {isSheetInPageMode} from '@unseenco/theatre-studio/sheets/sheetSequenceMode'
+import {
+  clampRangeToSequence,
+  defaultClippedSpaceRange,
+} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/PlaybackControls/sequenceZoom'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
-import {defaultClippedSpaceRange} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/PlaybackControls/sequenceZoom'
 import {
   SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_LEFT_PADDING,
+  SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_RIGHT_PADDING,
   SEQUENCE_EDITOR_SCALED_SPACE_LEFT_PADDING,
+  SEQUENCE_EDITOR_SCALED_SPACE_RIGHT_PADDING,
 } from './sequenceEditorLayoutConstants'
 import type {
   KeyframeId,
@@ -151,6 +157,7 @@ export type SequenceEditorPanelLayout = {
      * TODO - scaledSpace with and without leftPadding are two different spaces. See if we can divide them so
      */
     leftPadding: number
+    rightPadding: number
     fromUnitSpace(u: number): number
     toUnitSpace(s: number): number
   }
@@ -223,6 +230,9 @@ export function sequenceEditorPanelLayout(
     } = prism.memo(
       'leftDims',
       () => {
+        // Left labels use leftDims.width; the track column must anchor at the same
+        // offset (left: leftDims.width), not width:rightDims.width + right:0, so a
+        // narrower scrollport than panelDims.width does not pull tracks under props.
         const leftDims: DimsOfPanelPart = {
           width: Math.floor(panelDims.width * panelSplitRatio),
           height: panelDims.height,
@@ -316,9 +326,13 @@ export function sequenceEditorPanelLayout(
     const unitSpace = {}
 
     const sequence = getStudioSequence(sheet)
-    const clippedSpaceRange =
+    const clippedSpaceRangeRaw =
       val(ahistoricStateP.sequence.clippedSpaceRange) ??
       defaultClippedSpaceRange(sequence.length, sequence.subUnitsPerUnit)
+
+    const clippedSpaceRange = isSheetInPageMode(sheet)
+      ? clampRangeToSequence(clippedSpaceRangeRaw, sequence.length)
+      : clippedSpaceRangeRaw
 
     const scaledSpace: SequenceEditorPanelLayout['scaledSpace'] = prism.memo(
       'scaledSpace',
@@ -326,7 +340,20 @@ export function sequenceEditorPanelLayout(
         const unitsShownInClippedSpace =
           clippedSpaceRange.end - clippedSpaceRange.start
 
-        const pixelsShownInClippedSpace = rightDims.width
+        const leftPadding = layoutOptions.isDocked
+          ? SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_LEFT_PADDING
+          : SEQUENCE_EDITOR_SCALED_SPACE_LEFT_PADDING
+
+        const rightPadding = layoutOptions.isDocked
+          ? SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_RIGHT_PADDING
+          : SEQUENCE_EDITOR_SCALED_SPACE_RIGHT_PADDING
+
+        // Timeline content sits between left/right padding; zoom must map units to
+        // that inner width so the sequence end is reachable when scrolled to the max.
+        const pixelsShownInClippedSpace = Math.max(
+          1,
+          rightDims.width - leftPadding - rightPadding,
+        )
 
         const unitToPixelRatio =
           unitsShownInClippedSpace / pixelsShownInClippedSpace
@@ -341,12 +368,11 @@ export function sequenceEditorPanelLayout(
           toUnitSpace(s: number): number {
             return s * unitToPixelRatio
           },
-          leftPadding: layoutOptions.isDocked
-            ? SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_LEFT_PADDING
-            : SEQUENCE_EDITOR_SCALED_SPACE_LEFT_PADDING,
+          leftPadding,
+          rightPadding,
         }
       },
-      [clippedSpaceRange, rightDims.width, layoutOptions.isDocked],
+      [clippedSpaceRange, rightDims.width, sheet, layoutOptions.isDocked],
     )
 
     const setClippedSpaceRange = prism.memo(
@@ -364,13 +390,20 @@ export function sequenceEditorPanelLayout(
               range.end = length
             }
 
+            if (isSheetInPageMode(sheet)) {
+              const sequenceLength = getStudioSequence(sheet).length
+              const clamped = clampRangeToSequence(range, sequenceLength)
+              range.start = clamped.start
+              range.end = clamped.end
+            }
+
             stateEditors.studio.ahistoric.projects.stateByProjectId.stateBySheetId.sequence.clippedSpaceRange.set(
               {...sheet.address, range},
             )
           })
         }
       },
-      [],
+      [sheet],
     )
 
     const clippedSpace: SequenceEditorPanelLayout['clippedSpace'] = prism.memo(
