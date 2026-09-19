@@ -20,6 +20,10 @@ import {
   defaultClippedSpaceRange,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/PlaybackControls/sequenceZoom'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {
+  SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_LEFT_PADDING,
+  SEQUENCE_EDITOR_SCALED_SPACE_LEFT_PADDING,
+} from './sequenceEditorLayoutConstants'
 import type {
   KeyframeId,
   ObjectAddressKey,
@@ -177,9 +181,14 @@ export type SequenceEditorPanelLayout = {
  */
 const panelSplitRatio = 0.2
 
+export type SequenceEditorPanelLayoutOptions = {
+  isDocked: boolean
+}
+
 export function sequenceEditorPanelLayout(
   sheet: Sheet,
   panelDimsP: Pointer<PanelDims>,
+  layoutOptions: SequenceEditorPanelLayoutOptions,
 ): Prism<Pointer<SequenceEditorPanelLayout>> {
   const studio = getStudio()!
 
@@ -342,10 +351,14 @@ export function sequenceEditorPanelLayout(
           toUnitSpace(s: number): number {
             return s * unitToPixelRatio
           },
-          leftPadding: pageMode ? 0 : 10,
+          leftPadding: pageMode
+            ? 0
+            : layoutOptions.isDocked
+            ? SEQUENCE_EDITOR_DOCKED_SCALED_SPACE_LEFT_PADDING
+            : SEQUENCE_EDITOR_SCALED_SPACE_LEFT_PADDING,
         }
       },
-      [clippedSpaceRange, rightDims.width, sheet],
+      [clippedSpaceRange, rightDims.width, sheet, layoutOptions.isDocked],
     )
 
     const setClippedSpaceRange = prism.memo(

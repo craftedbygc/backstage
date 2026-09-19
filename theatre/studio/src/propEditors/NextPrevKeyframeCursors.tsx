@@ -161,9 +161,13 @@ const PrevOrNextButton = styled(Button)<{
   }
 `
 
+const prevHoverTranslateX = (compact: boolean) => (compact ? -6 : -11)
+const nextHoverTranslateX = (compact: boolean) => (compact ? 6 : 11)
+
 const Prev = styled(PrevOrNextButton)<{
   available: boolean
   flag: PresenceFlag | undefined
+  $compact: boolean
 }>`
   ${hideWhenIdle};
   position: absolute;
@@ -172,12 +176,16 @@ const Prev = styled(PrevOrNextButton)<{
   transform: translate(-2px, -50%);
   ${Container}:hover & {
     /* Clear the diamond tip; may sit slightly past the tight hover chrome. */
-    transform: translate(-11px, -50%);
+    transform: translate(
+      ${({$compact}) => prevHoverTranslateX($compact)}px,
+      -50%
+    );
   }
 `
 const Next = styled(PrevOrNextButton)<{
   available: boolean
   flag: PresenceFlag | undefined
+  $compact: boolean
 }>`
   ${hideWhenIdle};
   position: absolute;
@@ -185,15 +193,21 @@ const Next = styled(PrevOrNextButton)<{
   top: 50%;
   transform: translate(2px, -50%);
   ${Container}:hover & {
-    transform: translate(11px, -50%);
+    transform: translate(
+      ${({$compact}) => nextHoverTranslateX($compact)}px,
+      -50%
+    );
   }
 `
 
 const NextPrevKeyframeCursors: React.VFC<
   NearbyKeyframesControls & {
     hasDivergedFromSavedState?: boolean
+    /** Tighter hover expansion (e.g. docked sequence left column). */
+    compact?: boolean
   }
 > = (props) => {
+  const compact = props.compact === true
   const prevPresence = usePresence(props.prev?.itemKey)
   const curPresence = usePresence(
     props.cur?.type === 'on' ? props.cur.itemKey : undefined,
@@ -206,6 +220,7 @@ const NextPrevKeyframeCursors: React.VFC<
         available={!!props.prev}
         onClick={props.prev?.jump}
         flag={prevPresence.flag}
+        $compact={compact}
         {...prevPresence.attrs}
       >
         <ChevronPrevSvg />
@@ -225,6 +240,7 @@ const NextPrevKeyframeCursors: React.VFC<
         available={!!props.next}
         onClick={props.next?.jump}
         flag={nextPresence.flag}
+        $compact={compact}
         {...nextPresence.attrs}
       >
         <ChevronNextSvg />

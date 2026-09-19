@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import DopeSheetSelectionView from './DopeSheetSelectionView'
 import HorizontallyScrollableArea from './HorizontallyScrollableArea'
 import SheetRow from './SheetRow'
+import {SEQUENCE_EDITOR_BOTTOM_SCROLL_SLACK_PX} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/sequenceEditorLayoutConstants'
 
 export const contentWidth = 1000000
 
@@ -30,7 +31,8 @@ const Right: React.FC<{
       Math.max(
         val(layoutP.tree.heightIncludingChildren),
         val(layoutP.dopeSheetDims.height),
-      )
+      ) +
+      SEQUENCE_EDITOR_BOTTOM_SCROLL_SLACK_PX
 
     return (
       <>
