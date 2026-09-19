@@ -5,18 +5,24 @@ import GsapChildClipLeftRow from './GsapChildClipRow'
 import {setCollapsedSheetItem} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/setCollapsedSheetObjectOrCompoundProp'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import type {SequenceEditorTree_GsapChildClip} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
+import {
+  gsapKindBadgeForClipHasTimelineChildren,
+  renderGsapListLabel,
+} from '@unseenco/theatre-studio/gsap/GsapKindBadge'
 
 const GsapClipTrackLeftRow: React.VFC<{
   leaf: SequenceEditorTree_GsapClipTrack
 }> = ({leaf}) => {
   const hasChildren = leaf.children.length > 0
+  const clipKind = gsapKindBadgeForClipHasTimelineChildren(hasChildren)
+  const clipLabel = renderGsapListLabel(clipKind, leaf.displayLabel)
 
   if (!hasChildren) {
     if (!leaf.shouldRender) return null
     return (
       <AnyCompositeRow
         leaf={leaf}
-        label={leaf.displayLabel}
+        label={clipLabel}
         isCollapsed={false}
         toggleSelect={() => {
           getStudio().transaction(({stateEditors}) => {
@@ -33,7 +39,7 @@ const GsapClipTrackLeftRow: React.VFC<{
   return (
     <AnyCompositeRow
       leaf={leaf}
-      label={leaf.displayLabel}
+      label={clipLabel}
       isCollapsed={leaf.isCollapsed}
       toggleSelect={() => {
         getStudio().transaction(({stateEditors}) => {

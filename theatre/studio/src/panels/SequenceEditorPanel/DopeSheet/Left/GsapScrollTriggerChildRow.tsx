@@ -3,10 +3,11 @@ import React from 'react'
 import styled from 'styled-components'
 import {BaseHeader, LeftRowContainer} from './AnyCompositeRow'
 import {propNameTextCSS} from '@unseenco/theatre-studio/propEditors/utils/propNameTextCSS'
+import {renderGsapListLabel} from '@unseenco/theatre-studio/gsap/GsapKindBadge'
 
 const Label = styled.span`
   ${propNameTextCSS};
-  color: #8a9ac4;
+  color: #8a8a8a;
   font-size: 11px;
 `
 
@@ -28,7 +29,9 @@ const GsapScrollTriggerChildLeftRow: React.VFC<{
         isEven={leaf.n % 2 === 0}
         style={{height: leaf.nodeHeight + 'px'}}
       >
-        <Label title={leaf.childId}>{leaf.displayLabel}</Label>
+        <Label title={leaf.childId}>
+          {renderGsapListLabel('TW', leaf.displayLabel)}
+        </Label>
       </Header>
     </LeftRowContainer>
   )

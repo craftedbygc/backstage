@@ -7,6 +7,10 @@ import GsapScrollTriggerChildLeftRow from './GsapScrollTriggerChildRow'
 import {setCollapsedSheetItem} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/setCollapsedSheetObjectOrCompoundProp'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import {createStudioSheetItemKey} from '@unseenco/theatre-shared/utils/ids'
+import {
+  gsapKindBadgeForSheetObject,
+  renderGsapListLabel,
+} from '@unseenco/theatre-studio/gsap/GsapKindBadge'
 
 const LeftSheetObjectRow: React.VFC<{
   leaf: SequenceEditorTree_SheetObject
@@ -52,10 +56,13 @@ const LeftSheetObjectRow: React.VFC<{
     })
   }
 
+  const rowLabel = leaf.displayLabel ?? leaf.sheetObject.address.objectKey
+  const gsapKind = gsapKindBadgeForSheetObject(leaf.sheetObject)
+
   return (
     <AnyCompositeRow
       leaf={leaf}
-      label={leaf.displayLabel ?? leaf.sheetObject.address.objectKey}
+      label={renderGsapListLabel(gsapKind, rowLabel)}
       isCollapsed={isCollapsed}
       toggleSelect={() => {
         // set selection to this sheet object on click
