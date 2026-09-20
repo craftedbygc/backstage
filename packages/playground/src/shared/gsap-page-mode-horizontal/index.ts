@@ -17,15 +17,15 @@ import {
   registerGsapScrollTrigger,
 } from '@unseenco/theatre-gsap'
 import {
+  hidePageModeDemoForRemoteEditor,
   isRemotePageModeEditorWindow,
-  replaceBodyWithRemoteEditorPlaceholder,
 } from '../utils/remoteEditorPageModeDemo'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const remoteEditor = isRemotePageModeEditorWindow()
 if (remoteEditor) {
-  replaceBodyWithRemoteEditorPlaceholder()
+  hidePageModeDemoForRemoteEditor()
 }
 
 const rafDriver = createRafDriver({name: 'gsap-page-mode-horizontal'})
@@ -50,14 +50,11 @@ const sheet = project.sheet('Main', {
     : {scrollDriver: createDefaultPageScrollDriver()}),
 })
 
-if (remoteEditor) {
-  void project.ready
-} else {
-  const heroBox = document.getElementById('hero-box')!
-  const stPanelA = document.getElementById('st-panel-a')!
-  const stTarget = document.getElementById('st-target')!
+const heroBox = document.getElementById('hero-box')!
+const stPanelA = document.getElementById('st-panel-a')!
+const stTarget = document.getElementById('st-target')!
 
-  void project.ready.then(() => {
+void project.ready.then(() => {
   sheet.object(
     'Hero box',
     {
@@ -117,5 +114,4 @@ if (remoteEditor) {
     .to(stTarget, {y: -20, duration: 0.5, ease: 'none', id: 'rise'})
 
   registerAllGsapScrollTriggers(sheet)
-  })
-}
+})
