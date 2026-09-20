@@ -10,6 +10,11 @@ import type {
   SheetAddress,
   WithoutSheetInstance,
 } from '@unseenco/theatre-shared/utils/addresses'
+import {syncPageScrollToSequencePosition} from '@unseenco/theatre-studio/sheets/syncPageScrollToSequencePosition'
+
+function syncPageScrollAfterTransportSeek(sequence: Sequence): void {
+  syncPageScrollToSequencePosition(sequence._sheet)
+}
 
 type ControlledPlaybackState = {
   range: IPlaybackRange
@@ -116,6 +121,7 @@ export function getJumpRange(sequence: Sequence): IPlaybackRange {
 
 export function jumpToStart(sequence: Sequence) {
   sequence.position = getJumpRange(sequence)[0]
+  syncPageScrollAfterTransportSeek(sequence)
 }
 
 export function jumpToEnd(sequence: Sequence) {
@@ -127,6 +133,7 @@ export function jumpToEnd(sequence: Sequence) {
 
   if (sequence._sheet.getSequenceMode() === 'page') {
     sequence.position = Math.min(targetEnd, sequence.length)
+    syncPageScrollAfterTransportSeek(sequence)
     return
   }
 
@@ -145,6 +152,7 @@ export function jumpToEnd(sequence: Sequence) {
   }
 
   sequence.position = targetEnd
+  syncPageScrollAfterTransportSeek(sequence)
 }
 
 export function stepFrame(sequence: Sequence, direction: -1 | 1) {
@@ -152,6 +160,7 @@ export function stepFrame(sequence: Sequence, direction: -1 | 1) {
   sequence.position = sequence.closestGridPosition(
     sequence.position + direction * frame,
   )
+  syncPageScrollAfterTransportSeek(sequence)
 }
 
 export function toggleSequencePlayback(seq: Sequence) {

@@ -1,6 +1,6 @@
 {
   "name": "@unseenco/theatre-core",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "license": "Apache-2.0",
   "description": "Motion design editor for the web",
   "repository": {
@@ -11,7 +11,7 @@
   "author": {
     "name": "TheaterJS Oy",
     "email": "hello@theatrejs.com",
-    "url": "https://www.theatrejs.com"
+    "url": "https://unseen-theatre.netlify.app"
   },
   "main": "dist/index.js",
   "module": "dist/index.mjs",

@@ -1,7 +1,16 @@
+import {encodeDomElementHighlightTarget} from '@unseenco/theatre-shared/gsap/domElementHighlightTarget'
+import {
+  onRemoteDomElementHighlightChange,
+  postRemoteDomHighlightBroadcast,
+  postRemoteDomHighlightClear,
+} from '@unseenco/theatre-shared/sheets/remoteDomElementHighlight'
+import {getSequenceEditorProjectId} from '@unseenco/theatre-studio/selectors'
+import {isRemoteEditorWindow} from '@unseenco/theatre-studio/remoteEditor'
 import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
@@ -29,11 +38,39 @@ export function DomElementHighlightProvider(props: {
       setRect(null)
       return
     }
+    if (isRemoteEditorWindow()) {
+      const projectId = getSequenceEditorProjectId()
+      const target = encodeDomElementHighlightTarget(element)
+      if (projectId && target) {
+        postRemoteDomHighlightBroadcast(projectId, target)
+      }
+      return
+    }
     setRect(element.getBoundingClientRect())
   }, [])
 
   const hideElementHighlight = useCallback(() => {
+    if (isRemoteEditorWindow()) {
+      const projectId = getSequenceEditorProjectId()
+      if (projectId) {
+        postRemoteDomHighlightClear(projectId)
+      }
+      return
+    }
     setRect(null)
+  }, [])
+
+  useEffect(() => {
+    if (isRemoteEditorWindow()) {
+      return
+    }
+    return onRemoteDomElementHighlightChange((element) => {
+      if (!element || !element.isConnected) {
+        setRect(null)
+        return
+      }
+      setRect(element.getBoundingClientRect())
+    })
   }, [])
 
   const value = useMemo(
@@ -59,12 +96,15 @@ export function useDomElementHighlight(): DomElementHighlightContextValue {
   return ctx
 }
 
+/** Above `#pointer-root` shell (z-index 50) when highlight renders as its sibling. */
+const HIGHLIGHT_Z_INDEX = 51
+
 const EdgeArrow = styled.div<{
   $edge: 'top' | 'bottom' | 'left' | 'right'
 }>`
   position: fixed;
   pointer-events: none;
-  z-index: 2;
+  z-index: ${HIGHLIGHT_Z_INDEX + 1};
   color: rgba(0, 180, 255, 0.95);
   font-size: 18px;
   line-height: 1;
@@ -131,7 +171,7 @@ const DomElementHighlightOverlay: React.VFC<{rect: DOMRect}> = ({rect}) => {
             backgroundColor: 'rgba(0, 180, 255, 0.1)',
             borderRadius: 2,
             pointerEvents: 'none',
-            zIndex: 1,
+            zIndex: HIGHLIGHT_Z_INDEX,
           }}
         />
       ) : null}

@@ -1,6 +1,6 @@
 # @unseenco/theatre-threejs
 
-Three.js helpers and Studio extension for [Theatre.js](https://www.theatrejs.com/).
+Three.js helpers and Studio extension for [Theatre.js](https://unseen-theatre.netlify.app).
 
 Runtime helpers (`autoAddObject`, `autoAddMaterial`, `autoAddCamera`, …) import from the package root and do **not** load Studio. Studio devtools (`buildExtension`) import from `@unseenco/theatre-threejs/extension`.
 

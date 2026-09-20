@@ -11,13 +11,15 @@ import {
 } from './scrollTriggerGuards'
 import {
   defaultPageScrollContext,
-  isVerticalPageScrollTrigger,
+  isPageScrollTrigger,
+  resolvePageScrollAxis,
 } from '@unseenco/theatre-shared/sheets/pageScrollContext'
 import type {PageScrollContext} from '@unseenco/theatre-shared/sheets/pageScrollContext'
 import {
   getMaxScrollForPageScrollContext,
   scrollPixelsToPageUnits,
 } from './scrollTriggerLayout'
+import {resolveMaxScrollPxForPageLayout} from '@unseenco/theatre-shared/sheets/remotePageScrollMetrics'
 
 export type {
   PageScrollContext,
@@ -25,6 +27,7 @@ export type {
 } from '@unseenco/theatre-shared/sheets/pageScrollContext'
 export {
   defaultPageScrollContext,
+  isPageScrollTrigger,
   isVerticalPageScrollTrigger,
   pageScrollScrollersMatch,
   resolvePageScrollScroller,
@@ -61,7 +64,7 @@ export function extractScrollTriggerLayout(
 ): ExtractScrollTriggerLayoutResult {
   const pageScrollContext =
     options.pageScrollContext ?? defaultPageScrollContext
-  if (!isVerticalPageScrollTrigger(st, pageScrollContext)) {
+  if (!isPageScrollTrigger(st, pageScrollContext)) {
     return {ok: false, reason: 'unsupported_scroller'}
   }
 
@@ -71,7 +74,12 @@ export function extractScrollTriggerLayout(
     return {ok: false, reason: 'missing_animation'}
   }
 
-  const maxScroll = getMaxScrollForPageScrollContext(pageScrollContext.scroller)
+  const axis = resolvePageScrollAxis(pageScrollContext)
+  const localMaxScroll = getMaxScrollForPageScrollContext(
+    pageScrollContext.scroller,
+    axis,
+  )
+  const maxScroll = resolveMaxScrollPxForPageLayout(localMaxScroll, axis)
   const layout = scrollPixelsToPageUnits(
     surface.start,
     surface.end,

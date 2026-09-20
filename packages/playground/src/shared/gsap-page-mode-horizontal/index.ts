@@ -1,6 +1,8 @@
 import gsap from 'gsap'
 import {ScrollTrigger} from 'gsap/ScrollTrigger'
 import {
+  configureTheatrePageScroll,
+  createDefaultPageScrollDriver,
   createRafDriver,
   getProject,
   setCoreRafDriver,
@@ -26,23 +28,30 @@ if (remoteEditor) {
   hidePageModeDemoForRemoteEditor()
 }
 
-const rafDriver = createRafDriver({name: 'gsap-page-mode'})
+const rafDriver = createRafDriver({name: 'gsap-page-mode-horizontal'})
 setCoreRafDriver(rafDriver)
 bindGsapTickerToRafDriver(rafDriver, gsap)
 
+configureTheatrePageScroll({axis: 'horizontal'})
 configureTheatreGsap({
   namespace: 'GSAP',
   outlineNamespace: {defaultCollapsed: false},
+  pageScroll: {axis: 'horizontal'},
 })
 
 studio.initialize({__experimental_rafDriver: rafDriver})
 
-const project = getProject('GSAP page mode demo')
-const sheet = project.sheet('Main', {sequenceMode: 'page', gsap: true})
+const project = getProject('GSAP horizontal page mode demo')
+const sheet = project.sheet('Main', {
+  sequenceMode: 'page',
+  gsap: true,
+  ...(remoteEditor
+    ? {}
+    : {scrollDriver: createDefaultPageScrollDriver()}),
+})
 
 const heroBox = document.getElementById('hero-box')!
-const midPanel = document.getElementById('mid-panel')!
-const stSection = document.getElementById('st-section')!
+const stPanelA = document.getElementById('st-panel-a')!
 const stTarget = document.getElementById('st-target')!
 
 void project.ready.then(() => {
@@ -57,63 +66,52 @@ void project.ready.then(() => {
   )
 
   const boxMove = gsap.to(heroBox, {
-    rotate: 360,
-    scale: 1.25,
+    rotate: 180,
+    scale: 1.2,
     duration: 1,
     paused: true,
   })
 
   registerGsapAnimation(boxMove, sheet, {
     label: 'Hero / Move',
-    defaultDuration: 25,
+    defaultDuration: 30,
   })
 
-  const panelReveal = gsap.to([midPanel, heroBox], {
-    autoAlpha: 1,
-    y: 0,
-    duration: 1,
-    paused: true,
-  })
-
-  registerGsapAnimation(panelReveal, sheet, {
-    label: 'Mid / Panel reveal',
-  })
-
-  // ScrollTrigger.create({ animation }) style
   const stTween = gsap.to(stTarget, {
     rotation: 360,
-    scale: 1.2,
+    x: 120,
     duration: 1,
     paused: true,
   })
 
   const stCreate = ScrollTrigger.create({
-    trigger: stSection,
-    start: 'top center',
-    end: 'bottom center',
+    horizontal: true,
+    trigger: stPanelA,
+    start: 'left center',
+    end: 'right center',
     scrub: true,
     animation: stTween,
-    id: 'st-create-demo',
+    id: 'st-horizontal-create',
   })
 
   registerGsapScrollTrigger(stCreate, sheet, {
-    label: 'Create API scrub example',
+    label: 'Horizontal create API',
   })
 
-  // vars.scrollTrigger on timeline style
   const stTimeline = gsap.timeline({
     scrollTrigger: {
-      trigger: stSection,
+      horizontal: true,
+      trigger: stPanelA,
       start: 'center center',
-      end: '+=600',
+      end: '+=800',
       scrub: true,
-      id: 'st-vars-demo',
+      id: 'st-horizontal-vars',
     },
     paused: true,
   })
   stTimeline
-    .to(stTarget, {x: 80, duration: 0.5, ease: 'none', id: 'move right'})
-    .to(stTarget, {x: -40, duration: 0.5, ease: 'none', id: 'move left'})
+    .to(stTarget, {y: 40, duration: 0.5, ease: 'none', id: 'dip'})
+    .to(stTarget, {y: -20, duration: 0.5, ease: 'none', id: 'rise'})
 
   registerAllGsapScrollTriggers(sheet)
 })

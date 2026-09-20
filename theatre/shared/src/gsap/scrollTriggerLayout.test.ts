@@ -35,14 +35,22 @@ describe('scrollPixelsToPageUnits', () => {
 describe('getNativeDocumentMaxScroll', () => {
   test('returns non-negative number in jsdom', () => {
     expect(getNativeDocumentMaxScroll()).toBeGreaterThanOrEqual(0)
+    expect(getNativeDocumentMaxScroll('horizontal')).toBeGreaterThanOrEqual(0)
   })
 })
 
 describe('getMaxScrollForScroller', () => {
-  test('uses element scrollHeight for custom scroller', () => {
+  test('uses element scrollHeight for custom vertical scroller', () => {
     const el = document.createElement('div')
     Object.defineProperty(el, 'scrollHeight', {value: 500, configurable: true})
     Object.defineProperty(el, 'clientHeight', {value: 100, configurable: true})
     expect(getMaxScrollForScroller(el)).toBe(400)
+  })
+
+  test('uses element scrollWidth for custom horizontal scroller', () => {
+    const el = document.createElement('div')
+    Object.defineProperty(el, 'scrollWidth', {value: 800, configurable: true})
+    Object.defineProperty(el, 'clientWidth', {value: 200, configurable: true})
+    expect(getMaxScrollForScroller(el, 'horizontal')).toBe(600)
   })
 })

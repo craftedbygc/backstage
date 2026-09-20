@@ -3,35 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GSAP page mode (Lenis)</title>
-    <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.18/dist/lenis.css" />
+    <title>GSAP page mode — horizontal</title>
     <style>
       * {
         box-sizing: border-box;
       }
-      html.lenis,
-      html.lenis body {
-        height: auto;
-      }
-      .lenis.lenis-smooth {
-        scroll-behavior: auto !important;
+      html {
+        overflow-x: auto;
+        overflow-y: hidden;
+        height: 100%;
       }
       body {
         margin: 0;
+        width: 400vw;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: row;
         font-family: system-ui, sans-serif;
         background: #0f1115;
         color: #e8e8ea;
       }
-      .section {
+      .panel {
+        flex: 0 0 100vw;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         padding: 2rem;
-        border-bottom: 1px solid #2a2d35;
+        border-right: 1px solid #2a2d35;
       }
-      .section:nth-child(odd) {
+      .panel:nth-child(odd) {
         background: #141820;
       }
       h1 {
@@ -40,7 +42,7 @@
         margin: 0 0 1rem;
       }
       p {
-        max-width: 36rem;
+        max-width: 28rem;
         line-height: 1.5;
         opacity: 0.85;
         text-align: center;
@@ -52,15 +54,6 @@
         background: linear-gradient(135deg, #6366f1, #a855f7);
         margin-top: 2rem;
         box-shadow: 0 12px 40px rgba(99, 102, 241, 0.35);
-      }
-      #mid-panel {
-        width: min(90vw, 420px);
-        padding: 1.5rem;
-        border-radius: 12px;
-        background: #252830;
-        border: 1px solid #3a3f4a;
-        opacity: 0;
-        transform: translateY(40px);
       }
       #st-target {
         width: 96px;
@@ -81,32 +74,27 @@
   </head>
   <body>
     <div id="demo-root">
-    <section class="section">
-      <h1>GSAP × Theatre — page mode (Lenis)</h1>
+    <section class="panel">
+      <h1>Horizontal page mode</h1>
       <p>
-        Smooth scroll via <strong>Lenis</strong> drives the sequencer through a custom
-        <code>ScrollDriver</code>. <code>ScrollTrigger.scrollerProxy</code> keeps GSAP
-        in sync. Scrub the playhead in Studio to move Lenis scroll.
+        Native horizontal document scroll drives the sequencer (0–100%). Scroll
+        horizontally or scrub in Studio.
       </p>
       <div id="hero-box"></div>
     </section>
-    <section class="section">
-      <h1>Section 2</h1>
-      <p>Same GSAP clips and ScrollTriggers as the native page-mode demo.</p>
-      <div id="mid-panel">Panel reveal (GSAP clip ~15–35%)</div>
-    </section>
-    <section class="section" id="st-section">
-      <h1>ScrollTrigger section</h1>
-      <p>
-        ScrollTrigger bars map using the configured page scroll context
-        (<code>document.documentElement</code> + proxy).
-      </p>
+    <section class="panel" id="st-panel-a">
+      <h1>ScrollTrigger A</h1>
+      <p>Horizontal scrub registered with Theatre (read-only bar in Studio).</p>
       <div id="st-target"></div>
     </section>
-    <section class="section">
-      <p>End of demo page. Sequence length is locked at 100% in Studio.</p>
+    <section class="panel" id="st-panel-b">
+      <h1>ScrollTrigger B</h1>
+      <p>Timeline + scrollTrigger vars example on the same axis.</p>
     </section>
-    <div class="hint">Open Studio → pin sequence editor</div>
+    <section class="panel">
+      <p>End of track — sequence length stays 100% in page mode.</p>
+    </section>
+    <div class="hint">Scroll horizontally → Open Studio</div>
     </div>
     <script type="module" src="./index.ts"></script>
   </body>

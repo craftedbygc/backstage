@@ -3,6 +3,7 @@
  */
 import {
   defaultPageScrollContext,
+  isPageScrollTrigger,
   isVerticalPageScrollTrigger,
   pageScrollScrollersMatch,
   resolvePageScrollScroller,
@@ -27,9 +28,23 @@ describe('pageScrollContext', () => {
     ).toBe(false)
   })
 
+  test('isPageScrollTrigger accepts horizontal when context axis is horizontal', () => {
+    const ctx = {...defaultPageScrollContext, axis: 'horizontal' as const}
+    expect(
+      isPageScrollTrigger({start: 0, end: 100, horizontal: true}, ctx),
+    ).toBe(true)
+    expect(isPageScrollTrigger({start: 0, end: 100}, ctx)).toBe(false)
+    expect(
+      isPageScrollTrigger(
+        {start: 0, end: 100, horizontal: true},
+        defaultPageScrollContext,
+      ),
+    ).toBe(false)
+  })
+
   test('custom scroller matches when context scroller is same element', () => {
     const el = document.createElement('div')
-    const ctx = {scroller: el}
+    const ctx = {scroller: el, axis: 'vertical' as const}
     expect(
       isVerticalPageScrollTrigger({start: 0, end: 100, scroller: el}, ctx),
     ).toBe(true)

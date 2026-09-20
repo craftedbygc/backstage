@@ -104,7 +104,7 @@ export interface ISheet {
   /**
    * Creates a child object for the sheet
    *
-   * **Docs: https://www.theatrejs.com/docs/latest/manual/objects**
+   * **Docs: https://unseen-theatre.netlify.app/docs/guide/manual/objects**
    *
    * @param key - Each object is identified by a key, which is a non-empty string
    * @param props - The props of the object. See examples

@@ -101,12 +101,12 @@ export default function UIRoot(props: {
           >
             <>
               <MakeRootHostContainStatic />
-              <Container
-                className={isStudioHidden ? 'invisible' : ''}
-                // @ts-ignore
-                ref={chordialRootRef}
-              >
-                <DomElementHighlightProvider>
+              <DomElementHighlightProvider>
+                <Container
+                  className={isStudioHidden ? 'invisible' : ''}
+                  // @ts-ignore
+                  ref={chordialRootRef}
+                >
                   <PortalLayer ref={portalLayerRef} />
                   <ChordialOverlay />
                   <LayoutModeProvider>
@@ -120,8 +120,8 @@ export default function UIRoot(props: {
                     )}
                     <Notifier />
                   </LayoutModeProvider>
-                </DomElementHighlightProvider>
-              </Container>
+                </Container>
+              </DomElementHighlightProvider>
             </>
           </ProvideStyles>
         </PortalContext.Provider>

@@ -74,6 +74,10 @@ function getFirstSheetInProject(project: Project): Sheet | undefined {
   return undefined
 }
 
+export function getSequenceEditorProjectId(): ProjectId | undefined {
+  return getDefaultProjectForSequenceEditor()?.address.projectId
+}
+
 function getDefaultProjectForSequenceEditor(): Project | undefined {
   const projects = val(getStudio().projectsP)
   const projectIds = Object.keys(projects) as ProjectId[]

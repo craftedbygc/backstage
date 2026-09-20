@@ -4,18 +4,57 @@ import type {
   ProjectState_Historic,
 } from '@unseenco/theatre-core/projects/store/storeTypes'
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
+import type {ISheet} from '@unseenco/theatre-core/sheets/TheatreSheet'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
+import {
+  onPageScrollDrivenSequencePosition,
+  syncPageScrollToSequencePosition,
+} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
+import {
+  getMaxScrollForPageScrollContext,
+} from '@unseenco/theatre-shared/gsap/scrollTriggerLayout'
+import {
+  getActivePageScrollContext,
+  resolvePageScrollAxis,
+} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+import {resolveDomElementHighlightTarget} from '@unseenco/theatre-shared/gsap/domElementHighlightTarget'
+import type {RemoteDomHighlightTarget} from '@unseenco/theatre-shared/gsap/domElementHighlightTarget'
+import {setRemoteDomElementHighlight} from '@unseenco/theatre-shared/sheets/remoteDomElementHighlight'
+import {setRemotePageScrollMetrics} from '@unseenco/theatre-shared/sheets/remotePageScrollMetrics'
 import type {Studio} from '@unseenco/theatre-studio/Studio'
 import {getCoreTicker} from '@unseenco/theatre-core/coreTicker'
-import {val} from '@unseenco/theatre-dataverse'
+import {pointerToPrism, val} from '@unseenco/theatre-dataverse'
 import type {SerializableMap} from '@unseenco/theatre-shared/utils/types'
+import {
+  createDebouncedCallback,
+  type DebouncedCallback,
+} from './createDebouncedCallback'
 import {isRemoteEditorWindow} from './remoteEditor'
 
+/** Delay before pushing historic state from the remote editor to listener windows. */
+export const REMOTE_HISTORIC_SYNC_DEBOUNCE_MS = 100
+
+/**
+ * When applying an incoming `updateTimeline` message, only the main (listener)
+ * window should move page scroll; the remote editor only updates playhead position.
+ */
+export function shouldSyncPageScrollWhenApplyingTimelineUpdate(
+  isEditor: boolean,
+  sequenceMode: string,
+): boolean {
+  return !isEditor && sequenceMode === 'page'
+}
+
 type BroadcastDataEvent =
+  | 'editorHello'
   | 'setSheet'
   | 'setSheetObject'
   | 'updateSheetObject'
   | 'updateTimeline'
+  | 'pageScrollMetrics'
+  | 'highlightDomTarget'
+  | 'clearDomHighlight'
+  | 'updateHistoric'
   | 'disconnect'
 
 interface BroadcastData {
@@ -23,7 +62,7 @@ interface BroadcastData {
   data: any
 }
 
-type DisconnectData = {
+type HistoricSnapshotPayload = {
   historic?: ProjectState_Historic
   ahistoric?: ProjectAhistoricState
 }
@@ -46,6 +85,14 @@ export default class RemoteSync {
   private readonly objectUnsubs = new Map<string, () => void>()
   private studio: Studio | undefined
   private activeSheet: Sheet | undefined
+  private historicSyncDebounce: DebouncedCallback | undefined
+  private lastBroadcastHistoricFingerprint: string | undefined
+  private historicSyncUnsubs: Array<() => void> = []
+  private remoteEditorActive = false
+  private suppressTimelineBroadcast = false
+  private listenerTimelineUnsub: (() => void) | undefined
+  private listenerMetricsUnsubs: Array<() => void> = []
+  private broadcastPageScrollMetrics: (() => void) | undefined
 
   constructor(private readonly project: Project) {
     if (typeof BroadcastChannel === 'undefined') return
@@ -54,10 +101,16 @@ export default class RemoteSync {
       `theatre-remote:${project.address.projectId}`,
     )
 
+    this.channel.onmessage = (event: MessageEvent<BroadcastData>) => {
+      this._handleIncoming(event.data)
+    }
+
     if (!this.isEditor) {
-      this.channel.onmessage = (event: MessageEvent<BroadcastData>) => {
-        this._handleIncoming(event.data)
-      }
+      this.listenerTimelineUnsub = onPageScrollDrivenSequencePosition(
+        (sheet, position) => {
+          this._broadcastTimelineFromListener(sheet, position)
+        },
+      )
     } else {
       // Before disconnecting, push the editor's project state to listeners so
       // they keep the edits made in the remote window (not just the transient
@@ -65,23 +118,19 @@ export default class RemoteSync {
       // `_handleIncoming`).
       const channel = this.channel
       window.addEventListener('pagehide', () => {
-        const data: DisconnectData = {}
-        if (this.studio) {
-          const projectId = this.project.address.projectId
-          const historic = val(
-            this.studio.atomP.historic.coreByProject[projectId],
-          )
-          const ahistoric = val(
-            this.studio.atomP.ahistoric.coreByProject[projectId],
-          )
-          if (historic) {
-            data.historic = JSON.parse(JSON.stringify(historic))
-            if (ahistoric) {
-              data.ahistoric = JSON.parse(JSON.stringify(ahistoric))
-            }
-          }
+        this.historicSyncDebounce?.flush()
+
+        const data = this._readHistoricSnapshotFromStudio()
+        if (
+          data &&
+          this.lastBroadcastHistoricFingerprint ===
+            fingerprintHistoricSnapshot(data)
+        ) {
+          channel.postMessage({event: 'disconnect', data: {}})
+          return
         }
-        channel.postMessage({event: 'disconnect', data})
+
+        channel.postMessage({event: 'disconnect', data: data ?? {}})
       })
     }
   }
@@ -138,9 +187,15 @@ export default class RemoteSync {
 
   attachStudio(studio: Studio) {
     this.studio = studio
-    if (!this.isEditor || !this.channel) return
+    if (!this.channel) return
+
+    if (!this.isEditor) {
+      this._attachListenerPageScrollMetricsBroadcast()
+      return
+    }
 
     const channel = this.channel
+    channel.postMessage({event: 'editorHello', data: {}})
     const projectId = this.project.address.projectId
 
     studio.publicApi.onSelectionChange((selection) => {
@@ -168,7 +223,7 @@ export default class RemoteSync {
     let lastPosition: number | undefined
     const ticker = getCoreTicker()
     const pollTimelinePosition = () => {
-      if (this.activeSheet) {
+      if (this.activeSheet && !this.suppressTimelineBroadcast) {
         const position = this.activeSheet.publicApi.sequence.position
         if (position !== lastPosition) {
           lastPosition = position
@@ -182,10 +237,160 @@ export default class RemoteSync {
       ticker.onNextTick(pollTimelinePosition)
     }
     ticker.onNextTick(pollTimelinePosition)
+
+    this.historicSyncDebounce = createDebouncedCallback(() => {
+      this._broadcastHistoricSnapshot()
+    }, REMOTE_HISTORIC_SYNC_DEBOUNCE_MS)
+
+    const scheduleHistoricSync = () => {
+      this.historicSyncDebounce?.schedule()
+    }
+
+    void studio.initialized.then(() => {
+      this.historicSyncUnsubs.push(
+        pointerToPrism(studio.atomP.historic.coreByProject[projectId]).onChange(
+          studio.ticker,
+          scheduleHistoricSync,
+          true,
+        ),
+        pointerToPrism(
+          studio.atomP.ahistoric.coreByProject[projectId],
+        ).onChange(studio.ticker, scheduleHistoricSync, true),
+      )
+    })
+  }
+
+  private _readHistoricSnapshotFromStudio():
+    | HistoricSnapshotPayload
+    | undefined {
+    if (!this.studio) return undefined
+
+    const projectId = this.project.address.projectId
+    const historic = val(
+      this.studio.atomP.historic.coreByProject[projectId],
+    )
+    if (!historic) return undefined
+
+    const data: HistoricSnapshotPayload = {
+      historic: JSON.parse(JSON.stringify(historic)),
+    }
+    const ahistoric = val(
+      this.studio.atomP.ahistoric.coreByProject[projectId],
+    )
+    if (ahistoric) {
+      data.ahistoric = JSON.parse(JSON.stringify(ahistoric))
+    }
+    return data
+  }
+
+  private _broadcastHistoricSnapshot(options?: {force?: boolean}) {
+    if (!this.channel) return
+
+    const data = this._readHistoricSnapshotFromStudio()
+    if (!data) return
+
+    const fingerprint = fingerprintHistoricSnapshot(data)
+    if (
+      !options?.force &&
+      fingerprint === this.lastBroadcastHistoricFingerprint
+    ) {
+      return
+    }
+
+    this.lastBroadcastHistoricFingerprint = fingerprint
+    const message: BroadcastData = {event: 'updateHistoric', data}
+    this.channel.postMessage(message)
+  }
+
+  private _applyHistoricSnapshot(
+    historic: ProjectState_Historic,
+    ahistoric?: ProjectAhistoricState,
+  ) {
+    if (!this.studio) return
+
+    const projectId = this.project.address.projectId
+    this.studio.transaction(({drafts}) => {
+      drafts.historic.coreByProject[projectId] = historic
+      if (ahistoric) {
+        drafts.ahistoric.coreByProject[projectId] = ahistoric
+      }
+      drafts.ephemeral.coreByProject[projectId]!.loadingState = {
+        type: 'loaded',
+      }
+    })
+  }
+
+  private _broadcastTimelineFromListener(sheet: ISheet, position: number) {
+    if (
+      this.isEditor ||
+      !this.channel ||
+      !this.remoteEditorActive ||
+      this.suppressTimelineBroadcast
+    ) {
+      return
+    }
+    const registered = this.sheets.get(sheet.address.sheetId)
+    if (!registered || registered.getSequenceMode() !== 'page') return
+
+    const message: BroadcastData = {
+      event: 'updateTimeline',
+      data: {sheet: sheet.address.sheetId, position},
+    }
+    this.channel.postMessage(message)
+  }
+
+  private _postPageScrollMetrics() {
+    if (!this.remoteEditorActive || !this.channel) return
+    const ctx = getActivePageScrollContext()
+    const axis = resolvePageScrollAxis(ctx)
+    const maxScroll = getMaxScrollForPageScrollContext(ctx.scroller, axis)
+    const message: BroadcastData = {
+      event: 'pageScrollMetrics',
+      data: {maxScroll, axis},
+    }
+    this.channel.postMessage(message)
+  }
+
+  private _attachListenerPageScrollMetricsBroadcast() {
+    if (this.isEditor || !this.channel) return
+
+    const broadcast = () => this._postPageScrollMetrics()
+    this.broadcastPageScrollMetrics = broadcast
+
+    const onScroll = () => broadcast()
+    document.addEventListener('scroll', onScroll, {passive: true, capture: true})
+    const onResize = () => broadcast()
+    window.addEventListener('resize', onResize)
+
+    const ScrollTrigger = (
+      globalThis as typeof globalThis & {
+        ScrollTrigger?: {
+          addEventListener?: (type: string, cb: () => void) => void
+          removeEventListener?: (type: string, cb: () => void) => void
+        }
+      }
+    ).ScrollTrigger
+    ScrollTrigger?.addEventListener?.('refresh', broadcast)
+
+    broadcast()
+
+    this.listenerMetricsUnsubs.push(() => {
+      document.removeEventListener('scroll', onScroll, {capture: true})
+      window.removeEventListener('resize', onResize)
+      ScrollTrigger?.removeEventListener?.('refresh', broadcast)
+    })
   }
 
   private _handleIncoming(msg: BroadcastData) {
     switch (msg.event) {
+      case 'editorHello': {
+        if (this.isEditor) break
+        this.remoteEditorActive = true
+        this.broadcastPageScrollMetrics?.()
+        // Bootstrap remote Studio from main's project state (no duplicate DOM/GSAP).
+        this._broadcastHistoricSnapshot({force: true})
+        break
+      }
       case 'setSheet': {
         const sheet = this.sheets.get(msg.data.sheet)
         if (sheet && this.studio) {
@@ -210,29 +415,72 @@ export default class RemoteSync {
         const sheet = this.sheets.get(msg.data.sheet)
         if (sheet) {
           this.activeSheet = sheet
+          this.suppressTimelineBroadcast = true
           sheet.publicApi.sequence.position = msg.data.position
+          // Main window scroll drives the remote playhead; only the listener
+          // window should move page scroll when applying a remote scrub.
+          if (
+            shouldSyncPageScrollWhenApplyingTimelineUpdate(
+              this.isEditor,
+              sheet.getSequenceMode(),
+            )
+          ) {
+            syncPageScrollToSequencePosition(sheet.publicApi)
+          }
+          requestAnimationFrame(() => {
+            this.suppressTimelineBroadcast = false
+          })
+        }
+        break
+      }
+      case 'pageScrollMetrics': {
+        if (!this.isEditor) break
+        const {maxScroll, axis} = msg.data as {
+          maxScroll: number
+          axis: 'vertical' | 'horizontal'
+        }
+        setRemotePageScrollMetrics({maxScroll, axis})
+        break
+      }
+      case 'highlightDomTarget': {
+        if (this.isEditor || !this.remoteEditorActive) break
+        const target = msg.data.target as RemoteDomHighlightTarget
+        const element = resolveDomElementHighlightTarget(target)
+        setRemoteDomElementHighlight(element)
+        break
+      }
+      case 'clearDomHighlight': {
+        if (this.isEditor || !this.remoteEditorActive) break
+        setRemoteDomElementHighlight(null)
+        break
+      }
+      case 'updateHistoric': {
+        const {historic, ahistoric} = msg.data as HistoricSnapshotPayload
+        if (historic) {
+          this._applyHistoricSnapshot(historic, ahistoric)
         }
         break
       }
       case 'disconnect': {
-        const {historic, ahistoric} = msg.data as DisconnectData
-        if (historic && this.studio) {
-          const projectId = this.project.address.projectId
-          this.studio.transaction(({drafts}) => {
-            drafts.historic.coreByProject[projectId] = historic
-            if (ahistoric) {
-              drafts.ahistoric.coreByProject[projectId] = ahistoric
-            }
-            drafts.ephemeral.coreByProject[projectId]!.loadingState = {
-              type: 'loaded',
-            }
-          })
+        const {historic, ahistoric} = msg.data as HistoricSnapshotPayload
+        if (historic) {
+          this._applyHistoricSnapshot(historic, ahistoric)
         }
         for (const obj of this.objects.values()) {
           obj.setRemoteOverride({})
+        }
+        if (!this.isEditor) {
+          this.remoteEditorActive = false
+          setRemoteDomElementHighlight(null)
+        } else {
+          setRemotePageScrollMetrics(undefined)
         }
         break
       }
     }
   }
+}
+
+function fingerprintHistoricSnapshot(data: HistoricSnapshotPayload): string {
+  return JSON.stringify(data)
 }

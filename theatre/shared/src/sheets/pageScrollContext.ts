@@ -1,22 +1,36 @@
-/** `null` = native document vertical scroll (window / documentElement). */
+/** `null` = native document scroll (window / documentElement). */
 export type PageScrollScroller = Window | Element | null
+
+export type PageScrollAxis = 'vertical' | 'horizontal'
 
 export type PageScrollContext = {
   scroller: PageScrollScroller
+  /** Scroll axis for page mode and ScrollTrigger registration (default vertical). */
+  axis?: PageScrollAxis
 }
 
 export const defaultPageScrollContext: PageScrollContext = {
   scroller: null,
+  axis: 'vertical',
 }
 
 let activePageScrollContext: PageScrollContext = defaultPageScrollContext
 
 export function setActivePageScrollContext(context: PageScrollContext): void {
-  activePageScrollContext = context
+  activePageScrollContext = {
+    scroller: context.scroller,
+    axis: context.axis ?? 'vertical',
+  }
 }
 
 export function getActivePageScrollContext(): PageScrollContext {
   return activePageScrollContext
+}
+
+export function resolvePageScrollAxis(
+  context: PageScrollContext = defaultPageScrollContext,
+): PageScrollAxis {
+  return context.axis ?? 'vertical'
 }
 
 export function resolvePageScrollScroller(
@@ -63,19 +77,38 @@ export function pageScrollScrollersMatch(
   return false
 }
 
-export function isVerticalScrollTrigger(st: unknown): boolean {
+export function isScrollTriggerHorizontal(st: unknown): boolean {
   const surface = st as {horizontal?: boolean; vars?: {horizontal?: boolean}}
-  if (surface.horizontal === true || surface.vars?.horizontal === true) {
+  return surface.horizontal === true || surface.vars?.horizontal === true
+}
+
+/** @deprecated Use {@link isPageScrollTrigger} with context axis. */
+export function isVerticalScrollTrigger(st: unknown): boolean {
+  return !isScrollTriggerHorizontal(st)
+}
+
+/**
+ * True when ST scroller and horizontal flag match the configured page scroll context.
+ */
+export function isPageScrollTrigger(
+  st: unknown,
+  context: PageScrollContext = defaultPageScrollContext,
+): boolean {
+  const axis = resolvePageScrollAxis(context)
+  const stHorizontal = isScrollTriggerHorizontal(st)
+  if (stHorizontal !== (axis === 'horizontal')) {
     return false
   }
-  return true
+  const stScroller = resolvePageScrollScroller(st, context.scroller)
+  return pageScrollScrollersMatch(stScroller, context.scroller)
 }
 
 export function isVerticalPageScrollTrigger(
   st: unknown,
   context: PageScrollContext = defaultPageScrollContext,
 ): boolean {
-  if (!isVerticalScrollTrigger(st)) return false
-  const stScroller = resolvePageScrollScroller(st, context.scroller)
-  return pageScrollScrollersMatch(stScroller, context.scroller)
+  return isPageScrollTrigger(st, {
+    scroller: context.scroller,
+    axis: 'vertical',
+  })
 }

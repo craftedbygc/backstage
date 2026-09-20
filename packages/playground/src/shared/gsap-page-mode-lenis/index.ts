@@ -17,65 +17,83 @@ import {
   registerGsapAnimation,
   registerGsapScrollTrigger,
 } from '@unseenco/theatre-gsap'
+import {
+  hidePageModeDemoForRemoteEditor,
+  isRemotePageModeEditorWindow,
+} from '../utils/remoteEditorPageModeDemo'
 
 gsap.registerPlugin(ScrollTrigger)
+
+const remoteEditor = isRemotePageModeEditorWindow()
+if (remoteEditor) {
+  hidePageModeDemoForRemoteEditor()
+}
 
 const rafDriver = createRafDriver({name: 'gsap-page-mode-lenis'})
 setCoreRafDriver(rafDriver)
 bindGsapTickerToRafDriver(rafDriver, gsap)
 
-configureTheatrePageScroll({
-  scroller: typeof document !== 'undefined' ? document.documentElement : null,
-})
+if (!remoteEditor) {
+  configureTheatrePageScroll({
+    scroller: typeof document !== 'undefined' ? document.documentElement : null,
+  })
+}
 
 configureTheatreGsap({
   namespace: 'GSAP',
   outlineNamespace: {defaultCollapsed: false},
-  pageScroll: {
-    scroller: typeof document !== 'undefined' ? document.documentElement : null,
-  },
+  pageScroll: remoteEditor
+    ? undefined
+    : {
+        scroller:
+          typeof document !== 'undefined' ? document.documentElement : null,
+      },
 })
 
 studio.initialize({__experimental_rafDriver: rafDriver})
 
-const lenis = new Lenis({
-  lerp: 0.08,
-  smoothWheel: true,
-})
+let lenisDriver: ReturnType<typeof createLenisScrollDriver> | undefined
 
-document.documentElement.classList.add('lenis', 'lenis-smooth')
+if (!remoteEditor) {
+  const lenis = new Lenis({
+    lerp: 0.08,
+    smoothWheel: true,
+  })
 
-ScrollTrigger.scrollerProxy(document.documentElement, {
-  scrollTop(value) {
-    if (arguments.length) {
-      lenis.scrollTo(value as number, {immediate: true})
-    }
-    return lenis.scroll
-  },
-  getBoundingClientRect() {
-    return {
-      top: 0,
-      left: 0,
-      width: window.innerWidth,
-      height: window.innerHeight,
-    }
-  },
-})
+  document.documentElement.classList.add('lenis', 'lenis-smooth')
 
-lenis.on('scroll', ScrollTrigger.update)
+  ScrollTrigger.scrollerProxy(document.documentElement, {
+    scrollTop(value) {
+      if (arguments.length) {
+        lenis.scrollTo(value as number, {immediate: true})
+      }
+      return lenis.scroll
+    },
+    getBoundingClientRect() {
+      return {
+        top: 0,
+        left: 0,
+        width: window.innerWidth,
+        height: window.innerHeight,
+      }
+    },
+  })
 
-gsap.ticker.add((time) => {
-  lenis.raf(time * 1000)
-})
-gsap.ticker.lagSmoothing(0)
+  lenis.on('scroll', ScrollTrigger.update)
 
-const lenisDriver = createLenisScrollDriver(lenis)
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000)
+  })
+  gsap.ticker.lagSmoothing(0)
+
+  lenisDriver = createLenisScrollDriver(lenis)
+}
 
 const project = getProject('GSAP page mode Lenis demo')
 const sheet = project.sheet('Main', {
   sequenceMode: 'page',
   gsap: true,
-  scrollDriver: lenisDriver,
+  ...(lenisDriver ? {scrollDriver: lenisDriver} : {}),
 })
 
 const heroBox = document.getElementById('hero-box')!

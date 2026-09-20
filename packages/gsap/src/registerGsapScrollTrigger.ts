@@ -84,7 +84,7 @@ export function registerOneGsapScrollTriggerOnSheet(
   if (!extracted.ok) {
     if (extracted.reason === 'unsupported_scroller') {
       console.warn(
-        `[theatre-gsap] Skipped ScrollTrigger "${options.label}": scroller does not match configured page scroll (see configureTheatreGsap pageScroll).`,
+        `[theatre-gsap] Skipped ScrollTrigger "${options.label}": scroller or scroll axis does not match configured page scroll (see configureTheatreGsap pageScroll scroller and axis).`,
       )
     } else {
       console.warn(

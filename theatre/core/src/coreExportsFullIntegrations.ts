@@ -7,7 +7,9 @@ export {
   syncNativeDocumentScrollToSequencePosition,
   syncPageScrollToSequencePosition,
   createNativeDocumentScrollDriver,
+  createNativeDocumentHorizontalScrollDriver,
   createElementScrollDriver,
+  createElementHorizontalScrollDriver,
   pageScrollProgressFromSequence,
   setPageScrollProgress,
   getSheetScrollDriver,
@@ -27,6 +29,7 @@ export type {
 export type {
   PageScrollContext,
   PageScrollScroller,
+  PageScrollAxis,
 } from './sheets/pageScrollContext'
 export {
   defaultPageScrollContext,
@@ -35,6 +38,8 @@ export {
   isNativeDocumentScroller,
   pageScrollScrollersMatch,
   resolvePageScrollScroller,
+  resolvePageScrollAxis,
+  isPageScrollTrigger,
   isVerticalPageScrollTrigger,
 } from './sheets/pageScrollContext'
 export type {SheetSequenceMode} from './sheets/sheetSequenceMode'
