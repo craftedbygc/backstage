@@ -1,5 +1,5 @@
 import type {IRafDriver} from '@unseenco/theatre-core'
-import {getCoreRafDriver} from '@unseenco/theatre-core/coreTicker'
+import {getTheatreCoreRafDriver} from '@unseenco/theatre-core/privateAPIs'
 import {getTheatreGsapConfig} from './config'
 
 const gsapTickerDrivenDriverIds = new Set<number>()
@@ -58,12 +58,8 @@ export function warnIfGsapTickerNotDrivingTheatreRaf(): void {
   if (getTheatreGsapConfig().suppressGsapTickerRafWarning) return
   if (hasWarnedGsapTickerRaf) return
 
-  const coreDriver = getCoreRafDriver().publicApi
-  const usesDefaultCoreDriver = coreDriver.name === 'DefaultCoreRafDriver'
-  const gsapTickerDrivesCore =
-    !usesDefaultCoreDriver && isRafDriverDrivenByGsapTicker(coreDriver)
-
-  if (usesDefaultCoreDriver || !gsapTickerDrivesCore) {
+  const coreDriver = getTheatreCoreRafDriver()
+  if (!isRafDriverDrivenByGsapTicker(coreDriver)) {
     hasWarnedGsapTickerRaf = true
     console.warn(
       '[theatre-gsap] Theatre is not driven by gsap.ticker. After setCoreRafDriver(), call bindGsapTickerToRafDriver(rafDriver, gsap) so GSAP and Theatre share one clock. See the GSAP extension guide.',
