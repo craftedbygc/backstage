@@ -99,7 +99,9 @@ function primitivePropBuild(
 }
 
 export function AggregateKeyframeDot(
-  props: React.PropsWithChildren<IAggregateKeyframeDotProps>,
+  props: React.PropsWithChildren<
+    IAggregateKeyframeDotProps & {hideVisualDot?: boolean}
+  >,
 ) {
   const {cur} = props.utils
 
@@ -149,11 +151,13 @@ export function AggregateKeyframeDot(
             : null
         }
       />
-      <AggregateKeyframeVisualDot
-        flag={presence.flag}
-        isAllHere={cur.allHere}
-        isSelected={cur.selected}
-      />
+      {!props.hideVisualDot && (
+        <AggregateKeyframeVisualDot
+          flag={presence.flag}
+          isAllHere={cur.allHere}
+          isSelected={cur.selected}
+        />
+      )}
       {contextMenu}
       {inlineEditorPopover.node}
     </>

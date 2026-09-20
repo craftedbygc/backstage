@@ -280,17 +280,7 @@ export const calculateSequenceEditorTree = (
     nSoFar += 1
   }
 
-  const sheetPropsObject = sheet.getSheetPropsObject()
-  if (sheetPropsObject) {
-    addObject(
-      sheetPropsObject,
-      tree.children,
-      tree.depth + 1,
-      rootShouldRender && !isCollapsed,
-      {displayLabel: 'Sheet'},
-    )
-  }
-
+  // Sheet props are edited in the detail panel; omit them here (same as outline visibility).
   const objectsForNamespace: SheetObject[] = []
   for (const sheetObject of Object.values(val(sheet.objectsP))) {
     if (
