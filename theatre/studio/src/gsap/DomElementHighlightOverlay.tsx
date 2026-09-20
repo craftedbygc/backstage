@@ -1,7 +1,16 @@
+import {encodeDomElementHighlightTarget} from '@unseenco/theatre-shared/gsap/domElementHighlightTarget'
+import {
+  onRemoteDomElementHighlightChange,
+  postRemoteDomHighlightBroadcast,
+  postRemoteDomHighlightClear,
+} from '@unseenco/theatre-shared/sheets/remoteDomElementHighlight'
+import {getSequenceEditorProjectId} from '@unseenco/theatre-studio/selectors'
+import {isRemoteEditorWindow} from '@unseenco/theatre-studio/remoteEditor'
 import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
@@ -29,11 +38,39 @@ export function DomElementHighlightProvider(props: {
       setRect(null)
       return
     }
+    if (isRemoteEditorWindow()) {
+      const projectId = getSequenceEditorProjectId()
+      const target = encodeDomElementHighlightTarget(element)
+      if (projectId && target) {
+        postRemoteDomHighlightBroadcast(projectId, target)
+      }
+      return
+    }
     setRect(element.getBoundingClientRect())
   }, [])
 
   const hideElementHighlight = useCallback(() => {
+    if (isRemoteEditorWindow()) {
+      const projectId = getSequenceEditorProjectId()
+      if (projectId) {
+        postRemoteDomHighlightClear(projectId)
+      }
+      return
+    }
     setRect(null)
+  }, [])
+
+  useEffect(() => {
+    if (isRemoteEditorWindow()) {
+      return
+    }
+    return onRemoteDomElementHighlightChange((element) => {
+      if (!element || !element.isConnected) {
+        setRect(null)
+        return
+      }
+      setRect(element.getBoundingClientRect())
+    })
   }, [])
 
   const value = useMemo(

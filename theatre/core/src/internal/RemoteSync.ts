@@ -17,6 +17,9 @@ import {
   getActivePageScrollContext,
   resolvePageScrollAxis,
 } from '@unseenco/theatre-shared/sheets/pageScrollContext'
+import {resolveDomElementHighlightTarget} from '@unseenco/theatre-shared/gsap/domElementHighlightTarget'
+import type {RemoteDomHighlightTarget} from '@unseenco/theatre-shared/gsap/domElementHighlightTarget'
+import {setRemoteDomElementHighlight} from '@unseenco/theatre-shared/sheets/remoteDomElementHighlight'
 import {setRemotePageScrollMetrics} from '@unseenco/theatre-shared/sheets/remotePageScrollMetrics'
 import type {Studio} from '@unseenco/theatre-studio/Studio'
 import {getCoreTicker} from '@unseenco/theatre-core/coreTicker'
@@ -49,6 +52,8 @@ type BroadcastDataEvent =
   | 'updateSheetObject'
   | 'updateTimeline'
   | 'pageScrollMetrics'
+  | 'highlightDomTarget'
+  | 'clearDomHighlight'
   | 'updateHistoric'
   | 'disconnect'
 
@@ -437,6 +442,18 @@ export default class RemoteSync {
         setRemotePageScrollMetrics({maxScroll, axis})
         break
       }
+      case 'highlightDomTarget': {
+        if (this.isEditor || !this.remoteEditorActive) break
+        const target = msg.data.target as RemoteDomHighlightTarget
+        const element = resolveDomElementHighlightTarget(target)
+        setRemoteDomElementHighlight(element)
+        break
+      }
+      case 'clearDomHighlight': {
+        if (this.isEditor || !this.remoteEditorActive) break
+        setRemoteDomElementHighlight(null)
+        break
+      }
       case 'updateHistoric': {
         const {historic, ahistoric} = msg.data as HistoricSnapshotPayload
         if (historic) {
@@ -454,6 +471,7 @@ export default class RemoteSync {
         }
         if (!this.isEditor) {
           this.remoteEditorActive = false
+          setRemoteDomElementHighlight(null)
         } else {
           setRemotePageScrollMetrics(undefined)
         }

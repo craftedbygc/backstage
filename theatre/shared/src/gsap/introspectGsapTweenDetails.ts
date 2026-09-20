@@ -1,3 +1,4 @@
+import {labelDomElementForHighlight} from './domElementHighlightTarget'
 import {
   resolveGsapAnimationRegistrationLabel,
   resolveGsapTimelineChildSequencerLabel,
@@ -59,23 +60,6 @@ function formatGsapVarDisplayValue(value: unknown): string {
   return String(value)
 }
 
-function labelForElement(el: Element): string {
-  if (el.id) {
-    return `#${el.id}`
-  }
-  const tag = el.tagName.toLowerCase()
-  if (el instanceof HTMLElement) {
-    const className = el.className
-    if (typeof className === 'string' && className.trim().length > 0) {
-      const firstClass = className.trim().split(/\s+/)[0]
-      if (firstClass) {
-        return `${tag}.${firstClass}`
-      }
-    }
-  }
-  return tag
-}
-
 function labelForObject(value: unknown): string {
   if (value && typeof value === 'object') {
     const id = (value as {vars?: {id?: string}}).vars?.id
@@ -120,7 +104,7 @@ export function readGsapTargets(animation: unknown): GsapTargetDescriptor[] {
       return {
         kind: 'element' as const,
         element: item,
-        label: labelForElement(item),
+        label: labelDomElementForHighlight(item),
       }
     }
     return {
