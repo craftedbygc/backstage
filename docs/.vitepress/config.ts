@@ -53,7 +53,25 @@ const guideSidebar = [
         text: 'Authoring extensions',
         link: '/guide/manual/authoring-extensions',
       },
-      {text: 'Advanced', link: '/guide/manual/advanced'},
+      {text: 'Advanced', link: '/guide/manual/advanced'      },
+    ],
+  },
+  {
+    text: 'Theatre Lite',
+    collapsed: false,
+    items: [
+      {text: 'Overview', link: '/guide/theatre-lite/'},
+      {
+        text: 'Choosing lite or full',
+        link: '/guide/theatre-lite/choosing-lite-or-full',
+      },
+      {text: 'Getting started', link: '/guide/theatre-lite/getting-started'},
+      {text: 'Variants', link: '/guide/theatre-lite/variants'},
+      {text: 'Three.js', link: '/guide/theatre-lite/three-js'},
+      {
+        text: 'Upgrading to full',
+        link: '/guide/theatre-lite/upgrading-to-full',
+      },
     ],
   },
   {

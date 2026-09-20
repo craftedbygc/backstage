@@ -1,5 +1,7 @@
 # Working with sequences
 
+> **Not in Theatre Lite:** Sequences, keyframes, and the Sequence Editor are full-Theatre features. Lite uses static props and [sheet variants](../theatre-lite/variants.md) only. See [Choosing lite or full](../theatre-lite/choosing-lite-or-full.md).
+
 Each sheet has one **sequence**—the timeline of sequenced props.
 
 ## Sequencing props
