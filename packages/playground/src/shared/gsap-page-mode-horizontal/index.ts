@@ -16,8 +16,17 @@ import {
   registerGsapAnimation,
   registerGsapScrollTrigger,
 } from '@unseenco/theatre-gsap'
+import {
+  hidePageModeDemoForRemoteEditor,
+  isRemotePageModeEditorWindow,
+} from '../utils/remoteEditorPageModeDemo'
 
 gsap.registerPlugin(ScrollTrigger)
+
+const remoteEditor = isRemotePageModeEditorWindow()
+if (remoteEditor) {
+  hidePageModeDemoForRemoteEditor()
+}
 
 const rafDriver = createRafDriver({name: 'gsap-page-mode-horizontal'})
 setCoreRafDriver(rafDriver)
@@ -36,7 +45,9 @@ const project = getProject('GSAP horizontal page mode demo')
 const sheet = project.sheet('Main', {
   sequenceMode: 'page',
   gsap: true,
-  scrollDriver: createDefaultPageScrollDriver(),
+  ...(remoteEditor
+    ? {}
+    : {scrollDriver: createDefaultPageScrollDriver()}),
 })
 
 const heroBox = document.getElementById('hero-box')!

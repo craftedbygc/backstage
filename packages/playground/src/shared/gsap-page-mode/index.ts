@@ -14,8 +14,17 @@ import {
   registerGsapAnimation,
   registerGsapScrollTrigger,
 } from '@unseenco/theatre-gsap'
+import {
+  hidePageModeDemoForRemoteEditor,
+  isRemotePageModeEditorWindow,
+} from '../utils/remoteEditorPageModeDemo'
 
 gsap.registerPlugin(ScrollTrigger)
+
+const remoteEditor = isRemotePageModeEditorWindow()
+if (remoteEditor) {
+  hidePageModeDemoForRemoteEditor()
+}
 
 const rafDriver = createRafDriver({name: 'gsap-page-mode'})
 setCoreRafDriver(rafDriver)

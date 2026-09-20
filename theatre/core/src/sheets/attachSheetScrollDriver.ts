@@ -10,6 +10,34 @@ export type ScrollDriver = {
 
 const sheetScrollDrivers = new WeakMap<ISheet, ScrollDriver>()
 
+export type PageScrollDrivenSequencePositionListener = (
+  sheet: ISheet,
+  position: number,
+) => void
+
+const pageScrollDrivenSequencePositionListeners = new Set<
+  PageScrollDrivenSequencePositionListener
+>()
+
+/** Fires when page scroll updates `sequence.position` (not remote timeline sync). */
+export function onPageScrollDrivenSequencePosition(
+  listener: PageScrollDrivenSequencePositionListener,
+): () => void {
+  pageScrollDrivenSequencePositionListeners.add(listener)
+  return () => {
+    pageScrollDrivenSequencePositionListeners.delete(listener)
+  }
+}
+
+function notifyPageScrollDrivenSequencePosition(
+  sheet: ISheet,
+  position: number,
+): void {
+  for (const listener of pageScrollDrivenSequencePositionListeners) {
+    listener(sheet, position)
+  }
+}
+
 export function getSheetScrollDriver(sheet: ISheet): ScrollDriver | undefined {
   return sheetScrollDrivers.get(sheet)
 }
@@ -183,6 +211,7 @@ export function attachSheetScrollDriver(
 
   const untapScroll = driver.subscribe((progress) => {
     syncPositionFromScroll(progress)
+    notifyPageScrollDrivenSequencePosition(sheet, sequence.position)
   })
 
   syncPositionFromScroll(driver.getProgress())
