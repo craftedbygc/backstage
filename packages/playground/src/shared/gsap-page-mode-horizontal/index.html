@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GSAP page mode — horizontal</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        overflow-x: auto;
+        overflow-y: hidden;
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        width: 400vw;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: row;
+        font-family: system-ui, sans-serif;
+        background: #0f1115;
+        color: #e8e8ea;
+      }
+      .panel {
+        flex: 0 0 100vw;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        border-right: 1px solid #2a2d35;
+      }
+      .panel:nth-child(odd) {
+        background: #141820;
+      }
+      h1 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0 0 1rem;
+      }
+      p {
+        max-width: 28rem;
+        line-height: 1.5;
+        opacity: 0.85;
+        text-align: center;
+      }
+      #hero-box {
+        width: 120px;
+        height: 120px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        margin-top: 2rem;
+        box-shadow: 0 12px 40px rgba(99, 102, 241, 0.35);
+      }
+      #st-target {
+        width: 96px;
+        height: 96px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #3b82f6, #06b6d4);
+        margin-top: 2rem;
+      }
+      .hint {
+        position: fixed;
+        bottom: 12px;
+        right: 12px;
+        font-size: 11px;
+        opacity: 0.5;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="panel">
+      <h1>Horizontal page mode</h1>
+      <p>
+        Native horizontal document scroll drives the sequencer (0–100%). Scroll
+        horizontally or scrub in Studio.
+      </p>
+      <div id="hero-box"></div>
+    </section>
+    <section class="panel" id="st-panel-a">
+      <h1>ScrollTrigger A</h1>
+      <p>Horizontal scrub registered with Theatre (read-only bar in Studio).</p>
+      <div id="st-target"></div>
+    </section>
+    <section class="panel" id="st-panel-b">
+      <h1>ScrollTrigger B</h1>
+      <p>Timeline + scrollTrigger vars example on the same axis.</p>
+    </section>
+    <section class="panel">
+      <p>End of track — sequence length stays 100% in page mode.</p>
+    </section>
+    <div class="hint">Scroll horizontally → Open Studio</div>
+    <script type="module" src="./index.ts"></script>
+  </body>
+</html>

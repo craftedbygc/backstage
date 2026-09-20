@@ -30,7 +30,7 @@ Extensions such as `@unseenco/theatre-gsap` attach bridges in time mode so regis
 
 ## Page mode
 
-Page mode maps vertical scroll on a **scroller** to the sequence playhead. Studio scrubbing updates scroll position; scrolling the page updates the playhead.
+Page mode maps scroll on a **scroller** (vertical or horizontal) to the sequence playhead. Studio scrubbing updates scroll position; scrolling the page updates the playhead.
 
 ```ts
 import {getProject} from '@unseenco/theatre-core'
@@ -53,12 +53,14 @@ You can also call **`sheet.setSequenceMode('page')`** after the sheet exists.
 
 Page scroll does **not** require GSAP. Use the core APIs to choose which element scrolls and how progress is read and written.
 
-**Shared scroller context** — call **`configureTheatrePageScroll()`** once so Studio and helpers know which element is the vertical scroller (`null` / omitted = document):
+**Shared scroller context** — call **`configureTheatrePageScroll()`** once so Studio and helpers know which element scrolls and which axis is active (`null` / omitted scroller = document; default axis = vertical):
 
 ```ts
 import {configureTheatrePageScroll} from '@unseenco/theatre-core'
 
 configureTheatrePageScroll({scroller: document.documentElement})
+// horizontal native document scroll:
+configureTheatrePageScroll({axis: 'horizontal'})
 ```
 
 **When creating the sheet** — pass **`scrollDriver`** on `project.sheet()`:
@@ -75,7 +77,13 @@ const sheet = project.sheet('Main', {
 - **`sheet.setPageScrollDriver()`** / **`scrollDriver` on `project.sheet()`** keep Studio scrubbing in sync via **`syncPageScrollToSequencePosition`**.
 - **`setPageScrollProgress(sheet, progress)`** / **`pageScrollProgressFromSequence(sheet)`** are optional when you only need normalized playhead progress.
 
-If you omit a custom driver in page mode, Theatre uses a **native document** vertical scroll driver.
+If you omit a custom driver in page mode, Theatre uses a **native document** scroll driver matching the configured **axis** (`createNativeDocumentScrollDriver` or `createNativeDocumentHorizontalScrollDriver`).
+
+#### Horizontal page scroll
+
+Set **`axis: 'horizontal'`** on **`configureTheatrePageScroll`**. Use **`createNativeDocumentHorizontalScrollDriver()`** or **`createElementHorizontalScrollDriver(element)`** when passing a custom **`scrollDriver`**. Lenis helper remains vertical-only; build a manual **`ScrollDriver`** for horizontal smooth scroll if needed.
+
+GSAP ScrollTrigger registration must use **`horizontal: true`** on each trigger (or `ScrollTrigger.defaults({ horizontal: true })` via **`configureTheatreGsap({ pageScroll: { axis: 'horizontal' } })`**). See [GSAP extension — ScrollTrigger](../extensions/gsap.md#scrolltrigger-page-mode-read-only-sequencer).
 
 #### Lenis (recommended helper)
 
@@ -125,13 +133,13 @@ const sheet = project.sheet('Main', {sequenceMode: 'page', scrollDriver: driver}
 
 #### Overflow element scroll (no Lenis)
 
-For a scrollable **`HTMLElement`**, use **`createElementScrollDriver(element)`** with **`configureTheatrePageScroll({ scroller: element })`**.
+For a scrollable **`HTMLElement`**, use **`createElementScrollDriver(element)`** (vertical) or **`createElementHorizontalScrollDriver(element)`** with **`configureTheatrePageScroll({ scroller: element, axis })`**.
 
 ### GSAP and page mode
 
 To register GSAP tweens on a page-mode sheet, enable the GSAP bridge (`gsap: true` on the sheet or **`attachGsapSequenceBridge(sheet)`**) and set clip **`defaultDuration`** in **percent**. ScrollTrigger bars on the sequencer are GSAP-specific. See [GSAP extension — page mode](../extensions/gsap.md#page-mode-scroll-driven-sequence).
 
-Playground demos (GSAP + page mode): **`/shared/gsap-page-mode/`** (native scroll), **`/shared/gsap-page-mode-lenis/`** (Lenis + custom driver). Run `yarn playground` and open the printed local URL.
+Playground demos (GSAP + page mode): **`/shared/gsap-page-mode/`** (native vertical scroll), **`/shared/gsap-page-mode-horizontal/`** (native horizontal scroll + horizontal ScrollTrigger), **`/shared/gsap-page-mode-lenis/`** (Lenis + custom driver). Run `yarn playground` and open the printed local URL.
 
 ## API
 
