@@ -2,6 +2,7 @@ import {usePrism} from '@unseenco/theatre-react'
 import {val} from '@unseenco/theatre-dataverse'
 import {refreshScrollTriggerLayoutsForSheet} from '@unseenco/theatre-shared/gsap/refreshScrollTriggerLayoutsForSheet'
 import {getActivePageScrollContext} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+import {onRemotePageScrollMetricsChange} from '@unseenco/theatre-shared/sheets/remotePageScrollMetrics'
 import {sheetAddressKey} from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
 import {resolveSequenceEditorSheet} from '@unseenco/theatre-studio/selectors'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
@@ -36,6 +37,7 @@ const GsapScrollTriggerLayoutSync: React.VFC = () => {
 
     const onResize = () => refresh()
     window.addEventListener('resize', onResize)
+    const removeMetricsListener = onRemotePageScrollMetricsChange(refresh)
 
     const ScrollTrigger = (
       globalThis as typeof globalThis & {
@@ -50,6 +52,7 @@ const GsapScrollTriggerLayoutSync: React.VFC = () => {
 
     return () => {
       window.removeEventListener('resize', onResize)
+      removeMetricsListener()
       ScrollTrigger?.removeEventListener?.('refresh', refresh)
     }
   }, [sheet])

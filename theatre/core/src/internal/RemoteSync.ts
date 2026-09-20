@@ -4,8 +4,20 @@ import type {
   ProjectState_Historic,
 } from '@unseenco/theatre-core/projects/store/storeTypes'
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
+import type {ISheet} from '@unseenco/theatre-core/sheets/TheatreSheet'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
-import {syncPageScrollToSequencePosition} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
+import {
+  onPageScrollDrivenSequencePosition,
+  syncPageScrollToSequencePosition,
+} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
+import {
+  getMaxScrollForPageScrollContext,
+} from '@unseenco/theatre-shared/gsap/scrollTriggerLayout'
+import {
+  getActivePageScrollContext,
+  resolvePageScrollAxis,
+} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+import {setRemotePageScrollMetrics} from '@unseenco/theatre-shared/sheets/remotePageScrollMetrics'
 import type {Studio} from '@unseenco/theatre-studio/Studio'
 import {getCoreTicker} from '@unseenco/theatre-core/coreTicker'
 import {pointerToPrism, val} from '@unseenco/theatre-dataverse'
@@ -20,10 +32,12 @@ import {isRemoteEditorWindow} from './remoteEditor'
 export const REMOTE_HISTORIC_SYNC_DEBOUNCE_MS = 300
 
 type BroadcastDataEvent =
+  | 'editorHello'
   | 'setSheet'
   | 'setSheetObject'
   | 'updateSheetObject'
   | 'updateTimeline'
+  | 'pageScrollMetrics'
   | 'updateHistoric'
   | 'disconnect'
 
@@ -58,6 +72,11 @@ export default class RemoteSync {
   private historicSyncDebounce: DebouncedCallback | undefined
   private lastBroadcastHistoricFingerprint: string | undefined
   private historicSyncUnsubs: Array<() => void> = []
+  private remoteEditorActive = false
+  private suppressTimelineBroadcast = false
+  private listenerTimelineUnsub: (() => void) | undefined
+  private listenerMetricsUnsubs: Array<() => void> = []
+  private broadcastPageScrollMetrics: (() => void) | undefined
 
   constructor(private readonly project: Project) {
     if (typeof BroadcastChannel === 'undefined') return
@@ -70,6 +89,11 @@ export default class RemoteSync {
       this.channel.onmessage = (event: MessageEvent<BroadcastData>) => {
         this._handleIncoming(event.data)
       }
+      this.listenerTimelineUnsub = onPageScrollDrivenSequencePosition(
+        (sheet, position) => {
+          this._broadcastTimelineFromListener(sheet, position)
+        },
+      )
     } else {
       // Before disconnecting, push the editor's project state to listeners so
       // they keep the edits made in the remote window (not just the transient
@@ -146,9 +170,15 @@ export default class RemoteSync {
 
   attachStudio(studio: Studio) {
     this.studio = studio
-    if (!this.isEditor || !this.channel) return
+    if (!this.channel) return
+
+    if (!this.isEditor) {
+      this._attachListenerPageScrollMetricsBroadcast()
+      return
+    }
 
     const channel = this.channel
+    channel.postMessage({event: 'editorHello', data: {}})
     const projectId = this.project.address.projectId
 
     studio.publicApi.onSelectionChange((selection) => {
@@ -268,8 +298,75 @@ export default class RemoteSync {
     })
   }
 
+  private _broadcastTimelineFromListener(sheet: ISheet, position: number) {
+    if (
+      this.isEditor ||
+      !this.channel ||
+      !this.remoteEditorActive ||
+      this.suppressTimelineBroadcast
+    ) {
+      return
+    }
+    const registered = this.sheets.get(sheet.address.sheetId)
+    if (!registered || registered.getSequenceMode() !== 'page') return
+
+    const message: BroadcastData = {
+      event: 'updateTimeline',
+      data: {sheet: sheet.address.sheetId, position},
+    }
+    this.channel.postMessage(message)
+  }
+
+  private _postPageScrollMetrics() {
+    if (!this.remoteEditorActive || !this.channel) return
+    const ctx = getActivePageScrollContext()
+    const axis = resolvePageScrollAxis(ctx)
+    const maxScroll = getMaxScrollForPageScrollContext(ctx.scroller, axis)
+    const message: BroadcastData = {
+      event: 'pageScrollMetrics',
+      data: {maxScroll, axis},
+    }
+    this.channel.postMessage(message)
+  }
+
+  private _attachListenerPageScrollMetricsBroadcast() {
+    if (this.isEditor || !this.channel) return
+
+    const broadcast = () => this._postPageScrollMetrics()
+    this.broadcastPageScrollMetrics = broadcast
+
+    const onScroll = () => broadcast()
+    document.addEventListener('scroll', onScroll, {passive: true, capture: true})
+    const onResize = () => broadcast()
+    window.addEventListener('resize', onResize)
+
+    const ScrollTrigger = (
+      globalThis as typeof globalThis & {
+        ScrollTrigger?: {
+          addEventListener?: (type: string, cb: () => void) => void
+          removeEventListener?: (type: string, cb: () => void) => void
+        }
+      }
+    ).ScrollTrigger
+    ScrollTrigger?.addEventListener?.('refresh', broadcast)
+
+    broadcast()
+
+    this.listenerMetricsUnsubs.push(() => {
+      document.removeEventListener('scroll', onScroll, {capture: true})
+      window.removeEventListener('resize', onResize)
+      ScrollTrigger?.removeEventListener?.('refresh', broadcast)
+    })
+  }
+
   private _handleIncoming(msg: BroadcastData) {
     switch (msg.event) {
+      case 'editorHello': {
+        if (this.isEditor) break
+        this.remoteEditorActive = true
+        this.broadcastPageScrollMetrics?.()
+        break
+      }
       case 'setSheet': {
         const sheet = this.sheets.get(msg.data.sheet)
         if (sheet && this.studio) {
@@ -294,11 +391,24 @@ export default class RemoteSync {
         const sheet = this.sheets.get(msg.data.sheet)
         if (sheet) {
           this.activeSheet = sheet
+          this.suppressTimelineBroadcast = true
           sheet.publicApi.sequence.position = msg.data.position
           if (sheet.getSequenceMode() === 'page') {
             syncPageScrollToSequencePosition(sheet.publicApi)
           }
+          requestAnimationFrame(() => {
+            this.suppressTimelineBroadcast = false
+          })
         }
+        break
+      }
+      case 'pageScrollMetrics': {
+        if (!this.isEditor) break
+        const {maxScroll, axis} = msg.data as {
+          maxScroll: number
+          axis: 'vertical' | 'horizontal'
+        }
+        setRemotePageScrollMetrics({maxScroll, axis})
         break
       }
       case 'updateHistoric': {
@@ -315,6 +425,11 @@ export default class RemoteSync {
         }
         for (const obj of this.objects.values()) {
           obj.setRemoteOverride({})
+        }
+        if (!this.isEditor) {
+          this.remoteEditorActive = false
+        } else {
+          setRemotePageScrollMetrics(undefined)
         }
         break
       }

@@ -17,7 +17,11 @@ export function isRemotePageModeEditorWindow(): boolean {
 export function hidePageModeDemoForRemoteEditor(): void {
   const demoRoot = document.getElementById('demo-root')
   if (demoRoot) {
-    demoRoot.style.display = 'none'
+    // Keep layout in the document so page scroll metrics stay non-zero for ST
+    // layout in the remote editor (display:none collapses scroll height to 0).
+    demoRoot.style.visibility = 'hidden'
+    demoRoot.style.pointerEvents = 'none'
+    demoRoot.style.userSelect = 'none'
   }
 
   if (document.getElementById(REMOTE_EDITOR_PLACEHOLDER_ID)) {
@@ -28,7 +32,7 @@ export function hidePageModeDemoForRemoteEditor(): void {
   overlay.id = REMOTE_EDITOR_PLACEHOLDER_ID
   overlay.setAttribute('role', 'status')
   overlay.style.cssText =
-    'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;margin:0;font:600 1rem/1.4 system-ui,sans-serif;color:#e8e8ea;background:#0f1115;text-align:center;padding:2rem;pointer-events:none;'
+    'position:fixed;inset:0;z-index:-1;display:flex;align-items:center;justify-content:center;margin:0;font:600 1rem/1.4 system-ui,sans-serif;color:#e8e8ea;background:#0f1115;text-align:center;padding:2rem;pointer-events:none;'
 
   const message = document.createElement('p')
   message.textContent = REMOTE_EDITOR_PLACEHOLDER

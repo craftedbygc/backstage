@@ -19,6 +19,7 @@ import {
   getMaxScrollForPageScrollContext,
   scrollPixelsToPageUnits,
 } from './scrollTriggerLayout'
+import {resolveMaxScrollPxForPageLayout} from '@unseenco/theatre-shared/sheets/remotePageScrollMetrics'
 
 export type {
   PageScrollContext,
@@ -73,10 +74,12 @@ export function extractScrollTriggerLayout(
     return {ok: false, reason: 'missing_animation'}
   }
 
-  const maxScroll = getMaxScrollForPageScrollContext(
+  const axis = resolvePageScrollAxis(pageScrollContext)
+  const localMaxScroll = getMaxScrollForPageScrollContext(
     pageScrollContext.scroller,
-    resolvePageScrollAxis(pageScrollContext),
+    axis,
   )
+  const maxScroll = resolveMaxScrollPxForPageLayout(localMaxScroll, axis)
   const layout = scrollPixelsToPageUnits(
     surface.start,
     surface.end,
