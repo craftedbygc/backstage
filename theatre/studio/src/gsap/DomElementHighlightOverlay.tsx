@@ -96,12 +96,15 @@ export function useDomElementHighlight(): DomElementHighlightContextValue {
   return ctx
 }
 
+/** Above `#pointer-root` shell (z-index 50) when highlight renders as its sibling. */
+const HIGHLIGHT_Z_INDEX = 51
+
 const EdgeArrow = styled.div<{
   $edge: 'top' | 'bottom' | 'left' | 'right'
 }>`
   position: fixed;
   pointer-events: none;
-  z-index: 2;
+  z-index: ${HIGHLIGHT_Z_INDEX + 1};
   color: rgba(0, 180, 255, 0.95);
   font-size: 18px;
   line-height: 1;
@@ -168,7 +171,7 @@ const DomElementHighlightOverlay: React.VFC<{rect: DOMRect}> = ({rect}) => {
             backgroundColor: 'rgba(0, 180, 255, 0.1)',
             borderRadius: 2,
             pointerEvents: 'none',
-            zIndex: 1,
+            zIndex: HIGHLIGHT_Z_INDEX,
           }}
         />
       ) : null}
