@@ -54,9 +54,21 @@ function copyLicenseFiles() {
   }
 }
 
+function copyRootReadme() {
+  const from = path.join(monorepoRoot, 'README.md')
+  if (!fs.existsSync(from)) {
+    throw new Error(
+      'Missing monorepo root README.md. Expected at repository root.',
+    )
+  }
+  fs.copyFileSync(from, path.join(packageRoot, 'README.md'))
+  console.log('  copied README.md from monorepo root')
+}
+
 console.log('Assembling @unseenco/backstage dist…')
 for (const {from, to} of distCopies) {
   copyDir(from, to)
 }
 copyLicenseFiles()
+copyRootReadme()
 console.log('Backstage assemble complete.')
