@@ -22,6 +22,22 @@ function withLitePeersQuery(id: string): string {
     : id + THEATRE_LITE_PEERS_QUERY
 }
 
+function isLitePlaygroundImporter(importer: string | undefined): boolean {
+  if (!importer) return false
+  const normalized = importer.split('?')[0]
+  return (
+    normalized.includes(`${path.sep}shared${path.sep}theatre-lite-three${path.sep}`) ||
+    normalized.includes(`${path.sep}shared${path.sep}theatre-lite${path.sep}`)
+  )
+}
+
+function isTheatreThreejsImport(source: string): boolean {
+  return (
+    source === '@unseenco/theatre-threejs' ||
+    source.startsWith('@unseenco/theatre-threejs/')
+  )
+}
+
 /**
  * Playground-only: `@unseenco/theatre-threejs` normally imports full core/studio.
  * Lite demos append `?theatre-lite-peers` so the dependency graph uses lite packages.
@@ -51,7 +67,25 @@ export function theatreLiteThreePeersPlugin(): Plugin {
         return null
       }
 
-      if (!importer?.includes(THEATRE_LITE_PEERS_QUERY)) {
+      if (
+        isLitePlaygroundImporter(importer) &&
+        isTheatreThreejsImport(source) &&
+        !source.endsWith(THEATRE_LITE_PEERS_QUERY)
+      ) {
+        const resolved = await this.resolve(
+          source + THEATRE_LITE_PEERS_QUERY,
+          importer,
+          {...options, skipSelf: true},
+        )
+        if (resolved) {
+          return resolved
+        }
+      }
+
+      if (
+        !importer?.includes(THEATRE_LITE_PEERS_QUERY) &&
+        !isLitePlaygroundImporter(importer)
+      ) {
         return null
       }
 

@@ -18,10 +18,14 @@ import {
   WebGLRenderer,
 } from 'three'
 
-studio.initialize({mode: 'lite', usePersistentStorage: false})
-
 const rafDriver = createRafDriver({name: 'theatre-lite-three'})
 setCoreRafDriver(rafDriver)
+
+studio.initialize({
+  mode: 'lite',
+  usePersistentStorage: false,
+  __experimental_rafDriver: rafDriver,
+})
 
 const project = getProject('Theatre Lite Three')
 const sheet = project.sheet('Cube Scene')
