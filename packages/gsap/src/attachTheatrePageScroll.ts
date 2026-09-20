@@ -1,9 +1,8 @@
-import type {ISheet} from '@unseenco/theatre-core/sheets/TheatreSheet'
-import type {ScrollDriver} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
+import type {ISheet, ScrollDriver} from '@unseenco/theatre-core'
 import {
   createElementScrollDriver,
   createNativeDocumentScrollDriver,
-} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
+} from '@unseenco/theatre-core'
 import {
   defaultPageScrollContext,
   isNativeDocumentScroller,
