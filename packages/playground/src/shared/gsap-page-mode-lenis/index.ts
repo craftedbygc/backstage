@@ -2,15 +2,15 @@ import gsap from 'gsap'
 import {ScrollTrigger} from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import {
+  configureTheatrePageScroll,
   createRafDriver,
   getProject,
   setCoreRafDriver,
   types,
 } from '@unseenco/theatre-core'
-import type {ScrollDriver} from '@unseenco/theatre-core'
+import {createLenisScrollDriver} from '@unseenco/theatre-core/lenis'
 import studio from '@unseenco/theatre-studio'
 import {
-  attachTheatrePageScroll,
   bindGsapTickerToRafDriver,
   configureTheatreGsap,
   registerAllGsapScrollTriggers,
@@ -24,12 +24,15 @@ const rafDriver = createRafDriver({name: 'gsap-page-mode-lenis'})
 setCoreRafDriver(rafDriver)
 bindGsapTickerToRafDriver(rafDriver, gsap)
 
+configureTheatrePageScroll({
+  scroller: typeof document !== 'undefined' ? document.documentElement : null,
+})
+
 configureTheatreGsap({
   namespace: 'GSAP',
   outlineNamespace: {defaultCollapsed: false},
   pageScroll: {
     scroller: typeof document !== 'undefined' ? document.documentElement : null,
-    applyScrollTriggerDefaults: true,
   },
 })
 
@@ -41,33 +44,6 @@ const lenis = new Lenis({
 })
 
 document.documentElement.classList.add('lenis', 'lenis-smooth')
-
-function createLenisScrollDriver(instance: Lenis): ScrollDriver {
-  return {
-    getProgress() {
-      const limit = instance.limit
-      if (limit <= 0) return 0
-      const progress = instance.scroll / limit
-      return Math.max(0, Math.min(1, progress))
-    },
-    setProgress(progress: number) {
-      const limit = instance.limit
-      instance.scrollTo(progress * limit, {immediate: true})
-    },
-    subscribe(onChange) {
-      const handler = () => {
-        const limit = instance.limit
-        const p =
-          limit <= 0 ? 0 : Math.max(0, Math.min(1, instance.scroll / limit))
-        onChange(p)
-      }
-      instance.on('scroll', handler)
-      return () => {
-        instance.off('scroll', handler)
-      }
-    },
-  }
-}
 
 ScrollTrigger.scrollerProxy(document.documentElement, {
   scrollTop(value) {
@@ -93,10 +69,14 @@ gsap.ticker.add((time) => {
 })
 gsap.ticker.lagSmoothing(0)
 
-const project = getProject('GSAP page mode Lenis demo')
-const sheet = project.sheet('Main', {sequenceMode: 'page', gsap: true})
+const lenisDriver = createLenisScrollDriver(lenis)
 
-attachTheatrePageScroll(sheet, {driver: createLenisScrollDriver(lenis)})
+const project = getProject('GSAP page mode Lenis demo')
+const sheet = project.sheet('Main', {
+  sequenceMode: 'page',
+  gsap: true,
+  scrollDriver: lenisDriver,
+})
 
 const heroBox = document.getElementById('hero-box')!
 const midPanel = document.getElementById('mid-panel')!

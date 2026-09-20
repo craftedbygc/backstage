@@ -1,73 +1,59 @@
-import type {ISheet, ScrollDriver} from '@unseenco/theatre-core'
+import type {
+  AttachTheatrePageScrollOptions,
+  ISheet,
+  PageScrollContext,
+  PageScrollScroller,
+  ScrollDriver,
+} from '@unseenco/theatre-core'
 import {
-  createElementScrollDriver,
-  createNativeDocumentScrollDriver,
+  attachTheatrePageScroll as attachTheatrePageScrollCore,
+  createDefaultPageScrollDriver as createDefaultPageScrollDriverCore,
+  getTheatrePageScrollContext as getTheatrePageScrollContextCore,
 } from '@unseenco/theatre-core'
 import {
   defaultPageScrollContext,
-  isNativeDocumentScroller,
   setActivePageScrollContext,
-} from '@unseenco/theatre-shared/sheets/pageScrollContext'
-import type {
-  PageScrollContext,
-  PageScrollScroller,
 } from '@unseenco/theatre-shared/sheets/pageScrollContext'
 import {getTheatreGsapConfig} from './config'
 import {getGsapScrollTriggerPlugin} from './gsapScrollTriggerPlugin'
 
-export function getTheatrePageScrollContext(): PageScrollContext {
-  const pageScroll = getTheatreGsapConfig().pageScroll
-  if (!pageScroll) {
-    return defaultPageScrollContext
-  }
-  const ctx = {
-    scroller: pageScroll.scroller ?? defaultPageScrollContext.scroller,
-  }
-  setActivePageScrollContext(ctx)
-  return ctx
-}
-
-function applyScrollTriggerDefaultsFromConfig(): void {
+function applyScrollTriggerDefaultsFromGsapConfig(): void {
   const {pageScroll} = getTheatreGsapConfig()
-  if (!pageScroll?.applyScrollTriggerDefaults) return
+  if (!pageScroll) return
   const ScrollTrigger = getGsapScrollTriggerPlugin()
   if (!ScrollTrigger?.defaults) return
-  const scroller = pageScroll.scroller ?? undefined
-  ScrollTrigger.defaults({scroller})
+  ScrollTrigger.defaults({scroller: pageScroll.scroller ?? undefined})
+}
+
+export function getTheatrePageScrollContext(): PageScrollContext {
+  applyScrollTriggerDefaultsFromGsapConfig()
+  const pageScroll = getTheatreGsapConfig().pageScroll
+  if (pageScroll) {
+    const ctx = {
+      scroller: pageScroll.scroller ?? defaultPageScrollContext.scroller,
+    }
+    setActivePageScrollContext(ctx)
+    return ctx
+  }
+  return getTheatrePageScrollContextCore()
 }
 
 export function createDefaultPageScrollDriver(
   scroller: PageScrollScroller = getTheatrePageScrollContext().scroller,
 ): ScrollDriver {
-  if (
-    typeof document !== 'undefined' &&
-    scroller != null &&
-    !isNativeDocumentScroller(scroller) &&
-    scroller instanceof HTMLElement
-  ) {
-    return createElementScrollDriver(scroller)
-  }
-  return createNativeDocumentScrollDriver()
+  return createDefaultPageScrollDriverCore(scroller)
 }
 
-export type AttachTheatrePageScrollOptions = {
-  driver?: ScrollDriver
-}
+export type {AttachTheatrePageScrollOptions}
 
 /**
- * Wires page-mode scroll → sequence sync using {@link configureTheatreGsap} `pageScroll`
- * or an explicit driver (required for Lenis and other non-native scroll).
+ * @deprecated Import from `@unseenco/theatre-core` for page scroll without GSAP.
+ * This wrapper applies ScrollTrigger defaults when `configureTheatreGsap({ pageScroll })` is used.
  */
 export function attachTheatrePageScroll(
   sheet: ISheet,
   options: AttachTheatrePageScrollOptions = {},
 ): () => void {
-  applyScrollTriggerDefaultsFromConfig()
-  const driver =
-    options.driver ??
-    createDefaultPageScrollDriver(getTheatrePageScrollContext().scroller)
-  sheet.setPageScrollDriver(driver)
-  return () => {
-    sheet.setPageScrollDriver(undefined)
-  }
+  applyScrollTriggerDefaultsFromGsapConfig()
+  return attachTheatrePageScrollCore(sheet, options)
 }

@@ -20,6 +20,7 @@
       "@unseenco/theatre-studio": ["./theatre/studio/src/index.ts"],
       "@unseenco/theatre-studio/*": ["./theatre/studio/src/*"],
       "@unseenco/theatre-core/*": ["./theatre/core/src/*"],
+      "@unseenco/theatre-core/lenis": ["./theatre/core/src/lenis.ts"],
       "@unseenco/theatre-shared/*": ["./theatre/shared/src/*"],
       "@unseenco/theatre-dataverse": ["./packages/dataverse/src/index.ts"],
       "@unseenco/theatre-react": ["./packages/react/src/index.ts"],

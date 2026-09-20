@@ -89,23 +89,45 @@ Playground: **`/shared/gsap-page-mode/`** (native scroll).
 
 ### Custom scroll (Lenis, overflow containers)
 
-By default, page mode listens to **native window scroll**. For **Lenis**, a scrollable div, or **`ScrollTrigger.scrollerProxy`**, configure a shared scroll context and attach a custom **`ScrollDriver`**:
+Page scroll wiring lives in **`@unseenco/theatre-core`** — page mode works without GSAP. Use **`configureTheatrePageScroll()`** for the shared scroller context, pass **`scrollDriver`** when creating the sheet (or call **`attachTheatrePageScroll(sheet)`** later).
+
+**Lenis (recommended helper):**
+
+```ts
+import {
+  configureTheatrePageScroll,
+  getProject,
+} from '@unseenco/theatre-core'
+import {createLenisScrollDriver} from '@unseenco/theatre-core/lenis'
+import {configureTheatreGsap} from '@unseenco/theatre-gsap'
+
+configureTheatrePageScroll({scroller: document.documentElement})
+
+// GSAP only: ScrollTrigger.defaults({ scroller }) when pageScroll is set
+configureTheatreGsap({
+  pageScroll: {scroller: document.documentElement},
+})
+
+const driver = createLenisScrollDriver(lenis)
+
+const sheet = getProject('My project').sheet('Main', {
+  sequenceMode: 'page',
+  gsap: true,
+  scrollDriver: driver,
+})
+```
+
+**Manual `ScrollDriver`** (any scroll library):
 
 ```ts
 import {
   attachTheatrePageScroll,
-  configureTheatreGsap,
-} from '@unseenco/theatre-gsap'
-import type {ScrollDriver} from '@unseenco/theatre-core'
+  configureTheatrePageScroll,
+  type ScrollDriver,
+} from '@unseenco/theatre-core'
 
-configureTheatreGsap({
-  pageScroll: {
-    scroller: document.documentElement, // or an HTMLElement
-    applyScrollTriggerDefaults: true, // ScrollTrigger.defaults({ scroller })
-  },
-})
+configureTheatrePageScroll({scroller: document.documentElement})
 
-// After Lenis + scrollerProxy setup in your app:
 const driver: ScrollDriver = {
   getProgress: () => lenis.scroll / lenis.limit,
   setProgress: (p) => lenis.scrollTo(p * lenis.limit, {immediate: true}),
@@ -116,15 +138,16 @@ const driver: ScrollDriver = {
   },
 }
 
-attachTheatrePageScroll(sheet, {driver})
+const sheet = project.sheet('Main', {sequenceMode: 'page', scrollDriver: driver})
+// or: attachTheatrePageScroll(sheet, {driver})
 ```
 
-- **`attachTheatrePageScroll`** calls **`sheet.setPageScrollDriver()`** so Studio scrubbing uses the same driver via **`syncPageScrollToSequencePosition`**.
-- **`setPageScrollProgress(sheet, progress)`** / **`pageScrollProgressFromSequence(sheet)`** on `@unseenco/theatre-core` are optional helpers when you only need to set playhead progress.
+- **`sheet.setPageScrollDriver()`** / **`scrollDriver` on `project.sheet()`** keep Studio scrubbing in sync via **`syncPageScrollToSequencePosition`**.
+- **`setPageScrollProgress(sheet, progress)`** / **`pageScrollProgressFromSequence(sheet)`** are optional helpers when you only need playhead progress.
 
 Reference implementation: **`/shared/gsap-page-mode-lenis/`** (Lenis + GSAP ScrollTrigger proxy + Theatre).
 
-For **overflow element** scroll (no Lenis), use **`createElementScrollDriver(element)`** from `@unseenco/theatre-core` with the same `pageScroll.scroller` and `attachTheatrePageScroll`.
+For **overflow element** scroll (no Lenis), use **`createElementScrollDriver(element)`** with the same **`configureTheatrePageScroll({ scroller: element })`**.
 
 ## registerGsapAnimation
 

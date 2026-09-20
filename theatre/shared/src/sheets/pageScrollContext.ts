@@ -1,5 +1,3 @@
-import type {GsapScrollTriggerSurface} from '@unseenco/theatre-shared/gsap/scrollTriggerGuards'
-
 /** `null` = native document vertical scroll (window / documentElement). */
 export type PageScrollScroller = Window | Element | null
 
@@ -25,7 +23,10 @@ export function resolvePageScrollScroller(
   st: unknown,
   defaultsScroller?: PageScrollScroller,
 ): PageScrollScroller {
-  const surface = st as GsapScrollTriggerSurface
+  const surface = st as {
+    scroller?: unknown
+    vars?: {scroller?: unknown}
+  }
   const fromSt = surface.scroller ?? surface.vars?.scroller
   if (fromSt != null) {
     return fromSt as PageScrollScroller
@@ -52,7 +53,7 @@ export function isNativeDocumentScroller(
   return scroller === document.documentElement || scroller === document.body
 }
 
-/** Same scroller target for page-mode ST registration (reference equality or both native doc). */
+/** Same scroller target for page-mode scroll registration (reference equality or both native doc). */
 export function pageScrollScrollersMatch(
   a: PageScrollScroller,
   b: PageScrollScroller,
@@ -63,7 +64,7 @@ export function pageScrollScrollersMatch(
 }
 
 export function isVerticalScrollTrigger(st: unknown): boolean {
-  const surface = st as GsapScrollTriggerSurface
+  const surface = st as {horizontal?: boolean; vars?: {horizontal?: boolean}}
   if (surface.horizontal === true || surface.vars?.horizontal === true) {
     return false
   }

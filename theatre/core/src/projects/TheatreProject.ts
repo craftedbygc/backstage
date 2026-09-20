@@ -14,6 +14,7 @@ import {validateAndSanitiseSlashedPathOrThrow} from '@unseenco/theatre-shared/ut
 import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
 import {notify} from '@unseenco/theatre-shared/notify'
 import type {SheetSequenceMode} from '@unseenco/theatre-core/sheets/sheetSequenceMode'
+import type {ScrollDriver} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
 
 /**
  * A project's config object (currently the only point of configuration is the project's state)
@@ -35,6 +36,11 @@ export type ISheetOptions = {
    * When `true`, enables the GSAP sequence bridge for this sheet (required for `@unseenco/theatre-gsap`).
    */
   gsap?: boolean
+  /**
+   * Custom scroll driver for **`page`** mode (Lenis, overflow element, etc.).
+   * When omitted in page mode, native document scroll is used.
+   */
+  scrollDriver?: ScrollDriver
 }
 
 /** Options passed to {@link getProject} when creating or attaching to a project. */

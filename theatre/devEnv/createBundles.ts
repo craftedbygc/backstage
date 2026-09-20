@@ -3,6 +3,29 @@ import fs from 'fs'
 import * as esbuild from 'esbuild'
 import {definedGlobals} from './definedGlobals'
 
+function writeCoreLenisShim(pathToPackage: string) {
+  const dist = path.join(pathToPackage, 'dist')
+  fs.writeFileSync(
+    path.join(dist, 'lenis.mjs'),
+    `export { createLenisScrollDriver } from './lenis-entry.mjs';\nexport type { LenisScrollDriverSource } from './lenis-entry.mjs';\n`,
+  )
+  fs.writeFileSync(
+    path.join(dist, 'lenis.js'),
+    `'use strict';\nconst lenisEntry = require('./lenis-entry.js');\nexports.createLenisScrollDriver = lenisEntry.createLenisScrollDriver;\n`,
+  )
+  const lenisDts = path.join(
+    __dirname,
+    '../.temp/declarations/core/src/lenis.d.ts',
+  )
+  if (fs.existsSync(lenisDts)) {
+    fs.copyFileSync(lenisDts, path.join(dist, 'lenis-entry.d.ts'))
+  }
+  fs.writeFileSync(
+    path.join(dist, 'lenis.d.ts'),
+    `export { createLenisScrollDriver } from './lenis-entry';\nexport type { LenisScrollDriverSource } from './lenis-entry';\n`,
+  )
+}
+
 function writeCorePrivateAPIsShim(pathToPackage: string) {
   const dist = path.join(pathToPackage, 'dist')
   fs.writeFileSync(
@@ -146,9 +169,37 @@ export async function createBundles(watch: boolean) {
       }
     }
 
+    if (which === 'core') {
+      const lenisOutputs: Array<{outfile: string; format: 'cjs' | 'esm'}> = [
+        {
+          outfile: path.join(pathToPackage, 'dist/lenis-entry.js'),
+          format: 'cjs',
+        },
+        {
+          outfile: path.join(pathToPackage, 'dist/lenis-entry.mjs'),
+          format: 'esm',
+        },
+      ]
+      for (const {outfile, format} of lenisOutputs) {
+        const ctx = await esbuild.context({
+          ...esbuildConfig,
+          entryPoints: [path.join(pathToPackage, 'src/lenis.ts')],
+          outfile,
+          format,
+        })
+        if (watch) {
+          await ctx.watch()
+        } else {
+          await ctx.rebuild()
+          await ctx.dispose()
+        }
+      }
+    }
+
     if (!watch) {
       if (which === 'core') {
         writeCorePrivateAPIsShim(pathToPackage)
+        writeCoreLenisShim(pathToPackage)
       }
       if (which === 'studio') {
         writeStudioSubpathShims(pathToPackage)

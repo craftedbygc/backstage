@@ -10,7 +10,9 @@ import {getGsapScrollTriggerPlugin} from './gsapScrollTriggerPlugin'
 export type TheatreGsapPageScrollConfig = {
   /** Default scroller for ScrollTrigger layout and guards; `null` = document vertical. */
   scroller?: PageScrollScroller
-  /** When true, calls `ScrollTrigger.defaults({ scroller })` on configure / attach. */
+  /**
+   * @deprecated ScrollTrigger.defaults is applied automatically when `pageScroll` is configured.
+   */
   applyScrollTriggerDefaults?: boolean
 }
 
@@ -31,6 +33,15 @@ let activeConfig: TheatreGsapConfig = {
 
 setConfiguredGsapSheetObjectNamespace(activeConfig.namespace!)
 
+function applyScrollTriggerDefaultsForPageScroll(
+  scroller: PageScrollScroller | undefined,
+): void {
+  const ScrollTrigger = getGsapScrollTriggerPlugin()
+  ScrollTrigger?.defaults?.({
+    scroller: scroller ?? undefined,
+  })
+}
+
 export function configureTheatreGsap(config: TheatreGsapConfig): {
   reset: () => void
 } {
@@ -43,29 +54,31 @@ export function configureTheatreGsap(config: TheatreGsapConfig): {
     pageScroll: config.pageScroll ?? prev.pageScroll,
   }
   setConfiguredGsapSheetObjectNamespace(activeConfig.namespace ?? 'GSAP')
-  if (config.pageScroll) {
+
+  if (config.pageScroll !== undefined) {
     setActivePageScrollContext({
       scroller: config.pageScroll.scroller ?? defaultPageScrollContext.scroller,
     })
+    applyScrollTriggerDefaultsForPageScroll(
+      config.pageScroll.scroller ?? defaultPageScrollContext.scroller,
+    )
   }
-  if (activeConfig.pageScroll?.applyScrollTriggerDefaults) {
-    const ScrollTrigger = getGsapScrollTriggerPlugin()
-    ScrollTrigger?.defaults?.({
-      scroller: activeConfig.pageScroll.scroller ?? undefined,
-    })
-  }
+
   return {
     reset() {
       activeConfig = prev
       setConfiguredGsapSheetObjectNamespace(prev.namespace ?? 'GSAP')
-      setActivePageScrollContext(
-        prev.pageScroll
-          ? {
-              scroller:
-                prev.pageScroll.scroller ?? defaultPageScrollContext.scroller,
-            }
-          : defaultPageScrollContext,
-      )
+      if (prev.pageScroll !== undefined) {
+        setActivePageScrollContext({
+          scroller:
+            prev.pageScroll.scroller ?? defaultPageScrollContext.scroller,
+        })
+        applyScrollTriggerDefaultsForPageScroll(
+          prev.pageScroll.scroller ?? defaultPageScrollContext.scroller,
+        )
+      } else {
+        setActivePageScrollContext(defaultPageScrollContext)
+      }
     },
   }
 }

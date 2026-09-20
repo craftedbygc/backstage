@@ -14,6 +14,10 @@ export function applySheetRuntimeOptions(
     sheet.setSequenceMode(opts.sequenceMode)
   }
 
+  if (opts.scrollDriver !== undefined) {
+    sheet.setPageScrollDriver(opts.scrollDriver)
+  }
+
   if (opts.gsap === true) {
     sheet.enableGsapSequenceBridge()
   }

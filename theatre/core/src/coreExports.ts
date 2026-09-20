@@ -42,6 +42,30 @@ export {
   getSheetScrollDriver,
 } from './sheets/attachSheetScrollDriver'
 export type {ScrollDriver} from './sheets/attachSheetScrollDriver'
+export {
+  configureTheatrePageScroll,
+  getTheatrePageScrollConfig,
+  getTheatrePageScrollContext,
+  attachTheatrePageScroll,
+  createDefaultPageScrollDriver,
+} from './sheets/theatrePageScroll'
+export type {
+  TheatrePageScrollConfig,
+  AttachTheatrePageScrollOptions,
+} from './sheets/theatrePageScroll'
+export type {
+  PageScrollContext,
+  PageScrollScroller,
+} from './sheets/pageScrollContext'
+export {
+  defaultPageScrollContext,
+  getActivePageScrollContext,
+  setActivePageScrollContext,
+  isNativeDocumentScroller,
+  pageScrollScrollersMatch,
+  resolvePageScrollScroller,
+  isVerticalPageScrollTrigger,
+} from './sheets/pageScrollContext'
 export type {SheetSequenceMode} from './sheets/sheetSequenceMode'
 export {
   PAGE_MODE_SEQUENCE_LENGTH,

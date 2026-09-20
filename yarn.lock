@@ -4308,6 +4308,11 @@ __metadata:
   resolution: "@unseenco/theatre-core@workspace:theatre/core"
   dependencies:
     "@unseenco/theatre-dataverse": "workspace:*"
+  peerDependencies:
+    lenis: ">=1.0.0"
+  peerDependenciesMeta:
+    lenis:
+      optional: true
   languageName: unknown
   linkType: soft
 
