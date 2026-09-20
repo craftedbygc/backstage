@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 
 /** Placeholder for sequence-editor UI excluded from the studio-lite bundle. */
 const Empty: React.FC = () => null

@@ -1,5 +1,4 @@
 import fs from 'fs'
-import path from 'path'
 import type {Plugin} from 'vite'
 
 /** Suffix for imports that must resolve Theatre peers to core-lite / studio-lite. */
