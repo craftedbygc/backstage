@@ -7,7 +7,7 @@ Welcome to the Theatre documentation. These guides explain how to animate with T
 Theatre works with any front-end stack. Pick a tutorial that matches your project:
 
 - [With THREE.js](./getting-started/with-three-js.md) — vanilla Three.js and a bundler
-- [With HTML / SVG](./getting-started/with-html-svg.md) — no bundler; CDN or script modules
+- [With HTML / SVG](./getting-started/with-html.md) — no bundler; CDN or script modules
 - [With React Three Fiber](./getting-started/with-react-three-fiber.md) — notes for R3F (no official extension in this fork yet)
 
 ## Learn the model
