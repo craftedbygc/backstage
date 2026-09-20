@@ -31,6 +31,17 @@ import {isRemoteEditorWindow} from './remoteEditor'
 /** Delay before pushing historic state from the remote editor to listener windows. */
 export const REMOTE_HISTORIC_SYNC_DEBOUNCE_MS = 300
 
+/**
+ * When applying an incoming `updateTimeline` message, only the main (listener)
+ * window should move page scroll; the remote editor only updates playhead position.
+ */
+export function shouldSyncPageScrollWhenApplyingTimelineUpdate(
+  isEditor: boolean,
+  sequenceMode: string,
+): boolean {
+  return !isEditor && sequenceMode === 'page'
+}
+
 type BroadcastDataEvent =
   | 'editorHello'
   | 'setSheet'
@@ -85,10 +96,11 @@ export default class RemoteSync {
       `theatre-remote:${project.address.projectId}`,
     )
 
+    this.channel.onmessage = (event: MessageEvent<BroadcastData>) => {
+      this._handleIncoming(event.data)
+    }
+
     if (!this.isEditor) {
-      this.channel.onmessage = (event: MessageEvent<BroadcastData>) => {
-        this._handleIncoming(event.data)
-      }
       this.listenerTimelineUnsub = onPageScrollDrivenSequencePosition(
         (sheet, position) => {
           this._broadcastTimelineFromListener(sheet, position)
@@ -206,7 +218,7 @@ export default class RemoteSync {
     let lastPosition: number | undefined
     const ticker = getCoreTicker()
     const pollTimelinePosition = () => {
-      if (this.activeSheet) {
+      if (this.activeSheet && !this.suppressTimelineBroadcast) {
         const position = this.activeSheet.publicApi.sequence.position
         if (position !== lastPosition) {
           lastPosition = position
@@ -266,14 +278,19 @@ export default class RemoteSync {
     return data
   }
 
-  private _broadcastHistoricSnapshot() {
+  private _broadcastHistoricSnapshot(options?: {force?: boolean}) {
     if (!this.channel) return
 
     const data = this._readHistoricSnapshotFromStudio()
     if (!data) return
 
     const fingerprint = fingerprintHistoricSnapshot(data)
-    if (fingerprint === this.lastBroadcastHistoricFingerprint) return
+    if (
+      !options?.force &&
+      fingerprint === this.lastBroadcastHistoricFingerprint
+    ) {
+      return
+    }
 
     this.lastBroadcastHistoricFingerprint = fingerprint
     const message: BroadcastData = {event: 'updateHistoric', data}
@@ -365,6 +382,8 @@ export default class RemoteSync {
         if (this.isEditor) break
         this.remoteEditorActive = true
         this.broadcastPageScrollMetrics?.()
+        // Bootstrap remote Studio from main's project state (no duplicate DOM/GSAP).
+        this._broadcastHistoricSnapshot({force: true})
         break
       }
       case 'setSheet': {
@@ -393,7 +412,14 @@ export default class RemoteSync {
           this.activeSheet = sheet
           this.suppressTimelineBroadcast = true
           sheet.publicApi.sequence.position = msg.data.position
-          if (sheet.getSequenceMode() === 'page') {
+          // Main window scroll drives the remote playhead; only the listener
+          // window should move page scroll when applying a remote scrub.
+          if (
+            shouldSyncPageScrollWhenApplyingTimelineUpdate(
+              this.isEditor,
+              sheet.getSequenceMode(),
+            )
+          ) {
             syncPageScrollToSequencePosition(sheet.publicApi)
           }
           requestAnimationFrame(() => {
