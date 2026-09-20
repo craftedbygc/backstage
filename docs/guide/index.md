@@ -30,6 +30,12 @@ In-depth topics for day-to-day authoring:
 - [Authoring extensions](./manual/authoring-extensions.md)
 - [Advanced](./manual/advanced.md)
 
+## Theatre Lite
+
+A smaller Theatre.js stack for apps that ship static prop values and sheet-level variants, without timelines, keyframes, or sequence playback in production.
+
+- [Overview](./theatre-lite/index.md)
+
 ## Extensions
 
 - [Overview](./extensions/index.md)
@@ -39,6 +45,5 @@ In-depth topics for day-to-day authoring:
 ## Community
 
 - [GitHub](https://github.com/craftedbygc/theatre) — source and issues
-- [Discord](https://discord.gg/bm9f8F9Y9N) — help and feedback
 
 Release notes live in the repository [CHANGELOG](https://github.com/craftedbygc/theatre/blob/main/CHANGELOG.md).

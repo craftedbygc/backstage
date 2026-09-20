@@ -1,6 +1,6 @@
 # With React Three Fiber
 
-The upstream Theatre project shipped **`@theatre/r3f`**, a dedicated React Three Fiber extension. **This fork (`craftedbygc/theatre`) does not publish that package yet.** You can still use Theatre with R3F by wiring Three.js objects manually or via `@unseenco/theatre-threejs`.
+The upstream Theatre project shipped **`@theatre/r3f`**, a dedicated React Three Fiber extension. **This fork (`craftedbygc/theatre`) does not publish that package.** You can still use Theatre with R3F by wiring Three.js objects manually or via `@unseenco/theatre-threejs`.
 
 ## Recommended approach today
 

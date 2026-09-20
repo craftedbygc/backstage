@@ -9,7 +9,7 @@ const guideSidebar = [
     items: [
       {text: 'Overview', link: '/guide/getting-started/'},
       {text: 'With THREE.js', link: '/guide/getting-started/with-three-js'},
-      {text: 'With HTML / SVG', link: '/guide/getting-started/with-html-svg'},
+      {text: 'With HTML / SVG', link: '/guide/getting-started/with-html'},
       {
         text: 'With React Three Fiber',
         link: '/guide/getting-started/with-react-three-fiber',
