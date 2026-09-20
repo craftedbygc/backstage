@@ -33,6 +33,10 @@ const cancel = project.sheet('Button', 'Cancel')
 
 One sheet can host multiple timelines (`default`, `mobile`, …) with independent keyframe data. See [Sheet sequence variants](./sheet-variants.md).
 
+## Sequence modes
+
+Sheets use **time mode** (seconds timeline) by default, or **page mode** (0–100% scroll). See [Sheet sequence modes](./sheet-modes.md).
+
 ## Sheet-level props
 
 Use **`sheet.props(config)`** for parameters that belong to the sheet rather than a scene object—for example global background mode, layout constants, or values shared across sequence variants.

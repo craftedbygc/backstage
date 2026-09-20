@@ -27,6 +27,10 @@ const guideSidebar = [
         text: 'Sheet sequence variants',
         link: '/guide/manual/sheet-variants',
       },
+      {
+        text: 'Sheet sequence modes',
+        link: '/guide/manual/sheet-modes',
+      },
       {text: 'Sheet objects', link: '/guide/manual/objects'},
       {
         text: 'Linking props (showPropsOf)',
