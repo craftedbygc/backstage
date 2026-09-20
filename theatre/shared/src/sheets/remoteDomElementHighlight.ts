@@ -1,8 +1,10 @@
-import type {RemoteDomHighlightTarget} from '../gsap/domElementHighlightTarget'
+import type {RemoteDomHighlightTarget} from '@unseenco/theatre-shared/gsap/domElementHighlightTarget'
 
 const channelCache = new Map<string, BroadcastChannel>()
 
-function getRemoteBroadcastChannel(projectId: string): BroadcastChannel | undefined {
+function getRemoteBroadcastChannel(
+  projectId: string,
+): BroadcastChannel | undefined {
   if (typeof BroadcastChannel === 'undefined') {
     return undefined
   }
