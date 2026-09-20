@@ -59,11 +59,11 @@ export function validateAndSanitiseSlashedPathOrThrow(
         'Please replace the path with the sanitized one, otherwise it will likely break in the future.',
       [
         {
-          url: 'https://www.theatrejs.com/docs/latest/manual/objects#creating-sheet-objects',
+          url: 'https://unseen-theatre.netlify.app/docs/guide/manual/objects#creating-objects',
           title: 'Sheet Objects',
         },
         {
-          url: 'https://www.theatrejs.com/docs/latest/api/core#sheet.object',
+          url: 'https://unseen-theatre.netlify.app/docs/api/theatre-core#sheet.object',
           title: 'API',
         },
       ],

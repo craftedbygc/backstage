@@ -11,7 +11,7 @@
   "author": {
     "name": "TheaterJS Oy",
     "email": "hello@theatrejs.com",
-    "url": "https://www.theatrejs.com"
+    "url": "https://unseen-theatre.netlify.app/docs/"
   },
   "main": "dist/index.js",
   "module": "dist/index.mjs",

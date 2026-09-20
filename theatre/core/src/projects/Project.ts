@@ -189,7 +189,7 @@ export default class Project {
             `Argument config.state in Theatre.getProject("${id}", config) is empty. ` +
               `You can safely ignore this message if you're developing a Next.js/Remix project in development mode. But if you are shipping to your end-users, ` +
               `then you need to set config.state, ` +
-              `otherwise your project's state will be empty and nothing will animate. Learn more at https://www.theatrejs.com/docs/latest/manual/projects#state`,
+              `otherwise your project's state will be empty and nothing will animate. Learn more at https://unseen-theatre.netlify.app/docs/guide/manual/projects#state`,
           )
         }
       } else {
@@ -200,7 +200,7 @@ export default class Project {
                 `while you are using @unseenco/theatre-core along with @unseenco/theatre-studio. But since @unseenco/theatre-studio ` +
                 `is not loaded, the state of project "${id}" will be empty.\n\n` +
                 `To fix this, you need to add @unseenco/theatre-studio into the bundle and export ` +
-                `the project's state. Learn how to do that at https://www.theatrejs.com/docs/latest/manual/projects#state\n`,
+                `the project's state. Learn how to do that at https://unseen-theatre.netlify.app/docs/guide/manual/projects#state\n`,
             )
           }
         }, 1000)

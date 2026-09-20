@@ -107,7 +107,7 @@ const InConflict: React.FC<{
       <Message>
         Browser state is not based on disk state.{' '}
         <a
-          href="https://www.theatrejs.com/docs/latest/manual/projects#state"
+          href="https://unseen-theatre.netlify.app/docs/guide/manual/projects#state"
           target="_blank"
         >
           Learn more.

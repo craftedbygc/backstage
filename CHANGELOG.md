@@ -312,7 +312,7 @@ Initial release of the [Unseen Studio fork](https://github.com/craftedbygc/theat
 ## 0.4.5
 
 - New features
-  - `sequence.attachAudio()` now uses an internal `[GainNode](https://developer.mozilla.org/en-US/docs/Web/API/GainNode)` that you can customize by connecting it to your own audio graph. Docs [here](https://docs.theatrejs.com/in-depth/#sound-and-music).
+  - `sequence.attachAudio()` now uses an internal `[GainNode](https://developer.mozilla.org/en-US/docs/Web/API/GainNode)` that you can customize by connecting it to your own audio graph. Docs [here](https://unseen-theatre.netlify.app/docs/guide/manual/audio).
 
 
 
@@ -334,7 +334,7 @@ Initial release of the [Unseen Studio fork](https://github.com/craftedbygc/theat
 ## 0.4.2
 
 - New features
-  - `sequence.attachAudio` now handles autoplay blocking ([Docs](https://docs.theatrejs.com/in-depth/#sequence-attachaudio)).
+  - `sequence.attachAudio` now handles autoplay blocking ([Docs](https://unseen-theatre.netlify.app/docs/guide/manual/audio#attachaudio)).
   - `studio.selection` and co have a more [lax](https://github.com/craftedbygc/theatre/commit/dcf90983a565e585661b631b457a807eb4a4d874) type constraint.
 - Bug fixes
   - Fixed the builds of internal examples.
