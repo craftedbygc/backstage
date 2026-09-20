@@ -2,7 +2,7 @@ import gsap from 'gsap'
 import {ScrollTrigger} from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import {
-  configureTheatrePageScroll,
+  configureBackstagePageScroll,
   createRafDriver,
   getProject,
   setCoreRafDriver,
@@ -12,7 +12,7 @@ import {createLenisScrollDriver} from '@unseenco/backstage/lenis'
 import studio from '@unseenco/backstage/studio'
 import {
   bindGsapTickerToRafDriver,
-  configureTheatreGsap,
+  configureBackstageGsap,
   registerAllGsapScrollTriggers,
   registerGsapAnimation,
   registerGsapScrollTrigger,
@@ -34,12 +34,12 @@ setCoreRafDriver(rafDriver)
 bindGsapTickerToRafDriver(rafDriver, gsap)
 
 if (!remoteEditor) {
-  configureTheatrePageScroll({
+  configureBackstagePageScroll({
     scroller: typeof document !== 'undefined' ? document.documentElement : null,
   })
 }
 
-configureTheatreGsap({
+configureBackstageGsap({
   namespace: 'GSAP',
   outlineNamespace: {defaultCollapsed: false},
   pageScroll: remoteEditor

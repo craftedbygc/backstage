@@ -8,7 +8,7 @@
 yarn add @unseenco/backstage @unseenco/backstage/studio @unseenco/backstage/threejs three
 ```
 
-> **Theatre Lite:** Peer `@unseenco/backstage/core-lite` and `@unseenco/backstage/studio-lite` instead for static + variant workflows. Runtime helpers and `/extension` work the same; see [Three.js with Theatre Lite](../theatre-lite/three-js.md).
+> **Backstage Lite:** Peer `@unseenco/backstage/core-lite` and `@unseenco/backstage/studio-lite` instead for static + variant workflows. Runtime helpers and `/extension` work the same; see [Three.js with Backstage Lite](../backstage-lite/three-js.md).
 
 ## Studio (development)
 
@@ -22,16 +22,16 @@ studio.initialize()
 studio.extend(extension({renderer, studio, scenes: [{name: 'Main', scene, camera}]}))
 ```
 
-Breaking change from upstream Theatre: **`buildExtension()` lives on `/extension`**, not the package root ([0.1.8 changelog](https://github.com/craftedbygc/theatre/blob/main/CHANGELOG.md)).
+Breaking change from upstream Backstage: **`buildExtension()` lives on `/extension`**, not the package root ([0.1.8 changelog](https://github.com/craftedbygc/backstage/blob/main/CHANGELOG.md)).
 
 ## autoAddObject
 
 Registers a `THREE.Object3D` on a sheet with parsed transform, material, shader uniform, and texture props:
 
 ```ts
-import {autoAddObject, configureTheatreThreejs} from '@unseenco/backstage/threejs'
+import {autoAddObject, configureBackstageThreejs} from '@unseenco/backstage/threejs'
 
-configureTheatreThreejs({
+configureBackstageThreejs({
   autoAddObject: {
     exclude: ['matrixAutoUpdate'],
     transient: ['material.map'], // session-only texture slots
@@ -41,7 +41,7 @@ configureTheatreThreejs({
 
 const sheetObject = autoAddObject(mesh, sheet, {
   name: 'Hero mesh',
-  // Merged with configureTheatreThreejs() defaults (dot or array paths)
+  // Merged with configureBackstageThreejs() defaults (dot or array paths)
   transient: ['someSessionFlag'],
   static: ['renderOrder'],
 })
@@ -113,4 +113,4 @@ Ship only `@unseenco/backstage/threejs` runtime imports (`autoAddObject`, …). 
 
 ## API
 
-[@unseenco/backstage/threejs API](/api/theatre-threejs)
+[@unseenco/backstage/threejs API](/api/backstage-threejs)

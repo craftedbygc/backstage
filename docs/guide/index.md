@@ -1,10 +1,10 @@
 # Guides
 
-Welcome to the Theatre documentation. These guides explain how to animate with Theatre in the browser. For type-level API detail, use the [API reference](/api/).
+Welcome to the Backstage documentation. These guides explain how to animate with Backstage in the browser. For type-level API detail, use the [API reference](/api/).
 
 ## Getting started
 
-Theatre works with any front-end stack. Pick a tutorial that matches your project:
+Backstage works with any front-end stack. Pick a tutorial that matches your project:
 
 - [With THREE.js](./getting-started/with-three-js.md) — vanilla Three.js and a bundler
 - [With HTML / SVG](./getting-started/with-html.md) — no bundler; CDN or script modules
@@ -30,11 +30,11 @@ In-depth topics for day-to-day authoring:
 - [Authoring extensions](./manual/authoring-extensions.md)
 - [Advanced](./manual/advanced.md)
 
-## Theatre Lite
+## Backstage Lite
 
-A smaller Theatre.js stack for apps that ship static prop values and sheet-level variants, without timelines, keyframes, or sequence playback in production.
+A smaller Backstage.js stack for apps that ship static prop values and sheet-level variants, without timelines, keyframes, or sequence playback in production.
 
-- [Overview](./theatre-lite/index.md)
+- [Overview](./backstage-lite/index.md)
 
 ## Extensions
 
@@ -44,6 +44,6 @@ A smaller Theatre.js stack for apps that ship static prop values and sheet-level
 
 ## Community
 
-- [GitHub](https://github.com/craftedbygc/theatre) — source and issues
+- [GitHub](https://github.com/craftedbygc/backstage) — source and issues
 
-Release notes live in the repository [CHANGELOG](https://github.com/craftedbygc/theatre/blob/main/CHANGELOG.md).
+Release notes live in the repository [CHANGELOG](https://github.com/craftedbygc/backstage/blob/main/CHANGELOG.md).

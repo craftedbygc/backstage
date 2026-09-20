@@ -98,7 +98,7 @@ export const Scene: React.FC<{project: IProject}> = ({project}) => {
     return studio.onSelectionChange((newSelection) => {
       _setSelection(
         newSelection.filter(
-          (s): s is ISheetObject => s.type === 'Theatre_SheetObject_PublicAPI',
+          (s): s is ISheetObject => s.type === 'Backstage_SheetObject_PublicAPI',
         ),
       )
     })

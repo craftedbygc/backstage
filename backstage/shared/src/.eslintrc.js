@@ -1,0 +1,12 @@
+module.exports = {
+  rules: {
+    'no-restricted-syntax': [
+      'error',
+      {
+        selector: `ImportDeclaration[importKind!='type'][source.value=/@unseenco\\u002Fbackstage-(core|studio)/]`,
+        message:
+          '@unseenco/backstage-shared may not import @unseenco/backstage or @unseenco/backstage/studio modules except via type imports.',
+      },
+    ],
+  },
+}

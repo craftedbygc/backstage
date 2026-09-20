@@ -1,0 +1,97 @@
+import styled from 'styled-components'
+import type {SequenceEditorPanelLayout} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/layout'
+import {usePrism} from '@unseenco/backstage/react'
+import type {BasicNumberInputNudgeFn} from '@unseenco/backstage/studio/uiComponents/form/BasicNumberInput'
+import BasicNumberInput from '@unseenco/backstage/studio/uiComponents/form/BasicNumberInput'
+import {propNameTextCSS} from '@unseenco/backstage/studio/propEditors/utils/propNameTextCSS'
+import {useLayoutEffect, useMemo, useRef} from 'react'
+import React from 'react'
+import {val} from '@unseenco/backstage/dataverse'
+import type {Pointer} from '@unseenco/backstage/dataverse'
+import clamp from 'lodash-es/clamp'
+import {getStudioSequence} from '@unseenco/backstage/studio/utils/activeSequenceVariant'
+import {syncPageScrollToSequencePosition} from '@unseenco/backstage/studio/sheets/syncPageScrollToSequencePosition'
+
+const greaterThanOrEqualToZero = (v: number) => isFinite(v) && v >= 0
+
+const Container = styled.div`
+  display: flex;
+  gap: 8px;
+  height: 28px;
+  align-items: center;
+`
+
+const Label = styled.div`
+  ${propNameTextCSS};
+  white-space: nowrap;
+`
+
+const nudge: BasicNumberInputNudgeFn = ({deltaX}) => deltaX * 0.25
+
+const PlayheadPositionPopover: React.FC<{
+  layoutP: Pointer<SequenceEditorPanelLayout>
+  /**
+   * Called when user hits enter/escape
+   */
+  onRequestClose: (reason: string) => void
+}> = ({layoutP, onRequestClose}) => {
+  const sheet = val(layoutP.sheet)
+  const sequence = getStudioSequence(sheet)
+
+  const fns = useMemo(() => {
+    let tempPosition: number | undefined
+    const originalPosition = sequence.position
+
+    return {
+      temporarilySetValue(newPosition: number): void {
+        if (tempPosition) {
+          tempPosition = undefined
+        }
+        tempPosition = clamp(newPosition, 0, sequence.length)
+        sequence.position = tempPosition
+        syncPageScrollToSequencePosition(sheet)
+      },
+      discardTemporaryValue(): void {
+        if (tempPosition) {
+          tempPosition = undefined
+          sequence.position = originalPosition
+          onRequestClose('discardTemporaryValue')
+        }
+      },
+      permanentlySetValue(newPosition: number): void {
+        if (tempPosition) {
+          tempPosition = undefined
+        }
+        sequence.position = clamp(newPosition, 0, sequence.length)
+        syncPageScrollToSequencePosition(sheet)
+        onRequestClose('permanentlySetValue')
+      },
+    }
+  }, [layoutP, sequence, sheet, onRequestClose])
+
+  const inputRef = useRef<HTMLInputElement>(null)
+  useLayoutEffect(() => {
+    inputRef.current!.focus()
+  }, [])
+
+  return usePrism(() => {
+    const sequence = getStudioSequence(sheet)
+
+    const value = Number(val(sequence.pointer.position).toFixed(3))
+
+    return (
+      <Container>
+        <Label>Sequence position</Label>
+        <BasicNumberInput
+          value={value}
+          {...fns}
+          isValid={greaterThanOrEqualToZero}
+          inputRef={inputRef}
+          nudge={nudge}
+        />
+      </Container>
+    )
+  }, [sheet, fns, inputRef])
+}
+
+export default PlayheadPositionPopover

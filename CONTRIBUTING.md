@@ -1,4 +1,4 @@
-# Contributing to Theatre.js
+# Contributing to Backstage.js
 
 ## Development workflow
 
@@ -16,8 +16,8 @@ This repo uses **Yarn 3** via Corepack (`packageManager` in root `package.json`)
 Then clone the repo:
 
 ```sh
-$ git clone https://github.com/craftedbygc/theatre.git
-$ cd theatre
+$ git clone https://github.com/craftedbygc/backstage.git
+$ cd backstage
 ```
 
 And fetch the dependencies with yarn:
@@ -42,7 +42,7 @@ $ yarn playground
 ```
 
 The playground is a bunch of ready-made projects that you can run to experiment
-with Theatre.js.
+with Backstage.js.
 
 Read more at
 [`./packages/playground/README.md`](./packages/playground/README.md).
@@ -50,7 +50,7 @@ Read more at
 ### Hacking with `examples/`
 
 Other than `playground`, the [`examples/`](./examples) folder contains a few
-small projects that use Theatre.js with [Vite](https://vitejs.dev) and other
+small projects that use Backstage.js with [Vite](https://vitejs.dev) and other
 build tools. This means that
 unlike `playground`, you have to build all the packages before running the
 examples.
@@ -139,12 +139,12 @@ $ yarn cli release x.y.z-rc.w # npm publish version x.y.z-rc.w and tag it as "rc
 The [monorepo](https://en.wikipedia.org/wiki/Monorepo) consists of:
 
 - `@unseenco/backstage` – The core animation library at
-  [`./theatre/core`](./theatre/core).
+  [`./backstage/core`](./backstage/core).
 - `@unseenco/backstage/studio` – The visual editor at
-  [`./theatre/studio`](./theatre/studio).
+  [`./backstage/studio`](./backstage/studio).
 - `@unseenco/backstage/dataverse` – The reactive dataflow library at
   [`./packages/dataverse`](./packages/dataverse).
-- `@unseenco/backstage/react` – Utilities for using Theatre.js with React at
+- `@unseenco/backstage/react` – Utilities for using Backstage.js with React at
   [`./packages/react`](./packages/react).
 - `playground` – The playground explained [above](#hacking-with-playground),
   located at [`./packages/playground`](./packages/playground)
@@ -216,7 +216,7 @@ You can contribute with:
 ### Helping with outstanding issues
 
 Feel free to chime in on any
-[issue](https://github.com/craftedbygc/theatre/issues).
+[issue](https://github.com/craftedbygc/backstage/issues).
 if you're just getting started with the codebase.
 
 ## Sending pull requests

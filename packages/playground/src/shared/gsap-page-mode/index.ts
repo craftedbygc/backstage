@@ -9,7 +9,7 @@ import {
 import studio from '@unseenco/backstage/studio'
 import {
   bindGsapTickerToRafDriver,
-  configureTheatreGsap,
+  configureBackstageGsap,
   registerAllGsapScrollTriggers,
   registerGsapAnimation,
   registerGsapScrollTrigger,
@@ -30,7 +30,7 @@ const rafDriver = createRafDriver({name: 'gsap-page-mode'})
 setCoreRafDriver(rafDriver)
 bindGsapTickerToRafDriver(rafDriver, gsap)
 
-configureTheatreGsap({
+configureBackstageGsap({
   namespace: 'GSAP',
   outlineNamespace: {defaultCollapsed: false},
 })

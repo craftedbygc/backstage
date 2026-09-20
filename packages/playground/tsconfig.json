@@ -10,7 +10,7 @@
     "resolveJsonModule": true
   },
   "references": [
-    {"path": "../../theatre"},
+    {"path": "../../backstage"},
     {"path": "../dataverse"},
     {"path": "../gsap"},
     {"path": "../threejs"}

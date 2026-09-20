@@ -53,14 +53,14 @@ You can also call **`sheet.setSequenceMode('page')`** after the sheet exists.
 
 Page scroll does **not** require GSAP. Use the core APIs to choose which element scrolls and how progress is read and written.
 
-**Shared scroller context** — call **`configureTheatrePageScroll()`** once so Studio and helpers know which element scrolls and which axis is active (`null` / omitted scroller = document; default axis = vertical):
+**Shared scroller context** — call **`configureBackstagePageScroll()`** once so Studio and helpers know which element scrolls and which axis is active (`null` / omitted scroller = document; default axis = vertical):
 
 ```ts
-import {configureTheatrePageScroll} from '@unseenco/backstage'
+import {configureBackstagePageScroll} from '@unseenco/backstage'
 
-configureTheatrePageScroll({scroller: document.documentElement})
+configureBackstagePageScroll({scroller: document.documentElement})
 // horizontal native document scroll:
-configureTheatrePageScroll({axis: 'horizontal'})
+configureBackstagePageScroll({axis: 'horizontal'})
 ```
 
 **When creating the sheet** — pass **`scrollDriver`** on `project.sheet()`:
@@ -72,29 +72,29 @@ const sheet = project.sheet('Main', {
 })
 ```
 
-**After creation** — **`attachTheatrePageScroll(sheet, { driver })`** or **`sheet.setPageScrollDriver(driver)`** (same underlying wiring as **`attachSheetScrollDriver`** used internally in page mode).
+**After creation** — **`attachBackstagePageScroll(sheet, { driver })`** or **`sheet.setPageScrollDriver(driver)`** (same underlying wiring as **`attachSheetScrollDriver`** used internally in page mode).
 
 - **`sheet.setPageScrollDriver()`** / **`scrollDriver` on `project.sheet()`** keep Studio scrubbing in sync via **`syncPageScrollToSequencePosition`**.
 - **`setPageScrollProgress(sheet, progress)`** / **`pageScrollProgressFromSequence(sheet)`** are optional when you only need normalized playhead progress.
 
-If you omit a custom driver in page mode, Theatre uses a **native document** scroll driver matching the configured **axis** (`createNativeDocumentScrollDriver` or `createNativeDocumentHorizontalScrollDriver`).
+If you omit a custom driver in page mode, Backstage uses a **native document** scroll driver matching the configured **axis** (`createNativeDocumentScrollDriver` or `createNativeDocumentHorizontalScrollDriver`).
 
 #### Horizontal page scroll
 
-Set **`axis: 'horizontal'`** on **`configureTheatrePageScroll`**. Use **`createNativeDocumentHorizontalScrollDriver()`** or **`createElementHorizontalScrollDriver(element)`** when passing a custom **`scrollDriver`**. Lenis helper remains vertical-only; build a manual **`ScrollDriver`** for horizontal smooth scroll if needed.
+Set **`axis: 'horizontal'`** on **`configureBackstagePageScroll`**. Use **`createNativeDocumentHorizontalScrollDriver()`** or **`createElementHorizontalScrollDriver(element)`** when passing a custom **`scrollDriver`**. Lenis helper remains vertical-only; build a manual **`ScrollDriver`** for horizontal smooth scroll if needed.
 
-GSAP ScrollTrigger registration must use **`horizontal: true`** on each trigger (or `ScrollTrigger.defaults({ horizontal: true })` via **`configureTheatreGsap({ pageScroll: { axis: 'horizontal' } })`**). See [GSAP extension — ScrollTrigger](../extensions/gsap.md#scrolltrigger-page-mode-read-only-sequencer).
+GSAP ScrollTrigger registration must use **`horizontal: true`** on each trigger (or `ScrollTrigger.defaults({ horizontal: true })` via **`configureBackstageGsap({ pageScroll: { axis: 'horizontal' } })`**). See [GSAP extension — ScrollTrigger](../extensions/gsap.md#scrolltrigger-page-mode-read-only-sequencer).
 
 #### Lenis (recommended helper)
 
 ```ts
 import {
-  configureTheatrePageScroll,
+  configureBackstagePageScroll,
   getProject,
 } from '@unseenco/backstage'
 import {createLenisScrollDriver} from '@unseenco/backstage/lenis'
 
-configureTheatrePageScroll({scroller: document.documentElement})
+configureBackstagePageScroll({scroller: document.documentElement})
 
 const driver = createLenisScrollDriver(lenis)
 
@@ -110,12 +110,12 @@ Implement **`ScrollDriver`** for any library (smooth scroll, custom physics, etc
 
 ```ts
 import {
-  attachTheatrePageScroll,
-  configureTheatrePageScroll,
+  attachBackstagePageScroll,
+  configureBackstagePageScroll,
   type ScrollDriver,
 } from '@unseenco/backstage'
 
-configureTheatrePageScroll({scroller: document.documentElement})
+configureBackstagePageScroll({scroller: document.documentElement})
 
 const driver: ScrollDriver = {
   getProgress: () => lenis.scroll / lenis.limit,
@@ -128,12 +128,12 @@ const driver: ScrollDriver = {
 }
 
 const sheet = project.sheet('Main', {sequenceMode: 'page', scrollDriver: driver})
-// or: attachTheatrePageScroll(sheet, {driver})
+// or: attachBackstagePageScroll(sheet, {driver})
 ```
 
 #### Overflow element scroll (no Lenis)
 
-For a scrollable **`HTMLElement`**, use **`createElementScrollDriver(element)`** (vertical) or **`createElementHorizontalScrollDriver(element)`** with **`configureTheatrePageScroll({ scroller: element, axis })`**.
+For a scrollable **`HTMLElement`**, use **`createElementScrollDriver(element)`** (vertical) or **`createElementHorizontalScrollDriver(element)`** with **`configureBackstagePageScroll({ scroller: element, axis })`**.
 
 ### GSAP and page mode
 
@@ -143,4 +143,4 @@ Playground demos (GSAP + page mode): **`/shared/gsap-page-mode/`** (native verti
 
 ## API
 
-[`sequenceMode` / sheet options](/api/theatre-core), [`configureTheatrePageScroll`](/api/theatre-core), [`attachTheatrePageScroll`](/api/theatre-core), [`ScrollDriver`](/api/theatre-core). Lenis helper: import `createLenisScrollDriver` from `@unseenco/backstage/lenis` (see package `exports` in [@unseenco/backstage](/api/theatre-core)).
+[`sequenceMode` / sheet options](/api/backstage-core), [`configureBackstagePageScroll`](/api/backstage-core), [`attachBackstagePageScroll`](/api/backstage-core), [`ScrollDriver`](/api/backstage-core). Lenis helper: import `createLenisScrollDriver` from `@unseenco/backstage/lenis` (see package `exports` in [@unseenco/backstage](/api/backstage-core)).

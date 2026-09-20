@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@unseenco/backstage-core/*": ["../../.temp/declarations/core/src/*"],
+      "@unseenco/backstage-dataverse": [
+        "../../.temp/declarations/dataverse/src/index.d.ts"
+      ],
+      "@unseenco/backstage-dataverse/*": [
+        "../../.temp/declarations/dataverse/src/*"
+      ],
+      "@unseenco/backstage-studio/*": ["../../studio/src/*"],
+      "@unseenco/backstage-shared/*": ["../../.temp/declarations/shared/src/*"]
+    }
+  }
+}

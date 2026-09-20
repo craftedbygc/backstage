@@ -1,0 +1,67 @@
+# Backstage.js - Core
+
+Backstage.js is an animation library for high-fidelity motion graphics. It is designed to help you express detailed animation, enabling you to create intricate movement, and convey nuance.
+
+Backstage.js can be used both programmatically _and_ visually.
+
+You can use Backstage.js to:
+
+* Animate 3D objects made with THREE.js or other 3D libraries
+* Animate HTML/SVG via React or other libraries
+* Design micro-interactions
+* Choreograph generative interactive art
+* Or animate any other JS variable
+
+## Documentation
+
+Guides and API reference live in the monorepo `docs/` workspace. Run `yarn docs:dev` from the repo root, or see the deployed site from [craftedbygc/backstage](https://github.com/craftedbygc/backstage).
+
+## `@unseenco/backstage`
+
+Backstage.js comes in two packages: `@unseenco/backstage` (the library) and `@unseenco/backstage/studio` (the editor). This package is the core library.
+
+### `@unseenco/backstage/core-lite`
+
+A second esbuild entry `src/index-lite.ts` emits `dist/index-lite.{js,mjs}` (published as `@unseenco/backstage/core-lite`). It sets `__BACKSTAGE_LITE__` so sequenced value merging, playback, GSAP, and scroll drivers are excluded from the bundle. After `yarn workspace backstage build:js`, run:
+
+```bash
+BACKSTAGE_LITE_LOG_BUNDLE_SIZES=1 yarn workspace backstage build:js
+```
+
+to print minified KiB sizes for full vs lite (`core`, `core-lite`, `studio`, `studio-lite`).
+
+### Listing and unloading sheets / objects
+
+Runtime helpers for tearing down loaded sheets and objects (for example when switching scenes). These drop in-memory instances so Studio stops showing them, but **do not** clear persisted project state. Recreating the same `sheetId` / object `key` restores prior prop overrides and sequence data.
+
+```ts
+import {getProject} from '@unseenco/backstage'
+
+const project = getProject('My project')
+const sheet = project.sheet('Scene')
+sheet.object('Box', {x: 0, y: 0})
+
+// List what is currently loaded
+project.getSheets() // ISheet[]
+sheet.getObjects() // ISheetObject[]
+
+// Detach one object (sheet stays loaded)
+sheet.detachObject('Box')
+
+// Unload this sheet instance (all of its objects, then the sheet)
+sheet.unload()
+
+// Or from the project:
+project.unloadSheet('Scene') // optional second arg: instanceId
+project.unloadSheets() // unload every loaded sheet
+```
+
+Try the interactive demo in the playground: `/shared/unload-sheets/`.
+
+## Bundle size
+
+`@unseenco/backstage` is currently around 20KiB compressed with all its dependencies.
+
+## License
+
+Apache 2.0

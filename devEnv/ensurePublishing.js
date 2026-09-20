@@ -1,5 +1,5 @@
 if (
-  process.env.THEATRE_IS_PUBLISHING !== 'true' &&
+  process.env.BACKSTAGE_IS_PUBLISHING !== 'true' &&
   process.env.USING_YALC !== 'true'
 ) {
   throw Error(

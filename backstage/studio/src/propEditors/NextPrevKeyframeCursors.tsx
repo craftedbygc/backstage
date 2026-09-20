@@ -1,0 +1,246 @@
+import type {Keyframe} from '@unseenco/backstage/projects/store/types/SheetState_Historic'
+import type {StudioSheetItemKey} from '@unseenco/backstage-shared/utils/ids'
+import type {VoidFn} from '@unseenco/backstage-shared/utils/types'
+import {pointerEventsAutoInNormalMode} from '@unseenco/backstage/studio/css'
+import {transparentize} from 'polished'
+import React from 'react'
+import styled, {css} from 'styled-components'
+import {PresenceFlag} from '@unseenco/backstage/studio/uiComponents/usePresence'
+import usePresence from '@unseenco/backstage/studio/uiComponents/usePresence'
+import SavedStateDiamondWrapper from './SavedStateDiamondWrapper'
+import {ChevronNextSvg, ChevronPrevSvg} from './propIndicatorIcons'
+
+export type NearbyKeyframesControls = {
+  prev?: Pick<Keyframe, 'position'> & {
+    jump: VoidFn
+    itemKey: StudioSheetItemKey
+  }
+  cur:
+    | {type: 'on'; toggle: VoidFn; itemKey: StudioSheetItemKey}
+    | {type: 'off'; toggle: VoidFn}
+  next?: Pick<Keyframe, 'position'> & {
+    jump: VoidFn
+    itemKey: StudioSheetItemKey
+  }
+}
+
+const Container = styled.div<{$compact?: boolean}>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Keep the same footprint as DefaultValueIndicator so sequenced chips
+     don't steal width from the prop chip when prev/next chevrons are present. */
+  width: 16px;
+  min-width: 16px;
+  max-width: 16px;
+  flex: 0 0 16px;
+  height: 12px;
+  margin: 0 0 0 2px;
+  position: relative;
+  overflow: ${(props) => (props.$compact ? 'hidden' : 'visible')};
+  z-index: 0;
+
+  &:after {
+    position: absolute;
+    /* Keep horizontal overflow tight so hover chrome clears the pane’s left edge. */
+    left: ${(props) => (props.$compact ? -4 : -8)}px;
+    right: ${(props) => (props.$compact ? -2 : -8)}px;
+    /* Optical icon center is ~1px below geometric mid (SVG content at y=7/12) */
+    top: -3px;
+    height: 20px;
+    border-radius: 2px;
+    content: ' ';
+    display: none;
+    z-index: -1;
+    background: ${transparentize(0.2, 'black')};
+    pointer-events: none;
+  }
+
+  &:hover {
+    &:after {
+      display: block;
+    }
+  }
+`
+
+/** Prev/next only show while the diamond control is hovered. */
+const hideWhenIdle = css`
+  opacity: 0;
+  ${Container}:not(:hover) & {
+    pointer-events: none !important;
+  }
+  ${Container}:hover & {
+    opacity: 1;
+  }
+`
+
+const Button = styled.div`
+  background: none;
+  position: relative;
+  border: 0;
+  transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+  z-index: 0;
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+
+  &:after {
+    display: none;
+    ${Container}:hover & {
+      display: block;
+    }
+    position: absolute;
+    left: -4px;
+    right: -4px;
+    top: -4px;
+    bottom: -4px;
+    content: ' ';
+    z-index: -1;
+  }
+`
+
+export const nextPrevCursorsTheme = {
+  offColor: '#555',
+  /** Visible even on the dark detail pane when there is no keyframe yet */
+  offDiamondColor: '#8a8a8a',
+  offDiamondHoverColor: '#b0b0b0',
+  onColor: '#e0c917',
+}
+
+const CurButton = styled(Button)<{
+  isOn: boolean
+  presence: PresenceFlag | undefined
+}>`
+  width: 8px;
+  height: 12px;
+  flex-shrink: 0;
+
+  &:hover {
+    color: ${(props) =>
+      props.isOn
+        ? nextPrevCursorsTheme.onColor
+        : nextPrevCursorsTheme.offDiamondHoverColor};
+  }
+
+  color: ${(props) =>
+    props.presence === PresenceFlag.Primary
+      ? 'white'
+      : props.isOn
+      ? nextPrevCursorsTheme.onColor
+      : nextPrevCursorsTheme.offDiamondColor};
+
+  /* Dim only the inner diamond so the saved-state outline stays full strength */
+  ${Container}:not(:hover) & [data-diamond-inner] {
+    opacity: 0.7;
+  }
+`
+
+const pointerEventsNone = css`
+  pointer-events: none !important;
+`
+
+const PrevOrNextButton = styled(Button)<{
+  available: boolean
+  flag: PresenceFlag | undefined
+}>`
+  color: ${(props) =>
+    props.flag === PresenceFlag.Primary
+      ? 'white'
+      : props.available
+      ? nextPrevCursorsTheme.onColor
+      : nextPrevCursorsTheme.offColor};
+
+  ${(props) =>
+    props.available ? pointerEventsAutoInNormalMode : pointerEventsNone};
+
+  &:hover svg path {
+    stroke-width: 3;
+  }
+`
+
+const prevHoverTranslateX = (compact: boolean) => (compact ? -4 : -11)
+const nextHoverTranslateX = (compact: boolean) => (compact ? 2 : 11)
+
+const Prev = styled(PrevOrNextButton)<{
+  available: boolean
+  flag: PresenceFlag | undefined
+  $compact: boolean
+}>`
+  ${hideWhenIdle};
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(-2px, -50%);
+  ${Container}:hover & {
+    /* Clear the diamond tip; may sit slightly past the tight hover chrome. */
+    transform: translate(${({$compact}) => prevHoverTranslateX($compact)}px, -50%);
+  }
+`
+const Next = styled(PrevOrNextButton)<{
+  available: boolean
+  flag: PresenceFlag | undefined
+  $compact: boolean
+}>`
+  ${hideWhenIdle};
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(2px, -50%);
+  ${Container}:hover & {
+    transform: translate(${({$compact}) => nextHoverTranslateX($compact)}px, -50%);
+  }
+`
+
+const NextPrevKeyframeCursors: React.VFC<
+  NearbyKeyframesControls & {
+    hasDivergedFromSavedState?: boolean
+    /** Tighter hover expansion (e.g. docked sequence left column). */
+    compact?: boolean
+  }
+> = (props) => {
+  const compact = props.compact === true
+  const prevPresence = usePresence(props.prev?.itemKey)
+  const curPresence = usePresence(
+    props.cur?.type === 'on' ? props.cur.itemKey : undefined,
+  )
+  const nextPresence = usePresence(props.next?.itemKey)
+
+  return (
+    <Container $compact={compact}>
+      <Prev
+        available={!!props.prev}
+        onClick={props.prev?.jump}
+        flag={prevPresence.flag}
+        $compact={compact}
+        {...prevPresence.attrs}
+      >
+        <ChevronPrevSvg />
+      </Prev>
+      <CurButton
+        isOn={props.cur.type === 'on'}
+        onClick={props.cur.toggle}
+        presence={curPresence.flag}
+        {...curPresence.attrs}
+      >
+        <SavedStateDiamondWrapper
+          hasDivergedFromSavedState={props.hasDivergedFromSavedState ?? false}
+          layout="sequenced"
+        />
+      </CurButton>
+      <Next
+        available={!!props.next}
+        onClick={props.next?.jump}
+        flag={nextPresence.flag}
+        $compact={compact}
+        {...nextPresence.attrs}
+      >
+        <ChevronNextSvg />
+      </Next>
+    </Container>
+  )
+}
+
+export default NextPrevKeyframeCursors

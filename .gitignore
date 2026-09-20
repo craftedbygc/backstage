@@ -1,7 +1,7 @@
 **/node_modules
 **/xeno
 /packages/*/dist
-/theatre/*/dist
+/backstage/*/dist
 /examples/*/dist
 *.log
 *.temp

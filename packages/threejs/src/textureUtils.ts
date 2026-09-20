@@ -46,7 +46,7 @@ export function isTexture(value: unknown): value is Texture {
   )
 }
 
-export function isTheatreImageAsset(value: unknown): value is Asset {
+export function isBackstageImageAsset(value: unknown): value is Asset {
   return (
     typeof value === 'object' &&
     value !== null &&
@@ -80,7 +80,7 @@ export function isUniformTextureProp(
 }
 
 /**
- * Default Theatre image asset id for an existing Three.js texture.
+ * Default Backstage image asset id for an existing Three.js texture.
  * Uses the image's original URL so Studio can preview it directly (via
  * `getAssetUrl` passthrough for direct URLs) instead of a bare basename
  * that 404s under the project's asset `baseUrl`.
@@ -117,7 +117,7 @@ type TextureSlotOwner = object
 
 type SlotState = {
   generation: number
-  theatreTexture: Texture | null
+  backstageTexture: Texture | null
   appliedAssetId: string | undefined
 }
 
@@ -132,7 +132,7 @@ function getSlotState(owner: TextureSlotOwner, key: string): SlotState {
 
   let state = slots.get(key)
   if (!state) {
-    state = {generation: 0, theatreTexture: null, appliedAssetId: undefined}
+    state = {generation: 0, backstageTexture: null, appliedAssetId: undefined}
     slots.set(key, state)
   }
 
@@ -140,14 +140,14 @@ function getSlotState(owner: TextureSlotOwner, key: string): SlotState {
 }
 
 function getImageAssetId(asset: unknown): string {
-  if (!isTheatreImageAsset(asset)) return ''
+  if (!isBackstageImageAsset(asset)) return ''
   return asset.id ?? ''
 }
 
-function disposeTheatreTexture(state: SlotState): void {
-  if (state.theatreTexture) {
-    state.theatreTexture.dispose()
-    state.theatreTexture = null
+function disposeBackstageTexture(state: SlotState): void {
+  if (state.backstageTexture) {
+    state.backstageTexture.dispose()
+    state.backstageTexture = null
   }
 }
 
@@ -176,24 +176,24 @@ export function createTextureSlotApplier(
     }
 
     if (!assetId) {
-      // Empty asset on first sync means Theatre has no image for this slot.
+      // Empty asset on first sync means Backstage has no image for this slot.
       // Preserve any existing (e.g. procedural DataTexture) map — only clear
-      // when the user previously assigned a Theatre image and then removed it.
-      const previouslyHadTheatreAsset =
+      // when the user previously assigned a Backstage image and then removed it.
+      const previouslyHadBackstageAsset =
         state.appliedAssetId !== undefined && state.appliedAssetId !== ''
 
       state.generation += 1
-      disposeTheatreTexture(state)
+      disposeBackstageTexture(state)
       state.appliedAssetId = ''
 
-      if (previouslyHadTheatreAsset) {
+      if (previouslyHadBackstageAsset) {
         setTexture(null)
         onAssigned?.()
       }
       return
     }
 
-    // First sync: Theatre echoes the default asset id derived from an
+    // First sync: Backstage echoes the default asset id derived from an
     // already-present texture. Keep that texture — do not reload.
     if (state.appliedAssetId === undefined) {
       const existingTexture = getCurrentTexture()
@@ -229,8 +229,8 @@ export function createTextureSlotApplier(
           copyTextureSettings(existingTexture, loadedTexture)
         }
 
-        disposeTheatreTexture(state)
-        state.theatreTexture = loadedTexture
+        disposeBackstageTexture(state)
+        state.backstageTexture = loadedTexture
         setTexture(loadedTexture)
         onAssigned?.()
       },

@@ -4271,12 +4271,159 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@unseenco/backstage-shared@workspace:theatre/shared":
+"@unseenco/backstage-browser-bundles@workspace:packages/browser-bundles":
   version: 0.0.0-use.local
-  resolution: "@unseenco/backstage-shared@workspace:theatre/shared"
+  resolution: "@unseenco/backstage-browser-bundles@workspace:packages/browser-bundles"
   dependencies:
-    "@unseenco/theatre-core": "workspace:*"
-    "@unseenco/theatre-studio": "workspace:*"
+    esbuild: ^0.25.0
+    esbuild-register: ^2.5.0
+    npm-run-all: ^4.1.5
+    typescript: 5.3.3
+  peerDependencies:
+    "@unseenco/backstage": "*"
+  languageName: unknown
+  linkType: soft
+
+"@unseenco/backstage-compat-tests@workspace:compat-tests":
+  version: 0.0.0-use.local
+  resolution: "@unseenco/backstage-compat-tests@workspace:compat-tests"
+  dependencies:
+    "@cspotcode/zx": ^6.1.2
+    "@verdaccio/types": ^10.8.0
+    esbuild: ^0.25.0
+    esbuild-register: ^3.4.2
+    node-cleanup: ^2.1.2
+    playwright: ^1.29.1
+    prettier: ^2.6.2
+    verdaccio: ^5.26.1
+    verdaccio-auth-memory: ^10.2.2
+    verdaccio-memory: ^10.3.2
+  languageName: unknown
+  linkType: soft
+
+"@unseenco/backstage-core-lite@workspace:backstage/core-lite":
+  version: 0.0.0-use.local
+  resolution: "@unseenco/backstage-core-lite@workspace:backstage/core-lite"
+  languageName: unknown
+  linkType: soft
+
+"@unseenco/backstage-core@workspace:backstage/core":
+  version: 0.0.0-use.local
+  resolution: "@unseenco/backstage-core@workspace:backstage/core"
+  peerDependencies:
+    lenis: ">=1.0.0"
+  peerDependenciesMeta:
+    lenis:
+      optional: true
+  languageName: unknown
+  linkType: soft
+
+"@unseenco/backstage-dataverse@workspace:packages/dataverse":
+  version: 0.0.0-use.local
+  resolution: "@unseenco/backstage-dataverse@workspace:packages/dataverse"
+  dependencies:
+    "@microsoft/api-extractor": ^7.36.4
+    "@types/jest": ^26.0.23
+    "@types/lodash-es": ^4.17.4
+    "@types/node": ^15.6.2
+    esbuild: ^0.25.0
+    esbuild-register: ^2.5.0
+    lodash-es: ^4.17.21
+    npm-run-all: ^4.1.5
+    typescript: 5.3.3
+  languageName: unknown
+  linkType: soft
+
+"@unseenco/backstage-docs@workspace:docs":
+  version: 0.0.0-use.local
+  resolution: "@unseenco/backstage-docs@workspace:docs"
+  dependencies:
+    vitepress: ^1.6.3
+    vue: ^3.5.13
+  languageName: unknown
+  linkType: soft
+
+"@unseenco/backstage-gsap@workspace:packages/gsap":
+  version: 0.0.0-use.local
+  resolution: "@unseenco/backstage-gsap@workspace:packages/gsap"
+  dependencies:
+    "@microsoft/api-extractor": ^7.18.11
+    "@types/node": ^15.6.2
+    "@unseenco/backstage": "workspace:*"
+    esbuild: ^0.18.18
+    esbuild-register: ^2.5.0
+    gsap: ^3.12.5
+    npm-run-all: ^4.1.5
+    typescript: 5.1.6
+  peerDependencies:
+    "@unseenco/backstage": "*"
+    gsap: ">=3.0.0"
+  languageName: unknown
+  linkType: soft
+
+"@unseenco/backstage-react@workspace:packages/react":
+  version: 0.0.0-use.local
+  resolution: "@unseenco/backstage-react@workspace:packages/react"
+  dependencies:
+    "@microsoft/api-extractor": ^7.18.11
+    "@types/jest": ^26.0.23
+    "@types/lodash-es": ^4.17.4
+    "@types/node": ^15.6.2
+    "@types/react": ^17.0.9
+    "@types/react-dom": ^17.0.6
+    esbuild: ^0.25.0
+    esbuild-register: ^2.5.0
+    lodash-es: ^4.17.21
+    npm-run-all: ^4.1.5
+    queue-microtask: ^1.2.3
+    typescript: 5.3.3
+  peerDependencies:
+    react: "*"
+    react-dom: "*"
+  languageName: unknown
+  linkType: soft
+
+"@unseenco/backstage-shared@workspace:backstage/shared":
+  version: 0.0.0-use.local
+  resolution: "@unseenco/backstage-shared@workspace:backstage/shared"
+  dependencies:
+    "@unseenco/backstage": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@unseenco/backstage-studio-lite@workspace:backstage/studio-lite":
+  version: 0.0.0-use.local
+  resolution: "@unseenco/backstage-studio-lite@workspace:backstage/studio-lite"
+  languageName: unknown
+  linkType: soft
+
+"@unseenco/backstage-studio@workspace:backstage/studio":
+  version: 0.0.0-use.local
+  resolution: "@unseenco/backstage-studio@workspace:backstage/studio"
+  peerDependencies:
+    "@unseenco/backstage": "*"
+  languageName: unknown
+  linkType: soft
+
+"@unseenco/backstage-threejs@workspace:packages/threejs":
+  version: 0.0.0-use.local
+  resolution: "@unseenco/backstage-threejs@workspace:packages/threejs"
+  dependencies:
+    "@microsoft/api-extractor": ^7.18.11
+    "@types/node": ^15.6.2
+    "@types/three": ^0.185.1
+    "@unseenco/backstage": "workspace:*"
+    esbuild: ^0.25.0
+    esbuild-register: ^2.5.0
+    npm-run-all: ^4.1.5
+    three: ^0.185.1
+    typescript: 5.3.3
+  peerDependencies:
+    "@unseenco/backstage": "*"
+    three: ">=0.150.0"
+  peerDependenciesMeta:
+    "@unseenco/backstage":
+      optional: false
   languageName: unknown
   linkType: soft
 
@@ -4305,168 +4452,6 @@ __metadata:
       optional: true
     three:
       optional: true
-  languageName: unknown
-  linkType: soft
-
-"@unseenco/theatre-browser-bundles@workspace:packages/browser-bundles":
-  version: 0.0.0-use.local
-  resolution: "@unseenco/theatre-browser-bundles@workspace:packages/browser-bundles"
-  dependencies:
-    esbuild: ^0.25.0
-    esbuild-register: ^2.5.0
-    npm-run-all: ^4.1.5
-    typescript: 5.3.3
-  peerDependencies:
-    "@unseenco/theatre-core": "*"
-    "@unseenco/theatre-studio": "*"
-  languageName: unknown
-  linkType: soft
-
-"@unseenco/theatre-compat-tests@workspace:compat-tests":
-  version: 0.0.0-use.local
-  resolution: "@unseenco/theatre-compat-tests@workspace:compat-tests"
-  dependencies:
-    "@cspotcode/zx": ^6.1.2
-    "@verdaccio/types": ^10.8.0
-    esbuild: ^0.25.0
-    esbuild-register: ^3.4.2
-    node-cleanup: ^2.1.2
-    playwright: ^1.29.1
-    prettier: ^2.6.2
-    verdaccio: ^5.26.1
-    verdaccio-auth-memory: ^10.2.2
-    verdaccio-memory: ^10.3.2
-  languageName: unknown
-  linkType: soft
-
-"@unseenco/theatre-core-lite@workspace:theatre/core-lite":
-  version: 0.0.0-use.local
-  resolution: "@unseenco/theatre-core-lite@workspace:theatre/core-lite"
-  dependencies:
-    "@unseenco/theatre-dataverse": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
-"@unseenco/theatre-core@workspace:*, @unseenco/theatre-core@workspace:theatre/core":
-  version: 0.0.0-use.local
-  resolution: "@unseenco/theatre-core@workspace:theatre/core"
-  dependencies:
-    "@unseenco/theatre-dataverse": "workspace:*"
-  peerDependencies:
-    lenis: ">=1.0.0"
-  peerDependenciesMeta:
-    lenis:
-      optional: true
-  languageName: unknown
-  linkType: soft
-
-"@unseenco/theatre-dataverse@workspace:*, @unseenco/theatre-dataverse@workspace:packages/dataverse":
-  version: 0.0.0-use.local
-  resolution: "@unseenco/theatre-dataverse@workspace:packages/dataverse"
-  dependencies:
-    "@microsoft/api-extractor": ^7.36.4
-    "@types/jest": ^26.0.23
-    "@types/lodash-es": ^4.17.4
-    "@types/node": ^15.6.2
-    esbuild: ^0.25.0
-    esbuild-register: ^2.5.0
-    lodash-es: ^4.17.21
-    npm-run-all: ^4.1.5
-    typescript: 5.3.3
-  languageName: unknown
-  linkType: soft
-
-"@unseenco/theatre-docs@workspace:docs":
-  version: 0.0.0-use.local
-  resolution: "@unseenco/theatre-docs@workspace:docs"
-  dependencies:
-    vitepress: ^1.6.3
-    vue: ^3.5.13
-  languageName: unknown
-  linkType: soft
-
-"@unseenco/theatre-gsap@workspace:packages/gsap":
-  version: 0.0.0-use.local
-  resolution: "@unseenco/theatre-gsap@workspace:packages/gsap"
-  dependencies:
-    "@microsoft/api-extractor": ^7.18.11
-    "@types/node": ^15.6.2
-    "@unseenco/theatre-core": "workspace:*"
-    esbuild: ^0.18.18
-    esbuild-register: ^2.5.0
-    gsap: ^3.12.5
-    npm-run-all: ^4.1.5
-    typescript: 5.1.6
-  peerDependencies:
-    "@unseenco/theatre-core": "*"
-    gsap: ">=3.0.0"
-  languageName: unknown
-  linkType: soft
-
-"@unseenco/theatre-react@workspace:*, @unseenco/theatre-react@workspace:packages/react":
-  version: 0.0.0-use.local
-  resolution: "@unseenco/theatre-react@workspace:packages/react"
-  dependencies:
-    "@microsoft/api-extractor": ^7.18.11
-    "@types/jest": ^26.0.23
-    "@types/lodash-es": ^4.17.4
-    "@types/node": ^15.6.2
-    "@types/react": ^17.0.9
-    "@types/react-dom": ^17.0.6
-    "@unseenco/theatre-dataverse": "workspace:*"
-    esbuild: ^0.25.0
-    esbuild-register: ^2.5.0
-    lodash-es: ^4.17.21
-    npm-run-all: ^4.1.5
-    queue-microtask: ^1.2.3
-    typescript: 5.3.3
-  peerDependencies:
-    react: "*"
-    react-dom: "*"
-  languageName: unknown
-  linkType: soft
-
-"@unseenco/theatre-studio-lite@workspace:theatre/studio-lite":
-  version: 0.0.0-use.local
-  resolution: "@unseenco/theatre-studio-lite@workspace:theatre/studio-lite"
-  dependencies:
-    "@unseenco/theatre-dataverse": "workspace:*"
-  peerDependencies:
-    "@unseenco/theatre-core-lite": "*"
-  languageName: unknown
-  linkType: soft
-
-"@unseenco/theatre-studio@workspace:*, @unseenco/theatre-studio@workspace:theatre/studio":
-  version: 0.0.0-use.local
-  resolution: "@unseenco/theatre-studio@workspace:theatre/studio"
-  dependencies:
-    "@unseenco/theatre-dataverse": "workspace:*"
-  peerDependencies:
-    "@unseenco/theatre-core": "*"
-  languageName: unknown
-  linkType: soft
-
-"@unseenco/theatre-threejs@workspace:packages/threejs":
-  version: 0.0.0-use.local
-  resolution: "@unseenco/theatre-threejs@workspace:packages/threejs"
-  dependencies:
-    "@microsoft/api-extractor": ^7.18.11
-    "@types/node": ^15.6.2
-    "@types/three": ^0.185.1
-    "@unseenco/theatre-core": "workspace:*"
-    "@unseenco/theatre-dataverse": "workspace:*"
-    "@unseenco/theatre-studio": "workspace:*"
-    esbuild: ^0.25.0
-    esbuild-register: ^2.5.0
-    npm-run-all: ^4.1.5
-    three: ^0.185.1
-    typescript: 5.3.3
-  peerDependencies:
-    "@unseenco/backstage": "*"
-    three: ">=0.150.0"
-  peerDependenciesMeta:
-    "@unseenco/backstage":
-      optional: false
   languageName: unknown
   linkType: soft
 
@@ -5559,6 +5544,113 @@ __metadata:
   checksum: 1b09a2db968c36e064daf98082cfffa39c849b63055112ddc56fc2551fd0d4783897265775b1d2f8a257960a3339745de92e74feb01bad86d41c4cecbfa854fc
   languageName: node
   linkType: hard
+
+"backstage-monorepo@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "backstage-monorepo@workspace:."
+  dependencies:
+    "@cspotcode/zx": ^6.1.2
+    "@microsoft/api-documenter": ^7.19.0
+    "@microsoft/api-extractor": ^7.28.6
+    "@types/eslint": ^8.44.2
+    "@types/jest": ^26.0.23
+    "@typescript-eslint/eslint-plugin": ^6.3.0
+    "@typescript-eslint/parser": ^6.3.0
+    esbuild: ^0.25.0
+    esbuild-register: ^3.4.2
+    eslint: ^8.46.0
+    eslint-plugin-import: 2.28.0
+    eslint-plugin-jsx-a11y: ^6.7.1
+    eslint-plugin-react: ^7.33.1
+    eslint-plugin-tsdoc: ^0.2.17
+    eslint-plugin-unused-imports: ^3.0.0
+    fast-glob: ^3.3.0
+    gsap: ^3.12.5
+    husky: ^6.0.0
+    jest: ^29.3.1
+    jest-environment-jsdom: ^29.3.1
+    jest-esbuild: ^0.3.0
+    jsonc-parser: ^3.1.0
+    lint-staged: ^13.0.3
+    node-gyp: ^9.1.0
+    prettier: ^2.3.2
+    sade: ^1.8.1
+    typescript: 5.3.3
+    yaml: ^2.3.1
+  languageName: unknown
+  linkType: soft
+
+"backstage@workspace:backstage":
+  version: 0.0.0-use.local
+  resolution: "backstage@workspace:backstage"
+  dependencies:
+    "@microsoft/api-extractor": ^7.18.11
+    "@react-spring/web": ^9.7.3
+    "@rollup/plugin-alias": ^3.1.5
+    "@rollup/plugin-multi-entry": ^4.1.0
+    "@rollup/plugin-replace": ^2.4.2
+    "@rollup/plugin-typescript": ^8.2.5
+    "@types/fs-extra": ^9.0.11
+    "@types/jest": ^26.0.23
+    "@types/lodash": ^4.14.170
+    "@types/lodash-es": ^4.17.4
+    "@types/marked": ^4.0.7
+    "@types/node": ^15.12.3
+    "@types/prop-types": ^15.7.5
+    "@types/react": ^18.2.18
+    "@types/react-dom": ^18.2.7
+    "@types/react-icons": ^3.0.0
+    "@types/redux-actions": ^2.6.1
+    "@types/rollup": 0.54.0
+    "@types/shallowequal": ^1.1.1
+    "@types/styled-components": ^5.1.26
+    "@types/uuid": ^8.3.0
+    "@unseenco/backstage": "workspace:*"
+    blob-compare: 1.1.0
+    cross-env: ^7.0.3
+    esbuild: ^0.25.0
+    esbuild-register: ^2.5.0
+    fast-deep-equal: ^3.1.3
+    fs-extra: ^10.0.0
+    fuzzy: ^0.1.3
+    idb-keyval: ^6.2.0
+    identity-obj-proxy: ^3.0.0
+    immer: ^9.0.6
+    jiff: ^0.7.3
+    json-touch-patch: ^0.11.2
+    jszip: 3.10.1
+    lodash: ^4.17.21
+    lodash-es: ^4.17.21
+    marked: ^4.1.1
+    nanoid: ^3.3.1
+    npm-run-all: ^4.1.5
+    polished: ^4.1.3
+    prop-types: ^15.7.2
+    propose: ^0.0.5
+    react: ^18.2.0
+    react-colorful: ^5.5.1
+    react-dom: ^18.2.0
+    react-error-boundary: ^3.1.3
+    react-hot-toast: ^2.4.0
+    react-icons: ^4.2.0
+    react-is: ^17.0.2
+    react-merge-refs: ^2.0.2
+    react-shadow: ^20.4.0
+    react-use: ^17.2.4
+    react-use-gesture: ^9.1.3
+    reakit: ^1.3.8
+    redux: ^3.7.2
+    redux-actions: ^2.6.5
+    rimraf: ^3.0.2
+    rollup: ^2.56.3
+    rollup-plugin-dts: ^4.0.0
+    shallowequal: ^1.1.0
+    styled-components: ^5.3.11
+    timing-function: ^0.2.3
+    typescript: 5.3.3
+    uuid: ^8.3.2
+  languageName: unknown
+  linkType: soft
 
 "balanced-match@npm:^1.0.0":
   version: 1.0.0
@@ -14201,115 +14293,6 @@ __metadata:
   checksum: b6937a38c80c7f84d9c11dd75e49d5c44f71d95e810a3250bd1f1797fc7117c57698204adf676b71497acc205d769d65c16ae8fa10afad832ae1322630aef10a
   languageName: node
   linkType: hard
-
-"theatre-monorepo@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "theatre-monorepo@workspace:."
-  dependencies:
-    "@cspotcode/zx": ^6.1.2
-    "@microsoft/api-documenter": ^7.19.0
-    "@microsoft/api-extractor": ^7.28.6
-    "@types/eslint": ^8.44.2
-    "@types/jest": ^26.0.23
-    "@typescript-eslint/eslint-plugin": ^6.3.0
-    "@typescript-eslint/parser": ^6.3.0
-    esbuild: ^0.25.0
-    esbuild-register: ^3.4.2
-    eslint: ^8.46.0
-    eslint-plugin-import: 2.28.0
-    eslint-plugin-jsx-a11y: ^6.7.1
-    eslint-plugin-react: ^7.33.1
-    eslint-plugin-tsdoc: ^0.2.17
-    eslint-plugin-unused-imports: ^3.0.0
-    fast-glob: ^3.3.0
-    gsap: ^3.12.5
-    husky: ^6.0.0
-    jest: ^29.3.1
-    jest-environment-jsdom: ^29.3.1
-    jest-esbuild: ^0.3.0
-    jsonc-parser: ^3.1.0
-    lint-staged: ^13.0.3
-    node-gyp: ^9.1.0
-    prettier: ^2.3.2
-    sade: ^1.8.1
-    typescript: 5.3.3
-    yaml: ^2.3.1
-  languageName: unknown
-  linkType: soft
-
-"theatre@workspace:theatre":
-  version: 0.0.0-use.local
-  resolution: "theatre@workspace:theatre"
-  dependencies:
-    "@microsoft/api-extractor": ^7.18.11
-    "@react-spring/web": ^9.7.3
-    "@rollup/plugin-alias": ^3.1.5
-    "@rollup/plugin-multi-entry": ^4.1.0
-    "@rollup/plugin-replace": ^2.4.2
-    "@rollup/plugin-typescript": ^8.2.5
-    "@types/fs-extra": ^9.0.11
-    "@types/jest": ^26.0.23
-    "@types/lodash": ^4.14.170
-    "@types/lodash-es": ^4.17.4
-    "@types/marked": ^4.0.7
-    "@types/node": ^15.12.3
-    "@types/prop-types": ^15.7.5
-    "@types/react": ^18.2.18
-    "@types/react-dom": ^18.2.7
-    "@types/react-icons": ^3.0.0
-    "@types/redux-actions": ^2.6.1
-    "@types/rollup": 0.54.0
-    "@types/shallowequal": ^1.1.1
-    "@types/styled-components": ^5.1.26
-    "@types/uuid": ^8.3.0
-    "@unseenco/theatre-core": "workspace:*"
-    "@unseenco/theatre-dataverse": "workspace:*"
-    "@unseenco/theatre-react": "workspace:*"
-    blob-compare: 1.1.0
-    cross-env: ^7.0.3
-    esbuild: ^0.25.0
-    esbuild-register: ^2.5.0
-    fast-deep-equal: ^3.1.3
-    fs-extra: ^10.0.0
-    fuzzy: ^0.1.3
-    idb-keyval: ^6.2.0
-    identity-obj-proxy: ^3.0.0
-    immer: ^9.0.6
-    jiff: ^0.7.3
-    json-touch-patch: ^0.11.2
-    jszip: 3.10.1
-    lodash: ^4.17.21
-    lodash-es: ^4.17.21
-    marked: ^4.1.1
-    nanoid: ^3.3.1
-    npm-run-all: ^4.1.5
-    polished: ^4.1.3
-    prop-types: ^15.7.2
-    propose: ^0.0.5
-    react: ^18.2.0
-    react-colorful: ^5.5.1
-    react-dom: ^18.2.0
-    react-error-boundary: ^3.1.3
-    react-hot-toast: ^2.4.0
-    react-icons: ^4.2.0
-    react-is: ^17.0.2
-    react-merge-refs: ^2.0.2
-    react-shadow: ^20.4.0
-    react-use: ^17.2.4
-    react-use-gesture: ^9.1.3
-    reakit: ^1.3.8
-    redux: ^3.7.2
-    redux-actions: ^2.6.5
-    rimraf: ^3.0.2
-    rollup: ^2.56.3
-    rollup-plugin-dts: ^4.0.0
-    shallowequal: ^1.1.0
-    styled-components: ^5.3.11
-    timing-function: ^0.2.3
-    typescript: 5.3.3
-    uuid: ^8.3.2
-  languageName: unknown
-  linkType: soft
 
 "thread-stream@npm:^0.15.1":
   version: 0.15.2

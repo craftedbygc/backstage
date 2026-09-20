@@ -1,0 +1,148 @@
+import type {ProjectState_Historic} from '@unseenco/backstage/projects/store/storeTypes'
+import type {graphEditorColors} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/graphEditorColors'
+import type {
+  PathToProp_Encoded,
+  ProjectAddress,
+  SheetAddress,
+  SheetObjectAddress,
+  WithoutSheetInstance,
+} from '@unseenco/backstage-shared/utils/addresses'
+import type {StrictRecord} from '@unseenco/backstage-shared/utils/types'
+import type {PointableSet} from '@unseenco/backstage-shared/utils/PointableSet'
+import type Project from '@unseenco/backstage/projects/Project'
+import type Sheet from '@unseenco/backstage/sheets/Sheet'
+import type SheetObject from '@unseenco/backstage/sheetObjects/SheetObject'
+import type {
+  ObjectAddressKey,
+  PaneInstanceId,
+  ProjectId,
+  SequenceMarkerId,
+  SheetId,
+  UIPanelId,
+} from '@unseenco/backstage-shared/utils/ids'
+import type {SequenceVariantId} from '@unseenco/backstage/sequences/sequenceVariants'
+
+export type PanelPosition = {
+  edges: {
+    left: {
+      from: 'screenLeft' | 'screenRight'
+      distance: number
+    }
+    right: {
+      from: 'screenLeft' | 'screenRight'
+      distance: number
+    }
+    top: {
+      from: 'screenTop' | 'screenBottom'
+      distance: number
+    }
+    bottom: {
+      from: 'screenTop' | 'screenBottom'
+      distance: number
+    }
+  }
+}
+
+type Panels = {
+  sequenceEditor?: {
+    graphEditor?: {
+      isOpen?: boolean
+      height?: number
+    }
+  }
+  objectEditor?: {}
+  outlinePanel?: {
+    selection?: OutlineSelectionState[]
+  }
+}
+
+export type PanelId = keyof Panels
+
+export type OutlineSelectionState =
+  | ({type: 'Project'} & ProjectAddress)
+  | ({type: 'Sheet'} & WithoutSheetInstance<SheetAddress>)
+  | ({type: 'SheetVariant'} & WithoutSheetInstance<SheetAddress> & {
+        variant: SequenceVariantId
+      })
+  | ({type: 'SheetObject'} & WithoutSheetInstance<SheetObjectAddress>)
+
+export type OutlineSelectable = Project | Sheet | SheetObject
+export type OutlineSelection = OutlineSelectable[]
+
+export type PaneInstanceDescriptor = {
+  instanceId: PaneInstanceId
+  paneClass: string
+}
+
+/**
+ * Marker allows you to mark notable positions in your sequence.
+ *
+ * See root {@link StudioHistoricState}
+ */
+export type StudioHistoricStateSequenceEditorMarker = {
+  id: SequenceMarkerId
+  label?: string
+  /**
+   * The position this marker takes in the sequence.
+   *
+   * Usually, this value is measured in seconds, but the unit could be varied based on the kind of
+   * unit you're using for mapping to the position (e.g. Position=1 = 10px of scrolling)
+   */
+  position: number
+}
+
+/**
+ * See parent {@link StudioHistoricStateProject}.
+ * See root {@link StudioHistoricState}
+ */
+export type StudioHistoricStateProjectSheet = {
+  /** The sequence variant currently being edited in the studio UI */
+  activeSequenceVariant?: SequenceVariantId
+  sequenceEditor: {
+    markerSet?: PointableSet<
+      SequenceMarkerId,
+      StudioHistoricStateSequenceEditorMarker
+    >
+    selectedPropsByObject: StrictRecord<
+      ObjectAddressKey,
+      StrictRecord<PathToProp_Encoded, keyof typeof graphEditorColors>
+    >
+  }
+}
+
+/** See {@link StudioHistoricState} */
+export type StudioHistoricStateProject = {
+  stateBySheetId: StrictRecord<SheetId, StudioHistoricStateProjectSheet>
+}
+
+export type DockedLayoutSizes = {
+  outlineWidth?: number
+  detailsWidth?: number
+  sequencerHeight?: number
+}
+
+export type StudioHistoricState = {
+  projects: {
+    stateByProjectId: StrictRecord<ProjectId, StudioHistoricStateProject>
+  }
+
+  /**
+   * When true, studio panels are arranged in a fixed dock layout around a
+   * center viewport instead of floating over the page.
+   */
+  dockedMode?: boolean
+  dockedLayout?: DockedLayoutSizes
+
+  /** Panels can contain panes */
+  panels?: Panels
+  /** Panels can contain panes */
+  panelPositions?: {[panelId in UIPanelId]?: PanelPosition}
+  // This is misspelled, but I think some users are dependent on the exact shape of this stored JSON
+  // So, we cannot easily change it without providing backwards compatibility.
+  panelInstanceDesceriptors: StrictRecord<
+    PaneInstanceId,
+    PaneInstanceDescriptor
+  >
+  autoKey: boolean
+  coreByProject: Record<ProjectId, ProjectState_Historic>
+}

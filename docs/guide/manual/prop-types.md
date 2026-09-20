@@ -68,4 +68,4 @@ Run `yarn playground` and open the **shared/dom** demo for many prop types in on
 
 ## API
 
-Full prop-type surface: [theatre-core API](/api/theatre-core) (search for `types`).
+Full prop-type surface: [backstage-core API](/api/backstage-core) (search for `types`).

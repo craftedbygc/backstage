@@ -1,6 +1,6 @@
 # Projects
 
-All Theatre work lives in a **project**. One page often uses a single project; you can create several with different names.
+All Backstage work lives in a **project**. One page often uses a single project; you can create several with different names.
 
 ## Creating a project
 
@@ -16,7 +16,7 @@ const project = getProject('My Project')
 
 Project **state** is the JSON snapshot of sheets, objects, keyframes, and overrides. With Studio open, edits are stored in the browser (typically `localStorage`). For shipping, export state from the outline and load it in code.
 
-> **Theatre Lite:** The same export/import flow works for static-only projects—load `{ state }` in `@unseenco/backstage/core-lite` and omit Studio from production. See [Theatre Lite — Getting started](../theatre-lite/getting-started.md).
+> **Backstage Lite:** The same export/import flow works for static-only projects—load `{ state }` in `@unseenco/backstage/core-lite` and omit Studio from production. See [Backstage Lite — Getting started](../backstage-lite/getting-started.md).
 
 ```ts
 import projectState from './state.json'
@@ -52,7 +52,7 @@ If you use image props, configure where exported assets live:
 ```ts
 const project = getProject('My Project', {
   state: projectState,
-  assets: {baseUrl: '/theatre-assets'},
+  assets: {baseUrl: '/backstage-assets'},
 })
 ```
 
@@ -68,8 +68,8 @@ project.ready.then(() => {
 })
 ```
 
-Use [`Project.isReady`](/api/theatre-core) for a synchronous check.
+Use [`Project.isReady`](/api/backstage-core) for a synchronous check.
 
 ## API
 
-[Project API](/api/theatre-core#project)
+[Project API](/api/backstage-core#project)

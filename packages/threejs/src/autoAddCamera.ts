@@ -81,12 +81,12 @@ function ensureCameraInScene(camera: Camera, scene?: Scene): void {
 }
 
 /**
- * Registers a Three.js `Camera` on a Theatre sheet with transform and lens props.
+ * Registers a Three.js `Camera` on a Backstage sheet with transform and lens props.
  *
  * @param camera - Camera to bind
- * @param sheet - Theatre sheet that owns the new object
+ * @param sheet - Backstage sheet that owns the new object
  * @param options - Object key, scene attachment, excludes, etc.
- * @returns The Theatre sheet object handle
+ * @returns The Backstage sheet object handle
  */
 export function autoAddCamera(
   camera: Camera,
@@ -98,7 +98,7 @@ export function autoAddCamera(
   }
 
   if (!sheet) {
-    throw new Error('autoAddCamera() requires a Theatre sheet.')
+    throw new Error('autoAddCamera() requires a Backstage sheet.')
   }
 
   ensureCameraInScene(camera, options.scene)

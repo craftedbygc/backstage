@@ -6,7 +6,7 @@ module.exports = {
   ],
   moduleNameMapper: {},
   modulePathIgnorePatterns: ['<rootDir>/compat-tests/verdaccio'],
-  // setupFiles: ['./theatre/shared/src/setupTestEnv.ts'],
+  // setupFiles: ['./backstage/shared/src/setupTestEnv.ts'],
   automock: false,
   // transform: {
   //   '^.+\\.tsx?$': [

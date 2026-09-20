@@ -91,7 +91,7 @@
     // "overrideTsconfig": {
     //   "compilerOptions": {
     //     "paths": {
-    //       // "@unseenco/backstage-shared/*": ["./theatre/shared/src/*"]
+    //       // "@unseenco/backstage-shared/*": ["./backstage/shared/src/*"]
     //     }
     //   }
     // }

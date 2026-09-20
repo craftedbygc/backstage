@@ -90,7 +90,7 @@ function isSheetObject(item: ISheetObject | ISheet): item is ISheetObject {
     typeof item === 'object' &&
     item !== null &&
     'type' in item &&
-    item.type === 'Theatre_SheetObject_PublicAPI'
+    item.type === 'Backstage_SheetObject_PublicAPI'
   )
 }
 

@@ -56,7 +56,7 @@ module.exports = {
       plugins: ['@typescript-eslint'],
       parserOptions: {
         project: [
-          './theatre/tsconfig.json',
+          './backstage/tsconfig.json',
           './packages/*/tsconfig.json',
           './packages/*/devEnv/tsconfig.json',
           './examples/*/tsconfig.json',

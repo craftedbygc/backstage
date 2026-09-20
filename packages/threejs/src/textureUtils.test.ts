@@ -108,7 +108,7 @@ describe('textureUtils', () => {
       TextureLoader.prototype.load = originalLoad
     })
 
-    it('preserves an existing non-Theatre texture on initial empty sync', () => {
+    it('preserves an existing non-Backstage texture on initial empty sync', () => {
       const owner = {}
       const procedural = new Texture()
       let current: Texture | null = procedural
@@ -145,7 +145,7 @@ describe('textureUtils', () => {
       expect(assignCount).toBe(0)
     })
 
-    it('clears the slot when a Theatre asset is removed', () => {
+    it('clears the slot when a Backstage asset is removed', () => {
       const owner = {}
       let current: Texture | null = new Texture()
       let assignCount = 0
@@ -202,7 +202,7 @@ describe('textureUtils', () => {
       expect(assignCount).toBe(1)
     })
 
-    it('loads when a Theatre asset is assigned after the slot was empty', () => {
+    it('loads when a Backstage asset is assigned after the slot was empty', () => {
       const owner = {}
       let current: Texture | null = null
       let assignCount = 0
@@ -338,7 +338,7 @@ describe('textureUtils', () => {
 
       const applyTexture = createTextureSlotApplier((asset) => `/${asset.id}`)
 
-      // Establish a prior Theatre assignment so the next id is a real change.
+      // Establish a prior Backstage assignment so the next id is a real change.
       applyTexture(
         owner,
         'map',

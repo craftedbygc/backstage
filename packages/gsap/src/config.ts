@@ -10,7 +10,7 @@ import {
 import {setConfiguredGsapSheetObjectNamespace} from '@unseenco/backstage-shared/gsap/gsapSheetObjectKey'
 import {getGsapScrollTriggerPlugin} from './gsapScrollTriggerPlugin'
 
-export type TheatreGsapPageScrollConfig = {
+export type BackstageGsapPageScrollConfig = {
   /** Default scroller for ScrollTrigger layout and guards; `null` = native document. */
   scroller?: PageScrollScroller
   /** Page scroll axis (default vertical). */
@@ -21,24 +21,24 @@ export type TheatreGsapPageScrollConfig = {
   applyScrollTriggerDefaults?: boolean
 }
 
-export type TheatreGsapConfig = {
+export type BackstageGsapConfig = {
   /** Outline namespace segment for GSAP proxy objects (default `GSAP`). */
   namespace?: string
   /** Applied to each sheet when the first GSAP object is registered on it. */
   outlineNamespace?: OutlineNamespaceConfig
   /** When true, skips the one-time gsap.ticker / core rAF integration warning. */
   suppressGsapTickerRafWarning?: boolean
-  pageScroll?: TheatreGsapPageScrollConfig
+  pageScroll?: BackstageGsapPageScrollConfig
 }
 
-let activeConfig: TheatreGsapConfig = {
+let activeConfig: BackstageGsapConfig = {
   namespace: 'GSAP',
   outlineNamespace: {defaultCollapsed: false},
 }
 
 setConfiguredGsapSheetObjectNamespace(activeConfig.namespace!)
 
-function pageScrollContextFromConfig(pageScroll: TheatreGsapPageScrollConfig): {
+function pageScrollContextFromConfig(pageScroll: BackstageGsapPageScrollConfig): {
   scroller: PageScrollScroller
   axis: PageScrollAxis
 } {
@@ -49,7 +49,7 @@ function pageScrollContextFromConfig(pageScroll: TheatreGsapPageScrollConfig): {
 }
 
 function applyScrollTriggerDefaultsForPageScroll(
-  pageScroll: TheatreGsapPageScrollConfig,
+  pageScroll: BackstageGsapPageScrollConfig,
 ): void {
   const ScrollTrigger = getGsapScrollTriggerPlugin()
   const {scroller, axis} = pageScrollContextFromConfig(pageScroll)
@@ -59,7 +59,7 @@ function applyScrollTriggerDefaultsForPageScroll(
   })
 }
 
-export function configureTheatreGsap(config: TheatreGsapConfig): {
+export function configureBackstageGsap(config: BackstageGsapConfig): {
   reset: () => void
 } {
   const prev = activeConfig
@@ -93,6 +93,6 @@ export function configureTheatreGsap(config: TheatreGsapConfig): {
   }
 }
 
-export function getTheatreGsapConfig(): TheatreGsapConfig {
+export function getBackstageGsapConfig(): BackstageGsapConfig {
   return activeConfig
 }

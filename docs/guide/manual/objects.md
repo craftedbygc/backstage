@@ -51,7 +51,7 @@ unsubscribe()
 sheet.detachObject('obj')
 ```
 
-Theatre remembers detached values; recreating the same key restores prior static values.
+Backstage remembers detached values; recreating the same key restores prior static values.
 
 ## Namespacing
 
@@ -80,8 +80,8 @@ sheet.object(
 )
 ```
 
-`@unseenco/backstage/threejs` **`autoAddObject()`** accepts the same `transient` / `static` paths (dot or array notation), merged with `configureTheatreThreejs()` defaults.
+`@unseenco/backstage/threejs` **`autoAddObject()`** accepts the same `transient` / `static` paths (dot or array notation), merged with `configureBackstageThreejs()` defaults.
 
 ## API
 
-[Sheet object API](/api/theatre-core#object)
+[Sheet object API](/api/backstage-core#object)

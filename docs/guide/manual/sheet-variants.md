@@ -41,4 +41,4 @@ obj.onValuesChange((values, meta) => {
 
 ## API
 
-[`declareSequenceVariants`](/api/theatre-core), [`setActiveSequenceVariant`](/api/theatre-core), [`getActiveSequenceVariant`](/api/theatre-core)
+[`declareSequenceVariants`](/api/backstage-core), [`setActiveSequenceVariant`](/api/backstage-core), [`getActiveSequenceVariant`](/api/backstage-core)

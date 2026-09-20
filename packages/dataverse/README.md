@@ -1,7 +1,7 @@
 # @unseenco/backstage/dataverse
 
 Dataverse is the reactive dataflow library
-[Theatre.js](https://unseen-theatre.netlify.app) is built on. It is inspired by ideas in
+[Backstage.js](https://unseen-theatre.netlify.app) is built on. It is inspired by ideas in
 [functional reactive programming](https://en.wikipedia.org/wiki/Functional_reactive_programming)
 and it is optimised for interactivity and animation.
 
@@ -701,9 +701,9 @@ val(double)
 - [API Reference](./api/README.md)
 - [The exhaustive guide to dataverse](./src/dataverse.test.ts)
 - It's also fun to
-  [open the monorepo](https://github.com/craftedbygc/theatre/tree/main/packages/dataverse/src/index.ts)
+  [open the monorepo](https://github.com/craftedbygc/backstage/tree/main/packages/dataverse/src/index.ts)
   in VSCode and look up references to `Atom`, `prism()` and other dataverse
-  methods. Since dataverse is used internally in Theatre.js, there are a lot of
+  methods. Since dataverse is used internally in Backstage.js, there are a lot of
   examples of how to use it.
 - Also see [`@unseenco/backstage/react`](../react/README.md) to learn more about the React
   bindings.

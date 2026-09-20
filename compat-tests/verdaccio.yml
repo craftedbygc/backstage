@@ -15,7 +15,7 @@ uplinks:
     url: https://registry.npmjs.org/
     cache: false
 packages:
-  '@unseenco/theatre-*':
+  '@unseenco/backstage-*':
     access: $all
     publish: $all
   '@*/*':

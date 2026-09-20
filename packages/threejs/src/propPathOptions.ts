@@ -73,7 +73,7 @@ function dedupePropPaths(paths: TransientPropPath[]): TransientPropPath[] {
   return result
 }
 
-function categorizedPropPathsToTheatrePaths(
+function categorizedPropPathsToBackstagePaths(
   categorized: ReturnType<typeof mergeExcludeInput>,
 ): TransientPropPath[] {
   const paths: TransientPropPath[] = []
@@ -116,10 +116,10 @@ export function expandPropPathInput(
       }
     }
     paths.push(
-      ...categorizedPropPathsToTheatrePaths(mergeExcludeInput(shortKeys)),
+      ...categorizedPropPathsToBackstagePaths(mergeExcludeInput(shortKeys)),
     )
   } else {
-    paths.push(...categorizedPropPathsToTheatrePaths(mergeExcludeInput(input)))
+    paths.push(...categorizedPropPathsToBackstagePaths(mergeExcludeInput(input)))
   }
 
   return dedupePropPaths(paths)

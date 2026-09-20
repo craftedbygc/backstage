@@ -1,6 +1,6 @@
 import studio from '@unseenco/backstage/studio'
 import {getProject} from '@unseenco/backstage'
-import {configureTheatreThreejs} from '@unseenco/backstage/threejs'
+import {configureBackstageThreejs} from '@unseenco/backstage/threejs'
 import {buildExtension} from '@unseenco/backstage/threejs/extension'
 import {bindDockedThreeViewport} from '../utils/bindDockedThreeViewport'
 import {autoAddCamera, autoAddObject} from '@unseenco/backstage/threejs'
@@ -19,7 +19,7 @@ import {
 } from 'three/webgpu'
 
 studio.initialize()
-configureTheatreThreejs({})
+configureBackstageThreejs({})
 
 async function main() {
   const canvas = document.getElementById('canvas')
@@ -61,7 +61,7 @@ async function main() {
   knot.name = 'Torus Knot'
   scene.add(knot)
 
-  // ── Theatre.js ────────────────────────────────────────────────────────────────
+  // ── Backstage.js ────────────────────────────────────────────────────────────────
   const project = getProject('Three WebGPU')
   await project.ready
 

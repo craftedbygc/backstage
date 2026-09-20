@@ -6,7 +6,7 @@ if (process.platform === 'win32') {
   $.prefix = ''
 }
 
-const prog = sade('cli').describe('CLI for Theatre.js development')
+const prog = sade('cli').describe('CLI for Backstage.js development')
 
 // better quote function from https://github.com/google/zx/pull/167
 $.quote = function quote(arg) {
@@ -68,12 +68,12 @@ prog
   )
   .action(async () => {
     const packages = [
-      'theatre',
-      '@unseenco/theatre-dataverse',
-      '@unseenco/theatre-react',
-      '@unseenco/theatre-browser-bundles',
-      '@unseenco/theatre-threejs',
-      '@unseenco/theatre-gsap',
+      'backstage',
+      '@unseenco/backstage-dataverse',
+      '@unseenco/backstage-react',
+      '@unseenco/backstage-browser-bundles',
+      '@unseenco/backstage-threejs',
+      '@unseenco/backstage-gsap',
       '@unseenco/backstage',
     ]
 
@@ -84,12 +84,12 @@ prog
 
 prog.command('build', 'Builds all the main packages').action(async () => {
   const packagesToBuild = [
-    'theatre',
-    '@unseenco/theatre-dataverse',
-    '@unseenco/theatre-react',
-    '@unseenco/theatre-browser-bundles',
-    '@unseenco/theatre-threejs',
-    '@unseenco/theatre-gsap',
+    'backstage',
+    '@unseenco/backstage-dataverse',
+    '@unseenco/backstage-react',
+    '@unseenco/backstage-browser-bundles',
+    '@unseenco/backstage-threejs',
+    '@unseenco/backstage-gsap',
   ]
   async function build() {
     await Promise.all([
@@ -115,12 +115,12 @@ prog
      * It assigns the same version number to all packages (like lerna's fixed mode).
      **/
     const packagesToBuild = [
-      'theatre',
-      '@unseenco/theatre-dataverse',
-      '@unseenco/theatre-react',
-      '@unseenco/theatre-browser-bundles',
-      '@unseenco/theatre-threejs',
-      '@unseenco/theatre-gsap',
+      'backstage',
+      '@unseenco/backstage-dataverse',
+      '@unseenco/backstage-react',
+      '@unseenco/backstage-browser-bundles',
+      '@unseenco/backstage-threejs',
+      '@unseenco/backstage-gsap',
     ]
 
     /**
@@ -128,11 +128,11 @@ prog
      */
     const packagesWhoseVersionsShouldBump = [
       '.',
-      'theatre',
-      'theatre/core',
-      'theatre/core-lite',
-      'theatre/studio',
-      'theatre/studio-lite',
+      'backstage',
+      'backstage/core',
+      'backstage/core-lite',
+      'backstage/studio',
+      'backstage/studio-lite',
       'packages/dataverse',
       'packages/react',
       'packages/browser-bundles',
@@ -144,7 +144,7 @@ prog
     // our packages will check for this env variable to make sure their
     // prepublish script is only called from the `$ cd /path/to/monorepo; yarn run release`
     // @ts-ignore ignore
-    process.env.THEATRE_IS_PUBLISHING = true
+    process.env.BACKSTAGE_IS_PUBLISHING = true
 
     async function release() {
       $.verbose = false
@@ -319,7 +319,7 @@ prog
   )
   .action(async (opts) => {
     // @ts-ignore ignore
-    process.env.THEATRE_IS_PUBLISHING = true
+    process.env.BACKSTAGE_IS_PUBLISHING = true
 
     const npmTag = opts.tag ?? 'latest'
 

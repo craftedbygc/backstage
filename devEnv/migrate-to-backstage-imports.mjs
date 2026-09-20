@@ -1,5 +1,5 @@
 /**
- * One-shot import path migration: @unseenco/theatre-* → @unseenco/backstage subpaths.
+ * One-shot import path migration: @unseenco/backstage-* → @unseenco/backstage subpaths.
  * Run from repo root: node devEnv/migrate-to-backstage-imports.mjs
  */
 import fs from 'node:fs'
@@ -31,19 +31,19 @@ const TEXT_EXTENSIONS = new Set([
 ])
 
 const IMPORT_REPLACEMENTS = [
-  ['@unseenco/theatre-threejs/extension', '@unseenco/backstage/threejs/extension'],
-  ['@unseenco/theatre-studio-lite', '@unseenco/backstage/studio-lite'],
-  ['@unseenco/theatre-core-lite', '@unseenco/backstage/core-lite'],
-  ['@unseenco/theatre-studio', '@unseenco/backstage/studio'],
-  ['@unseenco/theatre-core', '@unseenco/backstage'],
-  ['@unseenco/theatre-dataverse', '@unseenco/backstage/dataverse'],
-  ['@unseenco/theatre-react', '@unseenco/backstage/react'],
-  ['@unseenco/theatre-threejs', '@unseenco/backstage/threejs'],
-  ['@unseenco/theatre-gsap', '@unseenco/backstage/gsap'],
-  ['@unseenco/theatre-browser-bundles', '@unseenco/backstage/browser-bundles'],
+  ['@unseenco/backstage/threejs/extension', '@unseenco/backstage/threejs/extension'],
+  ['@unseenco/backstage/studio-lite', '@unseenco/backstage/studio-lite'],
+  ['@unseenco/backstage/core-lite', '@unseenco/backstage/core-lite'],
+  ['@unseenco/backstage/studio', '@unseenco/backstage/studio'],
+  ['@unseenco/backstage', '@unseenco/backstage'],
+  ['@unseenco/backstage/dataverse', '@unseenco/backstage/dataverse'],
+  ['@unseenco/backstage/react', '@unseenco/backstage/react'],
+  ['@unseenco/backstage/threejs', '@unseenco/backstage/threejs'],
+  ['@unseenco/backstage/gsap', '@unseenco/backstage/gsap'],
+  ['@unseenco/backstage/browser-bundles', '@unseenco/backstage/browser-bundles'],
 ]
 
-const THEATRE_PKG_PREFIX = '@unseenco/theatre-'
+const BACKSTAGE_PKG_PREFIX = '@unseenco/backstage-'
 
 function walk(dir, files = []) {
   for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
@@ -79,25 +79,25 @@ function consolidatePackageJson(filePath) {
   }
 
   const depTypes = ['dependencies', 'devDependencies', 'peerDependencies']
-  let hadTheatre = false
+  let hadBackstage = false
   for (const depType of depTypes) {
     const deps = pkg[depType]
     if (!deps) continue
     for (const name of Object.keys(deps)) {
       if (name === '@unseenco/backstage') continue
-      if (name.startsWith(THEATRE_PKG_PREFIX)) {
+      if (name.startsWith(BACKSTAGE_PKG_PREFIX)) {
         delete deps[name]
-        hadTheatre = true
+        hadBackstage = true
       }
     }
   }
 
-  if (!hadTheatre) return false
+  if (!hadBackstage) return false
 
   // Published umbrella only in packages/backstage — inner workspaces link via backstage.
   const pkgName = pkg.name
   const isBackstageRoot = pkgName === '@unseenco/backstage'
-  if (!isBackstageRoot && pkgName !== 'theatre-monorepo') {
+  if (!isBackstageRoot && pkgName !== 'backstage-monorepo') {
     for (const depType of ['dependencies', 'devDependencies']) {
       if (!pkg[depType]) pkg[depType] = {}
       if (!pkg[depType]['@unseenco/backstage']) {
@@ -106,14 +106,14 @@ function consolidatePackageJson(filePath) {
     }
   }
 
-  // Peer deps: single backstage peer when any theatre peer existed
+  // Peer deps: single backstage peer when any backstage peer existed
   if (pkg.peerDependencies) {
     const peers = pkg.peerDependencies
-    const theatrePeerKeys = Object.keys(peers).filter((k) =>
-      k.startsWith(THEATRE_PKG_PREFIX),
+    const backstagePeerKeys = Object.keys(peers).filter((k) =>
+      k.startsWith(BACKSTAGE_PKG_PREFIX),
     )
-    if (theatrePeerKeys.length > 0) {
-      for (const k of theatrePeerKeys) delete peers[k]
+    if (backstagePeerKeys.length > 0) {
+      for (const k of backstagePeerKeys) delete peers[k]
       if (!peers['@unseenco/backstage']) {
         peers['@unseenco/backstage'] = '*'
       }
@@ -147,10 +147,10 @@ for (const file of files) {
 
 // Mark former publish packages private (except backstage)
 const privatePackages = [
-  'theatre/core/package.json',
-  'theatre/core-lite/package.json',
-  'theatre/studio/package.json',
-  'theatre/studio-lite/package.json',
+  'backstage/core/package.json',
+  'backstage/core-lite/package.json',
+  'backstage/studio/package.json',
+  'backstage/studio-lite/package.json',
   'packages/dataverse/package.json',
   'packages/react/package.json',
   'packages/threejs/package.json',

@@ -2,7 +2,7 @@ import type {ISheet, ISheetObject} from '@unseenco/backstage'
 import type {Material} from 'three'
 import {buildMaterialProps} from './buildMaterialProps'
 import type {ExcludeInput, PropPathInput} from './config'
-import {getTheatreThreejsConfig, resolveAutoAddObjectOptions} from './config'
+import {getBackstageThreejsConfig, resolveAutoAddObjectOptions} from './config'
 import {
   buildSheetObjectPathOptions,
   mergePropPathInputs,
@@ -64,7 +64,7 @@ function resolveObjectKey(
 }
 
 /**
- * Register a Three.js material on a Theatre sheet with auto-parsed material
+ * Register a Three.js material on a Backstage sheet with auto-parsed material
  * properties (colors, scalars, vectors, textures, shader uniforms).
  *
  * Use this instead of {@link autoAddObject} when you only want material props
@@ -80,7 +80,7 @@ export function autoAddMaterial(
   }
 
   if (!sheet) {
-    throw new Error('autoAddMaterial() requires a Theatre sheet.')
+    throw new Error('autoAddMaterial() requires a Backstage sheet.')
   }
 
   const existing = getMaterialEntry(material)
@@ -89,7 +89,7 @@ export function autoAddMaterial(
   }
 
   const objectKey = resolveObjectKey(material, options)
-  const pathDefaults = getTheatreThreejsConfig().autoAddObject ?? {}
+  const pathDefaults = getBackstageThreejsConfig().autoAddObject ?? {}
   const resolved = resolveAutoAddObjectOptions({
     exclude: toExcludeInput(options.exclude),
     include: toExcludeInput(options.include),

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Theatre.js × GSAP (time mode)</title>
+    <title>Backstage.js × GSAP (time mode)</title>
     <style>
       * {
         box-sizing: border-box;
@@ -71,7 +71,7 @@
         margin-top: 24px;
         background: linear-gradient(135deg, #6ee7b7, #3b82f6);
       }
-      .theatre-object {
+      .backstage-object {
         width: 200px;
         min-height: 120px;
         padding: 16px;
@@ -92,11 +92,11 @@
   </head>
   <body>
     <p class="hint">
-      GSAP runs tweens in code; Theatre sequences them on the timeline. Open the
+      GSAP runs tweens in code; Backstage sequences them on the timeline. Open the
       outline <code>GSAP</code> folder, right-click an animation (or use the
       details diamond) → <strong>Add to sequence at playhead</strong>, then scrub
       the sequence playhead to drive <code>animation.progress()</code>. Compare
-      with the regular Theatre object beside the panel (sequence x, y, opacity).
+      with the regular Backstage object beside the panel (sequence x, y, opacity).
     </p>
     <div class="row">
       <button type="button" id="toggle">Show panel (runtime)</button>
@@ -105,13 +105,13 @@
       <div class="panel" id="panel">
         <h2>UI panel</h2>
         <p>
-          Toggle with the button for live GSAP, or scrub Theatre clips for Panel
+          Toggle with the button for live GSAP, or scrub Backstage clips for Panel
           show / hide.
         </p>
         <div class="box" id="box"></div>
       </div>
-      <div class="theatre-object" id="theatre-object">
-        Regular Theatre Object
+      <div class="backstage-object" id="backstage-object">
+        Regular Backstage Object
       </div>
     </div>
   </body>

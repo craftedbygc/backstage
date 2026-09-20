@@ -52,7 +52,7 @@ export function testServerAndPage({
     await page.close()
   })
 
-  test('The server runs, and the Theatre setup works', async () => {
+  test('The server runs, and the Backstage setup works', async () => {
     // run the production server but don't wait for it to finish
 
     // just a random port I'm hoping is free everywhere.
@@ -69,7 +69,7 @@ export function testServerAndPage({
     try {
       await waitTilServerIsReady(process)
 
-      await testTheatreOnPage(page, {url})
+      await testBackstageOnPage(page, {url})
     } finally {
       // kill the server
       await process.kill('SIGTERM')
@@ -89,7 +89,7 @@ export function testServerAndPage({
   })
 }
 
-async function testTheatreOnPage(page: Page, {url}: {url: string}) {
+async function testBackstageOnPage(page: Page, {url}: {url: string}) {
   const d = defer<string>()
 
   const processConsoleEvents = (msg: ConsoleMessage) => {

@@ -4,7 +4,7 @@ import studio from '@unseenco/backstage/studio'
 import {getProject} from '@unseenco/backstage'
 import {Scene} from './Scene'
 /**
- * This is a basic example of using Theatre.js for manipulating the DOM.
+ * This is a basic example of using Backstage.js for manipulating the DOM.
  */
 
 studio.initialize()

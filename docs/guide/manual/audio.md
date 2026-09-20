@@ -11,7 +11,7 @@ await sheet.sequence.attachAudio({
 sheet.sequence.play()
 ```
 
-Theatre fetches the file, creates an `AudioContext`, and decodes the buffer. Browsers may block audio until a user gesture; prompt the user to click before calling `play()`.
+Backstage fetches the file, creates an `AudioContext`, and decodes the buffer. Browsers may block audio until a user gesture; prompt the user to click before calling `play()`.
 
 ## Custom audio graph
 
@@ -27,4 +27,4 @@ sheet.sequence.attachAudio({
 
 ## API
 
-[`Sequence.attachAudio`](/api/theatre-core)
+[`Sequence.attachAudio`](/api/backstage-core)

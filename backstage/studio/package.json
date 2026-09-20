@@ -1,0 +1,59 @@
+{
+  "name": "@unseenco/backstage-studio",
+  "version": "0.6.0",
+  "license": "AGPL-3.0-only",
+  "description": "Motion design editor for the web",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/craftedbygc/backstage",
+    "directory": "backstage/studio"
+  },
+  "author": {
+    "name": "Unseen Studio",
+    "url": "https://unseen-theatre.netlify.app"
+  },
+  "contributors": [
+    {
+      "name": "TheaterJS Oy",
+      "email": "hello@theatrejs.com",
+      "url": "https://www.theatrejs.com"
+    }
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./getStudio": {
+      "types": "./dist/getStudio.d.ts",
+      "import": "./dist/getStudio.mjs",
+      "require": "./dist/getStudio.js"
+    },
+    "./propEditors/projectHasDivergedFromSavedState": {
+      "types": "./dist/propEditors/projectHasDivergedFromSavedState.d.ts",
+      "import": "./dist/propEditors/projectHasDivergedFromSavedState.mjs",
+      "require": "./dist/propEditors/projectHasDivergedFromSavedState.js"
+    },
+    "./propEditors/objectHasDivergedFromSavedState": {
+      "types": "./dist/propEditors/objectHasDivergedFromSavedState.d.ts",
+      "import": "./dist/propEditors/objectHasDivergedFromSavedState.mjs",
+      "require": "./dist/propEditors/objectHasDivergedFromSavedState.js"
+    }
+  },
+  "files": [
+    "dist/*"
+  ],
+  "scripts": {
+    "prepublish": "node ../../devEnv/ensurePublishing.js"
+  },
+  "sideEffects": false,
+  "peerDependencies": {
+    "@unseenco/backstage": "*"
+  },
+  "//": "Add packages here to make them externals of studio. Add them to backstage/package.json if you want to bundle them with studio.",
+  "private": true
+}

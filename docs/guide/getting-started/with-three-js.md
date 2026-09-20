@@ -1,6 +1,6 @@
 # With THREE.js
 
-Animate a Three.js scene by wiring meshes to Theatre sheet objects. This guide follows the classic torus-knot tutorial pattern; package names match **craftedbygc/theatre** (`@unseenco/theatre-*`).
+Animate a Three.js scene by wiring meshes to Backstage sheet objects. This guide follows the classic torus-knot tutorial pattern; package names match **craftedbygc/backstage** (`@unseenco/backstage-*`).
 
 ## Prerequisites
 
@@ -13,7 +13,7 @@ yarn install
 yarn dev
 ```
 
-## Install Theatre
+## Install Backstage
 
 ```bash
 yarn add @unseenco/backstage @unseenco/backstage/studio
@@ -38,7 +38,7 @@ Press `Alt`/`Option` + `\` to show or hide Studio.
 ```ts
 import {getProject, types} from '@unseenco/backstage'
 
-const project = getProject('THREE.js x Theatre')
+const project = getProject('THREE.js x Backstage')
 const sheet = project.sheet('Animated scene')
 ```
 
@@ -80,7 +80,7 @@ More detail: [Working with sequences](../manual/sequences.md).
 ```ts
 import projectState from './state.json'
 
-const project = getProject('THREE.js x Theatre', {state: projectState})
+const project = getProject('THREE.js x Backstage', {state: projectState})
 ```
 
 3. Play when ready:
@@ -110,4 +110,4 @@ Use `transient` / `static` prop paths when you need session-only or non-sequence
 ## Next steps
 
 - [Manual](../manual/index.md)
-- [API: `getProject`](/api/theatre-core#getproject)
+- [API: `getProject`](/api/backstage-core#getproject)

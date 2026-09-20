@@ -10,7 +10,7 @@ export function isRemotePageModeEditorWindow(): boolean {
 }
 
 /**
- * Hide demo markup in the remote editor while keeping DOM nodes so Theatre/GSAP
+ * Hide demo markup in the remote editor while keeping DOM nodes so Backstage/GSAP
  * registration can target the same elements as the main window.
  */
 export function hidePageModeDemoForRemoteEditor(): void {

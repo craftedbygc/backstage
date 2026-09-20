@@ -1,6 +1,6 @@
 import type {IRafDriver} from '@unseenco/backstage'
-import {getTheatreCoreRafDriver} from '@unseenco/backstage/privateAPIs'
-import {getTheatreGsapConfig} from './config'
+import {getBackstageCoreRafDriver} from '@unseenco/backstage/privateAPIs'
+import {getBackstageGsapConfig} from './config'
 
 const gsapTickerDrivenDriverIds = new Set<number>()
 
@@ -12,7 +12,7 @@ export type GsapTickerLike = {
 }
 
 /**
- * Drives a Theatre `rafDriver` from `gsap.ticker` (GSAP time in seconds → Theatre ms).
+ * Drives a Backstage `rafDriver` from `gsap.ticker` (GSAP time in seconds → Backstage ms).
  * Returns a cleanup that removes the ticker listener and unmarks the driver.
  */
 export function bindGsapTickerToRafDriver(
@@ -46,23 +46,23 @@ export function scheduleGsapTickerRafWarningCheck(): void {
   gsapTickerRafWarningMicrotaskQueued = true
   queueMicrotask(() => {
     gsapTickerRafWarningMicrotaskQueued = false
-    warnIfGsapTickerNotDrivingTheatreRaf()
+    warnIfGsapTickerNotDrivingBackstageRaf()
   })
 }
 
 /**
- * Warns once per page load when Theatre's core rAF is not driven by `gsap.ticker`.
+ * Warns once per page load when Backstage's core rAF is not driven by `gsap.ticker`.
  */
-export function warnIfGsapTickerNotDrivingTheatreRaf(): void {
+export function warnIfGsapTickerNotDrivingBackstageRaf(): void {
   if (typeof window === 'undefined') return
-  if (getTheatreGsapConfig().suppressGsapTickerRafWarning) return
+  if (getBackstageGsapConfig().suppressGsapTickerRafWarning) return
   if (hasWarnedGsapTickerRaf) return
 
-  const coreDriver = getTheatreCoreRafDriver()
+  const coreDriver = getBackstageCoreRafDriver()
   if (!isRafDriverDrivenByGsapTicker(coreDriver)) {
     hasWarnedGsapTickerRaf = true
     console.warn(
-      '[theatre-gsap] Theatre is not driven by gsap.ticker. After setCoreRafDriver(), call bindGsapTickerToRafDriver(rafDriver, gsap) so GSAP and Theatre share one clock. See the GSAP extension guide.',
+      '[backstage-gsap] Backstage is not driven by gsap.ticker. After setCoreRafDriver(), call bindGsapTickerToRafDriver(rafDriver, gsap) so GSAP and Backstage share one clock. See the GSAP extension guide.',
     )
   }
 }

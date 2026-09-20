@@ -4,7 +4,7 @@ import type {BuildOptions} from 'esbuild'
 
 const definedGlobals = {
   global: 'window',
-  'process.env.THEATRE_VERSION': JSON.stringify(
+  'process.env.BACKSTAGE_VERSION': JSON.stringify(
     require('../package.json').version,
   ),
 }

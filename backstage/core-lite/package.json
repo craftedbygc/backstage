@@ -1,0 +1,46 @@
+{
+  "name": "@unseenco/backstage-core-lite",
+  "version": "0.6.0",
+  "license": "Apache-2.0",
+  "description": "Static + variant runtime for Backstage.js (no sequencing playback)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/craftedbygc/backstage",
+    "directory": "backstage/core-lite"
+  },
+  "author": {
+    "name": "Unseen Studio",
+    "url": "https://unseen-theatre.netlify.app"
+  },
+  "contributors": [
+    {
+      "name": "TheaterJS Oy",
+      "email": "hello@theatrejs.com",
+      "url": "https://www.theatrejs.com"
+    }
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./privateAPIs": {
+      "types": "./dist/privateAPIs.d.ts",
+      "import": "./dist/privateAPIs.mjs",
+      "require": "./dist/privateAPIs.js"
+    }
+  },
+  "files": [
+    "dist/*"
+  ],
+  "scripts": {
+    "prepublish": "node ../../devEnv/ensurePublishing.js"
+  },
+  "sideEffects": true,
+  "private": true
+}

@@ -1,0 +1,131 @@
+import {prism} from '@unseenco/backstage/dataverse'
+import {createStudioSheetItemKey} from '@unseenco/backstage-shared/utils/ids'
+import {AggregateKeyframePositionIsSelected} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/Right/AggregatedKeyframeTrack/AggregatedKeyframeTrack'
+import {isConnectionEditingInCurvePopover} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/Right/BasicKeyframedTrack/KeyframeEditor/CurveEditorPopover/CurveEditorPopover'
+import {usePrism} from '@unseenco/backstage/react'
+import {selectedKeyframeConnections} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selections'
+import type {
+  IAggregateKeyframeEditorProps,
+  AggregatedKeyframeConnection,
+} from './AggregateKeyframeEditor'
+import {iif} from './iif'
+import {sequenceEditorAggregateViewModelSheetAddress} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/sequenceEditorAggregateViewModel'
+
+export type IAggregateKeyframeEditorUtils = ReturnType<
+  typeof useAggregateKeyframeEditorUtils
+>
+
+// I think this was pulled out for performance
+// 1/10: Not sure this is properly split up
+export function useAggregateKeyframeEditorUtils(
+  props: Pick<
+    IAggregateKeyframeEditorProps,
+    'index' | 'aggregateKeyframes' | 'selection' | 'viewModel'
+  >,
+) {
+  const {index, aggregateKeyframes, selection} = props
+
+  return usePrism(getAggregateKeyframeEditorUtilsPrismFn(props), [
+    index,
+    aggregateKeyframes,
+    selection,
+    props.viewModel,
+  ])
+}
+
+// I think this was pulled out for performance
+// 1/10: Not sure this is properly split up
+export function getAggregateKeyframeEditorUtilsPrismFn(
+  props: Pick<
+    IAggregateKeyframeEditorProps,
+    'index' | 'aggregateKeyframes' | 'selection' | 'viewModel'
+  >,
+) {
+  const {index, aggregateKeyframes, selection} = props
+
+  const {projectId, sheetId} = sequenceEditorAggregateViewModelSheetAddress(
+    props.viewModel,
+  )
+
+  return () => {
+    const cur = aggregateKeyframes[index]
+    const next = aggregateKeyframes[index + 1]
+
+    const curAndNextAggregateKeyframesMatch =
+      next &&
+      cur.keyframes.length === next.keyframes.length &&
+      cur.keyframes.every(({track}, ind) => next.keyframes[ind].track === track)
+
+    const connected = curAndNextAggregateKeyframesMatch
+      ? {
+          length: next.position - cur.position,
+          selected:
+            cur.selected === AggregateKeyframePositionIsSelected.AllSelected &&
+            next.selected === AggregateKeyframePositionIsSelected.AllSelected,
+        }
+      : null
+
+    const aggregatedConnections: AggregatedKeyframeConnection[] = !connected
+      ? []
+      : cur.keyframes.map(({kf, track}, i) => ({
+          ...track.sheetObject.address,
+          trackId: track.id,
+          left: kf,
+          right: next.keyframes[i].kf,
+        }))
+
+    const allConnections = iif(() => {
+      const selectedConnections = prism
+        .memo(
+          'selectedConnections',
+          () => selectedKeyframeConnections(projectId, sheetId, selection),
+          [projectId, sheetId, selection],
+        )
+        .getValue()
+
+      return [...aggregatedConnections, ...selectedConnections]
+    })
+
+    const isAggregateEditingInCurvePopover = aggregatedConnections.every(
+      (con) => isConnectionEditingInCurvePopover(con),
+    )
+
+    const itemKey = prism.memo(
+      'itemKey',
+      () => {
+        if (props.viewModel.type === 'sheet') {
+          return createStudioSheetItemKey.forSheetAggregateKeyframe(
+            props.viewModel.sheet,
+            cur.position,
+          )
+        } else if (props.viewModel.type === 'objectNamespace') {
+          return createStudioSheetItemKey.forObjectNamespaceAggregateKeyframe(
+            props.viewModel.sheetAddress.sheetId,
+            props.viewModel.namespacePath,
+            cur.position,
+          )
+        } else if (props.viewModel.type === 'sheetObject') {
+          return createStudioSheetItemKey.forSheetObjectAggregateKeyframe(
+            props.viewModel.sheetObject,
+            cur.position,
+          )
+        } else {
+          return createStudioSheetItemKey.forCompoundPropAggregateKeyframe(
+            props.viewModel.sheetObject,
+            props.viewModel.pathToProp,
+            cur.position,
+          )
+        }
+      },
+      [props.viewModel, cur.position],
+    )
+
+    return {
+      itemKey,
+      cur,
+      connected,
+      isAggregateEditingInCurvePopover,
+      allConnections,
+    }
+  }
+}

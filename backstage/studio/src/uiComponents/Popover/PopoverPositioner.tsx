@@ -1,0 +1,200 @@
+import React from 'react'
+import {cloneElement, useLayoutEffect, useState} from 'react'
+import useWindowSize from 'react-use/esm/useWindowSize'
+import useBoundingClientRect from '@unseenco/backstage/studio/uiComponents/useBoundingClientRect'
+import ArrowContext from './ArrowContext'
+import useRefAndState from '@unseenco/backstage/studio/utils/useRefAndState'
+import useOnClickOutside from '@unseenco/backstage/studio/uiComponents/useOnClickOutside'
+import onPointerOutside from '@unseenco/backstage/studio/uiComponents/onPointerOutside'
+import noop from '@unseenco/backstage-shared/utils/noop'
+import {clamp} from 'lodash-es'
+
+const minimumDistanceOfArrowToEdgeOfPopover = 8
+
+export type AbsolutePlacementBoxConstraints = {
+  minX?: number
+  maxX?: number
+  minY?: number
+  maxY?: number
+}
+
+const PopoverPositioner: React.FC<{
+  target: HTMLElement | SVGElement | Element
+  clickPoint?: {
+    clientX: number
+    clientY: number
+  }
+  onClickOutside?: (e: MouseEvent) => void
+  children: () => React.ReactElement
+  onPointerOutside?: {
+    threshold: number
+    callback: (e: MouseEvent) => void
+  }
+  verticalPlacement?: 'top' | 'bottom' | 'overlay'
+  verticalGap?: number // Has no effect if verticalPlacement === 'overlay'
+  constraints?: AbsolutePlacementBoxConstraints
+}> = (props) => {
+  const originalElement = props.children()
+  const [ref, container] = useRefAndState<HTMLElement | SVGElement | null>(null)
+  const style: Record<string, string> = originalElement.props.style
+    ? {...originalElement.props.style}
+    : {}
+  style.position = 'absolute'
+
+  const containerRect = useBoundingClientRect(container)
+  const targetRect = useBoundingClientRect(props.target)
+  const windowSize = useWindowSize()
+  const [arrowContextValue, setArrowContextValue] = useState<
+    Record<string, string>
+  >({})
+
+  useLayoutEffect(() => {
+    if (!containerRect || !container) return
+
+    const targetRectLive = props.target.getBoundingClientRect()
+    const clickPoint = props.clickPoint
+    const targetRectForPlacement =
+      targetRectLive.width > 0 || targetRectLive.height > 0
+        ? targetRectLive
+        : clickPoint
+        ? {
+            left: clickPoint.clientX,
+            top: clickPoint.clientY,
+            right: clickPoint.clientX,
+            bottom: clickPoint.clientY,
+            width: 0,
+            height: 0,
+            x: clickPoint.clientX,
+            y: clickPoint.clientY,
+            toJSON: targetRectLive.toJSON,
+          }
+        : targetRectLive
+
+    if (
+      !targetRectForPlacement.width &&
+      !targetRectForPlacement.height &&
+      !clickPoint
+    ) {
+      return
+    }
+
+    const gap = props.verticalGap ?? 8
+    const arrowStyle: Record<string, string> = {}
+
+    let verticalPlacement: 'bottom' | 'top' | 'overlay' =
+      props.verticalPlacement ?? 'bottom'
+    let top = 0
+    let left = 0
+    if (verticalPlacement === 'bottom') {
+      if (
+        targetRectForPlacement.bottom + containerRect.height + gap <
+        windowSize.height
+      ) {
+        verticalPlacement = 'bottom'
+        top = targetRectForPlacement.bottom + gap
+        arrowStyle.top = '0px'
+      } else if (targetRectForPlacement.top > containerRect.height + gap) {
+        verticalPlacement = 'top'
+        top = targetRectForPlacement.top - (containerRect.height + gap)
+        arrowStyle.bottom = '0px'
+        arrowStyle.transform = 'rotateZ(180deg)'
+      } else {
+        verticalPlacement = 'overlay'
+      }
+    } else if (verticalPlacement === 'top') {
+      if (targetRectForPlacement.top > containerRect.height + gap) {
+        verticalPlacement = 'top'
+        top = targetRectForPlacement.top - (containerRect.height + gap)
+        arrowStyle.bottom = '0px'
+        arrowStyle.transform = 'rotateZ(180deg)'
+      } else if (
+        targetRectForPlacement.bottom + containerRect.height + gap <
+        windowSize.height
+      ) {
+        verticalPlacement = 'bottom'
+        top = targetRectForPlacement.bottom + gap
+        arrowStyle.top = '0px'
+      } else {
+        verticalPlacement = 'overlay'
+      }
+    }
+
+    let arrowLeft = 0
+    if (verticalPlacement === 'overlay' && clickPoint) {
+      top = clickPoint.clientY + gap
+      left = clickPoint.clientX - containerRect.width / 2
+      arrowLeft = containerRect.width / 2
+      arrowStyle.top = '0px'
+      arrowStyle.left = arrowLeft + 'px'
+      verticalPlacement = 'bottom'
+    } else if (verticalPlacement !== 'overlay') {
+      const anchorLeft =
+        clickPoint?.clientX ??
+        targetRectForPlacement.left + targetRectForPlacement.width / 2
+      if (anchorLeft < containerRect.width / 2) {
+        left = gap
+        arrowLeft = Math.max(
+          anchorLeft - gap,
+          minimumDistanceOfArrowToEdgeOfPopover,
+        )
+      } else if (anchorLeft + containerRect.width / 2 > windowSize.width) {
+        left = windowSize.width - (gap + containerRect.width)
+        arrowLeft = Math.min(
+          anchorLeft - left,
+          containerRect.width - minimumDistanceOfArrowToEdgeOfPopover,
+        )
+      } else {
+        left = anchorLeft - containerRect.width / 2
+        arrowLeft = containerRect.width / 2
+      }
+      arrowStyle.left = arrowLeft + 'px'
+    }
+
+    const {
+      minX = -Infinity,
+      maxX = Infinity,
+      minY = -Infinity,
+      maxY = Infinity,
+    } = props.constraints ?? {}
+    const pos = {
+      left: clamp(left, minX, maxX - containerRect.width),
+      top: clamp(top, minY, maxY + containerRect.height),
+    }
+
+    container.style.left = pos.left + 'px'
+    container.style.top = pos.top + 'px'
+    setArrowContextValue(arrowStyle)
+
+    if (props.onPointerOutside) {
+      return onPointerOutside(
+        container,
+        props.onPointerOutside.threshold,
+        props.onPointerOutside.callback,
+      )
+    }
+  }, [
+    containerRect,
+    container,
+    props.target,
+    props.clickPoint,
+    targetRect,
+    windowSize,
+    props.onPointerOutside,
+    props.verticalGap,
+    props.verticalPlacement,
+    props.constraints,
+  ])
+
+  useOnClickOutside(
+    [container, props.target ?? null],
+    props.onClickOutside ?? noop,
+  )
+
+  return (
+    <ArrowContext.Provider value={arrowContextValue}>
+      {cloneElement(originalElement, {ref, style})}
+    </ArrowContext.Provider>
+  )
+}
+
+export default PopoverPositioner

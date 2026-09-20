@@ -16,7 +16,7 @@ Calling `project.sheet('My Sheet')` again returns the same sheet.
 sheet.sequence.play()
 ```
 
-Options (`iterationCount`, `range`, `rafDriver`, …) are documented on [`Sequence.play`](/api/theatre-core).
+Options (`iterationCount`, `range`, `rafDriver`, …) are documented on [`Sequence.play`](/api/backstage-core).
 
 ## Sheet instances
 
@@ -63,4 +63,4 @@ The playground DOM demo (`packages/playground/src/shared/dom`) uses `sheet.props
 
 ## API
 
-[Sheet API](/api/theatre-core#sheet)
+[Sheet API](/api/backstage-core#sheet)

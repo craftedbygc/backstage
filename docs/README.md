@@ -1,6 +1,6 @@
-# Theatre.js documentation site
+# Backstage.js documentation site
 
-Static documentation for the Theatre.js monorepo, built with [VitePress](https://vitepress.dev/).
+Static documentation for the Backstage.js monorepo, built with [VitePress](https://vitepress.dev/).
 
 ## Why VitePress
 
@@ -10,13 +10,13 @@ We chose **VitePress** over Starlight (Astro) because the monorepo already uses 
 
 Public API pages are **not** hand-written. They are produced from TypeScript via the same pipeline as package releases:
 
-1. **api-extractor** — each package’s `build:api-json` script (see `theatre/package.json`, `packages/threejs/package.json`, `packages/gsap/package.json`, …) emits a doc model to `/.temp/api/<package>.api.json` (configured in `devEnv/api-extractor-base.json`).
+1. **api-extractor** — each package’s `build:api-json` script (see `backstage/package.json`, `packages/threejs/package.json`, `packages/gsap/package.json`, …) emits a doc model to `/.temp/api/<package>.api.json` (configured in `devEnv/api-extractor-base.json`).
 2. **api-documenter** — root devDependency `@microsoft/api-documenter` turns those JSON files into Markdown under `docs/api/` (public URL `/docs/api/`).
 
 The `generate:api` script runs the necessary package builds, then api-documenter:
 
 ```bash
-yarn workspace @unseenco/theatre-docs run generate:api
+yarn workspace @unseenco/backstage-docs run generate:api
 ```
 
 `docs/api/` is gitignored; CI and Netlify always regenerate it during `build`.
@@ -37,10 +37,10 @@ Production build (docs only):
 
 ```bash
 yarn docs:build
-yarn workspace @unseenco/theatre-docs run preview   # optional; preview also uses /docs/
+yarn workspace @unseenco/backstage-docs run preview   # optional; preview also uses /docs/
 ```
 
-The first run compiles `theatre`, `@unseenco/backstage/threejs`, `@unseenco/backstage/dataverse`, and `@unseenco/backstage/gsap` declarations and may take a minute.
+The first run compiles `backstage`, `@unseenco/backstage/threejs`, `@unseenco/backstage/dataverse`, and `@unseenco/backstage/gsap` declarations and may take a minute.
 
 ### Playground base path
 

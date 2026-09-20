@@ -6,7 +6,7 @@
   },
   "files": [],
   "references": [
-    {"path": "../../theatre"},
+    {"path": "../../backstage"},
     {"path": "../../packages/dataverse"},
     {"path": "../../packages/playground"},
     {"path": "../../packages/react"},

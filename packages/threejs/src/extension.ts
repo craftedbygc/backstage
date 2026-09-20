@@ -21,7 +21,7 @@ export type {DevtoolsState, StudioLike} from './persistence'
 export type {ThreejsRenderer, WebGPURendererLike} from './types'
 
 export type {
-  TheatreExtension,
+  BackstageExtension,
   ToolConfig,
   ToolConfigSwitch,
   ToolsetConfig,

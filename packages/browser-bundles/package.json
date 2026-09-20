@@ -1,15 +1,20 @@
 {
-  "name": "@unseenco/theatre-browser-bundles",
+  "name": "@unseenco/backstage-browser-bundles",
   "version": "0.6.0",
   "license": "SEE LICENSE IN LICENSE",
   "author": {
-    "name": "Aria Minaei",
-    "email": "aria@theatrejs.com",
-    "url": "https://github.com/AriaMinaei"
+    "name": "Unseen Studio",
+    "url": "https://unseen-theatre.netlify.app"
   },
+  "contributors": [
+    {
+      "name": "Aria Minaei",
+      "url": "https://github.com/AriaMinaei"
+    }
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/craftedbygc/theatre",
+    "url": "https://github.com/craftedbygc/backstage",
     "directory": "packages/browser-bundles"
   },
   "files": [
@@ -28,8 +33,7 @@
     "typescript": "5.3.3"
   },
   "peerDependencies": {
-    "@unseenco/theatre-core": "*",
-    "@unseenco/theatre-studio": "*"
+    "@unseenco/backstage": "*"
   },
   "private": true
 }

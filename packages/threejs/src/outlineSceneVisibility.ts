@@ -24,11 +24,11 @@ function sheetKey(sheet: ISheet): string {
 }
 
 function isSheet(item: ISheetObject | ISheet): item is ISheet {
-  return item.type === 'Theatre_Sheet_PublicAPI'
+  return item.type === 'Backstage_Sheet_PublicAPI'
 }
 
 /**
- * When multiple Three.js scenes are registered, hide Theatre sheets whose
+ * When multiple Three.js scenes are registered, hide Backstage sheets whose
  * auto-added objects live only in inactive scenes from the Studio outline.
  */
 export function setupOutlineSceneVisibility(options: {

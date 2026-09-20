@@ -1,7 +1,7 @@
 import gsap from 'gsap'
 import {ScrollTrigger} from 'gsap/ScrollTrigger'
 import {
-  configureTheatrePageScroll,
+  configureBackstagePageScroll,
   createDefaultPageScrollDriver,
   createRafDriver,
   getProject,
@@ -11,7 +11,7 @@ import {
 import studio from '@unseenco/backstage/studio'
 import {
   bindGsapTickerToRafDriver,
-  configureTheatreGsap,
+  configureBackstageGsap,
   registerAllGsapScrollTriggers,
   registerGsapAnimation,
   registerGsapScrollTrigger,
@@ -32,8 +32,8 @@ const rafDriver = createRafDriver({name: 'gsap-page-mode-horizontal'})
 setCoreRafDriver(rafDriver)
 bindGsapTickerToRafDriver(rafDriver, gsap)
 
-configureTheatrePageScroll({axis: 'horizontal'})
-configureTheatreGsap({
+configureBackstagePageScroll({axis: 'horizontal'})
+configureBackstageGsap({
   namespace: 'GSAP',
   outlineNamespace: {defaultCollapsed: false},
   pageScroll: {axis: 'horizontal'},

@@ -12,7 +12,7 @@ async function main() {
   await fs.remove(deployDir)
 
   console.log('Building API docs (VitePress)…')
-  await $`yarn workspace @unseenco/theatre-docs run build`
+  await $`yarn workspace @unseenco/backstage-docs run build`
 
   console.log('Building playground (Vite MPA)…')
   await $`yarn workspace playground run build`
@@ -25,7 +25,7 @@ async function main() {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Theatre.js</title>
+    <title>Backstage.js</title>
     <style>
       body {
         font-family: system-ui, sans-serif;
@@ -41,7 +41,7 @@ async function main() {
     </style>
   </head>
   <body>
-    <h1>Theatre.js</h1>
+    <h1>Backstage.js</h1>
     <p>Monorepo static site (Netlify).</p>
     <nav>
       <a href="/docs/">API documentation</a>
