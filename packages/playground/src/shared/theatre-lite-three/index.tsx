@@ -23,7 +23,7 @@ setCoreRafDriver(rafDriver)
 
 studio.initialize({
   mode: 'lite',
-  usePersistentStorage: false,
+  usePersistentStorage: true,
   __experimental_rafDriver: rafDriver,
 })
 
@@ -40,7 +40,7 @@ scene.name = 'Cube Scene'
 scene.background = new Color(0x1e293b)
 
 const camera = new PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100)
-camera.position.set(2.5, 2, 4)
+camera.position.set(0, 0, 10)
 
 const light = new DirectionalLight(0xffffff, 1.2)
 light.position.set(4, 6, 3)
@@ -54,7 +54,7 @@ mesh.name = 'Cube'
 scene.add(mesh)
 
 autoAddCamera(camera, sheet, {scene})
-autoAddObject(mesh, sheet, {trackMaterial: false})
+autoAddObject(mesh, sheet)
 
 const devtools = buildExtension({
   renderer,
