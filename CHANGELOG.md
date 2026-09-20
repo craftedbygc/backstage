@@ -1,5 +1,27 @@
 # Theatre.js changelog
 
+## 0.5.0
+
+- New features
+  - **Core:** **Sheet page mode** — `project.sheet(id, { sequenceMode: 'page' })` maps document scroll to a 0–100% sequencer (length 100, 10 sub-units per unit). `sheet.setSequenceMode('page' | 'time')`, one-way scroll drivers, and Studio playhead scrubbing syncs page scroll. Page mode is not persisted in exported JSON — pass sheet options on each load without Studio.
+  - **Core:** Page-scroll wiring without GSAP — `configureTheatrePageScroll()`, `attachTheatrePageScroll(sheet, { driver? })`, `ISheetOptions.scrollDriver`, and optional `@unseenco/theatre-core/lenis` (`createLenisScrollDriver`). **Horizontal** page scroll via `axis: 'horizontal'`, native `scrollX`, element horizontal drivers, and matching ScrollTrigger defaults.
+  - **Core / GSAP:** `project.sheet(id, { gsap: true })` attaches the GSAP sequence bridge from sheet options; keyframes and GSAP clips clamp at sequence bounds.
+  - **GSAP (`@unseenco/theatre-gsap`):** **ScrollTrigger** registration (`registerGsapScrollTrigger`, `registerAllGsapScrollTriggers`) with read-only sequencer bars in page mode (vertical and horizontal), `bindGsapScrollTriggerPlugin`, and duplicate-instance warnings. `bindGsapTickerToRafDriver()` plus a one-time console warning when GSAP registration runs without the GSAP ticker driving Theatre's `rafDriver` (`configureTheatreGsap({ suppressGsapTickerRafWarning })`). `configureTheatreGsap({ pageScroll })` syncs scroll context and ScrollTrigger defaults.
+  - **Studio:** Page-mode sequencer UI — percent formatter, locked length; loop/play disabled where appropriate. **TW / TL / ST** badges in outline and sequencer lists; enhanced **GsapKindBadge** SVG styling.
+  - **Studio:** Read-only **GSAP details panel** — live tween/timeline/ScrollTrigger introspection (`vars`, target pills, child grouping); DOM target highlight on pill and sequencer-row hover (off-screen edge arrows when the target is outside the viewport).
+  - **Studio:** Parent aggregate compound tracks render as draggable theatre-accent **span bars** (move all child keyframes; edge handles scale timing proportionally). Sheet props no longer appear as a separate **Sheet** row in the sequencer tree.
+  - **Studio / Remote editor:** Debounced historic-state sync between main and remote editor windows; GSAP **element hover** highlights sync to the main preview; DOM highlight overlay renders outside the hidden Studio shell when the main UI is concealed during remote editing.
+  - **Playground:** [`/shared/gsap-page-mode/`](./packages/playground/src/shared/gsap-page-mode/), [`/shared/gsap-page-mode-horizontal/`](./packages/playground/src/shared/gsap-page-mode-horizontal/), [`/shared/gsap-page-mode-lenis/`](./packages/playground/src/shared/gsap-page-mode-lenis/); updated [`/shared/gsap-time-mode/`](./packages/playground/src/shared/gsap-time-mode/).
+- Bug fixes
+  - **Studio:** Docked sequence pane — track column anchoring, symmetric scaled-space padding, prop-row clipping, bottom scroll slack, and docked `body` positioning so page overflow scrolls correctly.
+  - **Studio:** Default sequencer zoom is fully zoomed out on first load when no persisted `clippedSpaceRange` exists (`defaultClippedSpaceRange()`).
+  - **Studio:** Page-mode transport (jump start/end, step prev/next) syncs page scroll via the sheet `ScrollDriver` (manual playhead scrub already did).
+  - **Studio / Remote editor:** Page-mode placeholder, ScrollTrigger layout, scroll sync, and playground GSAP registration in the remote editor shell.
+  - **Shared:** Remote DOM highlight uses a package import path (`@unseenco/theatre-shared/gsap/domElementHighlightTarget`) for lint and bundler resolution.
+- Docs
+  - **Guide:** [Sheet sequence modes](./docs/guide/manual/sheet-modes.md) (page mode, scroll drivers, Lenis). [GSAP extension](./docs/guide/extensions/gsap.md) expanded for page mode and ScrollTrigger workflow.
+  - **Links:** User-facing `theatrejs.com` / `docs.theatrejs.com` URLs point to **https://unseen-theatre.netlify.app** (`/docs/` for guides and API; site root for former homepage links) across Studio UI, core JSDoc, READMEs, and package metadata.
+
 ## 0.4.3
 
 - Bug fixes
