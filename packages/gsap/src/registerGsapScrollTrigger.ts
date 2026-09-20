@@ -16,6 +16,7 @@ import {
   requireGsapScrollTriggerPlugin,
 } from './gsapScrollTriggerPlugin'
 import {refreshScrollTriggerLayoutsForSheet} from '@unseenco/theatre-shared/gsap/refreshScrollTriggerLayoutsForSheet'
+import {scheduleGsapTickerRafWarningCheck} from './gsapTickerRafBridge'
 
 export type RegisterGsapScrollTriggerOptions = {
   label: string
@@ -141,6 +142,7 @@ export function registerGsapScrollTrigger(
       `Could not register ScrollTrigger "${options.label}". See console warnings for details.`,
     )
   }
+  scheduleGsapTickerRafWarningCheck()
   return result
 }
 

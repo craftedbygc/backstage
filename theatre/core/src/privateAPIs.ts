@@ -9,6 +9,7 @@ import type {ISheet} from '@unseenco/theatre-core/sheets/TheatreSheet'
 import type {UnknownShorthandCompoundProps} from './propTypes/internals'
 import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
 import type {IRafDriver, RafDriverPrivateAPI} from './rafDrivers'
+import {getCoreRafDriver} from './coreTicker'
 
 const publicAPIToPrivateAPIMap = new WeakMap()
 
@@ -45,4 +46,9 @@ export function setPrivateAPI<Props extends UnknownShorthandCompoundProps>(
 ): void
 export function setPrivateAPI(pub: {}, priv: {}): void {
   publicAPIToPrivateAPIMap.set(pub, priv)
+}
+
+/** Used by `@unseenco/theatre-gsap` to inspect which driver drives the core ticker. */
+export function getTheatreCoreRafDriver(): IRafDriver {
+  return getCoreRafDriver().publicApi
 }

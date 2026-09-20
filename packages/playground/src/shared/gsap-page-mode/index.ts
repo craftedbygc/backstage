@@ -1,8 +1,14 @@
 import gsap from 'gsap'
 import {ScrollTrigger} from 'gsap/ScrollTrigger'
-import {getProject, types} from '@unseenco/theatre-core'
+import {
+  createRafDriver,
+  getProject,
+  setCoreRafDriver,
+  types,
+} from '@unseenco/theatre-core'
 import studio from '@unseenco/theatre-studio'
 import {
+  bindGsapTickerToRafDriver,
   configureTheatreGsap,
   registerAllGsapScrollTriggers,
   registerGsapAnimation,
@@ -11,12 +17,16 @@ import {
 
 gsap.registerPlugin(ScrollTrigger)
 
+const rafDriver = createRafDriver({name: 'gsap-page-mode'})
+setCoreRafDriver(rafDriver)
+bindGsapTickerToRafDriver(rafDriver, gsap)
+
 configureTheatreGsap({
   namespace: 'GSAP',
   outlineNamespace: {defaultCollapsed: false},
 })
 
-studio.initialize()
+studio.initialize({__experimental_rafDriver: rafDriver})
 
 const project = getProject('GSAP page mode demo')
 const sheet = project.sheet('Main', {sequenceMode: 'page', gsap: true})
@@ -53,11 +63,11 @@ void project.ready.then(() => {
     autoAlpha: 1,
     y: 0,
     duration: 1,
-    paused: true
+    paused: true,
   })
 
   registerGsapAnimation(panelReveal, sheet, {
-    label: 'Mid / Panel reveal'
+    label: 'Mid / Panel reveal',
   })
 
   // ScrollTrigger.create({ animation }) style

@@ -6,6 +6,8 @@ export type TheatreGsapConfig = {
   namespace?: string
   /** Applied to each sheet when the first GSAP object is registered on it. */
   outlineNamespace?: OutlineNamespaceConfig
+  /** When true, skips the one-time gsap.ticker / core rAF integration warning. */
+  suppressGsapTickerRafWarning?: boolean
 }
 
 let activeConfig: TheatreGsapConfig = {
@@ -22,6 +24,8 @@ export function configureTheatreGsap(config: TheatreGsapConfig): {
   activeConfig = {
     namespace: config.namespace ?? prev.namespace ?? 'GSAP',
     outlineNamespace: config.outlineNamespace ?? prev.outlineNamespace,
+    suppressGsapTickerRafWarning:
+      config.suppressGsapTickerRafWarning ?? prev.suppressGsapTickerRafWarning,
   }
   setConfiguredGsapSheetObjectNamespace(activeConfig.namespace ?? 'GSAP')
   return {

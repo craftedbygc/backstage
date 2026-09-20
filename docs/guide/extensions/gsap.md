@@ -31,6 +31,7 @@ import {
 import studio from '@unseenco/theatre-studio'
 import {
   attachGsapSequenceBridge,
+  bindGsapTickerToRafDriver,
   configureTheatreGsap,
   registerGsapAnimation,
 } from '@unseenco/theatre-gsap'
@@ -48,6 +49,8 @@ studio.initialize({__experimental_rafDriver: rafDriver})
 const sheet = getProject('My project').sheet('Main')
 attachGsapSequenceBridge(sheet)
 
+bindGsapTickerToRafDriver(rafDriver, gsap)
+
 void getProject('My project').ready.then(() => {
   const tween = gsap.to('.box', {x: 100, duration: 1, paused: true})
   registerGsapAnimation(tween, sheet, {label: 'Box move'})
@@ -56,13 +59,9 @@ void getProject('My project').ready.then(() => {
 
 ### GSAP as the master clock
 
-When GSAP should own timing (common for mixed GSAP + Theatre setups), tick Theatre from **`gsap.ticker`**:
+When GSAP should own timing (common for mixed GSAP + Theatre setups), use **`bindGsapTickerToRafDriver(rafDriver, gsap)`** after `setCoreRafDriver()`. It forwards `gsap.ticker` time (seconds) to `rafDriver.tick()` (milliseconds, like `performance.now()`).
 
-```ts
-gsap.ticker.add((time) => {
-  rafDriver.tick(time * 1000)
-})
-```
+To silence the one-time integration warning (for example in tests), pass **`suppressGsapTickerRafWarning: true`** to `configureTheatreGsap()`.
 
 See the playground demo below for a full example with DOM targets and nested labels.
 

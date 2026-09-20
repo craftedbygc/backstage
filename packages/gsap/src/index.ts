@@ -17,6 +17,13 @@ export {configureTheatreGsap, getTheatreGsapConfig} from './config'
 export {bindGsapScrollTriggerPlugin} from './gsapScrollTriggerPlugin'
 export type {TheatreGsapConfig} from './config'
 export {
+  bindGsapTickerToRafDriver,
+  isRafDriverDrivenByGsapTicker,
+  scheduleGsapTickerRafWarningCheck,
+  warnIfGsapTickerNotDrivingTheatreRaf,
+} from './gsapTickerRafBridge'
+export type {GsapTickerLike} from './gsapTickerRafBridge'
+export {
   getAnimationEntry,
   getAnimationEntryById,
   getAnimationEntryForSheetObject,
