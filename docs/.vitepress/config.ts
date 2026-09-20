@@ -53,7 +53,7 @@ const guideSidebar = [
         text: 'Authoring extensions',
         link: '/guide/manual/authoring-extensions',
       },
-      {text: 'Advanced', link: '/guide/manual/advanced'      },
+      {text: 'Advanced', link: '/guide/manual/advanced'},
     ],
   },
   {
@@ -106,23 +106,23 @@ export default defineConfig({
           items: [
             {text: 'Overview', link: '/api/'},
             {
-              text: '@unseenco/theatre-core',
+              text: '@unseenco/backstage',
               link: '/api/theatre-core',
             },
             {
-              text: '@unseenco/theatre-studio',
+              text: '@unseenco/backstage/studio',
               link: '/api/theatre-studio',
             },
             {
-              text: '@unseenco/theatre-threejs',
+              text: '@unseenco/backstage/threejs',
               link: '/api/theatre-threejs',
             },
             {
-              text: '@unseenco/theatre-dataverse',
+              text: '@unseenco/backstage/dataverse',
               link: '/api/theatre-dataverse',
             },
             {
-              text: '@unseenco/theatre-gsap',
+              text: '@unseenco/backstage/gsap',
               link: '/api/theatre-gsap',
             },
           ],

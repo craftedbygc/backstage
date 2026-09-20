@@ -55,7 +55,7 @@ const config = defineConfig(async ({command}) => {
 
     resolve: {
       /*
-    This will alias paths like `@unseenco/theatre-core` to `path/to/theatre/core/src/index.ts` and so on,
+    This will alias paths like `@unseenco/backstage` to `path/to/theatre/core/src/index.ts` and so on,
     so vite won't treat the monorepo's packages as externals and won't pre-bundle them.
     */
       alias: [...getAliasesFromTsConfigForRollup()],
@@ -67,14 +67,14 @@ const config = defineConfig(async ({command}) => {
     optimizeDeps: {
       exclude: dev
         ? [
-            '@unseenco/theatre-core',
-            '@unseenco/theatre-core-lite',
-            '@unseenco/theatre-studio',
-            '@unseenco/theatre-studio-lite',
+            '@unseenco/backstage',
+            '@unseenco/backstage/core-lite',
+            '@unseenco/backstage/studio',
+            '@unseenco/backstage/studio-lite',
           ]
         : [],
-      // include: !dev ? ['@unseenco/theatre-core', '@unseenco/theatre-studio'] : [],
-      // needsInterop: ['@unseenco/theatre-core', '@unseenco/theatre-studio'],
+      // include: !dev ? ['@unseenco/backstage', '@unseenco/backstage/studio'] : [],
+      // needsInterop: ['@unseenco/backstage', '@unseenco/backstage/studio'],
     },
     build: {
       outDir: '../build',

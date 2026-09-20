@@ -1,5 +1,5 @@
-import type {ISheet} from '@unseenco/theatre-core'
-import {privateAPI} from '@unseenco/theatre-core/privateAPIs'
+import type {ISheet} from '@unseenco/backstage'
+import {privateAPI} from '@unseenco/backstage/privateAPIs'
 import {buildGsapSheetObjectKey} from '@unseenco/theatre-shared/gsap/buildGsapSheetObjectKey'
 import {extractScrollTriggerLayout} from '@unseenco/theatre-shared/gsap/extractScrollTriggerLayout'
 import {

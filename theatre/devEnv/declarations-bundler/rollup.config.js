@@ -18,7 +18,7 @@ const config = ['studio', 'core'].map((which) => {
     },
     external: (id) => {
       if (
-        id === '@unseenco/theatre-dataverse' ||
+        id === '@unseenco/backstage/dataverse' ||
         id.startsWith(
           `@unseenco/theatre-${which === 'studio' ? 'core' : 'studio'}`,
         )
@@ -78,7 +78,7 @@ const config = ['studio', 'core'].map((which) => {
           ]) {
             if (!chunk.exports.includes(exportName)) {
               throw new Error(
-                `Bundled @unseenco/theatre-core types are missing export '${exportName}'. ` +
+                `Bundled @unseenco/backstage types are missing export '${exportName}'. ` +
                   `dist/index.d.ts must be a self-contained rollup, not re-exports of ./coreExports.`,
               )
             }

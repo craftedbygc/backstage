@@ -1,6 +1,6 @@
 # With HTML
 
-Animate DOM elements without a bundler. This tutorial uses ES modules and a CDN; the same APIs apply when you import `@unseenco/theatre-core` from npm.
+Animate DOM elements without a bundler. This tutorial uses ES modules and a CDN; the same APIs apply when you import `@unseenco/backstage` from npm.
 
 ## Starter HTML
 
@@ -33,18 +33,18 @@ Create `animation-tutorial.html`:
 
 ## Add Studio (development)
 
-Publish `@unseenco/theatre-browser-bundles` from this monorepo, or install the packages via a bundler. For a quick CDN-style setup, import core and studio from your host (version must match your published packages).
+Publish `@unseenco/backstage/browser-bundles` from this monorepo, or install the packages via a bundler. For a quick CDN-style setup, import core and studio from your host (version must match your published packages).
 
 Example with npm and Vite is preferred for real projects:
 
 ```ts
-import studio from '@unseenco/theatre-studio'
-import {getProject, types} from '@unseenco/theatre-core'
+import studio from '@unseenco/backstage/studio'
+import {getProject, types} from '@unseenco/backstage'
 
 studio.initialize()
 ```
 
-For a no-bundler experiment, load the browser bundle build of `@unseenco/theatre-browser-bundles` (see package `dist/` after `yarn cli build`) the same way legacy docs used `core-and-studio.js`.
+For a no-bundler experiment, load the browser bundle build of `@unseenco/backstage/browser-bundles` (see package `dist/` after `yarn cli build`) the same way legacy docs used `core-and-studio.js`.
 
 ## Project, sheet, object
 
@@ -84,7 +84,7 @@ const project = getProject('HTML Animation Tutorial', {state: projectState})
 ```
 
 3. Remove Studio (`studio.initialize()` and Studio imports).
-4. Ship **only** `@unseenco/theatre-core` (or `core-only` browser bundle).
+4. Ship **only** `@unseenco/backstage` (or `core-only` browser bundle).
 5. Start playback after `project.ready`:
 
 ```ts

@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useRef} from 'react'
 import type {CSSProperties} from 'react'
-import type {IProject, ISheet, ISheetObject} from '@unseenco/theatre-core'
-import {types} from '@unseenco/theatre-core'
+import type {IProject, ISheet, ISheetObject} from '@unseenco/backstage'
+import {types} from '@unseenco/backstage'
 
 const BoxSize = 120
 

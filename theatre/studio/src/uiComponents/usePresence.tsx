@@ -5,7 +5,7 @@ import {useEffect} from 'react'
 import {useLogger} from './useLogger'
 import {prism, pointerToPrism} from '@unseenco/theatre-dataverse'
 import {Atom} from '@unseenco/theatre-dataverse'
-import {usePrismInstance} from '@unseenco/theatre-react'
+import {usePrismInstance} from '@unseenco/backstage/react'
 import {selectClosestHTMLAncestor} from '@unseenco/theatre-studio/utils/selectClosestHTMLAncestor'
 import pointerDeep from '@unseenco/theatre-shared/utils/pointerDeep'
 

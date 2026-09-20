@@ -1,7 +1,7 @@
 import {pointerEventsAutoInNormalMode} from '@unseenco/theatre-studio/css'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import {isRemoteEditorWindow} from '@unseenco/theatre-studio/remoteEditor'
-import {useVal} from '@unseenco/theatre-react'
+import {useVal} from '@unseenco/backstage/react'
 import React, {useLayoutEffect, useRef} from 'react'
 import styled from 'styled-components'
 import {useLayoutMode} from './LayoutModeContext'

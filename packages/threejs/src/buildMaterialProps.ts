@@ -1,4 +1,4 @@
-import {types} from '@unseenco/theatre-core'
+import {types} from '@unseenco/backstage'
 import type {Asset} from '@unseenco/theatre-shared/utils/assets'
 import type {TransientPropPath} from '@unseenco/theatre-shared/utils/transientPropPaths'
 import {

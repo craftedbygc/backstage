@@ -1,5 +1,5 @@
-import studio from '@unseenco/theatre-studio'
-import type {IDockedViewport} from '@unseenco/theatre-studio'
+import studio from '@unseenco/backstage/studio'
+import type {IDockedViewport} from '@unseenco/backstage/studio'
 import type {PerspectiveCamera, WebGLRenderer} from 'three'
 
 type CameraLike = Pick<PerspectiveCamera, 'aspect' | 'updateProjectionMatrix'>

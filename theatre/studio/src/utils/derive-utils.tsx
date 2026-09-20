@@ -1,6 +1,6 @@
 import {isPrism, prism, val} from '@unseenco/theatre-dataverse'
 import type {Prism, Pointer} from '@unseenco/theatre-dataverse'
-import {usePrismInstance} from '@unseenco/theatre-react'
+import {usePrismInstance} from '@unseenco/backstage/react'
 import type {
   $FixMe,
   $IntentionalAny,

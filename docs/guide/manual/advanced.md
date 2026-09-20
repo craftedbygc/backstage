@@ -9,7 +9,7 @@ A **raf driver** controls when Theatre advances time. The default driver uses `r
 - Step time manually (offline rendering, tests)
 
 ```ts
-import {createRafDriver, onChange} from '@unseenco/theatre-core'
+import {createRafDriver, onChange} from '@unseenco/backstage'
 
 const rafDriver = createRafDriver({name: '5fps driver'})
 
@@ -35,7 +35,7 @@ Optional `start` / `stop` hooks let Theatre start and stop your loop when nothin
 To drive **all** core time advancement (not just one sequence or `onChange` subscription) from your loop, call **`setCoreRafDriver()`** once at startup:
 
 ```ts
-import {createRafDriver, setCoreRafDriver} from '@unseenco/theatre-core'
+import {createRafDriver, setCoreRafDriver} from '@unseenco/backstage'
 
 const driver = createRafDriver({name: 'app loop'})
 setCoreRafDriver(driver)

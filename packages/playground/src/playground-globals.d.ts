@@ -22,10 +22,10 @@ declare module '*.ogg' {
   export default string
 }
 
-declare module '@unseenco/theatre-threejs?theatre-lite-peers' {
-  export * from '@unseenco/theatre-threejs'
+declare module '@unseenco/backstage/threejs?theatre-lite-peers' {
+  export * from '@unseenco/backstage/threejs'
 }
 
-declare module '@unseenco/theatre-threejs/extension?theatre-lite-peers' {
-  export * from '@unseenco/theatre-threejs/extension'
+declare module '@unseenco/backstage/threejs/extension?theatre-lite-peers' {
+  export * from '@unseenco/backstage/threejs/extension'
 }

@@ -9,12 +9,9 @@
     "check-deps": "node scripts/run-vite-optimize.mjs"
   },
   "dependencies": {
-    "@unseenco/theatre-core": "0.0.1-COMPAT.1",
-    "@unseenco/theatre-studio": "0.0.1-COMPAT.1",
-    "@unseenco/theatre-threejs": "0.0.1-COMPAT.1",
-    "@unseenco/theatre-gsap": "0.0.1-COMPAT.1",
     "gsap": "^3.12.5",
-    "three": "^0.170.0"
+    "three": "^0.170.0",
+    "@unseenco/backstage": "workspace:*"
   },
   "devDependencies": {
     "@types/three": "^0.170.0",

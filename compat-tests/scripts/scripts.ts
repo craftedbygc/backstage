@@ -13,7 +13,8 @@ import {defer} from '../utils/testUtils'
  * @param {string} pkg
  * @returns boolean
  */
-const isTheatreDependency = (pkg) => pkg.startsWith('@unseenco/theatre-')
+const isTheatreDependency = (pkg) =>
+  pkg === '@unseenco/backstage' || pkg.startsWith('@unseenco/theatre-')
 
 const verbose = !!argv['verbose']
 
@@ -261,15 +262,7 @@ async function startVerdaccio(port: number): Promise<{close: () => void}> {
   return deferred.promise
 }
 
-const packagesToPublish = [
-  '@unseenco/theatre-core',
-  '@unseenco/theatre-studio',
-  '@unseenco/theatre-dataverse',
-  '@unseenco/theatre-react',
-  '@unseenco/theatre-browser-bundles',
-  '@unseenco/theatre-threejs',
-  '@unseenco/theatre-gsap',
-]
+const packagesToPublish = ['@unseenco/backstage']
 
 /**
  * Assigns a new version to each of @unseenco/theatre-* packages. If there a package depends on another package in this monorepo,
@@ -307,8 +300,8 @@ async function writeVersionsToPackageJSONs(
     let {dependencies, peerDependencies, devDependencies} = originalJson
 
     // Normally we don't have to override the package versions in dependencies because yarn would already convert
-    // all the "workspace:*" versions to a fixed version before publishing. However, packages like @unseenco/theatre-studio
-    // have a peerDependency on @unseenco/theatre-core set to "*" (meaning they would work with any version of @unseenco/theatre-core).
+    // all the "workspace:*" versions to a fixed version before publishing. However, packages like @unseenco/backstage/studio
+    // have a peerDependency on @unseenco/backstage set to "*" (meaning they would work with any version of @unseenco/backstage).
     // This is not the desired behavior in pre-release versions, so here, we'll fix those "*" versions to the set version.
     for (const deps of [dependencies, peerDependencies, devDependencies]) {
       if (!deps) continue

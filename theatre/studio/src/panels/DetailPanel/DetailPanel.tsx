@@ -3,7 +3,7 @@ import {
   getSheetPropsObject,
 } from '@unseenco/theatre-studio/selectors'
 import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
-import {usePrism, useVal} from '@unseenco/theatre-react'
+import {usePrism, useVal} from '@unseenco/backstage/react'
 import React, {
   createContext,
   useContext,

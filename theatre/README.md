@@ -1,7 +1,7 @@
 ## How to release
 
 Simply update the version of `theatre/package.json`, then run `$ yarn run release`. This script will:
-1. Update the version of `@unseenco/theatre-core` and `@unseenco/theatre-studio` and other dependencies.
+1. Update the version of `@unseenco/backstage` and `@unseenco/backstage/studio` and other dependencies.
 2. Bundle the `.js` and `.dts` files.
 3. Publish all packages to npm.
 

@@ -4,12 +4,12 @@ import type {
   PageScrollContext,
   PageScrollScroller,
   ScrollDriver,
-} from '@unseenco/theatre-core'
+} from '@unseenco/backstage'
 import {
   attachTheatrePageScroll as attachTheatrePageScrollCore,
   createDefaultPageScrollDriver as createDefaultPageScrollDriverCore,
   getTheatrePageScrollContext as getTheatrePageScrollContextCore,
-} from '@unseenco/theatre-core'
+} from '@unseenco/backstage'
 import {
   defaultPageScrollContext,
   resolvePageScrollAxis,
@@ -54,7 +54,7 @@ export function createDefaultPageScrollDriver(
 export type {AttachTheatrePageScrollOptions}
 
 /**
- * @deprecated Import from `@unseenco/theatre-core` for page scroll without GSAP.
+ * @deprecated Import from `@unseenco/backstage` for page scroll without GSAP.
  * This wrapper applies ScrollTrigger defaults when `configureTheatreGsap({ pageScroll })` is used.
  */
 export function attachTheatrePageScroll(

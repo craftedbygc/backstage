@@ -6,8 +6,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@unseenco/theatre-core": "workspace:*",
-    "@unseenco/theatre-studio": "workspace:*",
+    "@unseenco/backstage": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

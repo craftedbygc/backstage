@@ -10,7 +10,7 @@ import {
 import {isObjectOverriddenInVariant} from '@unseenco/theatre-studio/utils/variantObjectOverrides'
 import React from 'react'
 import BaseItem from '@unseenco/theatre-studio/panels/OutlinePanel/BaseItem'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import {getOutlineSelection} from '@unseenco/theatre-studio/selectors'
 import useContextMenu from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import type {IContextMenuItem} from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'

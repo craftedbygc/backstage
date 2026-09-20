@@ -10,7 +10,9 @@ describe('theatreLiteThreeVitePlugin', () => {
       normalizeModulePath(
         'C:\\repo\\packages\\playground\\src\\shared\\theatre-lite-three\\index.tsx',
       ),
-    ).toBe('C:/repo/packages/playground/src/shared/theatre-lite-three/index.tsx')
+    ).toBe(
+      'C:/repo/packages/playground/src/shared/theatre-lite-three/index.tsx',
+    )
   })
 
   test('isLitePlaygroundImporter matches theatre-lite-three with forward slashes', () => {
@@ -38,18 +40,18 @@ describe('theatreLiteThreeVitePlugin', () => {
   })
 
   test('rewriteTheatrePeersInSource rewrites core and studio package roots', () => {
-    const input = `import {types} from '@unseenco/theatre-core'
-import studio from '@unseenco/theatre-studio'
-import type {IStudio} from '@unseenco/theatre-studio/TheatreStudio'`
+    const input = `import {types} from '@unseenco/backstage'
+import studio from '@unseenco/backstage/studio'
+import type {IStudio} from '@unseenco/backstage/studio/TheatreStudio'`
     const out = rewriteTheatrePeersInSource(input)
-    expect(out).toContain(`'@unseenco/theatre-core-lite'`)
-    expect(out).toContain(`'@unseenco/theatre-studio-lite'`)
-    expect(out).toContain(`'@unseenco/theatre-studio-lite/TheatreStudio'`)
+    expect(out).toContain(`'@unseenco/backstage/core-lite'`)
+    expect(out).toContain(`'@unseenco/backstage/studio-lite'`)
+    expect(out).toContain(`'@unseenco/backstage/studio-lite/TheatreStudio'`)
   })
 
   test('rewriteTheatrePeersInSource is idempotent for already-lite imports', () => {
-    const input = `import {types} from '@unseenco/theatre-core-lite'
-import {getStudio} from '@unseenco/theatre-studio-lite'`
+    const input = `import {types} from '@unseenco/backstage/core-lite'
+import {getStudio} from '@unseenco/backstage/studio-lite'`
     const out = rewriteTheatrePeersInSource(input)
     expect(out).not.toContain('core-lite-lite')
     expect(out).not.toContain('studio-lite-lite')

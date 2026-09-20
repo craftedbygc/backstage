@@ -48,7 +48,7 @@ export function setPrivateAPI(pub: {}, priv: {}): void {
   publicAPIToPrivateAPIMap.set(pub, priv)
 }
 
-/** Used by `@unseenco/theatre-gsap` to inspect which driver drives the core ticker. */
+/** Used by `@unseenco/theatre-core/gsap` to inspect which driver drives the core ticker. */
 export function getTheatreCoreRafDriver(): IRafDriver {
   return getCoreRafDriver().publicApi
 }

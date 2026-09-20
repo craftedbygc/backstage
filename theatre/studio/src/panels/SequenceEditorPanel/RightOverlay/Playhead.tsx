@@ -1,7 +1,7 @@
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import RoomToClick from '@unseenco/theatre-studio/uiComponents/RoomToClick'
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
-import {usePrism, useVal} from '@unseenco/theatre-react'
+import {usePrism, useVal} from '@unseenco/backstage/react'
 import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {val} from '@unseenco/theatre-dataverse'

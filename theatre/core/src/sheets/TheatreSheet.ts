@@ -217,7 +217,7 @@ export interface ISheet {
    * or collapsed the folder yet.
    *
    * This method is part of `@unseenco/theatre-core` so you can configure outline folders
-   * without importing `@unseenco/theatre-studio`.
+   * without importing `@unseenco/theatre-core/studio`.
    *
    * @param namespacePath - The namespace path, e.g. `"My Folder"` or `"My Folder / Subfolder"`
    * @param opts - Optional configuration for the namespace folder

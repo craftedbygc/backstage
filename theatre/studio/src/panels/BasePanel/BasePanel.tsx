@@ -1,5 +1,5 @@
 import {prism, val} from '@unseenco/theatre-dataverse'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import type {UIPanelId} from '@unseenco/theatre-shared/utils/ids'
 import type {
   $IntentionalAny,

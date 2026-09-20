@@ -7,7 +7,7 @@ import getStudio from '@unseenco/theatre-studio/getStudio'
 import type Scrub from '@unseenco/theatre-studio/Scrub'
 import type {ContextMenuItem} from '@unseenco/theatre-studio/uiComponents/chordial/chordialInternals'
 import getDeep from '@unseenco/theatre-shared/utils/getDeep'
-import {usePrismInstance} from '@unseenco/theatre-react'
+import {usePrismInstance} from '@unseenco/backstage/react'
 import type {
   $IntentionalAny,
   SerializablePrimitive as SerializablePrimitive,

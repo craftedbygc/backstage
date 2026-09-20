@@ -1,8 +1,8 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import ReactDOM from 'react-dom/client'
-import {getProject, types} from '@unseenco/theatre-core'
-import type {IProject, ISheet, ISheetObject} from '@unseenco/theatre-core'
-import studio from '@unseenco/theatre-studio'
+import {getProject, types} from '@unseenco/backstage'
+import type {IProject, ISheet, ISheetObject} from '@unseenco/backstage'
+import studio from '@unseenco/backstage/studio'
 
 /**
  * Exercises the runtime list/unload APIs:

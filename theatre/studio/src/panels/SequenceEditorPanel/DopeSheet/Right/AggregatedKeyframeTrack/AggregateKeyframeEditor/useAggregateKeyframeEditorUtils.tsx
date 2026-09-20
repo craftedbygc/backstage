@@ -2,7 +2,7 @@ import {prism} from '@unseenco/theatre-dataverse'
 import {createStudioSheetItemKey} from '@unseenco/theatre-shared/utils/ids'
 import {AggregateKeyframePositionIsSelected} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/AggregatedKeyframeTrack/AggregatedKeyframeTrack'
 import {isConnectionEditingInCurvePopover} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/BasicKeyframedTrack/KeyframeEditor/CurveEditorPopover/CurveEditorPopover'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import {selectedKeyframeConnections} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/selections'
 import type {
   IAggregateKeyframeEditorProps,

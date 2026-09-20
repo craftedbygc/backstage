@@ -1,5 +1,5 @@
-import {types} from '@unseenco/theatre-core'
-import type {ISheetObjectOptions} from '@unseenco/theatre-core'
+import {types} from '@unseenco/backstage'
+import type {ISheetObjectOptions} from '@unseenco/backstage'
 import type {ExcludeConfig, PropPathInput} from './config'
 import {mergeExcludeInput} from './config'
 

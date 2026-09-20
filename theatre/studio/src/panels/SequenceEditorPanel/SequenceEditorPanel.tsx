@@ -1,5 +1,5 @@
 import {resolveSequenceEditorSheet} from '@unseenco/theatre-studio/selectors'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import {valToAtom} from '@unseenco/theatre-shared/utils/valToAtom'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {prism, val} from '@unseenco/theatre-dataverse'

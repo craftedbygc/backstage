@@ -19,7 +19,7 @@ import {iterateOver, prism} from '@unseenco/theatre-dataverse'
 const describeLite =
   process.env.THEATRE_LITE_TEST === '1' ? describe : describe.skip
 
-describeLite('@unseenco/theatre-core-lite value resolution', () => {
+describeLite('@unseenco/theatre-core/core-lite value resolution', () => {
   test('ignores sequence tracks; static overrides and variants still apply', async () => {
     const {objPublicAPI, sheet} = await setupTestSheet({
       staticOverrides: {

@@ -5,7 +5,7 @@ import {
   getOutlineSelection,
   getSheetOfSheetId,
 } from '@unseenco/theatre-studio/selectors'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import {val} from '@unseenco/theatre-dataverse'
 import React, {useCallback} from 'react'
 import styled from 'styled-components'

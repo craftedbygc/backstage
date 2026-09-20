@@ -7,7 +7,7 @@ module.exports = {
       {
         aliases: [
           {
-            name: '@unseenco/theatre-core',
+            name: '@unseenco/backstage',
             path: path.resolve(__dirname, './core/src'),
           },
           {
@@ -15,7 +15,7 @@ module.exports = {
             path: path.resolve(__dirname, './shared/src'),
           },
           {
-            name: '@unseenco/theatre-studio',
+            name: '@unseenco/backstage/studio',
             path: path.resolve(__dirname, './studio/src'),
           },
         ],

@@ -10,7 +10,7 @@ import type {
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import {collectSheetObjectsFromSheetChildren} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import {isSequenceEditorSheetScopedAggregateViewModel} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/sequenceEditorAggregateViewModel'
-import {usePrism, useVal} from '@unseenco/theatre-react'
+import {usePrism, useVal} from '@unseenco/backstage/react'
 import type {Prism, Pointer} from '@unseenco/theatre-dataverse'
 import {prism, val, pointerToPrism} from '@unseenco/theatre-dataverse'
 import React, {useMemo} from 'react'

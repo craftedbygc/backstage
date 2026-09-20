@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react'
-import {types} from '@unseenco/theatre-core'
-import type {ISheetObject, IProject} from '@unseenco/theatre-core'
+import {types} from '@unseenco/backstage'
+import type {ISheetObject, IProject} from '@unseenco/backstage'
 import {bindDockedThreeViewport} from '../utils/bindDockedThreeViewport'
 import {
   Color,

@@ -1,5 +1,5 @@
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {val} from '@unseenco/theatre-dataverse'
 import React from 'react'
@@ -11,7 +11,8 @@ const Container = styled.div<{$clipHorizontalOverflow?: boolean}>`
   position: absolute;
   left: 0;
   box-sizing: border-box;
-  overflow: ${(props) => (props.$clipHorizontalOverflow ? 'hidden' : 'visible')};
+  overflow: ${(props) =>
+    props.$clipHorizontalOverflow ? 'hidden' : 'visible'};
 `
 
 const ListContainer = styled.ul`

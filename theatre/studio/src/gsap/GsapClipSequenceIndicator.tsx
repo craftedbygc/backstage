@@ -7,7 +7,7 @@ import {nextPrevCursorsTheme} from '@unseenco/theatre-studio/propEditors/NextPre
 import {addGsapClipAtPlayhead} from './addGsapClipAtPlayhead'
 import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/sequence/trackData'
 import {isGsapScrollTriggerSheetObjectKey} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import {val} from '@unseenco/theatre-dataverse'
 import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
 import {

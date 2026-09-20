@@ -5,10 +5,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@unseenco/theatre-core": "0.0.1-COMPAT.1",
-    "@unseenco/theatre-studio": "0.0.1-COMPAT.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "@unseenco/backstage": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.2.18",

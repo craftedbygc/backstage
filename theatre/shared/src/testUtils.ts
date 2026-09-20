@@ -1,11 +1,11 @@
 /* eslint-disable no-restricted-syntax */
-import '@unseenco/theatre-studio'
+import '@unseenco/backstage/studio'
 import {getProject} from '@unseenco/theatre-core'
 import {privateAPI} from '@unseenco/theatre-core/privateAPIs'
 import type {ProjectState_Historic} from '@unseenco/theatre-core/projects/store/storeTypes'
 import type {SheetState_Historic} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import * as t from '@unseenco/theatre-core/propTypes'
-import getStudio from '@unseenco/theatre-studio/getStudio'
+import getStudio from '@unseenco/backstage/studio/getStudio'
 import {getCoreTicker} from '@unseenco/theatre-core/coreTicker'
 import globals from './globals'
 import type {SheetId} from './utils/ids'

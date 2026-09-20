@@ -17,7 +17,7 @@ Pick the stack that matches how you ship animation—not just how you author dur
 
 ## Static + variants JSON workflow (lite sweet spot)
 
-1. **Develop** with `@unseenco/theatre-studio-lite` and `@unseenco/theatre-core-lite` (or studio-lite on full core while prototyping).
+1. **Develop** with `@unseenco/backstage/studio-lite` and `@unseenco/backstage/core-lite` (or studio-lite on full core while prototyping).
 2. Author static values and variant folders in the outline; export project JSON from the outline toolbar.
 3. **Ship** with `getProject(id, { state })` and **no** studio package in the bundle.
 4. At runtime, call `declareSequenceVariants` with the same ids you used in Studio, then `setActiveSequenceVariant` when breakpoints or prefs change.
@@ -29,7 +29,7 @@ If you later need one prop to animate over time, migrate to full packages—the 
 
 - Marketing sites with hero timelines, choreographed UI, or audio-synced motion.
 - Games or tools that scrub or loop sequences from code.
-- Teams already using [@unseenco/theatre-gsap](../extensions/gsap.md) or scroll-driven sheets.
+- Teams already using [@unseenco/backstage/gsap](../extensions/gsap.md) or scroll-driven sheets.
 
 ## When lite fits
 

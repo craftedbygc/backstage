@@ -8,7 +8,7 @@ import type {
   Notify,
   Notifiers,
 } from '@unseenco/theatre-shared/notify'
-import {useVal} from '@unseenco/theatre-react'
+import {useVal} from '@unseenco/backstage/react'
 import getStudio from './getStudio'
 import {marked} from 'marked'
 import useTooltip from './uiComponents/Popover/useTooltip'

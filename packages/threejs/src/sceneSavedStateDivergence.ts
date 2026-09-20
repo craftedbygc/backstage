@@ -1,11 +1,11 @@
-import type {ISheetObject} from '@unseenco/theatre-core'
+import type {ISheetObject} from '@unseenco/backstage'
 import type {Scene} from 'three'
 import type {Object3D} from 'three'
 import {
   getStudio,
   sheetObjectDivergesFromSavedState,
-} from '@unseenco/theatre-studio'
-import {val} from '@unseenco/theatre-dataverse'
+} from '@unseenco/backstage/studio'
+import {val} from '@unseenco/backstage/dataverse'
 import {getSheetObjectForObject3D} from './objectRegistry'
 
 function sheetObjectHasDivergedFromSavedState(

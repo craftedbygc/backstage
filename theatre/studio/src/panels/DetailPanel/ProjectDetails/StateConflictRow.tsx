@@ -1,4 +1,4 @@
-import {useVal} from '@unseenco/theatre-react'
+import {useVal} from '@unseenco/backstage/react'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import React from 'react'
 import styled from 'styled-components'

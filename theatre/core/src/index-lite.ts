@@ -1,5 +1,5 @@
 /**
- * Entry point for `@unseenco/theatre-core-lite` (`dist/index-lite.*`).
+ * Entry point for `@unseenco/theatre-core/core-lite` (`dist/index-lite.*`).
  * Built with `__THEATRE_LITE__: true` — no sequence interpolation or playback.
  *
  * @packageDocumentation

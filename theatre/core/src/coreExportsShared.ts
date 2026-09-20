@@ -34,7 +34,7 @@ export {isRemoteEditorWindow} from './internal/remoteEditor'
  * Returns a project of the given id, or creates one if it doesn't already exist.
  *
  * @remarks
- * If \@unseenco/theatre-studio is also loaded, then the state of the project will be managed by the studio.
+ * If \@unseenco/theatre-core/studio is also loaded, then the state of the project will be managed by the studio.
  *
  * [Learn more about exporting](https://www.theatrejs.com/docs/latest/manual/projects#state)
  *
@@ -238,7 +238,7 @@ export function val<T>(pointer: PointerType<T>): T {
 }
 
 /**
- * @internal Used by extension packages (`@unseenco/theatre-gsap`, etc.). Not part of the
+ * @internal Used by extension packages (`@unseenco/theatre-core/gsap`, etc.). Not part of the
  * public API; exported only so published subpath `./privateAPIs` shares the main bundle singleton.
  */
 export {privateAPI, setPrivateAPI, getTheatreCoreRafDriver} from './privateAPIs'

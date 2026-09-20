@@ -1,4 +1,4 @@
-# `@unseenco/theatre-core-lite`
+# `@unseenco/backstage/core-lite`
 
 Apache-licensed production runtime for Theatre.js **static** prop values and **sheet-level variants**. No keyframe interpolation, sequence playback, GSAP bridge, or scroll drivers.
 
@@ -7,7 +7,7 @@ Built from `theatre/core/src` with `__THEATRE_LITE__: true` and published from `
 The lite esbuild target uses `CoreBundleLite` (no `coreExports` full integrations) and build-time stubs for full-only sheet helpers (`sheetGetSequenceFull`, `sheetObjectSequencedFull`, `sheetPageScrollAndGsapFull`).
 
 ```ts
-import {getProject, types} from '@unseenco/theatre-core-lite'
+import {getProject, types} from '@unseenco/backstage/core-lite'
 
 const project = getProject('app', {state: exportedJson})
 const sheet = project.sheet('Scene')
@@ -15,7 +15,7 @@ sheet.declareSequenceVariants(['default', 'mobile'])
 sheet.setActiveSequenceVariant('mobile')
 ```
 
-Pair with `@unseenco/theatre-studio-lite` for authoring. `sheet.sequence` is an inert stub (`position` 0, `play()` no-op).
+Pair with `@unseenco/backstage/studio-lite` for authoring. `sheet.sequence` is an inert stub (`position` 0, `play()` no-op).
 
 ## Bundle size (esbuild, dataverse external)
 
@@ -29,7 +29,7 @@ Measured with `THEATRE_LITE_LOG_BUNDLE_SIZES=1` (core `dist` is **unminified**; 
 
 | Package | Unminified | Minified | vs full core |
 | --- | ---: | ---: | ---: |
-| `@unseenco/theatre-core` | ~318 KiB | ~139 KiB | — |
-| `@unseenco/theatre-core-lite` | ~243 KiB | ~107 KiB | **~24% unminified / ~23% minified** |
+| `@unseenco/backstage` | ~318 KiB | ~139 KiB | — |
+| `@unseenco/backstage/core-lite` | ~243 KiB | ~107 KiB | **~24% unminified / ~23% minified** |
 
 Sequence interpolation, playback controllers, GSAP/scroll drivers, and full `coreExports` integrations are excluded from the lite import graph, not merely gated at runtime.

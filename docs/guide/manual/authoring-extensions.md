@@ -5,7 +5,7 @@ Studio extensions add toolbar items, panes, and custom editing tools. The API is
 ## Register an extension
 
 ```ts
-import studio from '@unseenco/theatre-studio'
+import studio from '@unseenco/backstage/studio'
 
 studio.extend({
   id: 'my-extension',
@@ -30,7 +30,7 @@ studio.extend({
 - **Panes** — docked panels (`studio.extend` pane definitions).
 - **Selection** — read and set Studio selection to build gizmos tied to sheet objects.
 
-Study **`@unseenco/theatre-threejs/extension`** (`packages/threejs/src/extension`) for a full example: viewport helpers, object registry with `autoAddObject`, and orbit-mode selection sync.
+Study **`@unseenco/backstage/threejs/extension`** (`packages/threejs/src/extension`) for a full example: viewport helpers, object registry with `autoAddObject`, and orbit-mode selection sync.
 
 ## API
 

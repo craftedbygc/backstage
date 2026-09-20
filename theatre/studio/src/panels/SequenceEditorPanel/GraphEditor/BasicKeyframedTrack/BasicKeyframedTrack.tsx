@@ -22,7 +22,7 @@ import {
   valueInProp,
 } from '@unseenco/theatre-shared/propTypes/utils'
 import type {PropTypeConfig_AllSimples} from '@unseenco/theatre-core/propTypes'
-import {useVal} from '@unseenco/theatre-react'
+import {useVal} from '@unseenco/backstage/react'
 
 export type ExtremumSpace = {
   fromValueSpace: (v: number) => number

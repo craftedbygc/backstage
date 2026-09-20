@@ -33,7 +33,7 @@ export type ISheetOptions = {
    */
   sequenceMode?: SheetSequenceMode
   /**
-   * When `true`, enables the GSAP sequence bridge for this sheet (required for `@unseenco/theatre-gsap`).
+   * When `true`, enables the GSAP sequence bridge for this sheet (required for `@unseenco/theatre-core/gsap`).
    */
   gsap?: boolean
   /**
@@ -83,10 +83,10 @@ export interface IProject {
   /** Discriminator for Theatre.js public project instances. */
   readonly type: 'Theatre_Project_PublicAPI'
   /**
-   * If `@unseenco/theatre-studio` is used, this promise would resolve when studio has loaded
+   * If `@unseenco/theatre-core/studio` is used, this promise would resolve when studio has loaded
    * the state of the project into memory.
    *
-   * If `@unseenco/theatre-studio` is not used, this promise is already resolved.
+   * If `@unseenco/theatre-core/studio` is not used, this promise is already resolved.
    */
   readonly ready: Promise<void>
   /**

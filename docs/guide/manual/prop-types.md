@@ -1,9 +1,9 @@
 # Prop types
 
-Props are declared when you call `sheet.object()` or `sheet.props()`. Import constructors from `@unseenco/theatre-core`:
+Props are declared when you call `sheet.object()` or `sheet.props()`. Import constructors from `@unseenco/backstage`:
 
 ```ts
-import {types} from '@unseenco/theatre-core'
+import {types} from '@unseenco/backstage'
 ```
 
 ## Shorthand vs explicit

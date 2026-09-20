@@ -9,7 +9,7 @@ Sometimes one on-screen thing is authored as several Theatre objects—for examp
 Pass `showPropsOf` when you call `sheet.object()`:
 
 ```ts
-import {types} from '@unseenco/theatre-core'
+import {types} from '@unseenco/backstage'
 
 const appearance = sheet.object('Appearance', {
   color: types.rgba({r: 0.2, g: 0.6, b: 1, a: 1}),

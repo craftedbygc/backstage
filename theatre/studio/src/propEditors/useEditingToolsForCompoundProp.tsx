@@ -2,7 +2,7 @@ import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import type {ContextMenuItem} from '@unseenco/theatre-studio/uiComponents/chordial/chordialInternals'
 import getDeep from '@unseenco/theatre-shared/utils/getDeep'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import type {
   $IntentionalAny,
   SerializablePrimitive,

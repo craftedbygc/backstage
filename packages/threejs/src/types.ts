@@ -1,7 +1,7 @@
 import type {WebGLRenderer} from 'three'
 
 /**
- * Minimal types compatible with `@unseenco/theatre-studio`'s `IExtension`.
+ * Minimal types compatible with `@unseenco/backstage/studio`'s `IExtension`.
  * Defined locally so this package can compile without depending on studio source.
  */
 

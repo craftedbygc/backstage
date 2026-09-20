@@ -1,6 +1,6 @@
 import {Atom} from '@unseenco/theatre-dataverse'
-import {useVal} from '@unseenco/theatre-react'
-import type {IExtension} from '@unseenco/theatre-studio'
+import {useVal} from '@unseenco/backstage/react'
+import type {IExtension} from '@unseenco/backstage/studio'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import type {ToolsetConfig} from '@unseenco/theatre-studio/TheatreStudio'
 import React, {useLayoutEffect, useMemo} from 'react'

@@ -1,1 +1,1 @@
-export {attachGsapSequenceBridge} from '@unseenco/theatre-core'
+export {attachGsapSequenceBridge} from '@unseenco/backstage'

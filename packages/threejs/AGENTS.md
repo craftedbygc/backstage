@@ -1,15 +1,15 @@
-# AGENTS.md — `@unseenco/theatre-threejs`
+# AGENTS.md — `@unseenco/backstage/threejs`
 
 Agent-facing notes for developing this package. See the repo root `AGENTS.md` for monorepo-wide toolchain and CI.
 
 ## What this package is
 
-A **Studio extension** (dev-time only, AGPL-3.0) that adds Three.js scene inspection tools. It also exports runtime helpers (`autoAddObject()`, `autoAddMaterial()`, `autoAddCamera()`) that bind Three.js objects and materials to Theatre sheets. Consumers still use `@unseenco/theatre-core` for animation; these helpers automate the manual `sheet.object()` + `onValuesChange` wiring.
+A **Studio extension** (dev-time only, AGPL-3.0) that adds Three.js scene inspection tools. It also exports runtime helpers (`autoAddObject()`, `autoAddMaterial()`, `autoAddCamera()`) that bind Three.js objects and materials to Theatre sheets. Consumers still use `@unseenco/backstage` for animation; these helpers automate the manual `sheet.object()` + `onValuesChange` wiring.
 
 The main entry points are:
 
-- Package root (`@unseenco/theatre-threejs`) — runtime helpers: `autoAddObject()`, `autoAddMaterial()`, `autoAddCamera()`, `configureTheatreThreejs()` (no Studio)
-- `@unseenco/theatre-threejs/extension` — `buildExtension()` Studio devtools (cameras, orbit controls, selection sync)
+- Package root (`@unseenco/backstage/threejs`) — runtime helpers: `autoAddObject()`, `autoAddMaterial()`, `autoAddCamera()`, `configureTheatreThreejs()` (no Studio)
+- `@unseenco/backstage/threejs/extension` — `buildExtension()` Studio devtools (cameras, orbit controls, selection sync)
 
 `buildExtension()` returns:
 
@@ -23,7 +23,7 @@ The main entry points are:
 - `update()` — call each frame when orbit mode is active
 - `dispose()` — tear down listeners and controls
 
-`three` and `@unseenco/theatre-core` are **peer dependencies** (use `@unseenco/theatre-core-lite` instead for Theatre Lite apps — do not install both in one bundle). `@unseenco/theatre-studio` and `@unseenco/theatre-studio-lite` are **optional** peers (required only for `/extension`; use studio-lite with core-lite). The bundle marks them external in `devEnv/build.ts`.
+`three` and `@unseenco/backstage` are **peer dependencies** (use `@unseenco/backstage/core-lite` instead for Theatre Lite apps — do not install both in one bundle). `@unseenco/backstage/studio` and `@unseenco/backstage/studio-lite` are **optional** peers (required only for `/extension`; use studio-lite with core-lite). The bundle marks them external in `devEnv/build.ts`.
 
 ## Source layout
 
@@ -51,18 +51,18 @@ The main entry points are:
 
 | Task | Command |
 | --- | --- |
-| Build this package only | `yarn workspace @unseenco/theatre-threejs run build` |
-| Typecheck (via tsc project) | `yarn workspace @unseenco/theatre-threejs run typecheck` |
+| Build this package only | `yarn workspace @unseenco/backstage/threejs run build` |
+| Typecheck (via tsc project) | `yarn workspace @unseenco/backstage/threejs run typecheck` |
 | Full monorepo typecheck | `yarn typecheck` |
 | Manual test in browser | `yarn playground` → open `/shared/three-basic-vanilla-devtools/` |
 
-The playground demo lives at `packages/playground/src/shared/three-basic-vanilla-devtools/`. Vite resolves `@unseenco/theatre-threejs` and `@unseenco/theatre-threejs/extension` to source via `tsconfig.base.json` — no separate build step needed for playground dev.
+The playground demo lives at `packages/playground/src/shared/three-basic-vanilla-devtools/`. Vite resolves `@unseenco/backstage/threejs` and `@unseenco/backstage/threejs/extension` to source via `tsconfig.base.json` — no separate build step needed for playground dev.
 
 ## Integration pattern
 
 ```js
-import studio from '@unseenco/theatre-studio'
-import {buildExtension} from '@unseenco/theatre-threejs/extension'
+import studio from '@unseenco/backstage/studio'
+import {buildExtension} from '@unseenco/backstage/threejs/extension'
 
 let activeScene = scene
 
@@ -100,7 +100,7 @@ function loop() {
 Call once at project startup to set project-wide defaults for `autoAddObject`. Per-call options are merged on top (excludes accumulate; includes accumulate).
 
 ```js
-import {autoAddObject, configureTheatreThreejs} from '@unseenco/theatre-threejs'
+import {autoAddObject, configureTheatreThreejs} from '@unseenco/backstage/threejs'
 
 configureTheatreThreejs({
   autoAddObject: {
@@ -122,8 +122,8 @@ Returns `{ reset() }` to restore the previous config (useful in tests).
 Register a Three.js object on a Theatre sheet with auto-parsed transforms and material properties:
 
 ```js
-import {autoAddObject} from '@unseenco/theatre-threejs'
-import {buildExtension} from '@unseenco/theatre-threejs/extension'
+import {autoAddObject} from '@unseenco/backstage/threejs'
+import {buildExtension} from '@unseenco/backstage/threejs/extension'
 
 const sheetObject = autoAddObject(mesh, sheet, {
   objectKey: 'My Mesh',   // default: mesh.name || 'Object'
@@ -151,7 +151,7 @@ Unnamed materials log a warning and use a temporary `Shared Materials / Material
 Register a Three.js material on a Theatre sheet with auto-parsed material properties only (no transforms, no selection registry):
 
 ```js
-import {autoAddMaterial} from '@unseenco/theatre-threejs'
+import {autoAddMaterial} from '@unseenco/backstage/threejs'
 
 const sheetObject = autoAddMaterial(material, sheet, {
   objectKey: 'Shared Material', // default: material.name || 'Material'
@@ -204,7 +204,7 @@ The package depends on Studio remote-editor APIs in `theatre/studio/src/remoteEd
 
 - `isRemoteEditorOpen()` — main window has a remote editor popup open
 - `onRemoteEditorOpenChange(listener)` — subscribe to open/close
-- `isRemoteEditorWindow()` from `@unseenco/theatre-core` — current window is the `#editor` popup
+- `isRemoteEditorWindow()` from `@unseenco/backstage` — current window is the `#editor` popup
 
 Intended behaviour (do not regress):
 
@@ -223,12 +223,12 @@ The extension registers a global toolbar **Flyout** (when multiple scenes are co
 
 - Follow `packages/react` for package scaffolding: `devEnv/build.ts`, api-extractor, `tsconfig.json` with `composite: true`.
 - Publish both CJS (`dist/index.js`, `dist/extension.js`) and ESM (`dist/index.mjs`, `dist/extension.mjs`) via `exports` so Vite/Nuxt share the consumer's `three` peer instead of nesting a second copy during CJS prebundling. Keep `three` / Theatre peers external in esbuild; target `es2020`.
-- The package root must not import `@unseenco/theatre-studio` (runtime-only). Studio imports belong only in the `/extension` entry and files it pulls in (`buildExtension`, remote-editor helpers, etc.).
-- `@unseenco/theatre-studio` is an optional peer (`peerDependenciesMeta`); required only when importing `/extension`.
+- The package root must not import `@unseenco/backstage/studio` (runtime-only). Studio imports belong only in the `/extension` entry and files it pulls in (`buildExtension`, remote-editor helpers, etc.).
+- `@unseenco/backstage/studio` is an optional peer (`peerDependenciesMeta`); required only when importing `/extension`.
 - Runtime and `/extension` are separate esbuild bundles. Any module-level mutable state shared between them (today: `objectRegistry`) must live on `globalThis` (or an equivalent cross-bundle singleton), or selection sync will break in published builds while still working in the playground (source aliases).
 - `devEnv/build.ts` must be covered by `devEnv/tsconfig.json` or ESLint pre-commit fails.
-- `@unseenco/theatre-studio` must not import `@unseenco/theatre-core` value exports (lint rule) — remote-editor helpers live in `theatre/studio/src/remoteEditor.ts` with a local `isRemoteEditorWindow()` duplicate.
-- This package **may** import `isRemoteEditorWindow` from `@unseenco/theatre-core` and remote-editor helpers (`isRemoteEditorOpen`, `onRemoteEditorOpenChange`) from `@unseenco/theatre-studio`.
+- `@unseenco/backstage/studio` must not import `@unseenco/backstage` value exports (lint rule) — remote-editor helpers live in `theatre/studio/src/remoteEditor.ts` with a local `isRemoteEditorWindow()` duplicate.
+- This package **may** import `isRemoteEditorWindow` from `@unseenco/backstage` and remote-editor helpers (`isRemoteEditorOpen`, `onRemoteEditorOpenChange`) from `@unseenco/backstage/studio`.
 - OrbitControls import path: `three/examples/jsm/controls/OrbitControls.js` (not `three/addons/...`).
 - Register the package in root `devEnv/cli.ts`, `tsconfig.base.json`, and `devEnv/typecheck-all-projects/tsconfig.all.json` when adding new surface area.
 

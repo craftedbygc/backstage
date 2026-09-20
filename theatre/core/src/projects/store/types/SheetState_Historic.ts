@@ -143,7 +143,7 @@ export type BasicKeyframedTrack = TrackDataCommon<'BasicKeyframedTrack'> & {
 
 /**
  * A GSAP tween segment on the Theatre sequence timeline, bridged at runtime
- * via `@unseenco/theatre-gsap`.
+ * via `@unseenco/theatre-core/gsap`.
  */
 export type GsapTimelineChildClip = {
   /** Stable id for this child tween within the parent timeline clip. */

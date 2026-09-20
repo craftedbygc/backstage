@@ -1,5 +1,5 @@
-import {types} from '@unseenco/theatre-core'
-import {autoAddCamera, autoAddObject} from '@unseenco/theatre-threejs'
+import {types} from '@unseenco/backstage'
+import {autoAddCamera, autoAddObject} from '@unseenco/backstage/threejs'
 import noiseTextureUrl from './textures/noise.jpg?url'
 import {
   BoxGeometry,
@@ -24,7 +24,7 @@ import {
 } from 'three'
 
 /**
- * @param {import('@unseenco/theatre-core').IProject} project
+ * @param {import('@unseenco/backstage').IProject} project
  */
 export async function createThreeScenes(project) {
   const canvas = document.getElementById('canvas')
@@ -61,7 +61,7 @@ export async function createThreeScenes(project) {
 }
 
 /**
- * @param {import('@unseenco/theatre-core').ISheet} sheet
+ * @param {import('@unseenco/backstage').ISheet} sheet
  * @param {import('three').PerspectiveCamera} camera
  * @param {Scene} scene
  */
@@ -94,7 +94,7 @@ function addInvisibleCameraPath(scene) {
 }
 
 /**
- * @param {import('@unseenco/theatre-core').ISheet} sheet
+ * @param {import('@unseenco/backstage').ISheet} sheet
  */
 async function createSpheresScene(sheet, width, height) {
   sheet.props({
@@ -282,7 +282,7 @@ async function createSpheresScene(sheet, width, height) {
 }
 
 /**
- * @param {import('@unseenco/theatre-core').ISheet} sheet
+ * @param {import('@unseenco/backstage').ISheet} sheet
  */
 function createCubeScene(sheet, width, height) {
   sheet.props({
@@ -315,7 +315,7 @@ function createCubeScene(sheet, width, height) {
 }
 
 /**
- * @param {import('@unseenco/theatre-core').ISheet} sheet
+ * @param {import('@unseenco/backstage').ISheet} sheet
  */
 function createCylinderScene(sheet, width, height) {
   const scene = new Scene()

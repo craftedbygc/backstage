@@ -1,12 +1,12 @@
 # Concepts
 
-Theatre organizes animation around a small set of ideas. Once these click, the Studio UI and the `@unseenco/theatre-core` API feel consistent.
+Theatre organizes animation around a small set of ideas. Once these click, the Studio UI and the `@unseenco/backstage` API feel consistent.
 
 ## Objects
 
 **Everything you animate is an object.** An object can mirror a Three.js mesh, a DOM element, or a virtual value that never appears on screen.
 
-You create objects with `sheet.object(name, props)` (or helpers such as `autoAddObject` from `@unseenco/theatre-threejs`).
+You create objects with `sheet.object(name, props)` (or helpers such as `autoAddObject` from `@unseenco/backstage/threejs`).
 
 ## Props
 
@@ -53,7 +53,7 @@ Each sheet’s **sequence** holds keyframes for all sequenced props on that shee
 
 ## Extensions
 
-**Extensions** add Studio UI and workflows: toolbar buttons, panes, viewport gizmos. `@unseenco/theatre-threejs/extension` and built-in GSAP clip authoring in Studio are the main extension-style workflows in this monorepo; you can author your own via the Studio API. See [GSAP](./extensions/gsap.md) and [Three.js](./extensions/threejs.md).
+**Extensions** add Studio UI and workflows: toolbar buttons, panes, viewport gizmos. `@unseenco/backstage/threejs/extension` and built-in GSAP clip authoring in Studio are the main extension-style workflows in this monorepo; you can author your own via the Studio API. See [GSAP](./extensions/gsap.md) and [Three.js](./extensions/threejs.md).
 
 ## What we skip here
 

@@ -1,8 +1,8 @@
 /**
  * @packageDocumentation
  *
- * Studio extension entry for `@unseenco/theatre-threejs`.
- * Depends on `@unseenco/theatre-studio`. Runtime helpers (`autoAddObject`, etc.)
+ * Studio extension entry for `@unseenco/backstage/threejs`.
+ * Depends on `@unseenco/backstage/studio`. Runtime helpers (`autoAddObject`, etc.)
  * live on the package root and do not pull in Studio.
  */
 

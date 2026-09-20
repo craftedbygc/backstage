@@ -1,4 +1,4 @@
-import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
+import type SheetObject from '@unseenco/backstage/sheetObjects/SheetObject'
 import type {GsapTweenLike} from './gsapTypes'
 import {
   clearAnimationRegistryForTests as clearSharedAnimationRegistryForTests,

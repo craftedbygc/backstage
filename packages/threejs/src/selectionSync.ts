@@ -1,4 +1,4 @@
-import type {ISheet, ISheetObject} from '@unseenco/theatre-core'
+import type {ISheet, ISheetObject} from '@unseenco/backstage'
 import {Box3, BoxHelper, Raycaster, Vector2, Vector3} from 'three'
 import type {Camera, Object3D, Scene} from 'three'
 import type {ThreejsRenderer} from './types'

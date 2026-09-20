@@ -3,7 +3,7 @@ import type {BasicKeyframedTrack} from '@unseenco/theatre-core/projects/store/ty
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import type {SequenceEditorTree_PrimitiveProp} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import type {Keyframe} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
-import {usePrism, useVal} from '@unseenco/theatre-react'
+import {usePrism, useVal} from '@unseenco/backstage/react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {val} from '@unseenco/theatre-dataverse'
 import React, {useMemo} from 'react'

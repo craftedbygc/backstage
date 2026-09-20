@@ -42,7 +42,7 @@ function registerCoreBundle() {
   // This only works in a browser environment
   if (typeof window == 'undefined') return
 
-  // `@unseenco/theatre-core-lite` sets this before registering. If the bundler
+  // `@unseenco/theatre-core/core-lite` sets this before registering. If the bundler
   // also resolves a stray full-core entry (mis-alias), skip a second registration.
   if (
     (globalThis as typeof globalThis & {__THEATRE_FORCE_LITE__?: boolean})

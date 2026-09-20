@@ -1,7 +1,7 @@
-import type {IScrub} from '@unseenco/theatre-studio'
-import studio from '@unseenco/theatre-studio'
+import type {IScrub} from '@unseenco/backstage/studio'
+import studio from '@unseenco/backstage/studio'
 import React, {useLayoutEffect, useMemo, useState} from 'react'
-import type {ISheet, ISheetObject, IProject} from '@unseenco/theatre-core'
+import type {ISheet, ISheetObject, IProject} from '@unseenco/backstage'
 import type {UseDragOpts} from './useDrag'
 import useDrag from './useDrag'
 

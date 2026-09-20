@@ -7,18 +7,18 @@ Theatre Lite is designed so you can ship static JSON first and adopt timelines l
 At the same monorepo version line:
 
 ```bash
-yarn remove @unseenco/theatre-core-lite @unseenco/theatre-studio-lite
-yarn add @unseenco/theatre-core @unseenco/theatre-studio
+yarn remove @unseenco/backstage/core-lite @unseenco/backstage/studio-lite
+yarn add @unseenco/backstage @unseenco/backstage/studio
 ```
 
 Update imports:
 
 ```ts
-import {getProject, types} from '@unseenco/theatre-core'
-import studio from '@unseenco/theatre-studio'
+import {getProject, types} from '@unseenco/backstage'
+import studio from '@unseenco/backstage/studio'
 ```
 
-If you use Three.js, point peers at full core/studio; keep `@unseenco/theatre-threejs` unchanged.
+If you use Three.js, point peers at full core/studio; keep `@unseenco/backstage/threejs` unchanged.
 
 ## 2. Keep application code mostly the same
 
@@ -45,7 +45,7 @@ Keep calling `declareSequenceVariants([...])` with the same ids.
 
 ## 5. Production bundle
 
-Strip `@unseenco/theatre-studio` from production as you would today; ship `@unseenco/theatre-core` with `{ state }` and real sequence playback when needed.
+Strip `@unseenco/backstage/studio` from production as you would today; ship `@unseenco/backstage` with `{ state }` and real sequence playback when needed.
 
 ## Related
 

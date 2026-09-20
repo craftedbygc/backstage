@@ -111,16 +111,67 @@ const PACKAGE_INDEX_FILES = new Set([
   'theatre-gsap.md',
 ])
 
+/**
+ * api-documenter parameter tables put raw TS object types in cells, e.g.
+ * `{ foo?: number }`. VitePress/Vue treat `<number>` as HTML ("Duplicate attribute").
+ * Wrap type cells that contain angle brackets in backticks.
+ */
+function fixParameterTableTypeCells(content) {
+  const lines = content.replace(/\r\n/g, '\n').split('\n')
+  const out = []
+  let inParameters = false
+
+  for (const line of lines) {
+    if (line.trim() === '## Parameters') {
+      inParameters = true
+      out.push(line)
+      continue
+    }
+    if (inParameters && line.startsWith('## ')) {
+      inParameters = false
+    }
+    if (
+      inParameters &&
+      line.startsWith('|') &&
+      !line.includes('---') &&
+      line.includes('<')
+    ) {
+      const parts = line.split('|')
+      if (parts.length >= 4) {
+        const typeCell = parts[2]
+        const trimmed = typeCell.trim()
+        if (
+          trimmed &&
+          !trimmed.startsWith('`') &&
+          (trimmed.includes('<') || trimmed.includes('>'))
+        ) {
+          parts[2] = ` \`${trimmed.replace(/`/g, '\\`')}\` `
+          out.push(parts.join('|'))
+          continue
+        }
+      }
+    }
+    out.push(line)
+  }
+
+  return out.join('\n')
+}
+
 export function fixApiDocumenterMarkdownFiles(outputDir) {
   for (const entry of fs.readdirSync(outputDir, {withFileTypes: true})) {
     if (!entry.isFile() || !entry.name.endsWith('.md')) continue
-    if (!PACKAGE_INDEX_FILES.has(entry.name)) continue
     const filePath = path.join(outputDir, entry.name)
-    const original = fs.readFileSync(filePath, 'utf8')
-    const fixed = fixApiDocumenterMarkdown(original)
-    if (fixed !== original) {
-      fs.writeFileSync(filePath, fixed)
-      console.log(`  fixed markdown tables in ${entry.name}`)
+    let content = fs.readFileSync(filePath, 'utf8')
+    let next = content
+
+    if (PACKAGE_INDEX_FILES.has(entry.name)) {
+      next = fixApiDocumenterMarkdown(next)
+    }
+    next = fixParameterTableTypeCells(next)
+
+    if (next !== content) {
+      fs.writeFileSync(filePath, next)
+      console.log(`  fixed markdown in ${entry.name}`)
     }
   }
 

@@ -1,16 +1,16 @@
 # GSAP extension
 
-`@unseenco/theatre-gsap` bridges **GSAP** tweens and timelines to Theatre **sequence time mode** (v1). Register animations at runtime, then place them on the sheet sequence like keyframed props. **Page mode** (scroll-driven sequencer) and scroll drivers are documented in [Sheet sequence modes](../manual/sheet-modes.md). **ScrollTrigger** instances can be registered for **read-only** visualization on the page-mode sequencer (vertical scroll on the configured scroller, default document).
+`@unseenco/backstage/gsap` bridges **GSAP** tweens and timelines to Theatre **sequence time mode** (v1). Register animations at runtime, then place them on the sheet sequence like keyframed props. **Page mode** (scroll-driven sequencer) and scroll drivers are documented in [Sheet sequence modes](../manual/sheet-modes.md). **ScrollTrigger** instances can be registered for **read-only** visualization on the page-mode sequencer (vertical scroll on the configured scroller, default document).
 
-Studio support for GSAP clips is **built into** `@unseenco/theatre-studio`. You do **not** call `studio.extend()` for GSAP.
+Studio support for GSAP clips is **built into** `@unseenco/backstage/studio`. You do **not** call `studio.extend()` for GSAP.
 
 ## Install
 
 ```bash
-yarn add @unseenco/theatre-core @unseenco/theatre-studio gsap @unseenco/theatre-gsap
+yarn add @unseenco/backstage @unseenco/backstage/studio gsap @unseenco/backstage/gsap
 ```
 
-Peer dependencies: `gsap` (≥3), `@unseenco/theatre-core`. `@unseenco/theatre-studio` is optional at runtime but required for authoring.
+Peer dependencies: `gsap` (≥3), `@unseenco/backstage`. `@unseenco/backstage/studio` is optional at runtime but required for authoring.
 
 ## Quick start (time mode)
 
@@ -27,14 +27,14 @@ import {
   createRafDriver,
   getProject,
   setCoreRafDriver,
-} from '@unseenco/theatre-core'
-import studio from '@unseenco/theatre-studio'
+} from '@unseenco/backstage'
+import studio from '@unseenco/backstage/studio'
 import {
   attachGsapSequenceBridge,
   bindGsapTickerToRafDriver,
   configureTheatreGsap,
   registerGsapAnimation,
-} from '@unseenco/theatre-gsap'
+} from '@unseenco/backstage/gsap'
 
 const rafDriver = createRafDriver({name: 'gsap-master-clock'})
 setCoreRafDriver(rafDriver)
@@ -72,7 +72,7 @@ Sheet **time mode** semantics (default timeline, playback, audio): [Sheet sequen
 Enable page mode on the sheet and the GSAP bridge together:
 
 ```ts
-import {getProject} from '@unseenco/theatre-core'
+import {getProject} from '@unseenco/backstage'
 
 const sheet = getProject('My project').sheet('Main', {
   sequenceMode: 'page',
@@ -93,8 +93,8 @@ Core scroll wiring (`configureTheatrePageScroll`, Lenis, custom **`ScrollDriver`
 When using ScrollTrigger with a non-document scroller, align Theatre and GSAP:
 
 ```ts
-import {configureTheatrePageScroll} from '@unseenco/theatre-core'
-import {configureTheatreGsap} from '@unseenco/theatre-gsap'
+import {configureTheatrePageScroll} from '@unseenco/backstage'
+import {configureTheatreGsap} from '@unseenco/backstage/gsap'
 
 configureTheatrePageScroll({scroller: document.documentElement})
 
@@ -144,7 +144,7 @@ import {ScrollTrigger} from 'gsap/ScrollTrigger'
 import {
   registerGsapScrollTrigger,
   registerAllGsapScrollTriggers,
-} from '@unseenco/theatre-gsap'
+} from '@unseenco/backstage/gsap'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -204,7 +204,7 @@ Runtime reads clip layout via `sheet.sequence.__experimental_getGsapClips()` (se
 
 ## Production bundles
 
-Ship **`@unseenco/theatre-gsap`** and **`@unseenco/theatre-core`** in production when you need the bridge at runtime. Omit **`@unseenco/theatre-studio`** from production builds. GSAP remains a normal dependency.
+Ship **`@unseenco/backstage/gsap`** and **`@unseenco/backstage`** in production when you need the bridge at runtime. Omit **`@unseenco/backstage/studio`** from production builds. GSAP remains a normal dependency.
 
 ## Playground
 
@@ -214,4 +214,4 @@ Ship **`@unseenco/theatre-gsap`** and **`@unseenco/theatre-core`** in production
 
 ## API reference
 
-[@unseenco/theatre-gsap API](/api/theatre-gsap)
+[@unseenco/backstage/gsap API](/api/theatre-gsap)

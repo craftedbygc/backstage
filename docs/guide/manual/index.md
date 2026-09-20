@@ -1,6 +1,6 @@
 # Manual
 
-Reference-style guides for authoring with Theatre Studio and `@unseenco/theatre-core`.
+Reference-style guides for authoring with Theatre Studio and `@unseenco/backstage`.
 
 - [Projects](./projects.md)
 - [Sheets](./sheets.md)

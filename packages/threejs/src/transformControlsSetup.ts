@@ -1,4 +1,4 @@
-import type {ISheet, ISheetObject} from '@unseenco/theatre-core'
+import type {ISheet, ISheetObject} from '@unseenco/backstage'
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls.js'
 import type {Camera, Object3D, Scene} from 'three'
 import type {ThreejsRenderer} from './types'

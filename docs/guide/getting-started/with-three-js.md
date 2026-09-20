@@ -16,17 +16,17 @@ yarn dev
 ## Install Theatre
 
 ```bash
-yarn add @unseenco/theatre-core @unseenco/theatre-studio
+yarn add @unseenco/backstage @unseenco/backstage/studio
 ```
 
-Optional: add **`@unseenco/theatre-threejs`** if you want `autoAddObject()` and the Studio Three.js extension (see [Three.js extension](../extensions/threejs.md)).
+Optional: add **`@unseenco/backstage/threejs`** if you want `autoAddObject()` and the Studio Three.js extension (see [Three.js extension](../extensions/threejs.md)).
 
 ## Initialize Studio
 
 In your entry file (e.g. `main.ts`):
 
 ```ts
-import studio from '@unseenco/theatre-studio'
+import studio from '@unseenco/backstage/studio'
 
 studio.initialize()
 ```
@@ -36,7 +36,7 @@ Press `Alt`/`Option` + `\` to show or hide Studio.
 ## Create a project and sheet
 
 ```ts
-import {getProject, types} from '@unseenco/theatre-core'
+import {getProject, types} from '@unseenco/backstage'
 
 const project = getProject('THREE.js x Theatre')
 const sheet = project.sheet('Animated scene')
@@ -98,8 +98,8 @@ project.ready.then(() => {
 Instead of hand-written `sheet.object` + `onValuesChange`, you can register meshes with:
 
 ```ts
-import {autoAddObject} from '@unseenco/theatre-threejs'
-import extension from '@unseenco/theatre-threejs/extension'
+import {autoAddObject} from '@unseenco/backstage/threejs'
+import extension from '@unseenco/backstage/threejs/extension'
 
 studio.extend(extension)
 autoAddObject(mesh, sheet)

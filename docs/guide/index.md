@@ -39,8 +39,8 @@ A smaller Theatre.js stack for apps that ship static prop values and sheet-level
 ## Extensions
 
 - [Overview](./extensions/index.md)
-- [Three.js](./extensions/threejs.md) — `@unseenco/theatre-threejs`
-- [GSAP](./extensions/gsap.md) — `@unseenco/theatre-gsap`
+- [Three.js](./extensions/threejs.md) — `@unseenco/backstage/threejs`
+- [GSAP](./extensions/gsap.md) — `@unseenco/backstage/gsap`
 
 ## Community
 

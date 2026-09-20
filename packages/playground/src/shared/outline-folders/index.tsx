@@ -1,12 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import studio from '@unseenco/theatre-studio'
-import {getProject} from '@unseenco/theatre-core'
+import studio from '@unseenco/backstage/studio'
+import {getProject} from '@unseenco/backstage'
 import {Scene} from './Scene'
 
 /**
  * Demonstrates `sheet.declareOutlineNamespace()` and
- * `sheet.setOutlineNamespaceCollapsed()` from `@unseenco/theatre-core`.
+ * `sheet.setOutlineNamespaceCollapsed()` from `@unseenco/backstage`.
  */
 
 const project = getProject('Outline folders demo')

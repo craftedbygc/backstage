@@ -1,15 +1,15 @@
-# @unseenco/theatre-threejs
+# @unseenco/backstage/threejs
 
 Three.js helpers and Studio extension for [Theatre.js](https://unseen-theatre.netlify.app).
 
-Runtime helpers (`autoAddObject`, `autoAddMaterial`, `autoAddCamera`, …) import from the package root and do **not** load Studio. Studio devtools (`buildExtension`) import from `@unseenco/theatre-threejs/extension`.
+Runtime helpers (`autoAddObject`, `autoAddMaterial`, `autoAddCamera`, …) import from the package root and do **not** load Studio. Studio devtools (`buildExtension`) import from `@unseenco/backstage/threejs/extension`.
 
 ## Usage
 
 ```js
-import studio from '@unseenco/theatre-studio'
-import {autoAddObject} from '@unseenco/theatre-threejs'
-import {buildExtension} from '@unseenco/theatre-threejs/extension'
+import studio from '@unseenco/backstage/studio'
+import {autoAddObject} from '@unseenco/backstage/threejs'
+import {buildExtension} from '@unseenco/backstage/threejs/extension'
 
 let activeScene = scene1
 
@@ -52,7 +52,7 @@ The extension adds a toolbar flyout to switch between scenes (when more than one
 Set project-wide defaults once at startup. Excludes from defaults and per-call `autoAddObject` options are merged.
 
 ```js
-import {configureTheatreThreejs} from '@unseenco/theatre-threejs'
+import {configureTheatreThreejs} from '@unseenco/backstage/threejs'
 
 configureTheatreThreejs({
   autoAddObject: {
@@ -66,7 +66,7 @@ configureTheatreThreejs({
 Automatically adds a Three.js `Object3D` to a Theatre sheet, parsing transform data (position, rotation, scale, visible) and material properties (colors, scalars, vectors, textures, shader uniforms).
 
 ```js
-import {autoAddObject} from '@unseenco/theatre-threejs'
+import {autoAddObject} from '@unseenco/backstage/threejs'
 
 const sheetObject = autoAddObject(mesh, sheet, {
   objectKey: 'My Mesh',
@@ -109,7 +109,7 @@ For `ShaderMaterial` / `RawShaderMaterial`, `autoAddObject` reads optional `gui`
 
 ```js
 import {ShaderMaterial, Color} from 'three'
-import {autoAddObject} from '@unseenco/theatre-threejs'
+import {autoAddObject} from '@unseenco/backstage/threejs'
 
 const material = new ShaderMaterial({
   uniforms: {
@@ -146,7 +146,7 @@ If `gui` is omitted, number uniforms default to `nudgeMultiplier: 0.01` with no 
 Register a Three.js `Material` (or material array) on a Theatre sheet with auto-parsed material properties only — no transforms or Object3D selection sync. Use this when a material is shared across meshes, or when you only want to animate material props.
 
 ```js
-import {autoAddMaterial} from '@unseenco/theatre-threejs'
+import {autoAddMaterial} from '@unseenco/backstage/threejs'
 
 autoAddMaterial(mesh.material, sheet, {
   objectKey: 'Shared Material',
@@ -162,7 +162,7 @@ Material / uniform `exclude` and `include` lists merge with `configureTheatreThr
 Register a Three.js `Camera` on a Theatre sheet with transform props and camera-specific props. Scale is excluded by default (cameras are not meaningfully scaled in Three.js).
 
 ```js
-import {autoAddCamera} from '@unseenco/theatre-threejs'
+import {autoAddCamera} from '@unseenco/backstage/threejs'
 
 autoAddCamera(camera, sheet, {
   objectKey: 'Main Camera',

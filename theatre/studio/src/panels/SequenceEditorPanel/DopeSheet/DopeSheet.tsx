@@ -1,4 +1,4 @@
-import {useVal} from '@unseenco/theatre-react'
+import {useVal} from '@unseenco/backstage/react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import React from 'react'
 import styled from 'styled-components'

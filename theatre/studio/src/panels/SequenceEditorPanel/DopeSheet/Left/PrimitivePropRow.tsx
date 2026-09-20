@@ -2,7 +2,7 @@ import type {SequenceEditorTree_PrimitiveProp} from '@unseenco/theatre-studio/pa
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import {encodePathToProp} from '@unseenco/theatre-shared/utils/addresses'
 import pointerDeep from '@unseenco/theatre-shared/utils/pointerDeep'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {val} from '@unseenco/theatre-dataverse'

@@ -3,7 +3,7 @@
  *
  * Runtime helpers for binding Three.js objects to Theatre.js sheets.
  * For Studio devtools (`buildExtension`), import from
- * `@unseenco/theatre-threejs/extension`.
+ * `@unseenco/backstage/threejs/extension`.
  */
 
 export {autoAddObject} from './autoAddObject'

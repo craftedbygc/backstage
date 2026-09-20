@@ -51,5 +51,6 @@
   },
   "dependencies": {
     "@unseenco/theatre-dataverse": "workspace:*"
-  }
+  },
+  "private": true
 }

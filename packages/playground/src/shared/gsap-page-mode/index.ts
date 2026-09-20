@@ -5,15 +5,15 @@ import {
   getProject,
   setCoreRafDriver,
   types,
-} from '@unseenco/theatre-core'
-import studio from '@unseenco/theatre-studio'
+} from '@unseenco/backstage'
+import studio from '@unseenco/backstage/studio'
 import {
   bindGsapTickerToRafDriver,
   configureTheatreGsap,
   registerAllGsapScrollTriggers,
   registerGsapAnimation,
   registerGsapScrollTrigger,
-} from '@unseenco/theatre-gsap'
+} from '@unseenco/backstage/gsap'
 import {
   hidePageModeDemoForRemoteEditor,
   isRemotePageModeEditorWindow,

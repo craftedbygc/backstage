@@ -7,16 +7,16 @@ import {
   getProject,
   setCoreRafDriver,
   types,
-} from '@unseenco/theatre-core'
-import {createLenisScrollDriver} from '@unseenco/theatre-core/lenis'
-import studio from '@unseenco/theatre-studio'
+} from '@unseenco/backstage'
+import {createLenisScrollDriver} from '@unseenco/backstage/lenis'
+import studio from '@unseenco/backstage/studio'
 import {
   bindGsapTickerToRafDriver,
   configureTheatreGsap,
   registerAllGsapScrollTriggers,
   registerGsapAnimation,
   registerGsapScrollTrigger,
-} from '@unseenco/theatre-gsap'
+} from '@unseenco/backstage/gsap'
 import {
   hidePageModeDemoForRemoteEditor,
   isRemotePageModeEditorWindow,

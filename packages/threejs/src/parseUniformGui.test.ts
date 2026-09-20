@@ -1,4 +1,4 @@
-import {types} from '@unseenco/theatre-core'
+import {types} from '@unseenco/backstage'
 import {
   numberTypeOptionsFromUniformGui,
   parseUniformGui,

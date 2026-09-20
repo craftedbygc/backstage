@@ -310,7 +310,7 @@ export interface _StudioInitializeOpts {
 
   /**
    * `'lite'` disables sequencing UI and sequence state mutations (static authoring only).
-   * Implicit when importing `@unseenco/theatre-studio-lite`.
+   * Implicit when importing `@unseenco/backstage/studio-lite`.
    */
   mode?: 'full' | 'lite'
 }
@@ -321,7 +321,7 @@ export interface _StudioInitializeOpts {
  * @example
  * Basic usage:
  * ```ts
- * import studio from '@unseenco/theatre-studio'
+ * import studio from '@unseenco/backstage/studio'
  *
  * studio.initialize()
  * ```
@@ -329,7 +329,7 @@ export interface _StudioInitializeOpts {
  * @example
  * Custom accent color:
  * ```ts
- * import studio from '@unseenco/theatre-studio'
+ * import studio from '@unseenco/backstage/studio'
  *
  * studio.initialize({accentHex: '#c026d3'})
  * ```
@@ -337,7 +337,7 @@ export interface _StudioInitializeOpts {
  * @example
  * Usage with **tree-shaking**:
  * ```ts
- * import studio from '@unseenco/theatre-studio'
+ * import studio from '@unseenco/backstage/studio'
  *
  * if (process.env.NODE_ENV !== 'production') {
  *   studio.initialize()

@@ -1,5 +1,5 @@
-import type {ISheet} from '@unseenco/theatre-core'
-import {privateAPI} from '@unseenco/theatre-core/privateAPIs'
+import type {ISheet} from '@unseenco/backstage'
+import {privateAPI} from '@unseenco/backstage/privateAPIs'
 import {defaultScrollTriggerLabel} from '@unseenco/theatre-shared/gsap/scrollTriggerGuards'
 import {registerOneGsapScrollTriggerOnSheet} from './registerGsapScrollTrigger'
 import type {RegisterGsapScrollTriggerResult} from './registerGsapScrollTrigger'

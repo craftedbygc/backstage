@@ -24,7 +24,7 @@ export default class CoreBundle implements TheatreCoreBundle {
   getBitsForStudio(studio: Studio, callback: (bits: CoreBits) => void) {
     if (this._studio) {
       throw new Error(
-        `@unseenco/theatre-core is already attached to @unseenco/theatre-studio`,
+        `@unseenco/theatre-core is already attached to @unseenco/theatre-core/studio`,
       )
     }
     this._studio = studio

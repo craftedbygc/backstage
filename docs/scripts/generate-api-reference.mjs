@@ -18,7 +18,7 @@ function run(command, options = {}) {
   })
 }
 
-console.log('Building TypeScript declarations for @unseenco/theatre-core and studio…')
+console.log('Building TypeScript declarations for @unseenco/backstage and studio…')
 run('yarn workspace theatre run build:ts')
 
 console.log('Generating api-extractor doc models (core, studio)…')

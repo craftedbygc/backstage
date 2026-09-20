@@ -3,7 +3,12 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "paths": {
-      "@unseenco/theatre-studio/*": ["../../.temp/declarations/studio/src/*"],
+      "@unseenco/theatre-studio": [
+        "../../.temp/declarations/studio/src/index.d.ts"
+      ],
+      "@unseenco/theatre-studio/*": [
+        "../../.temp/declarations/studio/src/*"
+      ],
       "@unseenco/theatre-shared/*": ["../../.temp/declarations/shared/src/*"],
       // not sure why it can't resolve react-icons, but we don't need it in the declarations anyway.
       "react-icons": ["./cantResolve.ignore.ts"]

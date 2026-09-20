@@ -174,7 +174,7 @@ export default class Project {
 
     if (config.state) {
       setTimeout(() => {
-        // The user has provided config.state but in case @unseenco/theatre-studio is loaded,
+        // The user has provided config.state but in case @unseenco/theatre-core/studio is loaded,
         // let's give it one tick to attach itself
         if (!this._studio) {
           this._studioReadyDeferred.resolve(undefined)
@@ -197,9 +197,9 @@ export default class Project {
           if (!this._studio) {
             throw new Error(
               `Argument config.state in Theatre.getProject("${id}", config) is empty. This is fine ` +
-                `while you are using @unseenco/theatre-core along with @unseenco/theatre-studio. But since @unseenco/theatre-studio ` +
+                `while you are using @unseenco/theatre-core along with @unseenco/theatre-core/studio. But since @unseenco/theatre-core/studio ` +
                 `is not loaded, the state of project "${id}" will be empty.\n\n` +
-                `To fix this, you need to add @unseenco/theatre-studio into the bundle and export ` +
+                `To fix this, you need to add @unseenco/theatre-core/studio into the bundle and export ` +
                 `the project's state. Learn how to do that at https://unseen-theatre.netlify.app/docs/guide/manual/projects#state\n`,
             )
           }

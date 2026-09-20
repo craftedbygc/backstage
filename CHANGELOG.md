@@ -3,26 +3,26 @@
 ## 0.6.0
 
 - New features
-  - **Theatre Lite:** New published packages **`@unseenco/theatre-core-lite`** (Apache-2.0 production runtime) and **`@unseenco/theatre-studio-lite`** (AGPL-3.0 dev editor). Same project ids, object keys, prop schemas, and **`OnDiskState`** JSON shape as full Theatre; lite state is a valid subset. Author **static overrides** and **sheet-level variants** (`declareSequenceVariants` / `setActiveSequenceVariant`); export/import project JSON from the outline toolbar (`createContentOfSaveFile`). Upgrade to `@unseenco/theatre-core` / `@unseenco/theatre-studio` without rewriting addresses or static layers ([guide](./docs/guide/theatre-lite/upgrading-to-full.md)).
+  - **Theatre Lite:** New published packages **`@unseenco/backstage/core-lite`** (Apache-2.0 production runtime) and **`@unseenco/backstage/studio-lite`** (AGPL-3.0 dev editor). Same project ids, object keys, prop schemas, and **`OnDiskState`** JSON shape as full Theatre; lite state is a valid subset. Author **static overrides** and **sheet-level variants** (`declareSequenceVariants` / `setActiveSequenceVariant`); export/import project JSON from the outline toolbar (`createContentOfSaveFile`). Upgrade to `@unseenco/backstage` / `@unseenco/backstage/studio` without rewriting addresses or static layers ([guide](./docs/guide/theatre-lite/upgrading-to-full.md)).
   - **Core-lite:** `sheet.sequence` is an inert stub (`position` 0, `play()` no-op). Sequence interpolation, playback controllers, GSAP bridge, and scroll/page-mode drivers are **excluded from the lite import graph** (`CoreBundleLite`, build-time stubs), not merely gated at runtime.
-  - **Studio-lite:** Outline, details, transactions, extensions, and variant folders—no Sequence Editor, keyframes, or **Sequence this prop**. Full Studio can dogfood the same UI via `studio.initialize({ mode: 'lite' })`; `@unseenco/theatre-studio-lite` always runs in lite mode.
-  - **Three.js (`@unseenco/theatre-threejs`):** Optional peer entries for **`@unseenco/theatre-core-lite`** and **`@unseenco/theatre-studio-lite`** (use one core + one studio per app; do not mix lite and full in the same bundle). Runtime helpers (`autoAddObject`, etc.) and `/extension` work with either stack.
+  - **Studio-lite:** Outline, details, transactions, extensions, and variant folders—no Sequence Editor, keyframes, or **Sequence this prop**. Full Studio can dogfood the same UI via `studio.initialize({ mode: 'lite' })`; `@unseenco/backstage/studio-lite` always runs in lite mode.
+  - **Three.js (`@unseenco/backstage/threejs`):** Optional peer entries for **`@unseenco/backstage/core-lite`** and **`@unseenco/backstage/studio-lite`** (use one core + one studio per app; do not mix lite and full in the same bundle). Runtime helpers (`autoAddObject`, etc.) and `/extension` work with either stack.
   - **Playground:** [`/shared/theatre-lite/`](./packages/playground/src/shared/theatre-lite/) (DOM static + variants), [`/shared/theatre-lite-three/`](./packages/playground/src/shared/theatre-lite-three/) (Three.js + studio-lite extension).
   - **Tooling:** `yarn workspace theatre build:js` emits lite `dist/index-lite.*` artifacts; release CLI bumps `theatre/core-lite` and `theatre/studio-lite`. Set `THEATRE_LITE_LOG_BUNDLE_SIZES=1` to print full vs lite esbuild sizes.
 - Breaking changes
-  - **None** for existing `@unseenco/theatre-core` / `@unseenco/theatre-studio` consumers. Theatre Lite adds new packages only; full Theatre behavior is unchanged.
+  - **None** for existing `@unseenco/backstage` / `@unseenco/backstage/studio` consumers. Theatre Lite adds new packages only; full Theatre behavior is unchanged.
 - Docs
   - **Guide:** [Theatre Lite](./docs/guide/theatre-lite/) — overview, [choosing lite or full](./docs/guide/theatre-lite/choosing-lite-or-full.md), [getting started](./docs/guide/theatre-lite/getting-started.md), [variants](./docs/guide/theatre-lite/variants.md), [Three.js](./docs/guide/theatre-lite/three-js.md), [upgrading to full](./docs/guide/theatre-lite/upgrading-to-full.md). Package READMEs under `theatre/core-lite/` and `theatre/studio-lite/` include API quick reference and bundle-size tables.
 - Maintenance
-  - **Bundle size (esbuild, dataverse external; reproduce after `yarn workspace theatre build:js`):** `@unseenco/theatre-core-lite` ~243 KiB unminified / **~107 KiB minified** vs full core ~318 / ~139 KiB (**~24% / ~23% smaller**). `@unseenco/theatre-studio-lite` ~1602 KiB unminified / **~744 KiB minified** (published `dist`) vs full studio ~2150 / ~960 KiB (**~23% smaller, ~216 KiB minified**).
+  - **Bundle size (esbuild, dataverse external; reproduce after `yarn workspace theatre build:js`):** `@unseenco/backstage/core-lite` ~243 KiB unminified / **~107 KiB minified** vs full core ~318 / ~139 KiB (**~24% / ~23% smaller**). `@unseenco/backstage/studio-lite` ~1602 KiB unminified / **~744 KiB minified** (published `dist`) vs full studio ~2150 / ~960 KiB (**~23% smaller, ~216 KiB minified**).
 
 ## 0.5.0
 
 - New features
   - **Core:** **Sheet page mode** — `project.sheet(id, { sequenceMode: 'page' })` maps document scroll to a 0–100% sequencer (length 100, 10 sub-units per unit). `sheet.setSequenceMode('page' | 'time')`, one-way scroll drivers, and Studio playhead scrubbing syncs page scroll. Page mode is not persisted in exported JSON — pass sheet options on each load without Studio.
-  - **Core:** Page-scroll wiring without GSAP — `configureTheatrePageScroll()`, `attachTheatrePageScroll(sheet, { driver? })`, `ISheetOptions.scrollDriver`, and optional `@unseenco/theatre-core/lenis` (`createLenisScrollDriver`). **Horizontal** page scroll via `axis: 'horizontal'`, native `scrollX`, element horizontal drivers, and matching ScrollTrigger defaults.
+  - **Core:** Page-scroll wiring without GSAP — `configureTheatrePageScroll()`, `attachTheatrePageScroll(sheet, { driver? })`, `ISheetOptions.scrollDriver`, and optional `@unseenco/backstage/lenis` (`createLenisScrollDriver`). **Horizontal** page scroll via `axis: 'horizontal'`, native `scrollX`, element horizontal drivers, and matching ScrollTrigger defaults.
   - **Core / GSAP:** `project.sheet(id, { gsap: true })` attaches the GSAP sequence bridge from sheet options; keyframes and GSAP clips clamp at sequence bounds.
-  - **GSAP (`@unseenco/theatre-gsap`):** **ScrollTrigger** registration (`registerGsapScrollTrigger`, `registerAllGsapScrollTriggers`) with read-only sequencer bars in page mode (vertical and horizontal), `bindGsapScrollTriggerPlugin`, and duplicate-instance warnings. `bindGsapTickerToRafDriver()` plus a one-time console warning when GSAP registration runs without the GSAP ticker driving Theatre's `rafDriver` (`configureTheatreGsap({ suppressGsapTickerRafWarning })`). `configureTheatreGsap({ pageScroll })` syncs scroll context and ScrollTrigger defaults.
+  - **GSAP (`@unseenco/backstage/gsap`):** **ScrollTrigger** registration (`registerGsapScrollTrigger`, `registerAllGsapScrollTriggers`) with read-only sequencer bars in page mode (vertical and horizontal), `bindGsapScrollTriggerPlugin`, and duplicate-instance warnings. `bindGsapTickerToRafDriver()` plus a one-time console warning when GSAP registration runs without the GSAP ticker driving Theatre's `rafDriver` (`configureTheatreGsap({ suppressGsapTickerRafWarning })`). `configureTheatreGsap({ pageScroll })` syncs scroll context and ScrollTrigger defaults.
   - **Studio:** Page-mode sequencer UI — percent formatter, locked length; loop/play disabled where appropriate. **TW / TL / ST** badges in outline and sequencer lists; enhanced **GsapKindBadge** SVG styling.
   - **Studio:** Read-only **GSAP details panel** — live tween/timeline/ScrollTrigger introspection (`vars`, target pills, child grouping); DOM target highlight on pill and sequencer-row hover (off-screen edge arrows when the target is outside the viewport).
   - **Studio:** Parent aggregate compound tracks render as draggable theatre-accent **span bars** (move all child keyframes; edge handles scale timing proportionally). Sheet props no longer appear as a separate **Sheet** row in the sequencer tree.
@@ -41,16 +41,16 @@
 ## 0.4.3
 
 - Bug fixes
-  - **GSAP / Core:** `attachGsapSequenceBridge()` is implemented in `@unseenco/theatre-core` (still exported from `@unseenco/theatre-gsap`) so sequence playhead sync uses the same dataverse instance as Theatre pointers — fixes `pointerToPrism` / `PointerToPrismProvider` errors in Vite/Nuxt apps without consumer-side dependency deduping.
+  - **GSAP / Core:** `attachGsapSequenceBridge()` is implemented in `@unseenco/backstage` (still exported from `@unseenco/backstage/gsap`) so sequence playhead sync uses the same dataverse instance as Theatre pointers — fixes `pointerToPrism` / `PointerToPrismProvider` errors in Vite/Nuxt apps without consumer-side dependency deduping.
   - **Three.js package:** Material color props are quantized before hex display in Studio so swatches match authored values more accurately.
 - Maintenance
-  - **Compatibility tests:** New **Vite full-stack** fixture (`vite-theatre-full-stack`) runs `vite optimize` against published `@unseenco/theatre-core`, `@unseenco/theatre-studio`, `@unseenco/theatre-gsap`, and `@unseenco/theatre-threejs/extension` (including `attachGsapSequenceBridge` at runtime).
-  - **GSAP / Core publish graph:** `@unseenco/theatre-gsap` build keeps `@unseenco/*` external; core declares `@unseenco/theatre-dataverse` for bundled graph consistency.
+  - **Compatibility tests:** New **Vite full-stack** fixture (`vite-theatre-full-stack`) runs `vite optimize` against published `@unseenco/backstage`, `@unseenco/backstage/studio`, `@unseenco/backstage/gsap`, and `@unseenco/backstage/threejs/extension` (including `attachGsapSequenceBridge` at runtime).
+  - **GSAP / Core publish graph:** `@unseenco/backstage/gsap` build keeps `@unseenco/*` external; core declares `@unseenco/backstage/dataverse` for bundled graph consistency.
 
 ## 0.4.0
 
 - New features
-  - **GSAP (`@unseenco/theatre-gsap`):** Sequence **time-mode** bridge for GSAP tweens and timelines (v1). `configureTheatreGsap()`, `registerGsapAnimation()`, and `attachGsapSequenceBridge()` register paused animations on sheet proxy objects under a configurable outline namespace (default `GSAP / …`), drive `progress` from the sequence playhead, and expose clip layout via `sheet.sequence.__experimental_getGsapClips()`. Optional `onRebuildTimeline` for timelines whose child spans are edited natively in Studio.
+  - **GSAP (`@unseenco/backstage/gsap`):** Sequence **time-mode** bridge for GSAP tweens and timelines (v1). `configureTheatreGsap()`, `registerGsapAnimation()`, and `attachGsapSequenceBridge()` register paused animations on sheet proxy objects under a configurable outline namespace (default `GSAP / …`), drive `progress` from the sequence playhead, and expose clip layout via `sheet.sequence.__experimental_getGsapClips()`. Optional `onRebuildTimeline` for timelines whose child spans are edited natively in Studio.
   - **Studio (GSAP):** Built-in GSAP authoring — no separate `studio.extend()` package entry. Outline and detail-panel actions **Add to sequence at playhead** / **Remove from sequence**; **GsapClipTrack** rows in the sequence editor with nested child rows for GSAP timeline children (drag/resize, baseline timing, **Reset to original state** when timing diverges). Outline labels with `/` nest in the sequence tree like other namespaces. One clip per registered animation (toggle add/remove).
   - **Core:** `GsapClipTrack` sequence track type and editors for add/update/remove GSAP clips and child timing.
   - **Playground:** [`/shared/gsap-time-mode/`](./packages/playground/src/shared/gsap-time-mode/) — DOM demo with GSAP ticker as master clock (`createRafDriver` + `setCoreRafDriver`), nested `UI / …` labels, and rebuildable timeline choreo.
@@ -62,7 +62,7 @@
   - **Playground:** Three.js devtools demo loads baseline `theatre-project-state.json` into `getProject()` so unsaved indicators compare against saved state.
 - Docs
   - **Guide:** [GSAP extension](./docs/guide/extensions/gsap.md) under Extensions; cross-links from concepts, extension overview, and Studio manual.
-  - **API reference:** `@unseenco/theatre-gsap` included in `yarn workspace @unseenco/theatre-docs run generate:api` and VitePress sidebar (`/docs/api/theatre-gsap`).
+  - **API reference:** `@unseenco/backstage/gsap` included in `yarn workspace @unseenco/theatre-docs run generate:api` and VitePress sidebar (`/docs/api/theatre-gsap`).
 
 ## 0.3.0
 
@@ -80,7 +80,7 @@
 
 - Bug fixes
   - Three.js Package:
-    - Published `@unseenco/theatre-threejs` runtime bundle no longer imports `@unseenco/theatre-core/propTypes` or `@unseenco/theatre-shared` subpaths, fixing Vite/Nuxt dependency resolution in consumer apps.
+    - Published `@unseenco/backstage/threejs` runtime bundle no longer imports `@unseenco/backstage/propTypes` or `@unseenco/theatre-shared` subpaths, fixing Vite/Nuxt dependency resolution in consumer apps.
 
 ## 0.2.2
 
@@ -249,7 +249,7 @@
 
 - Bug fixes
   - Three.js Package:
-    - Importing runtime helpers (`autoAddObject`, `autoAddCamera`, `configureTheatreThreejs`, …) from `@unseenco/theatre-threejs` no longer loads `@unseenco/theatre-studio`. `buildExtension()` moved to `@unseenco/theatre-threejs/extension` (breaking for anyone importing it from the package root). Studio is now an optional peer dependency.
+    - Importing runtime helpers (`autoAddObject`, `autoAddCamera`, `configureTheatreThreejs`, …) from `@unseenco/backstage/threejs` no longer loads `@unseenco/backstage/studio`. `buildExtension()` moved to `@unseenco/backstage/threejs/extension` (breaking for anyone importing it from the package root). Studio is now an optional peer dependency.
 
 
 
@@ -270,14 +270,14 @@
   - Three.js Package:
     - `buildExtension()` orbit camera now copies `near` / `far` from the active scene camera and supports syncing from an `OrthographicCamera` as well as a `PerspectiveCamera`.
 - Maintenance
-  - Published packages now ship dual CJS + ESM builds with `exports` maps (`@unseenco/theatre-core`, `@unseenco/theatre-studio`, `@unseenco/theatre-dataverse`, `@unseenco/theatre-react`, `@unseenco/theatre-threejs`). This lets Vite/Nuxt resolve the ESM entry and share peer dependencies such as `three` instead of nesting a second copy during CJS prebundling.
+  - Published packages now ship dual CJS + ESM builds with `exports` maps (`@unseenco/backstage`, `@unseenco/backstage/studio`, `@unseenco/backstage/dataverse`, `@unseenco/backstage/react`, `@unseenco/backstage/threejs`). This lets Vite/Nuxt resolve the ESM entry and share peer dependencies such as `three` instead of nesting a second copy during CJS prebundling.
 
 
 
 ## 0.1.5
 
 - Bug fixes
-  - Fixed `@unseenco/theatre-threejs` importing remote-editor helpers from an unpublished `@unseenco/theatre-studio/remoteEditor` subpath; it now imports from `@unseenco/theatre-studio`.
+  - Fixed `@unseenco/backstage/threejs` importing remote-editor helpers from an unpublished `@unseenco/backstage/studio/remoteEditor` subpath; it now imports from `@unseenco/backstage/studio`.
 
 
 
@@ -300,7 +300,7 @@
 
 - New features
   - **Docked mode** — dock the Studio UI to the edges of the screen so the viewport remains uncovered.
-  - `@unseenco/theatre-threejs` — new Studio extension package for Three.js scenes: orbit/scene camera toggle, multi-scene toolbar flyout with per-scene persisted devtools state, and remote-editor isolation (main window stays on scene camera while the popup edits in orbit mode). See the [package README](./packages/threejs/README.md).
+  - `@unseenco/backstage/threejs` — new Studio extension package for Three.js scenes: orbit/scene camera toggle, multi-scene toolbar flyout with per-scene persisted devtools state, and remote-editor isolation (main window stays on scene camera while the popup edits in orbit mode). See the [package README](./packages/threejs/README.md).
   - **Outline visibility API** — `visible: false` on `project.sheet()` and `sheet.object()` keeps extension internals out of the Studio outline.
   - **Studio UI polish** — chordial tooltips and context menus; improved editor popovers; switch toolbar selected state matches pin button styling.
   - Sequence variant folders are hidden in the Studio project outline (sheets list) to reduce clutter.
@@ -330,14 +330,14 @@ Initial release of the [Unseen Studio fork](https://github.com/craftedbygc/theat
 
 - New features
   - **Sheet variants** — sheets can declare multiple sheet variants (e.g. `default`, `mobile`, `desktop`) via `sheet.declareSequenceVariants()`. Each variant has independent sequence data, so the same properties can be animated differently per variant without duplicating sheets. Runtime: `sheet.setActiveSequenceVariant()` switches which variant drives prop values; `onValuesChange` now receives a second argument `{variant}`. Studio: variant folders in the outline panel, per-variant static props, opt-in variant objects via context menu.
-  - **Built-in remote editor sync** — cross-window editing is baked into `@unseenco/theatre-core` with no opt-in API. When a remote editor window is open (`#editor` in the URL hash), sheet object values, selection, and sequence position mirror automatically over `BroadcastChannel`. Studio adds an "Open remote editor window" button to the global toolbar; the main window's Studio UI hides while the remote editor is open and restores when it closes. Project state is pushed to other windows on disconnect.
+  - **Built-in remote editor sync** — cross-window editing is baked into `@unseenco/backstage` with no opt-in API. When a remote editor window is open (`#editor` in the URL hash), sheet object values, selection, and sequence position mirror automatically over `BroadcastChannel`. Studio adds an "Open remote editor window" button to the global toolbar; the main window's Studio UI hides while the remote editor is open and restores when it closes. Project state is pushed to other windows on disconnect.
   - **Custom core RAF driver** — exported `setCoreRafDriver()` so the core ticker can be driven from an external animation loop.
   - **Collapsed outline folders** — `sheet.declareOutlineNamespace(path, {collapsed})` declares a folder ahead of time (even when empty) and sets its default collapsed state; `sheet.setOutlineNamespaceCollapsed(path, collapsed)` forces a folder collapsed/expanded on load.
   - **Resizable details panel** — the detail panel can be resized by dragging its edge.
   - **Toggle timeline** — a toolbar button pins/unpins the sequence editor (timeline) panel.
   - **Non-undoable transactions** — `studio.transaction(fn, {undoable: false})` persists changes without recording them in undo history.
 - Breaking changes
-  - Package scope renamed from `@theatre/*` to `@unseenco/theatre-*` (e.g. `@unseenco/theatre-core`, `@unseenco/theatre-studio`).
+  - Package scope renamed from `@theatre/*` to `@unseenco/theatre-*` (e.g. `@unseenco/backstage`, `@unseenco/backstage/studio`).
   - Removed `@theatre/r3f`, `@theatre/remote`, `@theatre/theatric`, and the `benchmarks` workspace package.
   - Removed Studio update-checking UI and logic.
 
@@ -357,7 +357,7 @@ Initial release of the [Unseen Studio fork](https://github.com/craftedbygc/theat
 ## 0.4.4
 
 - New features
-  - Implemented [@unseenco/theatre-browser-bundles](https://www.npmjs.com/package/@unseenco/theatre-browser-bundles), a custom build of Theatre.js that can be used via a `<script>` tag and a CDN. This should enable Theatre.js to be used in CodePen or projects that don't use a bundler.
+  - Implemented [@unseenco/backstage/browser-bundles](https://www.npmjs.com/package/@unseenco/backstage/browser-bundles), a custom build of Theatre.js that can be used via a `<script>` tag and a CDN. This should enable Theatre.js to be used in CodePen or projects that don't use a bundler.
 
 
 

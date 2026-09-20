@@ -1,6 +1,6 @@
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import {isRemoteEditorWindow} from '@unseenco/theatre-studio/remoteEditor'
-import {usePrism, useVal} from '@unseenco/theatre-react'
+import {usePrism, useVal} from '@unseenco/backstage/react'
 import {val} from '@unseenco/theatre-dataverse'
 import React, {useEffect} from 'react'
 import styled, {createGlobalStyle} from 'styled-components'

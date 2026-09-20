@@ -5,8 +5,8 @@ import type {Plugin} from 'vite'
 export const THEATRE_LITE_PEERS_QUERY = '?theatre-lite-peers'
 
 const PEER_REWRITES: Array<[string, string]> = [
-  ['@unseenco/theatre-core', '@unseenco/theatre-core-lite'],
-  ['@unseenco/theatre-studio', '@unseenco/theatre-studio-lite'],
+  ['@unseenco/backstage', '@unseenco/backstage/core-lite'],
+  ['@unseenco/backstage/studio', '@unseenco/backstage/studio-lite'],
 ]
 
 /** Vite always uses `/` in module ids, even on Windows. */
@@ -14,7 +14,9 @@ export function normalizeModulePath(filePath: string): string {
   return filePath.split('?')[0].replace(/\\/g, '/')
 }
 
-export function isLitePlaygroundImporter(importer: string | undefined): boolean {
+export function isLitePlaygroundImporter(
+  importer: string | undefined,
+): boolean {
   if (!importer) return false
   const normalized = normalizeModulePath(importer)
   return (
@@ -48,13 +50,13 @@ function withLitePeersQuery(id: string): string {
 
 function isTheatreThreejsImport(source: string): boolean {
   return (
-    source === '@unseenco/theatre-threejs' ||
-    source.startsWith('@unseenco/theatre-threejs/')
+    source === '@unseenco/backstage/threejs' ||
+    source.startsWith('@unseenco/backstage/threejs/')
   )
 }
 
 /**
- * Playground-only: `@unseenco/theatre-threejs` normally imports full core/studio.
+ * Playground-only: `@unseenco/backstage/threejs` normally imports full core/studio.
  * Lite demos append `?theatre-lite-peers` so the dependency graph uses lite packages.
  */
 /** Rewrite full core/studio imports to lite peers without double `-lite` suffixes. */
@@ -62,11 +64,11 @@ export function rewriteTheatrePeersInSource(code: string): string {
   return code
     .replace(
       /@unseenco\/theatre-core(?!-lite)(?=\/|['"])/g,
-      '@unseenco/theatre-core-lite',
+      '@unseenco/backstage/core-lite',
     )
     .replace(
       /@unseenco\/theatre-studio(?!-lite)(?=\/|['"])/g,
-      '@unseenco/theatre-studio-lite',
+      '@unseenco/backstage/studio-lite',
     )
 }
 

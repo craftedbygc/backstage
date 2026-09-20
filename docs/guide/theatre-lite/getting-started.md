@@ -5,18 +5,18 @@ Theatre Lite splits **authoring** (AGPL studio-lite, dev only) from **runtime** 
 ## Install
 
 ```bash
-yarn add @unseenco/theatre-core-lite @unseenco/theatre-studio-lite
+yarn add @unseenco/backstage/core-lite @unseenco/backstage/studio-lite
 ```
 
-Use the same version number for both packages (and for `@unseenco/theatre-threejs` if you use Three.js).
+Use the same version number for both packages (and for `@unseenco/backstage/threejs` if you use Three.js).
 
 ## Development: studio-lite + initialize
 
 In your app entry (behind a dev flag or separate dev entry):
 
 ```ts
-import {getProject, types} from '@unseenco/theatre-core-lite'
-import studio from '@unseenco/theatre-studio-lite'
+import {getProject, types} from '@unseenco/backstage/core-lite'
+import studio from '@unseenco/backstage/studio-lite'
 
 studio.initialize()
 
@@ -48,10 +48,10 @@ Re-export after edits so `state.json` matches what production will load.
 
 ## Production: core-lite only
 
-Do **not** import `@unseenco/theatre-studio-lite` in production bundles. Tree-shake or use separate entries:
+Do **not** import `@unseenco/backstage/studio-lite` in production bundles. Tree-shake or use separate entries:
 
 ```ts
-import {getProject} from '@unseenco/theatre-core-lite'
+import {getProject} from '@unseenco/backstage/core-lite'
 import projectState from './state.json'
 
 const project = getProject('My App', {state: projectState})

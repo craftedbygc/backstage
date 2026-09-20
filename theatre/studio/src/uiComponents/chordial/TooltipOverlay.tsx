@@ -1,7 +1,7 @@
 import React from 'react'
 import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
 import {val} from '@unseenco/theatre-dataverse'
-import {usePrism, useVal} from '@unseenco/theatre-react'
+import {usePrism, useVal} from '@unseenco/backstage/react'
 import styled from 'styled-components'
 import usePopoverPosition from '@unseenco/theatre-studio/uiComponents/Popover/usePopoverPosition'
 import {useTransition, animated, easings} from '@react-spring/web'

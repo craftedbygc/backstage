@@ -1,15 +1,15 @@
 # Studio
 
-**Studio** (`@unseenco/theatre-studio`) is the visual editor. It appears only when you call `studio.initialize()`—keep that behind a development flag in production.
+**Studio** (`@unseenco/backstage/studio`) is the visual editor. It appears only when you call `studio.initialize()`—keep that behind a development flag in production.
 
-> **Studio vs studio-lite:** Full Studio includes the Sequence Editor, keyframes, GSAP rows, and playback. [`@unseenco/theatre-studio-lite`](../theatre-lite/index.md) keeps outline, details, variants, and export for static authoring only—pair with `@unseenco/theatre-core-lite` in production.
+> **Studio vs studio-lite:** Full Studio includes the Sequence Editor, keyframes, GSAP rows, and playback. [`@unseenco/backstage/studio-lite`](../theatre-lite/index.md) keeps outline, details, variants, and export for static authoring only—pair with `@unseenco/backstage/core-lite` in production.
 
 Toggle visibility: `Alt`/`Option` + `\`.
 
 ## Initialization
 
 ```ts
-import studio from '@unseenco/theatre-studio'
+import studio from '@unseenco/backstage/studio'
 
 studio.initialize({
   // Optional: theme Studio controls and sequencer accents
@@ -26,7 +26,7 @@ studio.initialize({
 3. **Sequence Editor** — timeline and dope sheet for sequenced props. Playback controls (play/pause, loop, zoom) sit above the dope sheet; `Space` toggles playback ([Keyboard shortcuts](./keyboard-shortcuts.md)).
 4. **Global toolbar** — built-in controls plus extension buttons.
 5. **Extension panes** — optional panels from extensions (e.g. Three.js viewport tools).
-6. **GSAP clip tracks** — when you use [@unseenco/theatre-gsap](../extensions/gsap.md), registered animations appear in the outline and sequence editor as clip rows (no separate extension install).
+6. **GSAP clip tracks** — when you use [@unseenco/backstage/gsap](../extensions/gsap.md), registered animations appear in the outline and sequence editor as clip rows (no separate extension install).
 
 ## Saved vs in-memory state
 
@@ -55,7 +55,7 @@ Dock Studio to screen edges so the viewport stays uncovered—use the dock contr
 
 ## Remote editor window
 
-Cross-window editing is built into `@unseenco/theatre-core`: when a remote editor popup is open (`#editor` in the URL hash), selection, sequence position, and values sync over `BroadcastChannel`. Use **Open remote editor window** in the toolbar; the main window hides Studio UI while the popup is active.
+Cross-window editing is built into `@unseenco/backstage`: when a remote editor popup is open (`#editor` in the URL hash), selection, sequence position, and values sync over `BroadcastChannel`. Use **Open remote editor window** in the toolbar; the main window hides Studio UI while the popup is active.
 
 ## Export / import
 

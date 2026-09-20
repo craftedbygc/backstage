@@ -1,7 +1,7 @@
 import type Project from '@unseenco/theatre-core/projects/Project'
 import {useCallback} from 'react'
 import getStudio from '@unseenco/theatre-studio/getStudio'
-import {useVal} from '@unseenco/theatre-react'
+import {useVal} from '@unseenco/backstage/react'
 import {val} from '@unseenco/theatre-dataverse'
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
 import type {ProjectId} from '@unseenco/theatre-shared/utils/ids'

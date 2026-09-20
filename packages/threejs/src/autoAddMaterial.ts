@@ -1,4 +1,4 @@
-import type {ISheet, ISheetObject} from '@unseenco/theatre-core'
+import type {ISheet, ISheetObject} from '@unseenco/backstage'
 import type {Material} from 'three'
 import {buildMaterialProps} from './buildMaterialProps'
 import type {ExcludeInput, PropPathInput} from './config'

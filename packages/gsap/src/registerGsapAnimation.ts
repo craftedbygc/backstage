@@ -1,6 +1,6 @@
-import type {ISheet, ISheetObject} from '@unseenco/theatre-core'
+import type {ISheet, ISheetObject} from '@unseenco/backstage'
 import type {GsapTweenLike} from './gsapTypes'
-import {privateAPI} from '@unseenco/theatre-core/privateAPIs'
+import {privateAPI} from '@unseenco/backstage/privateAPIs'
 import {buildGsapSheetObjectKey} from '@unseenco/theatre-shared/gsap/buildGsapSheetObjectKey'
 import {resolveGsapAnimationRegistrationLabel} from '@unseenco/theatre-shared/gsap/gsapAnimationLabel'
 import {getAnimationEntry} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'

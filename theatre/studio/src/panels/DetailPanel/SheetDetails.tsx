@@ -3,7 +3,7 @@ import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import type {$FixMe} from '@unseenco/theatre-shared/utils/types'
 import DeterminePropEditorForDetail from './DeterminePropEditorForDetail'
-import {useVal} from '@unseenco/theatre-react'
+import {useVal} from '@unseenco/backstage/react'
 import uniqueKeyForAnyObject from '@unseenco/theatre-shared/utils/uniqueKeyForAnyObject'
 
 const SheetDetails: React.FC<{

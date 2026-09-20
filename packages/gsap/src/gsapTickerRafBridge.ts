@@ -1,5 +1,5 @@
-import type {IRafDriver} from '@unseenco/theatre-core'
-import {getTheatreCoreRafDriver} from '@unseenco/theatre-core/privateAPIs'
+import type {IRafDriver} from '@unseenco/backstage'
+import {getTheatreCoreRafDriver} from '@unseenco/backstage/privateAPIs'
 import {getTheatreGsapConfig} from './config'
 
 const gsapTickerDrivenDriverIds = new Set<number>()

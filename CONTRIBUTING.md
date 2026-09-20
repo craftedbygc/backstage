@@ -138,13 +138,13 @@ $ yarn cli release x.y.z-rc.w # npm publish version x.y.z-rc.w and tag it as "rc
 
 The [monorepo](https://en.wikipedia.org/wiki/Monorepo) consists of:
 
-- `@unseenco/theatre-core` – The core animation library at
+- `@unseenco/backstage` – The core animation library at
   [`./theatre/core`](./theatre/core).
-- `@unseenco/theatre-studio` – The visual editor at
+- `@unseenco/backstage/studio` – The visual editor at
   [`./theatre/studio`](./theatre/studio).
-- `@unseenco/theatre-dataverse` – The reactive dataflow library at
+- `@unseenco/backstage/dataverse` – The reactive dataflow library at
   [`./packages/dataverse`](./packages/dataverse).
-- `@unseenco/theatre-react` – Utilities for using Theatre.js with React at
+- `@unseenco/backstage/react` – Utilities for using Theatre.js with React at
   [`./packages/react`](./packages/react).
 - `playground` – The playground explained [above](#hacking-with-playground),
   located at [`./packages/playground`](./packages/playground)

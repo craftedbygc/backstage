@@ -4,7 +4,7 @@ import {
   sequenceEditorTreeGsapClipTrackLeafFromSheetObject,
   sequenceEditorTreeGsapScrollTriggerTrackLeafFromSheetObject,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import React from 'react'
 import {decideSheetObjectChildRow} from './PropWithChildrenRow'

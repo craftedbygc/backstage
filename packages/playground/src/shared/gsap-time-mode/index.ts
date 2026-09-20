@@ -5,13 +5,13 @@ import {
   onChange,
   setCoreRafDriver,
   types,
-} from '@unseenco/theatre-core'
-import studio from '@unseenco/theatre-studio'
+} from '@unseenco/backstage'
+import studio from '@unseenco/backstage/studio'
 import {
   bindGsapTickerToRafDriver,
   configureTheatreGsap,
   registerGsapAnimation,
-} from '@unseenco/theatre-gsap'
+} from '@unseenco/backstage/gsap'
 
 const rafDriver = createRafDriver({name: 'gsap-time-mode'})
 setCoreRafDriver(rafDriver)

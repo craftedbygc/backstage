@@ -1,7 +1,7 @@
 /*
  * @jest-environment jsdom
  */
-import {privateAPI} from '@unseenco/theatre-core/privateAPIs'
+import {privateAPI} from '@unseenco/backstage/privateAPIs'
 import {BoxGeometry, Mesh, MeshPhongMaterial} from 'three'
 import {autoAddObject, configureTheatreThreejs} from './index'
 import {setupTestSheet} from '@unseenco/theatre-shared/testUtils'

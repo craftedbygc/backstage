@@ -1,5 +1,5 @@
-import studio from '@unseenco/theatre-studio'
-import {getProject} from '@unseenco/theatre-core'
+import studio from '@unseenco/backstage/studio'
+import {getProject} from '@unseenco/backstage'
 import {createThreeScene} from './ThreeScene.js'
 
 studio.initialize()

@@ -303,7 +303,7 @@ export default class TheatreSequence implements ISequence {
           "Sequence can't be played",
           'You seem to have called `sequence.play()` before the project has finished loading.\n\n' +
             'This would **not** a problem in production when using `@unseenco/theatre-core`, since Theatre.js loads instantly in core mode. ' +
-            "However, when using `@unseenco/theatre-studio`, it takes a few milliseconds for it to load your project's state, " +
+            "However, when using `@unseenco/theatre-core/studio`, it takes a few milliseconds for it to load your project's state, " +
             `before which your sequences cannot start playing.\n` +
             `\n` +
             'To fix this, simply defer calling `sequence.play()` until after the project is loaded, like this:\n\n' +

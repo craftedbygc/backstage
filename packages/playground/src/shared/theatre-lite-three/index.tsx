@@ -2,10 +2,13 @@ import {
   createRafDriver,
   getProject,
   setCoreRafDriver,
-} from '@unseenco/theatre-core-lite'
-import studio from '@unseenco/theatre-studio-lite'
-import {autoAddCamera, autoAddObject} from '@unseenco/theatre-threejs?theatre-lite-peers'
-import {buildExtension} from '@unseenco/theatre-threejs/extension?theatre-lite-peers'
+} from '@unseenco/backstage/core-lite'
+import studio from '@unseenco/backstage/studio-lite'
+import {
+  autoAddCamera,
+  autoAddObject,
+} from '@unseenco/backstage/threejs?theatre-lite-peers'
+import {buildExtension} from '@unseenco/backstage/threejs/extension?theatre-lite-peers'
 import {bindDockedThreeViewport} from './bindDockedThreeViewport'
 import {
   BoxGeometry,
@@ -27,7 +30,7 @@ studio.initialize({
   __experimental_rafDriver: rafDriver,
 })
 
-const project = getProject('Theatre Lite Three', { state })
+const project = getProject('Theatre Lite Three', {state})
 const sheet = project.sheet('Cube Scene')
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
@@ -39,7 +42,12 @@ const scene = new Scene()
 scene.name = 'Cube Scene'
 scene.background = new Color(0x1e293b)
 
-const camera = new PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100)
+const camera = new PerspectiveCamera(
+  50,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100,
+)
 camera.position.set(0, 0, 10)
 
 const light = new DirectionalLight(0xffffff, 1.2)

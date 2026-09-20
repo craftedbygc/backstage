@@ -1,6 +1,6 @@
 import React, {useLayoutEffect, useRef} from 'react'
-import type {IProject} from '@unseenco/theatre-core'
-import {onChange, types} from '@unseenco/theatre-core'
+import type {IProject} from '@unseenco/backstage'
+import {onChange, types} from '@unseenco/backstage'
 
 const globalConfig = {
   background: {

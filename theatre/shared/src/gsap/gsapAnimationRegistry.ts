@@ -23,7 +23,7 @@ const REGISTRY_KEY = '__unseenco_theatre_gsap_animationRegistry__'
 export type GsapAnimationRegistryEntry = {
   id: string
   label: string
-  /** Runtime tween; typed in `@unseenco/theatre-gsap`. */
+  /** Runtime tween; typed in `@unseenco/theatre-core/gsap`. */
   animation?: unknown
   sheetObject?: SheetObject
   defaultDuration?: number
