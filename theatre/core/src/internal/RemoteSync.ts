@@ -29,7 +29,7 @@ import {
 import {isRemoteEditorWindow} from './remoteEditor'
 
 /** Delay before pushing historic state from the remote editor to listener windows. */
-export const REMOTE_HISTORIC_SYNC_DEBOUNCE_MS = 300
+export const REMOTE_HISTORIC_SYNC_DEBOUNCE_MS = 100
 
 /**
  * When applying an incoming `updateTimeline` message, only the main (listener)
