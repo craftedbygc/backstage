@@ -1,6 +1,7 @@
 **/node_modules
 **/xeno
 /packages/*/dist
+/packages/backstage/README.md
 /backstage/*/dist
 /examples/*/dist
 *.log
