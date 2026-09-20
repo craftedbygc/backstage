@@ -3,17 +3,32 @@ import {
   introspectGsapTimelineChildren,
   isGsapTimeline,
 } from './introspectGsapTimelineChildren'
+import type {GsapScrollTriggerSurface} from './scrollTriggerGuards'
 import {
   defaultScrollTriggerLabel,
-  isDocumentVerticalScrollTrigger,
   readAnimationSpanSeconds,
   resolveScrollTriggerAnimation,
 } from './scrollTriggerGuards'
-import type {GsapScrollTriggerSurface} from './scrollTriggerGuards'
 import {
-  getNativeDocumentMaxScroll,
+  defaultPageScrollContext,
+  isVerticalPageScrollTrigger,
+} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+import type {PageScrollContext} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+import {
+  getMaxScrollForPageScrollContext,
   scrollPixelsToPageUnits,
 } from './scrollTriggerLayout'
+
+export type {
+  PageScrollContext,
+  PageScrollScroller,
+} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+export {
+  defaultPageScrollContext,
+  isVerticalPageScrollTrigger,
+  pageScrollScrollersMatch,
+  resolvePageScrollScroller,
+} from '@unseenco/theatre-shared/sheets/pageScrollContext'
 
 export type ExtractedScrollTriggerLayout = {
   id: string
@@ -30,6 +45,7 @@ export type ExtractScrollTriggerLayoutOptions = {
   id?: string
   label?: string
   fallbackIndex?: number
+  pageScrollContext?: PageScrollContext
 }
 
 export type ExtractScrollTriggerLayoutResult =
@@ -43,7 +59,9 @@ export function extractScrollTriggerLayout(
   st: unknown,
   options: ExtractScrollTriggerLayoutOptions,
 ): ExtractScrollTriggerLayoutResult {
-  if (!isDocumentVerticalScrollTrigger(st)) {
+  const pageScrollContext =
+    options.pageScrollContext ?? defaultPageScrollContext
+  if (!isVerticalPageScrollTrigger(st, pageScrollContext)) {
     return {ok: false, reason: 'unsupported_scroller'}
   }
 
@@ -53,7 +71,7 @@ export function extractScrollTriggerLayout(
     return {ok: false, reason: 'missing_animation'}
   }
 
-  const maxScroll = getNativeDocumentMaxScroll()
+  const maxScroll = getMaxScrollForPageScrollContext(pageScrollContext.scroller)
   const layout = scrollPixelsToPageUnits(
     surface.start,
     surface.end,

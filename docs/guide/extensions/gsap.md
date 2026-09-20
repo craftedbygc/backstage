@@ -1,6 +1,6 @@
 # GSAP extension
 
-`@unseenco/theatre-gsap` bridges **GSAP** tweens and timelines to Theatre **sequence time mode** (v1). Register animations at runtime, then place them on the sheet sequence like keyframed props. **Page mode** (scroll-driven sequencer) is available via `@unseenco/theatre-core`. **ScrollTrigger** instances can be registered for **read-only** visualization on the page-mode sequencer (document vertical scroll only).
+`@unseenco/theatre-gsap` bridges **GSAP** tweens and timelines to Theatre **sequence time mode** (v1). Register animations at runtime, then place them on the sheet sequence like keyframed props. **Page mode** (scroll-driven sequencer) is available via `@unseenco/theatre-core`. **ScrollTrigger** instances can be registered for **read-only** visualization on the page-mode sequencer (vertical scroll on the configured scroller, default document).
 
 Studio support for GSAP clips is **built into** `@unseenco/theatre-studio`. You do **not** call `studio.extend()` for GSAP.
 
@@ -85,7 +85,46 @@ You can also call **`sheet.setSequenceMode('page')`**, **`attachSheetScrollDrive
 - GSAP clip **`defaultDuration`** should be set in **percent** when adding clips (defaults to **10** if omitted in page mode, not tween seconds).
 - **`sequence.attachAudio()`** is not supported in page mode.
 
-Playground: **`/shared/gsap-page-mode/`**.
+Playground: **`/shared/gsap-page-mode/`** (native scroll).
+
+### Custom scroll (Lenis, overflow containers)
+
+By default, page mode listens to **native window scroll**. For **Lenis**, a scrollable div, or **`ScrollTrigger.scrollerProxy`**, configure a shared scroll context and attach a custom **`ScrollDriver`**:
+
+```ts
+import {
+  attachTheatrePageScroll,
+  configureTheatreGsap,
+} from '@unseenco/theatre-gsap'
+import type {ScrollDriver} from '@unseenco/theatre-core'
+
+configureTheatreGsap({
+  pageScroll: {
+    scroller: document.documentElement, // or an HTMLElement
+    applyScrollTriggerDefaults: true, // ScrollTrigger.defaults({ scroller })
+  },
+})
+
+// After Lenis + scrollerProxy setup in your app:
+const driver: ScrollDriver = {
+  getProgress: () => lenis.scroll / lenis.limit,
+  setProgress: (p) => lenis.scrollTo(p * lenis.limit, {immediate: true}),
+  subscribe: (cb) => {
+    const onScroll = () => cb(lenis.scroll / lenis.limit)
+    lenis.on('scroll', onScroll)
+    return () => lenis.off('scroll', onScroll)
+  },
+}
+
+attachTheatrePageScroll(sheet, {driver})
+```
+
+- **`attachTheatrePageScroll`** calls **`sheet.setPageScrollDriver()`** so Studio scrubbing uses the same driver via **`syncPageScrollToSequencePosition`**.
+- **`setPageScrollProgress(sheet, progress)`** / **`pageScrollProgressFromSequence(sheet)`** on `@unseenco/theatre-core` are optional helpers when you only need to set playhead progress.
+
+Reference implementation: **`/shared/gsap-page-mode-lenis/`** (Lenis + GSAP ScrollTrigger proxy + Theatre).
+
+For **overflow element** scroll (no Lenis), use **`createElementScrollDriver(element)`** from `@unseenco/theatre-core` with the same `pageScroll.scroller` and `attachTheatrePageScroll`.
 
 ## registerGsapAnimation
 
@@ -109,7 +148,7 @@ Animations are **paused** on registration so Theatre can set `progress` during s
 
 ## ScrollTrigger (page mode, read-only sequencer)
 
-Requires **`sequenceMode: 'page'`**, `gsap.registerPlugin(ScrollTrigger)`, and document vertical scroll (default window scroller). Theatre maps each trigger’s resolved **`start` / `end`** scroll pixels to **0–100%** on the sequence. Bars are **read-only** in Studio; GSAP still drives scrubbing on scroll.
+Requires **`sequenceMode: 'page'`**, `gsap.registerPlugin(ScrollTrigger)`, and a **vertical** ScrollTrigger whose **scroller matches** `configureTheatreGsap({ pageScroll: { scroller } })` (default: document). Theatre maps each trigger’s resolved **`start` / `end`** scroll pixels to **0–100%** on the sequence. Bars are **read-only** in Studio; GSAP still drives scrubbing on scroll.
 
 ```ts
 import gsap from 'gsap'
@@ -151,6 +190,11 @@ Outline proxies appear under **`GSAP / ScrollTriggers / …`**. They **automatic
 configureTheatreGsap({
   namespace: 'GSAP',
   outlineNamespace: {defaultCollapsed: true},
+  pageScroll: {
+    scroller: null, // document vertical (default)
+    applyScrollTriggerDefaults: false,
+  },
+  suppressGsapTickerRafWarning: false,
 })
 ```
 
@@ -175,6 +219,8 @@ Ship **`@unseenco/theatre-gsap`** and **`@unseenco/theatre-core`** in production
 ## Playground
 
 `yarn playground` → **`/shared/gsap-time-mode/`** — panel show/hide tweens, box motion, nested `UI / …` labels, and a rebuildable timeline choreo.
+
+**`/shared/gsap-page-mode/`** — native document scroll. **`/shared/gsap-page-mode-lenis/`** — Lenis smooth scroll + custom `ScrollDriver`.
 
 ## API reference
 

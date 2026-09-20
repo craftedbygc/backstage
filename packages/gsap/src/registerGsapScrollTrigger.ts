@@ -10,6 +10,7 @@ import {
 import type {GsapScrollTriggerRegistryEntry} from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
 import {formatOutlineNamespacePathKey} from '@unseenco/theatre-shared/utils/outlineNamespaces'
 import {getTheatreGsapConfig} from './config'
+import {getTheatrePageScrollContext} from './attachTheatrePageScroll'
 import type {GsapScrollTriggerLike} from './gsapScrollTriggerTypes'
 import {
   refreshGsapScrollTriggers,
@@ -70,17 +71,20 @@ export function registerOneGsapScrollTriggerOnSheet(
 
   refreshGsapScrollTriggers()
 
+  const pageScrollContext = getTheatrePageScrollContext()
+
   const extracted = extractScrollTriggerLayout(st, {
     sequenceLength,
     id: options.id,
     label: options.label,
     fallbackIndex,
+    pageScrollContext,
   })
 
   if (!extracted.ok) {
     if (extracted.reason === 'unsupported_scroller') {
       console.warn(
-        `[theatre-gsap] Skipped ScrollTrigger "${options.label}": only document vertical scroll triggers are supported in page mode.`,
+        `[theatre-gsap] Skipped ScrollTrigger "${options.label}": scroller does not match configured page scroll (see configureTheatreGsap pageScroll).`,
       )
     } else {
       console.warn(
@@ -153,5 +157,9 @@ export function refreshRegisteredGsapScrollTriggerLayouts(sheet: ISheet): void {
   if (sheet.getSequenceMode() !== 'page') return
   const sheetInternal = privateAPI(sheet)
   const sheetKey = sheetAddressKey(sheetInternal.address)
-  refreshScrollTriggerLayoutsForSheet(sheetKey, sequenceLengthForSheet(sheet))
+  refreshScrollTriggerLayoutsForSheet(
+    sheetKey,
+    sequenceLengthForSheet(sheet),
+    getTheatrePageScrollContext(),
+  )
 }

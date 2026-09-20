@@ -8,24 +8,35 @@ export type ScrollDriver = {
   subscribe(onChange: (progress: number) => void): () => void
 }
 
-/** Native `window` / `documentElement` vertical scroll. */
-export function createNativeDocumentScrollDriver(): ScrollDriver {
+const sheetScrollDrivers = new WeakMap<ISheet, ScrollDriver>()
+
+export function getSheetScrollDriver(sheet: ISheet): ScrollDriver | undefined {
+  return sheetScrollDrivers.get(sheet)
+}
+
+function rememberSheetScrollDriver(sheet: ISheet, driver: ScrollDriver): void {
+  sheetScrollDrivers.set(sheet, driver)
+}
+
+function progressFromScrollPosition(y: number, max: number): number {
+  if (max <= 0) return 0
+  if (y <= 1) return 0
+  if (y >= max - 1) return 1
+  return y / max
+}
+
+function createScrollDriverFromElement(
+  getMaxScroll: () => number,
+  getScrollPos: () => number,
+  setScrollPos: (y: number) => void,
+  addScrollListener: (handler: () => void) => () => void,
+): ScrollDriver {
   let suppressScrollEvents = false
   let suppressGeneration = 0
 
-  const getMaxScroll = (): number => {
-    const el = document.documentElement
-    return Math.max(0, el.scrollHeight - window.innerHeight)
-  }
-
   const getProgress = (): number => {
     const max = getMaxScroll()
-    if (max <= 0) return 0
-    const y = window.scrollY
-    // Snap to exact ends — avoids playhead stuck below 0% / above 100% on fast scroll.
-    if (y <= 1) return 0
-    if (y >= max - 1) return 1
-    return y / max
+    return progressFromScrollPosition(getScrollPos(), max)
   }
 
   const setProgress = (progress: number): void => {
@@ -33,7 +44,7 @@ export function createNativeDocumentScrollDriver(): ScrollDriver {
     const clamped = Math.max(0, Math.min(1, progress))
     const gen = ++suppressGeneration
     suppressScrollEvents = true
-    window.scrollTo({top: clamped * max, behavior: 'instant'})
+    setScrollPos(clamped * max)
     const release = () => {
       if (gen === suppressGeneration) {
         suppressScrollEvents = false
@@ -57,34 +68,63 @@ export function createNativeDocumentScrollDriver(): ScrollDriver {
         rafId = requestAnimationFrame(flush)
       }
       const handler = () => scheduleFlush()
-      window.addEventListener('scroll', handler, {passive: true})
-      window.addEventListener('resize', handler)
-      if ('onscrollend' in window) {
-        window.addEventListener('scrollend', () => {
-          suppressScrollEvents = false
-          onProgressChange(getProgress())
-        })
-      }
+      const removeScroll = addScrollListener(handler)
+      const onResize = () => scheduleFlush()
+      window.addEventListener('resize', onResize)
       return () => {
-        window.removeEventListener('scroll', handler)
-        window.removeEventListener('resize', handler)
+        removeScroll()
+        window.removeEventListener('resize', onResize)
         if (rafId !== 0) cancelAnimationFrame(rafId)
       }
     },
   }
 }
 
+/** Native `window` / `documentElement` vertical scroll. */
+export function createNativeDocumentScrollDriver(): ScrollDriver {
+  const getMaxScroll = (): number => {
+    const el = document.documentElement
+    return Math.max(0, el.scrollHeight - window.innerHeight)
+  }
+
+  return createScrollDriverFromElement(
+    getMaxScroll,
+    () => window.scrollY,
+    (y) => window.scrollTo({top: y, behavior: 'instant'}),
+    (handler) => {
+      window.addEventListener('scroll', handler, {passive: true})
+      return () => window.removeEventListener('scroll', handler)
+    },
+  )
+}
+
+/** Vertical scroll on a custom overflow element. */
+export function createElementScrollDriver(element: HTMLElement): ScrollDriver {
+  const getMaxScroll = (): number =>
+    Math.max(0, element.scrollHeight - element.clientHeight)
+
+  return createScrollDriverFromElement(
+    getMaxScroll,
+    () => element.scrollTop,
+    (y) => {
+      element.scrollTop = y
+    },
+    (handler) => {
+      element.addEventListener('scroll', handler, {passive: true})
+      return () => element.removeEventListener('scroll', handler)
+    },
+  )
+}
+
 /**
  * Keeps `sheet.sequence.position` aligned with scroll progress in page mode.
  * Progress maps to `[0, sequence.length]` (length is 100 in page mode).
- *
- * Scroll drives the playhead only (scroll → position). To move the page when
- * scrubbing in Studio, call {@link syncNativeDocumentScrollToSequencePosition}.
  */
 export function attachSheetScrollDriver(
   sheet: ISheet,
   driver: ScrollDriver = createNativeDocumentScrollDriver(),
 ): () => void {
+  rememberSheetScrollDriver(sheet, driver)
   const sequence = sheet.sequence
 
   const syncPositionFromScroll = (progress: number) => {
@@ -104,12 +144,32 @@ export function attachSheetScrollDriver(
   }
 }
 
+export function pageScrollProgressFromSequence(sheet: ISheet): number {
+  const length = val(sheet.sequence.pointer.length)
+  if (length <= 0) return 0
+  return sheet.sequence.position / length
+}
+
+export function setPageScrollProgress(sheet: ISheet, progress: number): void {
+  const length = val(sheet.sequence.pointer.length)
+  if (length <= 0) return
+  const clamped = Math.max(0, Math.min(1, progress))
+  sheet.sequence.position = clamped * length
+}
+
+/** Scroll to match the current sequence playhead using the sheet's active driver. */
+export function syncPageScrollToSequencePosition(
+  sheet: ISheet,
+  driver: ScrollDriver = getSheetScrollDriver(sheet) ??
+    createNativeDocumentScrollDriver(),
+): void {
+  const progress = pageScrollProgressFromSequence(sheet)
+  driver.setProgress(progress)
+}
+
 /** Scroll the native document to match the current sequence playhead (page mode UI). */
 export function syncNativeDocumentScrollToSequencePosition(
   sheet: ISheet,
 ): void {
-  const length = val(sheet.sequence.pointer.length)
-  if (length <= 0) return
-  const progress = sheet.sequence.position / length
-  createNativeDocumentScrollDriver().setProgress(progress)
+  syncPageScrollToSequencePosition(sheet, createNativeDocumentScrollDriver())
 }

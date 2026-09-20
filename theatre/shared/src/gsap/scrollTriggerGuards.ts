@@ -1,4 +1,8 @@
 import {readGsapTweenTimelineDuration} from './syncGsapClipProgress'
+import {
+  defaultPageScrollContext,
+  isVerticalPageScrollTrigger,
+} from '@unseenco/theatre-shared/sheets/pageScrollContext'
 
 export type GsapScrollTriggerSurface = {
   start: number
@@ -22,7 +26,8 @@ function isWindowLike(value: unknown): boolean {
   )
 }
 
-function isDocumentScroller(value: unknown): boolean {
+/** @internal */
+export function isDocumentScroller(value: unknown): boolean {
   if (value == null) return true
   if (isWindowLike(value)) return true
   if (typeof document === 'undefined') return false
@@ -31,12 +36,7 @@ function isDocumentScroller(value: unknown): boolean {
 
 /** True when ST uses default document vertical scroll (page-mode sync target). */
 export function isDocumentVerticalScrollTrigger(st: unknown): boolean {
-  const surface = st as GsapScrollTriggerSurface
-  if (surface.horizontal === true || surface.vars?.horizontal === true) {
-    return false
-  }
-  const scroller = surface.scroller ?? surface.vars?.scroller
-  return isDocumentScroller(scroller)
+  return isVerticalPageScrollTrigger(st, defaultPageScrollContext)
 }
 
 export function resolveScrollTriggerAnimation(

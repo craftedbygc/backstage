@@ -1,5 +1,18 @@
 import type {OutlineNamespaceConfig} from '@unseenco/theatre-shared/utils/outlineNamespaces'
+import type {PageScrollScroller} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+import {
+  defaultPageScrollContext,
+  setActivePageScrollContext,
+} from '@unseenco/theatre-shared/sheets/pageScrollContext'
 import {setConfiguredGsapSheetObjectNamespace} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
+import {getGsapScrollTriggerPlugin} from './gsapScrollTriggerPlugin'
+
+export type TheatreGsapPageScrollConfig = {
+  /** Default scroller for ScrollTrigger layout and guards; `null` = document vertical. */
+  scroller?: PageScrollScroller
+  /** When true, calls `ScrollTrigger.defaults({ scroller })` on configure / attach. */
+  applyScrollTriggerDefaults?: boolean
+}
 
 export type TheatreGsapConfig = {
   /** Outline namespace segment for GSAP proxy objects (default `GSAP`). */
@@ -8,6 +21,7 @@ export type TheatreGsapConfig = {
   outlineNamespace?: OutlineNamespaceConfig
   /** When true, skips the one-time gsap.ticker / core rAF integration warning. */
   suppressGsapTickerRafWarning?: boolean
+  pageScroll?: TheatreGsapPageScrollConfig
 }
 
 let activeConfig: TheatreGsapConfig = {
@@ -26,11 +40,32 @@ export function configureTheatreGsap(config: TheatreGsapConfig): {
     outlineNamespace: config.outlineNamespace ?? prev.outlineNamespace,
     suppressGsapTickerRafWarning:
       config.suppressGsapTickerRafWarning ?? prev.suppressGsapTickerRafWarning,
+    pageScroll: config.pageScroll ?? prev.pageScroll,
   }
   setConfiguredGsapSheetObjectNamespace(activeConfig.namespace ?? 'GSAP')
+  if (config.pageScroll) {
+    setActivePageScrollContext({
+      scroller: config.pageScroll.scroller ?? defaultPageScrollContext.scroller,
+    })
+  }
+  if (activeConfig.pageScroll?.applyScrollTriggerDefaults) {
+    const ScrollTrigger = getGsapScrollTriggerPlugin()
+    ScrollTrigger?.defaults?.({
+      scroller: activeConfig.pageScroll.scroller ?? undefined,
+    })
+  }
   return {
     reset() {
       activeConfig = prev
+      setConfiguredGsapSheetObjectNamespace(prev.namespace ?? 'GSAP')
+      setActivePageScrollContext(
+        prev.pageScroll
+          ? {
+              scroller:
+                prev.pageScroll.scroller ?? defaultPageScrollContext.scroller,
+            }
+          : defaultPageScrollContext,
+      )
     },
   }
 }

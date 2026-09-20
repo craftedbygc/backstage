@@ -14,8 +14,13 @@ export {refreshRegisteredGsapScrollTriggerLayouts} from './registerGsapScrollTri
 export type {GsapScrollTriggerLike} from './gsapScrollTriggerTypes'
 export {attachGsapSequenceBridge} from './attachGsapSequenceBridge'
 export {configureTheatreGsap, getTheatreGsapConfig} from './config'
+export type {TheatreGsapConfig, TheatreGsapPageScrollConfig} from './config'
+export {
+  attachTheatrePageScroll,
+  createDefaultPageScrollDriver,
+  getTheatrePageScrollContext,
+} from './attachTheatrePageScroll'
 export {bindGsapScrollTriggerPlugin} from './gsapScrollTriggerPlugin'
-export type {TheatreGsapConfig} from './config'
 export {
   bindGsapTickerToRafDriver,
   isRafDriverDrivenByGsapTicker,

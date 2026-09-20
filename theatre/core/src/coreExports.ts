@@ -34,7 +34,12 @@ export {attachGsapSequenceBridge} from './gsap/attachGsapSequenceBridge'
 export {
   attachSheetScrollDriver,
   syncNativeDocumentScrollToSequencePosition,
+  syncPageScrollToSequencePosition,
   createNativeDocumentScrollDriver,
+  createElementScrollDriver,
+  pageScrollProgressFromSequence,
+  setPageScrollProgress,
+  getSheetScrollDriver,
 } from './sheets/attachSheetScrollDriver'
 export type {ScrollDriver} from './sheets/attachSheetScrollDriver'
 export type {SheetSequenceMode} from './sheets/sheetSequenceMode'

@@ -1,6 +1,7 @@
 import {usePrism} from '@unseenco/theatre-react'
 import {val} from '@unseenco/theatre-dataverse'
 import {refreshScrollTriggerLayoutsForSheet} from '@unseenco/theatre-shared/gsap/refreshScrollTriggerLayoutsForSheet'
+import {getActivePageScrollContext} from '@unseenco/theatre-shared/sheets/pageScrollContext'
 import {sheetAddressKey} from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
 import {resolveSequenceEditorSheet} from '@unseenco/theatre-studio/selectors'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
@@ -27,6 +28,7 @@ const GsapScrollTriggerLayoutSync: React.VFC = () => {
       refreshScrollTriggerLayoutsForSheet(
         sheetKey,
         val(sequence.publicApi.pointer.length),
+        getActivePageScrollContext(),
       )
     }
 
