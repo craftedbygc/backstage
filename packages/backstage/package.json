@@ -9,9 +9,16 @@
     "directory": "packages/backstage"
   },
   "author": {
-    "name": "TheaterJS Oy",
+    "name": "Unseen Studio",
     "url": "https://unseen-theatre.netlify.app"
   },
+  "contributors": [
+    {
+      "name": "TheaterJS Oy",
+      "email": "hello@theatrejs.com",
+      "url": "https://www.theatrejs.com"
+    }
+  ],
   "type": "commonjs",
   "files": [
     "dist/**",

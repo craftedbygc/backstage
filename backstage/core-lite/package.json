@@ -9,9 +9,16 @@
     "directory": "backstage/core-lite"
   },
   "author": {
-    "name": "TheaterJS Oy",
+    "name": "Unseen Studio",
     "url": "https://unseen-theatre.netlify.app"
   },
+  "contributors": [
+    {
+      "name": "TheaterJS Oy",
+      "email": "hello@theatrejs.com",
+      "url": "https://www.theatrejs.com"
+    }
+  ],
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",

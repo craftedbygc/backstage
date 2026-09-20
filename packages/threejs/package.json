@@ -4,8 +4,8 @@
   "license": "AGPL-3.0-only",
   "description": "Three.js devtools extension for Backstage.js Studio",
   "author": {
-    "name": "Aria Minaei",
-    "url": "https://github.com/AriaMinaei"
+    "name": "Unseen Studio",
+    "url": "https://unseen-theatre.netlify.app"
   },
   "repository": {
     "type": "git",

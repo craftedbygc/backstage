@@ -4,8 +4,8 @@
   "license": "AGPL-3.0-only",
   "description": "GSAP time-mode bridge for Backstage.js",
   "author": {
-    "name": "Aria Minaei",
-    "url": "https://github.com/AriaMinaei"
+    "name": "Unseen Studio",
+    "url": "https://unseen-theatre.netlify.app"
   },
   "repository": {
     "type": "git",
