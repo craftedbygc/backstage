@@ -3,9 +3,10 @@ import projectsSingleton from './projects/projectsSingleton'
 import {privateAPI} from './privateAPIs'
 import * as fullCoreExports from './coreExports'
 import * as liteCoreExports from './coreExports-lite'
-
-const coreExports = __THEATRE_LITE__ ? liteCoreExports : fullCoreExports
 import {getCoreRafDriver} from './coreTicker'
+import {isTheatreLiteMode} from './utils/isTheatreLiteMode'
+
+const coreExports = isTheatreLiteMode() ? liteCoreExports : fullCoreExports
 
 export type CoreBits = {
   projectsP: typeof projectsSingleton.atom.pointer.projects

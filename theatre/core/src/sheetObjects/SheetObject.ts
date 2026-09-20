@@ -27,6 +27,8 @@ import {
 } from '@unseenco/theatre-dataverse'
 import type SheetObjectTemplate from './SheetObjectTemplate'
 import TheatreSheetObject from './TheatreSheetObject'
+import {mergeSequencedValuesIntoFinal} from './sheetObjectSequencedFull'
+import {isTheatreLiteMode} from '../utils/isTheatreLiteMode'
 
 
 import {getPropConfigByPath} from '@unseenco/theatre-shared/propTypes/utils'
@@ -215,15 +217,12 @@ export default class SheetObject implements PointerToPrismProvider {
          */
         let final = withStatics
 
-        if (!__THEATRE_LITE__) {
+        if (!isTheatreLiteMode()) {
           const withSeqsCache = prism.memo(
             'withSeqsCache',
             () => new WeakMap(),
             [],
           )
-          const {
-            mergeSequencedValuesIntoFinal,
-          } = require('./sheetObjectSequencedFull')
           final = mergeSequencedValuesIntoFinal(this, final, withSeqsCache)
         }
 

@@ -26,6 +26,15 @@ import type {
 import type {StrictRecord} from '@unseenco/theatre-shared/utils/types'
 import type {ILogger} from '@unseenco/theatre-shared/logger'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
+import {isTheatreLiteMode} from '@unseenco/theatre-core/utils/isTheatreLiteMode'
+import {getOrCreateFullSequence} from './sheetGetSequenceFull'
+import {
+  disposeRuntimeIntegrationsForSheet,
+  enableGsapSequenceBridgeForSheet,
+  reattachGsapBridgeForSheet,
+  setPageScrollDriverForSheet,
+  syncPageScrollDriverForSheet,
+} from './sheetPageScrollAndGsapFull'
 import {
   DEFAULT_SEQUENCE_VARIANT,
   validateSequenceVariantIdOrThrow,
@@ -167,7 +176,7 @@ export default class Sheet {
    */
   unload() {
     this.disposeRuntimeIntegrations()
-    if (!__THEATRE_LITE__) {
+    if (!isTheatreLiteMode()) {
       for (const sequence of Object.values(this._sequences)) {
         sequence.pause()
       }
@@ -182,13 +191,12 @@ export default class Sheet {
 
   getSequence(variant?: SequenceVariantId): Sequence {
     const variantId = variant ?? val(this._activeSequenceVariant.pointer)
-    if (__THEATRE_LITE__) {
+    if (isTheatreLiteMode()) {
       if (!this._liteSequences[variantId]) {
         this._liteSequences[variantId] = new LiteSequence()
       }
       return this._liteSequences[variantId]! as unknown as Sequence
     }
-    const {getOrCreateFullSequence} = require('./sheetGetSequenceFull')
     return getOrCreateFullSequence(this, this._sequences, variantId)
   }
 
@@ -240,38 +248,25 @@ export default class Sheet {
   }
 
   setSequenceMode(mode: SheetSequenceMode): void {
-    if (__THEATRE_LITE__) return
+    if (isTheatreLiteMode()) return
     if (this._sequenceMode.get() === mode) return
     this._sequenceMode.set(mode)
-    const {
-      syncPageScrollDriverForSheet,
-      reattachGsapBridgeForSheet,
-    } = require('./sheetPageScrollAndGsapFull')
     syncPageScrollDriverForSheet(this)
     reattachGsapBridgeForSheet(this)
   }
 
   enableGsapSequenceBridge(): void {
-    if (__THEATRE_LITE__) return
-    const {
-      enableGsapSequenceBridgeForSheet,
-    } = require('./sheetPageScrollAndGsapFull')
+    if (isTheatreLiteMode()) return
     enableGsapSequenceBridgeForSheet(this)
   }
 
   disposeRuntimeIntegrations(): void {
-    if (__THEATRE_LITE__) return
-    const {
-      disposeRuntimeIntegrationsForSheet,
-    } = require('./sheetPageScrollAndGsapFull')
+    if (isTheatreLiteMode()) return
     disposeRuntimeIntegrationsForSheet(this)
   }
 
   setPageScrollDriver(driver: ScrollDriver | undefined): void {
-    if (__THEATRE_LITE__) return
-    const {
-      setPageScrollDriverForSheet,
-    } = require('./sheetPageScrollAndGsapFull')
+    if (isTheatreLiteMode()) return
     setPageScrollDriverForSheet(this, driver)
   }
 

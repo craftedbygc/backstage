@@ -5,6 +5,8 @@
  * @packageDocumentation
  */
 
+import './theatreLiteRuntimeFlag'
+
 export * from './coreExports-lite'
 export type {
   IProject,
