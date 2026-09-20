@@ -327,13 +327,28 @@ prog
     'Publishes all packages to npm (use after a release that failed at the publish step)',
   )
   .option('--tag <tag>', 'npm dist-tag', 'latest')
+  .option(
+    '--from <package>',
+    'Start at this package name (for resuming a failed publish)',
+  )
   .action(async (opts) => {
     // @ts-ignore ignore
     process.env.THEATRE_IS_PUBLISHING = true
 
     const npmTag = opts.tag ?? 'latest'
 
-    for (const packageName of packagesToPublish) {
+    let toPublish = packagesToPublish
+    if (opts.from) {
+      const fromIndex = packagesToPublish.indexOf(opts.from)
+      if (fromIndex === -1) {
+        throw new Error(
+          `Unknown package "${opts.from}". Expected one of: ${packagesToPublish.join(', ')}`,
+        )
+      }
+      toPublish = packagesToPublish.slice(fromIndex)
+    }
+
+    for (const packageName of toPublish) {
       console.log(
         `Publishing ${packageName} from ${packageDirByName[packageName]}`,
       )
