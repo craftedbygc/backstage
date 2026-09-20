@@ -1,17 +1,15 @@
 import type {Studio} from '@unseenco/theatre-studio/Studio'
 import projectsSingleton from './projects/projectsSingleton'
 import {privateAPI} from './privateAPIs'
-import * as coreExports from './coreExports'
+import * as fullCoreExports from './coreExports'
+import * as liteCoreExports from './coreExports-lite'
 import {getCoreRafDriver} from './coreTicker'
+import {isTheatreLiteMode} from './utils/isTheatreLiteMode'
+import type {CoreBits, TheatreCoreBundle} from './coreBundleTypes'
 
-export type CoreBits = {
-  projectsP: typeof projectsSingleton.atom.pointer.projects
-  privateAPI: typeof privateAPI
-  coreExports: typeof coreExports
-  getCoreRafDriver: typeof getCoreRafDriver
-}
+const coreExports = isTheatreLiteMode() ? liteCoreExports : fullCoreExports
 
-export default class CoreBundle {
+export default class CoreBundle implements TheatreCoreBundle {
   private _studio: Studio | undefined = undefined
   constructor() {}
 
@@ -40,3 +38,5 @@ export default class CoreBundle {
     callback(bits)
   }
 }
+
+export type {CoreBits, TheatreCoreBundle} from './coreBundleTypes'

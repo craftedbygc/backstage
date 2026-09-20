@@ -213,10 +213,6 @@ You can contribute with:
 - Create examples projects for your own particular dev stack (eg. using
   Pixie/Vue/THREE.js/Babylon/etc)
 
-Another great way to help is to join our
-[community](https://discord.gg/bm9f8F9Y9N) and chime in on questions and share
-ideas.
-
 ### Helping with outstanding issues
 
 Feel free to chime in on any

@@ -38,6 +38,7 @@ import {
   getSequenceStateFromSheet,
   getVariantOwnStaticOverridesByObject,
 } from '@unseenco/theatre-core/sequences/sequenceVariants'
+import {isTheatreLiteStudio} from '@unseenco/theatre-studio/utils/theatreLiteMode'
 
 interface EditingToolsCommon<T> {
   value: T
@@ -165,7 +166,8 @@ function createPrism<T extends SerializablePrimitive>(
       controlIndicators: <></>,
     }
 
-    const isSequencable = isPropConfSequencable(propConfig)
+    const isSequencable =
+      isPropConfSequencable(propConfig) && !isTheatreLiteStudio()
 
     if (isSequencable) {
       const activeVariant = getStudioActiveSequenceVariant(obj.sheet.address)

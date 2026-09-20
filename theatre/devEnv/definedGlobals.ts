@@ -3,6 +3,7 @@
  * TODO make the globals typesafe
  */
 export const definedGlobals = {
+  __THEATRE_LITE__: 'false',
   'process.env.THEATRE_VERSION': JSON.stringify(
     require('../studio/package.json').version,
   ),

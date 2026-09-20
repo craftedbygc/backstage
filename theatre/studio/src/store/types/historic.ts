@@ -1,5 +1,5 @@
 import type {ProjectState_Historic} from '@unseenco/theatre-core/projects/store/storeTypes'
-import type {graphEditorColors} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/GraphEditor/GraphEditor'
+import type {graphEditorColors} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/graphEditorColors'
 import type {
   PathToProp_Encoded,
   ProjectAddress,

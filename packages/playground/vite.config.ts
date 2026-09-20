@@ -4,6 +4,7 @@ import path from 'path'
 import fg from 'fast-glob'
 import {getAliasesFromTsConfigForRollup} from '../../devEnv/getAliasesFromTsConfig'
 import {definedGlobals} from '../../theatre/devEnv/definedGlobals'
+import {theatreLiteThreePeersPlugin} from './devEnv/theatreLiteThreeVitePlugin'
 
 const fromPlaygroundDir = (folder: string) => path.resolve(__dirname, folder)
 const srcDir = fromPlaygroundDir('src')
@@ -44,7 +45,7 @@ const config = defineConfig(async ({command}) => {
   return {
     base,
     root: srcDir,
-    plugins: [react()],
+    plugins: [theatreLiteThreePeersPlugin(), react()],
     appType: 'mpa',
     server: {
       port: 8082,
@@ -65,7 +66,12 @@ const config = defineConfig(async ({command}) => {
     },
     optimizeDeps: {
       exclude: dev
-        ? ['@unseenco/theatre-core', '@unseenco/theatre-studio']
+        ? [
+            '@unseenco/theatre-core',
+            '@unseenco/theatre-core-lite',
+            '@unseenco/theatre-studio',
+            '@unseenco/theatre-studio-lite',
+          ]
         : [],
       // include: !dev ? ['@unseenco/theatre-core', '@unseenco/theatre-studio'] : [],
       // needsInterop: ['@unseenco/theatre-core', '@unseenco/theatre-studio'],

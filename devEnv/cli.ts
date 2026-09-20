@@ -137,7 +137,9 @@ prog
 
     const packagesToPublish = [
       '@unseenco/theatre-core',
+      '@unseenco/theatre-core-lite',
       '@unseenco/theatre-studio',
+      '@unseenco/theatre-studio-lite',
       '@unseenco/theatre-dataverse',
       '@unseenco/theatre-react',
       '@unseenco/theatre-browser-bundles',
@@ -147,7 +149,9 @@ prog
 
     const packageDirByName: Record<string, string> = {
       '@unseenco/theatre-core': 'theatre/core',
+      '@unseenco/theatre-core-lite': 'theatre/core-lite',
       '@unseenco/theatre-studio': 'theatre/studio',
+      '@unseenco/theatre-studio-lite': 'theatre/studio-lite',
       '@unseenco/theatre-dataverse': 'packages/dataverse',
       '@unseenco/theatre-react': 'packages/react',
       '@unseenco/theatre-browser-bundles': 'packages/browser-bundles',
@@ -162,7 +166,9 @@ prog
       '.',
       'theatre',
       'theatre/core',
+      'theatre/core-lite',
       'theatre/studio',
+      'theatre/studio-lite',
       'packages/dataverse',
       'packages/react',
       'packages/browser-bundles',

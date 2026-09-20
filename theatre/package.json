@@ -5,7 +5,9 @@
   "workspaces": [
     "./shared",
     "./core",
-    "./studio"
+    "./studio",
+    "./studio-lite",
+    "./core-lite"
   ],
   "scripts": {
     "typecheck": "tsc --build",

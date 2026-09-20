@@ -8,6 +8,8 @@
 yarn add @unseenco/theatre-core @unseenco/theatre-studio @unseenco/theatre-threejs three
 ```
 
+> **Theatre Lite:** Peer `@unseenco/theatre-core-lite` and `@unseenco/theatre-studio-lite` instead for static + variant workflows. Runtime helpers and `/extension` work the same; see [Three.js with Theatre Lite](../theatre-lite/three-js.md).
+
 ## Studio (development)
 
 Import the extension from the **`/extension`** subpath so production bundles do not pull Studio:

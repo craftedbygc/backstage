@@ -307,6 +307,12 @@ export interface _StudioInitializeOpts {
    * ```
    */
   accentHex?: string
+
+  /**
+   * `'lite'` disables sequencing UI and sequence state mutations (static authoring only).
+   * Implicit when importing `@unseenco/theatre-studio-lite`.
+   */
+  mode?: 'full' | 'lite'
 }
 
 /**
@@ -489,13 +495,10 @@ export interface IStudio {
        * Whether to reconfigure the extension. This is useful if you're
        * hot-reloading the extension.
        *
-       * Mind you, that if the old version of the extension defines a pane,
+       * If the old version of the extension defines a pane,
        * and the new version doesn't, all instances of that pane will disappear, as expected.
        * _However_, if you again reconfigure the extension with the old version, the instances
        * of the pane that pane will re-appear.
-       *
-       * We're not sure about whether this behavior makes sense or not. If not, let us know
-       * in the discord server or open an issue on github.
        */
       __experimental_reconfigure?: boolean
     },

@@ -1,9 +1,6 @@
-import type {InterpolationTriple} from '@unseenco/theatre-core/sequences/interpolationTripleAtPosition'
-import interpolationTripleAtPosition from '@unseenco/theatre-core/sequences/interpolationTripleAtPosition'
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
 import type {SheetObjectAddress} from '@unseenco/theatre-shared/utils/addresses'
 import deepMergeWithCache from '@unseenco/theatre-shared/utils/deepMergeWithCache'
-import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
 import pointerDeep from '@unseenco/theatre-shared/utils/pointerDeep'
 import SimpleCache from '@unseenco/theatre-shared/utils/SimpleCache'
 import type {
@@ -30,18 +27,14 @@ import {
 } from '@unseenco/theatre-dataverse'
 import type SheetObjectTemplate from './SheetObjectTemplate'
 import TheatreSheetObject from './TheatreSheetObject'
-import type {
-  Interpolator,
-  PropTypeConfig,
-} from '@unseenco/theatre-core/propTypes'
+import {mergeSequencedValuesIntoFinal} from './sheetObjectSequencedFull'
+import {isTheatreLiteMode} from '@unseenco/theatre-core/utils/isTheatreLiteMode'
 import {getPropConfigByPath} from '@unseenco/theatre-shared/propTypes/utils'
 import type {PathToProp} from '@unseenco/theatre-shared/utils/addresses'
 import removePathFromObject from '@unseenco/theatre-shared/utils/removePathFromObject'
 import setDeepImmutable from '@unseenco/theatre-shared/utils/setDeepImmutable'
 import {cloneDeep} from 'lodash-es'
 import type {ILogger, IUtilContext} from '@unseenco/theatre-shared/logger'
-import {pointerToSequenceTrackData} from '@unseenco/theatre-core/sequences/sequenceVariants'
-import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import {DEFAULT_SEQUENCE_VARIANT} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import {onChange} from '@unseenco/theatre-core/coreExports'
 import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
@@ -83,7 +76,8 @@ export default class SheetObject implements PointerToPrismProvider {
   private readonly _sessionOverrides = new Atom<SerializableMap>({})
   private readonly _cache = new SimpleCache()
   readonly _logger: ILogger
-  private readonly _internalUtilCtx: IUtilContext
+  /** @internal Used by `sheetObjectSequencedFull`. */
+  readonly _internalUtilCtx: IUtilContext
 
   constructor(
     readonly sheet: Sheet,
@@ -220,35 +214,14 @@ export default class SheetObject implements PointerToPrismProvider {
          * The final values (all layers merged together) will be put inside this variable
          */
         let final = withStatics
-        /**
-         * The sequenced values will be put in this variable
-         */
-        let sequenced
 
-        {
-          // NOTE: we're reading the sequenced values as a prism to a pointer. This should be refactored
-          // to a simple pointer.
-          const pointerToSequencedValuesD = prism.memo(
-            'seq',
-            () => this.getSequencedValues(),
-            [],
-          )
-
-          // like before, we need a separate but stable WeakMap to cache the result of merging the sequenced values
-          // on top of the last layer
+        if (!isTheatreLiteMode()) {
           const withSeqsCache = prism.memo(
             'withSeqsCache',
             () => new WeakMap(),
             [],
           )
-
-          // read the sequenced values
-          // (val(val(x))) unwraps the pointer and the prism
-          sequenced = val(val(pointerToSequencedValuesD))
-
-          // deep-merge the sequenced values with the previous layer
-          const withSeqs = deepMergeWithCache(final, sequenced, withSeqsCache)
-          final = withSeqs
+          final = mergeSequencedValuesIntoFinal(this, final, withSeqsCache)
         }
 
         const sessionOverrides = val(this._sessionOverrides.pointer)
@@ -308,112 +281,6 @@ export default class SheetObject implements PointerToPrismProvider {
       const allValuesP = val(this.getValues())
       return val(pointerDeep(allValuesP as $FixMe, path)) as SerializableMap
     }) as $IntentionalAny as Prism<P>
-  }
-
-  /**
-   * Returns values of props that are sequenced.
-   */
-  getSequencedValues(): Prism<Pointer<SheetObjectPropsValue>> {
-    return prism(() => {
-      const activeVariant = val(this.sheet.effectiveActiveSequenceVariantD)
-      const sequenceVariant = isSheetPropsObjectKey(this.address.objectKey)
-        ? DEFAULT_SEQUENCE_VARIANT
-        : activeVariant
-
-      const tracksToProcessD = prism.memo(
-        'tracksToProcess',
-        () => this.template.getArrayOfValidSequenceTracks(sequenceVariant),
-        [sequenceVariant],
-      )
-
-      const tracksToProcess = val(tracksToProcessD)
-      const valsAtom = new Atom<SheetObjectPropsValue>({})
-      const config = val(this.template.configPointer)
-
-      prism.effect(
-        'processTracks',
-        () => {
-          const untaps: Array<() => void> = []
-
-          for (const {trackId, pathToProp, trackVariant} of tracksToProcess) {
-            if (this.template.isNonSequencablePropPath(pathToProp)) continue
-
-            const pr = this._trackIdToPrism(trackId, trackVariant)
-            const propConfig = getPropConfigByPath(
-              config,
-              pathToProp,
-            )! as Extract<PropTypeConfig, {interpolate: $IntentionalAny}>
-
-            const deserializeAndSanitize = propConfig.deserializeAndSanitize
-            const interpolate =
-              propConfig.interpolate! as Interpolator<$IntentionalAny>
-
-            const updateSequenceValueFromItsPrism = () => {
-              const triple = pr.getValue()
-
-              if (!triple)
-                return valsAtom.setByPointer(
-                  (p) => pointerDeep(p, pathToProp),
-                  undefined,
-                )
-
-              const leftDeserialized = deserializeAndSanitize(triple.left)
-
-              const left =
-                leftDeserialized === undefined
-                  ? propConfig.default
-                  : leftDeserialized
-
-              if (triple.right === undefined)
-                return valsAtom.setByPointer(
-                  (p) => pointerDeep(p, pathToProp),
-                  left,
-                )
-
-              const rightDeserialized = deserializeAndSanitize(triple.right)
-              const right =
-                rightDeserialized === undefined
-                  ? propConfig.default
-                  : rightDeserialized
-
-              return valsAtom.setByPointer(
-                (p) => pointerDeep(p, pathToProp),
-                interpolate(left, right, triple.progression),
-              )
-            }
-            const untap = pr.onStale(updateSequenceValueFromItsPrism)
-
-            updateSequenceValueFromItsPrism()
-            untaps.push(untap)
-          }
-          return () => {
-            for (const untap of untaps) {
-              untap()
-            }
-          }
-        },
-        [config, ...tracksToProcess],
-      )
-
-      return valsAtom.pointer
-    })
-  }
-
-  protected _trackIdToPrism(
-    trackId: SequenceTrackId,
-    trackVariant: SequenceVariantId,
-  ): Prism<InterpolationTriple | undefined> {
-    const activeVariant = val(this.sheet.effectiveActiveSequenceVariantD)
-    const trackP = pointerToSequenceTrackData(
-      this.template.project.pointers.historic.sheetsById[this.address.sheetId],
-      trackVariant,
-      this.address.objectKey,
-      trackId,
-    )
-
-    const timeD = this.sheet.getSequence(activeVariant).positionPrism
-
-    return interpolationTripleAtPosition(this._internalUtilCtx, trackP, timeD)
   }
 
   get propsP(): Pointer<SheetObjectPropsValue> {

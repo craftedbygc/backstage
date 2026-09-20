@@ -43,6 +43,7 @@ import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/sequence/trackData'
 import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
 import GsapClipSequenceIndicator from '@unseenco/theatre-studio/gsap/GsapClipSequenceIndicator'
 import {getGsapStudioOutlineMenuItems} from '@unseenco/theatre-studio/gsap/gsapOutlineMenuItems'
+import {isTheatreLiteStudio} from '@unseenco/theatre-studio/utils/theatreLiteMode'
 
 interface CommonStuff {
   beingScrubbed: boolean
@@ -152,6 +153,7 @@ export function useEditingToolsForCompoundProp<T extends SerializablePrimitive>(
     ) as undefined | IPropPathToTrackIdTree
 
     const hasOneOrMoreSequencedTracks =
+      !isTheatreLiteStudio() &&
       possibleSequenceTrackIds !== undefined &&
       Object.keys(possibleSequenceTrackIds).length !== 0 // check if object is empty or undefined
     const listOfDescendantTrackIds: SequenceTrackId[] = []

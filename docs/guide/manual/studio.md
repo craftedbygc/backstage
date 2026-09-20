@@ -2,6 +2,8 @@
 
 **Studio** (`@unseenco/theatre-studio`) is the visual editor. It appears only when you call `studio.initialize()`—keep that behind a development flag in production.
 
+> **Studio vs studio-lite:** Full Studio includes the Sequence Editor, keyframes, GSAP rows, and playback. [`@unseenco/theatre-studio-lite`](../theatre-lite/index.md) keeps outline, details, variants, and export for static authoring only—pair with `@unseenco/theatre-core-lite` in production.
+
 Toggle visibility: `Alt`/`Option` + `\`.
 
 ## Initialization

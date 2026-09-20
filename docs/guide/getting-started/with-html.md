@@ -1,4 +1,4 @@
-# With HTML / SVG
+# With HTML
 
 Animate DOM elements without a bundler. This tutorial uses ES modules and a CDN; the same APIs apply when you import `@unseenco/theatre-core` from npm.
 

@@ -19,6 +19,7 @@ import {
   isBasicKeyframedTrack,
 } from '@unseenco/theatre-shared/sequence/trackData'
 import type {SheetAhistoricState} from '@unseenco/theatre-core/projects/store/storeTypes'
+import {isTheatreLiteStudio} from '@unseenco/theatre-studio/utils/theatreLiteMode'
 // stateEditors mutates core historic sheet state, so it needs these runtime helpers.
 // eslint-disable-next-line no-restricted-syntax
 import {
@@ -84,7 +85,7 @@ import {
   limitGsapClipResizeStart,
   limitKeyframeGroupTranslate,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/sequenceEditLimits'
-import {graphEditorColors} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/GraphEditor/GraphEditor'
+import {graphEditorColors} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/graphEditorColors'
 import type {
   KeyframeWithPathToPropFromCommonRoot,
   OutlineSelectable,
@@ -558,6 +559,10 @@ namespace stateEditors {
       export function setPinSequenceEditor(
         pinSequenceEditor: StudioAhistoricState['pinSequenceEditor'],
       ) {
+        if (isTheatreLiteStudio()) {
+          drafts().ahistoric.pinSequenceEditor = false
+          return
+        }
         drafts().ahistoric.pinSequenceEditor = pinSequenceEditor
       }
       export function setVisibilityState(
@@ -894,6 +899,9 @@ namespace stateEditors {
             },
             config: PropTypeConfig,
           ) {
+            if (isTheatreLiteStudio()) {
+              return
+            }
             const variantId = effectiveSequenceVariantForObjectKey(
               p.objectKey,
               p.sequenceVariant,

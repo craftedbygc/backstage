@@ -5,12 +5,15 @@ import getStudio from '@unseenco/theatre-studio/getStudio'
 import {useVal} from '@unseenco/theatre-react'
 import ExtensionPaneWrapper from '@unseenco/theatre-studio/panels/BasePanel/ExtensionPaneWrapper'
 import SequenceEditorPanel from '@unseenco/theatre-studio/panels/SequenceEditorPanel/SequenceEditorPanel'
+import {isTheatreLiteStudio} from '@unseenco/theatre-studio/utils/theatreLiteMode'
 
 const PanelsRoot: React.FC = () => {
   const panes = useVal(getStudio().paneManager.allPanesD)
-  const pinSequenceEditor = useVal(
+  const pinSequenceEditorPinned = useVal(
     getStudio().atomP.ahistoric.pinSequenceEditor,
   )
+  const pinSequenceEditor =
+    !isTheatreLiteStudio() && pinSequenceEditorPinned !== false
   const paneEls = Object.entries(panes).map(([instanceId, paneInstance]) => {
     return (
       <ExtensionPaneWrapper
@@ -25,7 +28,7 @@ const PanelsRoot: React.FC = () => {
       {paneEls}
       <OutlinePanel />
       <DetailPanel />
-      {pinSequenceEditor !== false && <SequenceEditorPanel />}
+      {pinSequenceEditor && <SequenceEditorPanel />}
     </>
   )
 }

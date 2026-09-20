@@ -11,6 +11,7 @@ import {
   DOCKED_TOOLBAR_HEIGHT,
 } from './dockedLayoutConstants'
 import {dockedToolbarHeightB} from './dockedToolbarHeight'
+import {isTheatreLiteStudio} from '@unseenco/theatre-studio/utils/theatreLiteMode'
 
 export type ViewportInsets = {
   top: number
@@ -58,8 +59,9 @@ export const LayoutModeProvider: React.FC<{
   const dockedLayout = useVal(getStudio().atomP.historic.dockedLayout)
   const pinOutline = useVal(getStudio().atomP.ahistoric.pinOutline) ?? true
   const pinDetails = useVal(getStudio().atomP.ahistoric.pinDetails) ?? true
-  const pinSequenceEditor =
-    useVal(getStudio().atomP.ahistoric.pinSequenceEditor) ?? true
+  const pinSequenceEditor = isTheatreLiteStudio()
+    ? false
+    : useVal(getStudio().atomP.ahistoric.pinSequenceEditor) ?? true
   const windowSize = useWindowSize(800, 600)
   const measuredToolbarHeight = useVal(dockedToolbarHeightB.prism)
 

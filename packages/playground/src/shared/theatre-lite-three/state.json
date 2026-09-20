@@ -1,0 +1,26 @@
+{
+  "sheetsById": {
+    "Cube Scene": {
+      "staticOverrides": {
+        "byObject": {
+          "Cube": {
+            "transform": {
+              "rotation": {
+                "x": 0.4,
+                "y": 0.8
+              }
+            },
+            "material": {
+              "metalness": 0.302,
+              "roughness": 0.604
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitionVersion": "0.4.0",
+  "revisionHistory": [
+    "ziVrOjZFQDdqtAOn"
+  ]
+}

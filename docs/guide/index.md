@@ -7,7 +7,7 @@ Welcome to the Theatre documentation. These guides explain how to animate with T
 Theatre works with any front-end stack. Pick a tutorial that matches your project:
 
 - [With THREE.js](./getting-started/with-three-js.md) — vanilla Three.js and a bundler
-- [With HTML / SVG](./getting-started/with-html-svg.md) — no bundler; CDN or script modules
+- [With HTML / SVG](./getting-started/with-html.md) — no bundler; CDN or script modules
 - [With React Three Fiber](./getting-started/with-react-three-fiber.md) — notes for R3F (no official extension in this fork yet)
 
 ## Learn the model
@@ -30,6 +30,12 @@ In-depth topics for day-to-day authoring:
 - [Authoring extensions](./manual/authoring-extensions.md)
 - [Advanced](./manual/advanced.md)
 
+## Theatre Lite
+
+A smaller Theatre.js stack for apps that ship static prop values and sheet-level variants, without timelines, keyframes, or sequence playback in production.
+
+- [Overview](./theatre-lite/index.md)
+
 ## Extensions
 
 - [Overview](./extensions/index.md)
@@ -39,6 +45,5 @@ In-depth topics for day-to-day authoring:
 ## Community
 
 - [GitHub](https://github.com/craftedbygc/theatre) — source and issues
-- [Discord](https://discord.gg/bm9f8F9Y9N) — help and feedback
 
 Release notes live in the repository [CHANGELOG](https://github.com/craftedbygc/theatre/blob/main/CHANGELOG.md).

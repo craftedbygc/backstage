@@ -272,6 +272,7 @@ export function buildExtension(config: ThreejsDevtoolsConfig): ThreejsDevtools {
     }
     if (camera instanceof PerspectiveCamera) {
       orbitCamera.fov = camera.fov
+      orbitCamera.aspect = camera.aspect
     }
     orbitCamera.updateProjectionMatrix()
     controls.target.set(0, 0, 0)
@@ -509,6 +510,13 @@ export function buildExtension(config: ThreejsDevtoolsConfig): ThreejsDevtools {
     updateToolbarConfig()
     selectionSync?.refresh()
     transformControls?.refresh()
+    if (enabled) {
+      const sceneCamera = getActiveSceneCamera()
+      if (sceneCamera instanceof PerspectiveCamera) {
+        orbitCamera.aspect = sceneCamera.aspect
+        orbitCamera.updateProjectionMatrix()
+      }
+    }
     if (changed) {
       notifyOrbitModeSwitch(enabled)
     }

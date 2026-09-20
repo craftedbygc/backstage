@@ -1,5 +1,21 @@
 # Theatre.js changelog
 
+## 0.6.0
+
+- New features
+  - **Theatre Lite:** New published packages **`@unseenco/theatre-core-lite`** (Apache-2.0 production runtime) and **`@unseenco/theatre-studio-lite`** (AGPL-3.0 dev editor). Same project ids, object keys, prop schemas, and **`OnDiskState`** JSON shape as full Theatre; lite state is a valid subset. Author **static overrides** and **sheet-level variants** (`declareSequenceVariants` / `setActiveSequenceVariant`); export/import project JSON from the outline toolbar (`createContentOfSaveFile`). Upgrade to `@unseenco/theatre-core` / `@unseenco/theatre-studio` without rewriting addresses or static layers ([guide](./docs/guide/theatre-lite/upgrading-to-full.md)).
+  - **Core-lite:** `sheet.sequence` is an inert stub (`position` 0, `play()` no-op). Sequence interpolation, playback controllers, GSAP bridge, and scroll/page-mode drivers are **excluded from the lite import graph** (`CoreBundleLite`, build-time stubs), not merely gated at runtime.
+  - **Studio-lite:** Outline, details, transactions, extensions, and variant folders—no Sequence Editor, keyframes, or **Sequence this prop**. Full Studio can dogfood the same UI via `studio.initialize({ mode: 'lite' })`; `@unseenco/theatre-studio-lite` always runs in lite mode.
+  - **Three.js (`@unseenco/theatre-threejs`):** Optional peer entries for **`@unseenco/theatre-core-lite`** and **`@unseenco/theatre-studio-lite`** (use one core + one studio per app; do not mix lite and full in the same bundle). Runtime helpers (`autoAddObject`, etc.) and `/extension` work with either stack.
+  - **Playground:** [`/shared/theatre-lite/`](./packages/playground/src/shared/theatre-lite/) (DOM static + variants), [`/shared/theatre-lite-three/`](./packages/playground/src/shared/theatre-lite-three/) (Three.js + studio-lite extension).
+  - **Tooling:** `yarn workspace theatre build:js` emits lite `dist/index-lite.*` artifacts; release CLI bumps `theatre/core-lite` and `theatre/studio-lite`. Set `THEATRE_LITE_LOG_BUNDLE_SIZES=1` to print full vs lite esbuild sizes.
+- Breaking changes
+  - **None** for existing `@unseenco/theatre-core` / `@unseenco/theatre-studio` consumers. Theatre Lite adds new packages only; full Theatre behavior is unchanged.
+- Docs
+  - **Guide:** [Theatre Lite](./docs/guide/theatre-lite/) — overview, [choosing lite or full](./docs/guide/theatre-lite/choosing-lite-or-full.md), [getting started](./docs/guide/theatre-lite/getting-started.md), [variants](./docs/guide/theatre-lite/variants.md), [Three.js](./docs/guide/theatre-lite/three-js.md), [upgrading to full](./docs/guide/theatre-lite/upgrading-to-full.md). Package READMEs under `theatre/core-lite/` and `theatre/studio-lite/` include API quick reference and bundle-size tables.
+- Maintenance
+  - **Bundle size (esbuild, dataverse external; reproduce after `yarn workspace theatre build:js`):** `@unseenco/theatre-core-lite` ~243 KiB unminified / **~107 KiB minified** vs full core ~318 / ~139 KiB (**~24% / ~23% smaller**). `@unseenco/theatre-studio-lite` ~1602 KiB unminified / **~744 KiB minified** (published `dist`) vs full studio ~2150 / ~960 KiB (**~23% smaller, ~216 KiB minified**).
+
 ## 0.5.0
 
 - New features

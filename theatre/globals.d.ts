@@ -17,6 +17,9 @@ interface ProcessEnv {
   BUILT_FOR_PLAYGROUND: 'true' | 'false'
 }
 
+/** `true` in studio-lite / core-lite esbuild entries; `false` in full bundles. */
+declare const __THEATRE_LITE__: boolean
+
 declare module '*.svg' {
   var s: string
   export default s
