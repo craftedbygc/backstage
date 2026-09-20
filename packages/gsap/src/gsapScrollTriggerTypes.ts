@@ -17,4 +17,5 @@ export type GsapScrollTriggerLike = {
 export type GsapScrollTriggerStaticLike = {
   refresh(): void
   getAll(): GsapScrollTriggerLike[]
+  defaults?(vars: {scroller?: unknown}): void
 }

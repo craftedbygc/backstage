@@ -51,7 +51,10 @@ describe('gsapTickerRafBridge', () => {
   beforeEach(() => {
     mockGetTheatreCoreRafDriver.mockReset()
     Object.defineProperty(globalThis, 'window', {
-      value: {},
+      value: {
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+      },
       configurable: true,
       writable: true,
     })

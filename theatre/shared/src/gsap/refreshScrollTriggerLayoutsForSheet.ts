@@ -1,4 +1,6 @@
 import {extractScrollTriggerLayout} from './extractScrollTriggerLayout'
+import {defaultPageScrollContext} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+import type {PageScrollContext} from '@unseenco/theatre-shared/sheets/pageScrollContext'
 import {refreshGsapScrollTriggersFromGlobal} from './scrollTriggerGlobal'
 import {
   listScrollTriggerEntriesForSheet,
@@ -9,6 +11,7 @@ import {
 export function refreshScrollTriggerLayoutsForSheet(
   sheetKey: string,
   sequenceLength: number,
+  pageScrollContext: PageScrollContext = defaultPageScrollContext,
 ): void {
   refreshGsapScrollTriggersFromGlobal()
 
@@ -17,6 +20,7 @@ export function refreshScrollTriggerLayoutsForSheet(
       sequenceLength,
       id: entry.id,
       label: entry.label,
+      pageScrollContext,
     })
     if (!extracted.ok) continue
     updateScrollTriggerLayoutInRegistry(sheetKey, entry.id, {

@@ -6,6 +6,7 @@ import type {PropTypeConfig_Compound} from '@unseenco/theatre-core/propTypes'
 import {compound} from '@unseenco/theatre-core/propTypes'
 import type {ISheetObject} from '@unseenco/theatre-core/sheetObjects/TheatreSheetObject'
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
+import type {ScrollDriver} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
 import type {SheetAddress} from '@unseenco/theatre-shared/utils/addresses'
 import {InvalidArgumentError} from '@unseenco/theatre-shared/utils/errors'
 import {validateAndSanitiseSlashedPathOrThrow} from '@unseenco/theatre-shared/utils/slashedPaths'
@@ -305,6 +306,12 @@ export interface ISheet {
    * In page mode, length is fixed at 100 and snap grid uses 0.1% steps.
    */
   setSequenceMode(mode: 'time' | 'page'): void
+
+  /**
+   * Overrides the scroll driver used in page mode (e.g. Lenis). Pass `undefined` to
+   * restore native document scroll. Re-attaches the scroll → playhead listener.
+   */
+  setPageScrollDriver(driver: ScrollDriver | undefined): void
 }
 
 export default class TheatreSheet implements ISheet {
@@ -555,6 +562,10 @@ export default class TheatreSheet implements ISheet {
 
   setSequenceMode(mode: 'time' | 'page'): void {
     privateAPI(this).setSequenceMode(mode)
+  }
+
+  setPageScrollDriver(driver: ScrollDriver | undefined): void {
+    privateAPI(this).setPageScrollDriver(driver)
   }
 
   get project(): IProject {

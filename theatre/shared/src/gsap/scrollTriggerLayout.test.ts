@@ -1,4 +1,8 @@
+/*
+ * @jest-environment jsdom
+ */
 import {
+  getMaxScrollForScroller,
   getNativeDocumentMaxScroll,
   scrollPixelsToPageUnits,
 } from './scrollTriggerLayout'
@@ -31,5 +35,14 @@ describe('scrollPixelsToPageUnits', () => {
 describe('getNativeDocumentMaxScroll', () => {
   test('returns non-negative number in jsdom', () => {
     expect(getNativeDocumentMaxScroll()).toBeGreaterThanOrEqual(0)
+  })
+})
+
+describe('getMaxScrollForScroller', () => {
+  test('uses element scrollHeight for custom scroller', () => {
+    const el = document.createElement('div')
+    Object.defineProperty(el, 'scrollHeight', {value: 500, configurable: true})
+    Object.defineProperty(el, 'clientHeight', {value: 100, configurable: true})
+    expect(getMaxScrollForScroller(el)).toBe(400)
   })
 })

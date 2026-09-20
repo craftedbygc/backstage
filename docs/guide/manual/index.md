@@ -5,6 +5,7 @@ Reference-style guides for authoring with Theatre Studio and `@unseenco/theatre-
 - [Projects](./projects.md)
 - [Sheets](./sheets.md)
 - [Sheet sequence variants](./sheet-variants.md)
+- [Sheet sequence modes](./sheet-modes.md)
 - [Sheet objects](./objects.md)
 - [Linking props (`showPropsOf`)](./show-props-of.md)
 - [Prop types](./prop-types.md)

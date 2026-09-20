@@ -1,3 +1,6 @@
+import type {PageScrollScroller} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+import {isNativeDocumentScroller} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+
 /** Minimum clip duration in sequence units (page mode uses 0–100). */
 const MIN_SEQUENCE_DURATION = 0.01
 
@@ -40,4 +43,21 @@ export function getNativeDocumentMaxScroll(): number {
   }
   const el = document.documentElement
   return Math.max(0, el.scrollHeight - window.innerHeight)
+}
+
+export function getMaxScrollForScroller(scroller: PageScrollScroller): number {
+  if (typeof document === 'undefined' || typeof window === 'undefined') {
+    return 0
+  }
+  if (isNativeDocumentScroller(scroller)) {
+    return getNativeDocumentMaxScroll()
+  }
+  const el = scroller as HTMLElement
+  return Math.max(0, el.scrollHeight - el.clientHeight)
+}
+
+export function getMaxScrollForPageScrollContext(
+  scroller: PageScrollScroller,
+): number {
+  return getMaxScrollForScroller(scroller)
 }

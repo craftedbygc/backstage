@@ -38,6 +38,8 @@ import {
 } from '@unseenco/theatre-core/sheets/sheetSequenceMode'
 import {attachGsapSequenceBridge} from '@unseenco/theatre-core/gsap/attachGsapSequenceBridge'
 import {attachSheetScrollDriver} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
+import type {ScrollDriver} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
+import {createNativeDocumentScrollDriver} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
 import type {VoidFn} from '@unseenco/theatre-shared/utils/types'
 
 type SheetObjectMap = StrictRecord<ObjectAddressKey, SheetObject>
@@ -68,6 +70,7 @@ export default class Sheet {
   private readonly _sequenceMode = new Atom<SheetSequenceMode>('time')
   readonly sequenceModeP = this._sequenceMode.pointer
   private _pageScrollDisposer: VoidFn | undefined
+  private _customPageScrollDriver: ScrollDriver | undefined
   private _gsapBridgeDisposer: VoidFn | undefined
   readonly activeSequenceVariantP = this._activeSequenceVariant.pointer
   readonly effectiveActiveSequenceVariantD: Prism<SequenceVariantId>
@@ -295,8 +298,19 @@ export default class Sheet {
     this._pageScrollDisposer?.()
     this._pageScrollDisposer = undefined
     if (this.getSequenceMode() === 'page') {
-      this._pageScrollDisposer = attachSheetScrollDriver(this.publicApi)
+      const driver =
+        this._customPageScrollDriver ?? createNativeDocumentScrollDriver()
+      this._pageScrollDisposer = attachSheetScrollDriver(this.publicApi, driver)
     }
+  }
+
+  setPageScrollDriver(driver: ScrollDriver | undefined): void {
+    this._customPageScrollDriver = driver
+    this.syncPageScrollDriver()
+  }
+
+  getPageScrollDriver(): ScrollDriver | undefined {
+    return this._customPageScrollDriver
   }
 }
 
