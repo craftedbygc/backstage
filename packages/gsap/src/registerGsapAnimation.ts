@@ -7,6 +7,7 @@ import {getAnimationEntry} from '@unseenco/theatre-shared/gsap/gsapAnimationRegi
 import {getTheatreGsapConfig} from './config'
 import {registerAnimationInRegistry} from './animationRegistry'
 import {formatOutlineNamespacePathKey} from '@unseenco/theatre-shared/utils/outlineNamespaces'
+import {scheduleGsapTickerRafWarningCheck} from './gsapTickerRafBridge'
 
 export type RegisterGsapAnimationOptions = {
   /**
@@ -74,6 +75,8 @@ export function registerGsapAnimation(
       (sheet.getSequenceMode() === 'page' ? 10 : undefined),
     onRebuildTimeline: options.onRebuildTimeline,
   })
+
+  scheduleGsapTickerRafWarningCheck()
 
   return {id, sheetObject: sheetObjectPublic}
 }

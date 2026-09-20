@@ -8,6 +8,7 @@ import {
 } from '@unseenco/theatre-core'
 import studio from '@unseenco/theatre-studio'
 import {
+  bindGsapTickerToRafDriver,
   configureTheatreGsap,
   registerGsapAnimation,
 } from '@unseenco/theatre-gsap'
@@ -52,10 +53,7 @@ toggle.addEventListener('click', () => {
   syncPanelRuntimeState()
 })
 
-// GSAP ticker is the master clock; Theatre core + Studio share this rAF driver.
-gsap.ticker.add((time) => {
-  rafDriver.tick(time * 1000)
-})
+bindGsapTickerToRafDriver(rafDriver, gsap)
 
 void project.ready.then(() => {
   const panelShow = gsap.fromTo(panel, panelHidden, {

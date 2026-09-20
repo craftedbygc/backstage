@@ -12,6 +12,7 @@ import {
   refreshGsapScrollTriggers,
   requireGsapScrollTriggerPlugin,
 } from './gsapScrollTriggerPlugin'
+import {scheduleGsapTickerRafWarningCheck} from './gsapTickerRafBridge'
 
 export type RegisterAllGsapScrollTriggersResult = {
   registered: RegisterGsapScrollTriggerResult[]
@@ -59,6 +60,8 @@ export function registerAllGsapScrollTriggers(
       registered.push(result)
     }
   })
+
+  scheduleGsapTickerRafWarningCheck()
 
   return {registered, skipped}
 }
