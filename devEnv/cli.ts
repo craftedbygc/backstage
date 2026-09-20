@@ -30,7 +30,9 @@ $.quote = function quote(arg) {
 
 const packagesToPublish = [
   '@unseenco/theatre-core',
+  '@unseenco/theatre-core-lite',
   '@unseenco/theatre-studio',
+  '@unseenco/theatre-studio-lite',
   '@unseenco/theatre-dataverse',
   '@unseenco/theatre-react',
   '@unseenco/theatre-browser-bundles',
@@ -40,7 +42,9 @@ const packagesToPublish = [
 
 const packageDirByName: Record<string, string> = {
   '@unseenco/theatre-core': 'theatre/core',
+  '@unseenco/theatre-core-lite': 'theatre/core-lite',
   '@unseenco/theatre-studio': 'theatre/studio',
+  '@unseenco/theatre-studio-lite': 'theatre/studio-lite',
   '@unseenco/theatre-dataverse': 'packages/dataverse',
   '@unseenco/theatre-react': 'packages/react',
   '@unseenco/theatre-browser-bundles': 'packages/browser-bundles',
@@ -134,30 +138,6 @@ prog
       '@unseenco/theatre-threejs',
       '@unseenco/theatre-gsap',
     ]
-
-    const packagesToPublish = [
-      '@unseenco/theatre-core',
-      '@unseenco/theatre-core-lite',
-      '@unseenco/theatre-studio',
-      '@unseenco/theatre-studio-lite',
-      '@unseenco/theatre-dataverse',
-      '@unseenco/theatre-react',
-      '@unseenco/theatre-browser-bundles',
-      '@unseenco/theatre-threejs',
-      '@unseenco/theatre-gsap',
-    ]
-
-    const packageDirByName: Record<string, string> = {
-      '@unseenco/theatre-core': 'theatre/core',
-      '@unseenco/theatre-core-lite': 'theatre/core-lite',
-      '@unseenco/theatre-studio': 'theatre/studio',
-      '@unseenco/theatre-studio-lite': 'theatre/studio-lite',
-      '@unseenco/theatre-dataverse': 'packages/dataverse',
-      '@unseenco/theatre-react': 'packages/react',
-      '@unseenco/theatre-browser-bundles': 'packages/browser-bundles',
-      '@unseenco/theatre-threejs': 'packages/threejs',
-      '@unseenco/theatre-gsap': 'packages/gsap',
-    }
 
     /**
      * All these packages will have the same version from monorepo/package.json
@@ -347,13 +327,28 @@ prog
     'Publishes all packages to npm (use after a release that failed at the publish step)',
   )
   .option('--tag <tag>', 'npm dist-tag', 'latest')
+  .option(
+    '--from <package>',
+    'Start at this package name (for resuming a failed publish)',
+  )
   .action(async (opts) => {
     // @ts-ignore ignore
     process.env.THEATRE_IS_PUBLISHING = true
 
     const npmTag = opts.tag ?? 'latest'
 
-    for (const packageName of packagesToPublish) {
+    let toPublish = packagesToPublish
+    if (opts.from) {
+      const fromIndex = packagesToPublish.indexOf(opts.from)
+      if (fromIndex === -1) {
+        throw new Error(
+          `Unknown package "${opts.from}". Expected one of: ${packagesToPublish.join(', ')}`,
+        )
+      }
+      toPublish = packagesToPublish.slice(fromIndex)
+    }
+
+    for (const packageName of toPublish) {
       console.log(
         `Publishing ${packageName} from ${packageDirByName[packageName]}`,
       )
