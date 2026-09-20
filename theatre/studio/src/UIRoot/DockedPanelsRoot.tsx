@@ -13,12 +13,15 @@ import DockedLayout, {
   DockedViewportSlot,
 } from './DockedLayout'
 import GlobalToolbar from '@unseenco/theatre-studio/toolbars/GlobalToolbar'
+import {isTheatreLiteStudio} from '@unseenco/theatre-studio/utils/theatreLiteMode'
 
 const DockedPanelsRoot: React.FC = () => {
   const panes = useVal(getStudio().paneManager.allPanesD)
-  const pinSequenceEditor = useVal(
+  const pinSequenceEditorPinned = useVal(
     getStudio().atomP.ahistoric.pinSequenceEditor,
   )
+  const pinSequenceEditor =
+    !isTheatreLiteStudio() && pinSequenceEditorPinned !== false
   const paneEls = Object.entries(panes).map(([instanceId, paneInstance]) => {
     return (
       <ExtensionPaneWrapper
@@ -40,7 +43,7 @@ const DockedPanelsRoot: React.FC = () => {
       <DockedDetailsSlot>
         <DetailPanel />
       </DockedDetailsSlot>
-      {pinSequenceEditor !== false && (
+      {pinSequenceEditor && (
         <DockedSequencerSlot>
           <SequenceEditorPanel />
         </DockedSequencerSlot>

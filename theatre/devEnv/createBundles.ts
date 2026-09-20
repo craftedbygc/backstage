@@ -43,21 +43,25 @@ function writeCorePrivateAPIsShim(pathToPackage: string) {
 }
 
 /** Re-export shims so deep imports (e.g. from published `@unseenco/theatre-threejs`) resolve to the main bundle singleton. */
-function writeStudioSubpathShims(pathToPackage: string) {
-  const dist = path.join(pathToPackage, 'dist')
+function writeStudioSubpathShims(
+  dist: string,
+  indexBasename: 'index' | 'index-lite',
+) {
   fs.mkdirSync(path.join(dist, 'propEditors'), {recursive: true})
+
+  const indexModule = `./${indexBasename}`
 
   fs.writeFileSync(
     path.join(dist, 'getStudio.mjs'),
-    `export { getStudio as default, setStudio } from './index.mjs';\n`,
+    `export { getStudio as default, setStudio } from '${indexModule}.mjs';\n`,
   )
   fs.writeFileSync(
     path.join(dist, 'getStudio.js'),
-    `'use strict';\nconst index = require('./index.js');\nexports.default = index.getStudio;\nexports.setStudio = index.setStudio;\n`,
+    `'use strict';\nconst index = require('${indexModule}.js');\nexports.default = index.getStudio;\nexports.setStudio = index.setStudio;\n`,
   )
   fs.writeFileSync(
     path.join(dist, 'getStudio.d.ts'),
-    `export { getStudio as default, setStudio } from './index';\n`,
+    `export { getStudio as default, setStudio } from '${indexModule}';\n`,
   )
 
   fs.writeFileSync(
@@ -65,18 +69,18 @@ function writeStudioSubpathShims(pathToPackage: string) {
     `export {
   projectHasDivergedFromSavedState,
   studioHasDivergedFromSavedState,
-} from '../index.mjs';\n`,
+} from '../${indexBasename}.mjs';\n`,
   )
   fs.writeFileSync(
     path.join(dist, 'propEditors/projectHasDivergedFromSavedState.js'),
-    `'use strict';\nconst index = require('../index.js');\nexports.projectHasDivergedFromSavedState = index.projectHasDivergedFromSavedState;\nexports.studioHasDivergedFromSavedState = index.studioHasDivergedFromSavedState;\n`,
+    `'use strict';\nconst index = require('../${indexBasename}.js');\nexports.projectHasDivergedFromSavedState = index.projectHasDivergedFromSavedState;\nexports.studioHasDivergedFromSavedState = index.studioHasDivergedFromSavedState;\n`,
   )
   fs.writeFileSync(
     path.join(dist, 'propEditors/projectHasDivergedFromSavedState.d.ts'),
     `export {
   projectHasDivergedFromSavedState,
   studioHasDivergedFromSavedState,
-} from '../index';\n`,
+} from '../${indexBasename}';\n`,
   )
 
   fs.writeFileSync(
@@ -84,26 +88,130 @@ function writeStudioSubpathShims(pathToPackage: string) {
     `export {
   objectHasDivergedFromSavedState,
   sheetObjectDivergesFromSavedState,
-} from '../index.mjs';\n`,
+} from '../${indexBasename}.mjs';\n`,
   )
   fs.writeFileSync(
     path.join(dist, 'propEditors/objectHasDivergedFromSavedState.js'),
-    `'use strict';\nconst index = require('../index.js');\nexports.objectHasDivergedFromSavedState = index.objectHasDivergedFromSavedState;\nexports.sheetObjectDivergesFromSavedState = index.sheetObjectDivergesFromSavedState;\n`,
+    `'use strict';\nconst index = require('../${indexBasename}.js');\nexports.objectHasDivergedFromSavedState = index.objectHasDivergedFromSavedState;\nexports.sheetObjectDivergesFromSavedState = index.sheetObjectDivergesFromSavedState;\n`,
   )
   fs.writeFileSync(
     path.join(dist, 'propEditors/objectHasDivergedFromSavedState.d.ts'),
     `export {
   objectHasDivergedFromSavedState,
   sheetObjectDivergesFromSavedState,
-} from '../index';\n`,
+} from '../${indexBasename}';\n`,
   )
 }
 
+function copyStudioLitePackageArtifacts(
+  studioDist: string,
+  studioLiteDist: string,
+) {
+  fs.mkdirSync(studioLiteDist, {recursive: true})
+  const liteArtifacts = [
+    'index-lite.js',
+    'index-lite.mjs',
+    'index-lite.js.map',
+    'index-lite.mjs.map',
+  ]
+  for (const file of liteArtifacts) {
+    const from = path.join(studioDist, file)
+    if (fs.existsSync(from)) {
+      const toName = file.replace('index-lite', 'index')
+      fs.copyFileSync(from, path.join(studioLiteDist, toName))
+    }
+  }
+  const indexDts = path.join(studioDist, 'index-lite.d.ts')
+  if (fs.existsSync(indexDts)) {
+    fs.copyFileSync(indexDts, path.join(studioLiteDist, 'index.d.ts'))
+  } else if (fs.existsSync(path.join(studioDist, 'index.d.ts'))) {
+    fs.copyFileSync(
+      path.join(studioDist, 'index.d.ts'),
+      path.join(studioLiteDist, 'index.d.ts'),
+    )
+  }
+
+  for (const sub of ['getStudio', 'propEditors']) {
+    const subSrc = path.join(studioDist, sub)
+    const subDst = path.join(studioLiteDist, sub)
+    if (!fs.existsSync(subSrc)) continue
+    fs.mkdirSync(subDst, {recursive: true})
+    for (const entry of fs.readdirSync(subSrc)) {
+      fs.copyFileSync(path.join(subSrc, entry), path.join(subDst, entry))
+    }
+  }
+}
+
+/**
+ * Compare minified bundle sizes (run after `yarn workspace theatre build:js`).
+ * Set `THEATRE_LITE_LOG_BUNDLE_SIZES=1` to print sizes when building.
+ *
+ * Phase 0: `core/dist/index.*` vs `core/dist/index-lite.*` (lite entry is a full
+ * re-export until Phase 2). `studio/dist/index.*` vs `studio/dist/index-lite.*`
+ * (lite omits sequence editor via `__THEATRE_LITE__` dead-code elimination as
+ * gates expand).
+ */
+function logTheatreLiteBundleSizesIfRequested() {
+  if (process.env.THEATRE_LITE_LOG_BUNDLE_SIZES !== '1') return
+
+  const pairs = [
+    ['core', 'index'],
+    ['core', 'index-lite'],
+    ['studio', 'index'],
+    ['studio', 'index-lite'],
+  ] as const
+
+  for (const [pkg, base] of pairs) {
+    const dist = path.join(__dirname, '../', pkg, 'dist')
+    for (const ext of ['js', 'mjs'] as const) {
+      const file = path.join(dist, `${base}.${ext}`)
+      if (fs.existsSync(file)) {
+        const kb = (fs.statSync(file).size / 1024).toFixed(1)
+        console.log(`[theatre-lite sizes] ${pkg}/${base}.${ext}: ${kb} KiB`)
+      }
+    }
+  }
+}
+
+type BundleTarget = {
+  which: 'core' | 'studio'
+  entry: string
+  outBasename: string
+  theatreLite: boolean
+}
+
 export async function createBundles(watch: boolean) {
-  for (const which of ['core', 'studio']) {
-    const pathToPackage = path.join(__dirname, '../', which)
+  const targets: BundleTarget[] = [
+    {
+      which: 'core',
+      entry: 'index.ts',
+      outBasename: 'index',
+      theatreLite: false,
+    },
+    {
+      which: 'core',
+      entry: 'index-lite.ts',
+      outBasename: 'index-lite',
+      theatreLite: true,
+    },
+    {
+      which: 'studio',
+      entry: 'index.ts',
+      outBasename: 'index',
+      theatreLite: false,
+    },
+    {
+      which: 'studio',
+      entry: 'index-lite.ts',
+      outBasename: 'index-lite',
+      theatreLite: true,
+    },
+  ]
+
+  for (const target of targets) {
+    const pathToPackage = path.join(__dirname, '../', target.which)
     const esbuildConfig: Parameters<typeof esbuild.context>[0] = {
-      entryPoints: [path.join(pathToPackage, 'src/index.ts')],
+      entryPoints: [path.join(pathToPackage, 'src', target.entry)],
       target: 'es2020',
       loader: {'.png': 'file', '.svg': 'dataurl'},
       bundle: true,
@@ -114,6 +222,7 @@ export async function createBundles(watch: boolean) {
       },
       define: {
         ...definedGlobals,
+        __THEATRE_LITE__: target.theatreLite ? 'true' : 'false',
         __IS_VISUAL_REGRESSION_TESTING: 'false',
       },
       external: [
@@ -138,7 +247,7 @@ export async function createBundles(watch: boolean) {
       ],
     }
 
-    if (which === 'core') {
+    if (target.which === 'core') {
       esbuildConfig.platform = 'neutral'
       esbuildConfig.mainFields = ['browser', 'module', 'main']
       esbuildConfig.conditions = ['browser', 'node']
@@ -150,8 +259,14 @@ export async function createBundles(watch: boolean) {
     }
 
     const outputs: Array<{outfile: string; format: 'cjs' | 'esm'}> = [
-      {outfile: path.join(pathToPackage, 'dist/index.js'), format: 'cjs'},
-      {outfile: path.join(pathToPackage, 'dist/index.mjs'), format: 'esm'},
+      {
+        outfile: path.join(pathToPackage, `dist/${target.outBasename}.js`),
+        format: 'cjs',
+      },
+      {
+        outfile: path.join(pathToPackage, `dist/${target.outBasename}.mjs`),
+        format: 'esm',
+      },
     ]
 
     for (const {outfile, format} of outputs) {
@@ -168,42 +283,66 @@ export async function createBundles(watch: boolean) {
         await ctx.dispose()
       }
     }
+  }
 
-    if (which === 'core') {
-      const lenisOutputs: Array<{outfile: string; format: 'cjs' | 'esm'}> = [
-        {
-          outfile: path.join(pathToPackage, 'dist/lenis-entry.js'),
-          format: 'cjs',
-        },
-        {
-          outfile: path.join(pathToPackage, 'dist/lenis-entry.mjs'),
-          format: 'esm',
-        },
-      ]
-      for (const {outfile, format} of lenisOutputs) {
-        const ctx = await esbuild.context({
-          ...esbuildConfig,
-          entryPoints: [path.join(pathToPackage, 'src/lenis.ts')],
-          outfile,
-          format,
-        })
-        if (watch) {
-          await ctx.watch()
-        } else {
-          await ctx.rebuild()
-          await ctx.dispose()
-        }
-      }
+  if (!watch) {
+    const corePackage = path.join(__dirname, '../core')
+    writeCorePrivateAPIsShim(corePackage)
+    writeCoreLenisShim(corePackage)
+
+    const studioPackage = path.join(__dirname, '../studio')
+    const studioDist = path.join(studioPackage, 'dist')
+    writeStudioSubpathShims(studioDist, 'index')
+
+    const studioLiteDist = path.join(__dirname, '../studio-lite/dist')
+    copyStudioLitePackageArtifacts(studioDist, studioLiteDist)
+    writeStudioSubpathShims(studioLiteDist, 'index')
+
+    const indexDts = path.join(studioDist, 'index.d.ts')
+    const indexLiteDts = path.join(studioDist, 'index-lite.d.ts')
+    if (fs.existsSync(indexDts) && !fs.existsSync(indexLiteDts)) {
+      fs.copyFileSync(indexDts, indexLiteDts)
     }
 
-    if (!watch) {
-      if (which === 'core') {
-        writeCorePrivateAPIsShim(pathToPackage)
-        writeCoreLenisShim(pathToPackage)
-      }
-      if (which === 'studio') {
-        writeStudioSubpathShims(pathToPackage)
-      }
+    const lenisOutputs: Array<{outfile: string; format: 'cjs' | 'esm'}> = [
+      {
+        outfile: path.join(corePackage, 'dist/lenis-entry.js'),
+        format: 'cjs',
+      },
+      {
+        outfile: path.join(corePackage, 'dist/lenis-entry.mjs'),
+        format: 'esm',
+      },
+    ]
+    const lenisConfig: Parameters<typeof esbuild.context>[0] = {
+      entryPoints: [path.join(corePackage, 'src/lenis.ts')],
+      target: 'es2020',
+      loader: {'.png': 'file', '.svg': 'dataurl'},
+      bundle: true,
+      sourcemap: true,
+      supported: {
+        'template-literal': false,
+      },
+      define: {
+        ...definedGlobals,
+        __THEATRE_LITE__: 'false',
+        __IS_VISUAL_REGRESSION_TESTING: 'false',
+      },
+      external: ['@unseenco/theatre-dataverse'],
+      platform: 'neutral',
+      mainFields: ['browser', 'module', 'main'],
+      conditions: ['browser', 'node'],
     }
+    for (const {outfile, format} of lenisOutputs) {
+      const ctx = await esbuild.context({
+        ...lenisConfig,
+        outfile,
+        format,
+      })
+      await ctx.rebuild()
+      await ctx.dispose()
+    }
+
+    logTheatreLiteBundleSizesIfRequested()
   }
 }

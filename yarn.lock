@@ -4391,6 +4391,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@unseenco/theatre-studio-lite@workspace:theatre/studio-lite":
+  version: 0.0.0-use.local
+  resolution: "@unseenco/theatre-studio-lite@workspace:theatre/studio-lite"
+  dependencies:
+    "@unseenco/theatre-dataverse": "workspace:*"
+  peerDependencies:
+    "@unseenco/theatre-core": "*"
+  languageName: unknown
+  linkType: soft
+
 "@unseenco/theatre-studio@workspace:*, @unseenco/theatre-studio@workspace:theatre/studio":
   version: 0.0.0-use.local
   resolution: "@unseenco/theatre-studio@workspace:theatre/studio"

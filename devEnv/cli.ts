@@ -163,6 +163,7 @@ prog
       'theatre',
       'theatre/core',
       'theatre/studio',
+      'theatre/studio-lite',
       'packages/dataverse',
       'packages/react',
       'packages/browser-bundles',

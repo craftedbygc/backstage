@@ -18,6 +18,7 @@
     "paths": {
       "@unseenco/theatre-core": ["./theatre/core/src/index.ts"],
       "@unseenco/theatre-studio": ["./theatre/studio/src/index.ts"],
+      "@unseenco/theatre-studio-lite": ["./theatre/studio/src/index-lite.ts"],
       "@unseenco/theatre-studio/*": ["./theatre/studio/src/*"],
       "@unseenco/theatre-core/*": ["./theatre/core/src/*"],
       "@unseenco/theatre-core/lenis": ["./theatre/core/src/lenis.ts"],

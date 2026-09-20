@@ -12,6 +12,7 @@ import type {
   IExtension,
   PaneClassDefinition,
 } from '@unseenco/theatre-studio/TheatreStudio'
+import type {StudioMode} from '@unseenco/theatre-studio/utils/theatreLiteMode'
 
 /**
  * Technically, all parts of the ephemeral state can be implemented
@@ -34,6 +35,11 @@ import type {
  *   over the wire).
  */
 export type StudioEphemeralState = {
+  /**
+   * Set from `studio.initialize({ mode: 'lite' })` or the studio-lite bundle.
+   * Not persisted.
+   */
+  studioMode?: StudioMode
   initialised: boolean
   coreByProject: {[projectId in string]: ProjectState['ephemeral']}
   projects: {

@@ -34,6 +34,10 @@ import {syncAllStudioPreviewVariants} from '@unseenco/theatre-studio/utils/activ
 import {STUDIO_PROJECT_ID} from '@unseenco/theatre-studio/panels/OutlinePanel/outlinePanelUtils'
 import {val} from '@unseenco/theatre-dataverse'
 import {setStudioAccentHex} from '@unseenco/theatre-studio/uiComponents/studioTokens'
+import {
+  isTheatreLiteStudioCompileTime,
+  setRuntimeStudioMode,
+} from '@unseenco/theatre-studio/utils/theatreLiteMode'
 
 const DEFAULT_PERSISTENCE_KEY = 'theatre-0.4'
 
@@ -158,6 +162,12 @@ export class Studio {
       setStudioAccentHex(opts.accentHex)
     }
 
+    const studioMode =
+      opts?.mode === 'lite' || isTheatreLiteStudioCompileTime()
+        ? 'lite'
+        : 'full'
+    setRuntimeStudioMode(studioMode)
+
     this._initializeFnCalled = true
 
     if (this._didWarnAboutNotInitializing) {
@@ -205,6 +215,14 @@ export class Studio {
 
     try {
       await this._store.initialize(storeOpts)
+      if (studioMode === 'lite') {
+        this._store
+          .tempTransaction(({drafts, stateEditors}) => {
+            drafts.ephemeral.studioMode = 'lite'
+            stateEditors.studio.ahistoric.setPinSequenceEditor(false)
+          })
+          .commit()
+      }
     } catch (e) {
       this._initializedDeferred.reject(e)
       return

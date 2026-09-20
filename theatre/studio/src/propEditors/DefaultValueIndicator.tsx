@@ -15,6 +15,7 @@ import SavedStateDiamondWrapper, {
   DIVERGED_FROM_SAVED_STATE_TITLE,
 } from './SavedStateDiamondWrapper'
 import {studioAccent} from '@unseenco/theatre-studio/uiComponents/studioTokens'
+import {isTheatreLiteStudio} from '@unseenco/theatre-studio/utils/theatreLiteMode'
 
 const theme = {
   defaultState: {
@@ -101,7 +102,7 @@ const DefaultOrStaticValueIndicator: React.FC<{
     isTransient,
   } = props
 
-  const usesOutlineStyle = isStatic || isTransient
+  const usesOutlineStyle = isStatic || isTransient || isTheatreLiteStudio()
 
   if (usesOutlineStyle) {
     const showBlueOverride = Boolean(

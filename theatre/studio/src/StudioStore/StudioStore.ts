@@ -40,6 +40,8 @@ import {
   createObjectPropConfigLookup,
   stripDefaultPropValuesFromOnDiskState,
 } from '@unseenco/theatre-shared/utils/defaultPropValues'
+import {stripSequenceDataFromOnDiskState} from './stripSequenceDataFromOnDiskState'
+import {isTheatreLiteStudio} from '@unseenco/theatre-studio/utils/theatreLiteMode'
 
 import createTransactionPrivateApi from './createTransactionPrivateApi'
 import type {ProjectId} from '@unseenco/theatre-shared/utils/ids'
@@ -114,7 +116,10 @@ export default class StudioStore {
   }
 
   clearStudioPersistentStorage(persistenceKey: string): FullStudioState {
-    __experimental_clearStudioPersistentStorage(this._reduxStore, persistenceKey)
+    __experimental_clearStudioPersistentStorage(
+      this._reduxStore,
+      persistenceKey,
+    )
     const resetState = resetStudioFieldsInPersistentState(
       this.getState().$persistent,
     )
@@ -248,12 +253,18 @@ export default class StudioStore {
         projectId
       ]
 
-    return stripDefaultPropValuesFromOnDiskState(
+    let onDisk = stripDefaultPropValuesFromOnDiskState(
       stripTransientPropsFromOnDiskState(
         projectHistoricState,
         createTransientPropPathsLookup(projectId),
       ),
       createObjectPropConfigLookup(projectId),
     )
+
+    if (isTheatreLiteStudio()) {
+      onDisk = stripSequenceDataFromOnDiskState(onDisk)
+    }
+
+    return onDisk
   }
 }

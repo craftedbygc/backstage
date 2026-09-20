@@ -307,6 +307,12 @@ export interface _StudioInitializeOpts {
    * ```
    */
   accentHex?: string
+
+  /**
+   * `'lite'` disables sequencing UI and sequence state mutations (static authoring only).
+   * Implicit when importing `@unseenco/theatre-studio-lite`.
+   */
+  mode?: 'full' | 'lite'
 }
 
 /**

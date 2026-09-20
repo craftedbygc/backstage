@@ -19,6 +19,7 @@ import {
 import DoubleChevronLeft from '@unseenco/theatre-studio/uiComponents/icons/DoubleChevronLeft'
 import DoubleChevronRight from '@unseenco/theatre-studio/uiComponents/icons/DoubleChevronRight'
 import TimelineIcon from '@unseenco/theatre-studio/uiComponents/icons/TimelineIcon'
+import {isTheatreLiteStudio} from '@unseenco/theatre-studio/utils/theatreLiteMode'
 import RemoteEditorIcon from '@unseenco/theatre-studio/uiComponents/icons/RemoteEditorIcon'
 import DockLayout from '@unseenco/theatre-studio/uiComponents/icons/DockLayout'
 import ToolbarIconButton from '@unseenco/theatre-studio/uiComponents/toolbar/ToolbarIconButton'
@@ -183,20 +184,22 @@ const GlobalToolbar: React.FC = () => {
             />
           ) : null}
         </PinButton>
-        <PinButton
-          title="Toggle Timeline"
-          onClick={() => {
-            getStudio().transaction(({stateEditors, drafts}) => {
-              stateEditors.studio.ahistoric.setPinSequenceEditor(
-                !(drafts.ahistoric.pinSequenceEditor ?? true),
-              )
-            })
-          }}
-          icon={<TimelineIcon />}
-          pinHintIcon={<TimelineIcon />}
-          unpinHintIcon={<TimelineIcon />}
-          pinned={sequenceEditorPinned}
-        />
+        {!isTheatreLiteStudio() ? (
+          <PinButton
+            title="Toggle Timeline"
+            onClick={() => {
+              getStudio().transaction(({stateEditors, drafts}) => {
+                stateEditors.studio.ahistoric.setPinSequenceEditor(
+                  !(drafts.ahistoric.pinSequenceEditor ?? true),
+                )
+              })
+            }}
+            icon={<TimelineIcon />}
+            pinHintIcon={<TimelineIcon />}
+            unpinHintIcon={<TimelineIcon />}
+            pinned={sequenceEditorPinned}
+          />
+        ) : null}
         <ExtensionFlyoutMenu
           config={{
             type: 'Flyout',
