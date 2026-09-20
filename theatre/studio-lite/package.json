@@ -1,6 +1,6 @@
 {
   "name": "@unseenco/theatre-studio-lite",
-  "version": "0.4.3",
+  "version": "0.6.0",
   "license": "AGPL-3.0-only",
   "description": "Static authoring editor for Theatre.js (no sequencing UI)",
   "repository": {
