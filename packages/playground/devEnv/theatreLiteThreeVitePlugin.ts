@@ -10,6 +10,31 @@ const PEER_REWRITES: Array<[string, string]> = [
   ['@unseenco/theatre-studio', '@unseenco/theatre-studio-lite'],
 ]
 
+/** Vite always uses `/` in module ids, even on Windows. */
+export function normalizeModulePath(filePath: string): string {
+  return filePath.split('?')[0].replace(/\\/g, '/')
+}
+
+export function isLitePlaygroundImporter(importer: string | undefined): boolean {
+  if (!importer) return false
+  const normalized = normalizeModulePath(importer)
+  return (
+    normalized.includes('/shared/theatre-lite-three/') ||
+    normalized.includes('/shared/theatre-lite/')
+  )
+}
+
+export function isInLitePeersGraph(
+  importer: string | undefined,
+  source?: string,
+): boolean {
+  if (!importer) return false
+  if (importer.includes(THEATRE_LITE_PEERS_QUERY)) return true
+  if (isLitePlaygroundImporter(importer)) return true
+  if (source?.endsWith(THEATRE_LITE_PEERS_QUERY)) return true
+  return false
+}
+
 function stripLitePeersQuery(id: string): string {
   return id.endsWith(THEATRE_LITE_PEERS_QUERY)
     ? id.slice(0, -THEATRE_LITE_PEERS_QUERY.length)
@@ -20,15 +45,6 @@ function withLitePeersQuery(id: string): string {
   return id.endsWith(THEATRE_LITE_PEERS_QUERY)
     ? id
     : id + THEATRE_LITE_PEERS_QUERY
-}
-
-function isLitePlaygroundImporter(importer: string | undefined): boolean {
-  if (!importer) return false
-  const normalized = importer.split('?')[0]
-  return (
-    normalized.includes(`${path.sep}shared${path.sep}theatre-lite-three${path.sep}`) ||
-    normalized.includes(`${path.sep}shared${path.sep}theatre-lite${path.sep}`)
-  )
 }
 
 function isTheatreThreejsImport(source: string): boolean {
@@ -42,12 +58,21 @@ function isTheatreThreejsImport(source: string): boolean {
  * Playground-only: `@unseenco/theatre-threejs` normally imports full core/studio.
  * Lite demos append `?theatre-lite-peers` so the dependency graph uses lite packages.
  */
-function rewriteTheatrePeersInSource(code: string): string {
+export function rewriteTheatrePeersInSource(code: string): string {
   let out = code
   for (const [from, to] of PEER_REWRITES) {
     out = out.replaceAll(from, to)
   }
   return out
+}
+
+function shouldRewriteLoadedSource(realId: string): boolean {
+  const normalized = normalizeModulePath(realId)
+  return (
+    normalized.includes('/packages/threejs/') ||
+    normalized.includes('/theatre/studio/') ||
+    normalized.includes('/theatre/core/')
+  )
 }
 
 export function theatreLiteThreePeersPlugin(): Plugin {
@@ -82,10 +107,7 @@ export function theatreLiteThreePeersPlugin(): Plugin {
         }
       }
 
-      if (
-        !importer?.includes(THEATRE_LITE_PEERS_QUERY) &&
-        !isLitePlaygroundImporter(importer)
-      ) {
+      if (!isInLitePeersGraph(importer, source)) {
         return null
       }
 
@@ -107,8 +129,15 @@ export function theatreLiteThreePeersPlugin(): Plugin {
           ...options,
           skipSelf: true,
         })
-        if (resolved?.id.includes(`${path.sep}packages${path.sep}threejs${path.sep}`)) {
-          return withLitePeersQuery(resolved.id)
+        if (resolved) {
+          const normalized = normalizeModulePath(resolved.id)
+          if (
+            normalized.includes('/packages/threejs/') ||
+            normalized.includes('/theatre/studio/') ||
+            normalized.includes('/theatre/core/')
+          ) {
+            return withLitePeersQuery(resolved.id)
+          }
         }
       }
 
@@ -120,10 +149,21 @@ export function theatreLiteThreePeersPlugin(): Plugin {
       }
       const realId = stripLitePeersQuery(id)
       const source = fs.readFileSync(realId, 'utf-8')
-      if (realId.includes(`${path.sep}packages${path.sep}threejs${path.sep}`)) {
+      if (shouldRewriteLoadedSource(realId)) {
         return rewriteTheatrePeersInSource(source)
       }
       return source
+    },
+    transform(code, id) {
+      if (!id.endsWith(THEATRE_LITE_PEERS_QUERY)) {
+        return null
+      }
+      const realId = stripLitePeersQuery(id)
+      if (!shouldRewriteLoadedSource(realId)) {
+        return null
+      }
+      const rewritten = rewriteTheatrePeersInSource(code)
+      return rewritten === code ? null : rewritten
     },
   }
 }
