@@ -9,22 +9,33 @@ import styled from 'styled-components'
 
 export type GsapKindBadgeKind = 'TW' | 'TL' | 'ST'
 
-const Badge = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+const BADGE_WIDTH = 16
+const BADGE_HEIGHT = 14
+
+const BadgeSvg = styled.svg`
   flex: 0 0 auto;
-  height: 14px;
-  width: 16px;
-  box-sizing: border-box;
-  border: 1px solid #6a6a6a;
-  border-radius: 3px;
-  font-size: 8px;
-  font-weight: 600;
-  color: #a8a8a8;
-  line-height: 1;
-  letter-spacing: 0.02em;
-  font-family: monospace;
+  display: block;
+
+  /* Global studio reset sets * { font: inherit }, which wins over SVG attrs. */
+  text {
+    fill: #a8a8a8;
+    font-size: 8px;
+    font-weight: 600;
+    font-family: monospace;
+    letter-spacing: 0.02em;
+  }
+
+  rect {
+    stroke: #6a6a6a;
+  }
+
+  [data-header].selected & text {
+    fill: rgba(255, 255, 255, 0.9);
+  }
+
+  [data-header].selected & rect {
+    stroke: rgba(255, 255, 255, 0.55);
+  }
 `
 
 const LabelRow = styled.span`
@@ -43,7 +54,32 @@ const LabelRow = styled.span`
 `
 
 export const GsapKindBadge: React.VFC<{kind: GsapKindBadgeKind}> = ({kind}) => (
-  <Badge title={gsapKindBadgeTitle(kind)}>{kind}</Badge>
+  <BadgeSvg
+    width={BADGE_WIDTH}
+    height={BADGE_HEIGHT}
+    viewBox={`0 0 ${BADGE_WIDTH} ${BADGE_HEIGHT}`}
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-label={gsapKindBadgeTitle(kind)}
+  >
+    <title>{gsapKindBadgeTitle(kind)}</title>
+    <rect
+      x="0.5"
+      y="0.5"
+      width={BADGE_WIDTH - 1}
+      height={BADGE_HEIGHT - 1}
+      rx="3"
+      strokeWidth="1"
+    />
+    <text
+      x={BADGE_WIDTH / 2}
+      y={BADGE_HEIGHT / 2}
+      textAnchor="middle"
+      dominantBaseline="central"
+    >
+      {kind}
+    </text>
+  </BadgeSvg>
 )
 
 function gsapKindBadgeTitle(kind: GsapKindBadgeKind): string {
