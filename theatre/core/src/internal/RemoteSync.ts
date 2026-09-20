@@ -5,17 +5,26 @@ import type {
 } from '@unseenco/theatre-core/projects/store/storeTypes'
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
+import {syncPageScrollToSequencePosition} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
 import type {Studio} from '@unseenco/theatre-studio/Studio'
 import {getCoreTicker} from '@unseenco/theatre-core/coreTicker'
-import {val} from '@unseenco/theatre-dataverse'
+import {pointerToPrism, val} from '@unseenco/theatre-dataverse'
 import type {SerializableMap} from '@unseenco/theatre-shared/utils/types'
+import {
+  createDebouncedCallback,
+  type DebouncedCallback,
+} from './createDebouncedCallback'
 import {isRemoteEditorWindow} from './remoteEditor'
+
+/** Delay before pushing historic state from the remote editor to listener windows. */
+export const REMOTE_HISTORIC_SYNC_DEBOUNCE_MS = 300
 
 type BroadcastDataEvent =
   | 'setSheet'
   | 'setSheetObject'
   | 'updateSheetObject'
   | 'updateTimeline'
+  | 'updateHistoric'
   | 'disconnect'
 
 interface BroadcastData {
@@ -23,7 +32,7 @@ interface BroadcastData {
   data: any
 }
 
-type DisconnectData = {
+type HistoricSnapshotPayload = {
   historic?: ProjectState_Historic
   ahistoric?: ProjectAhistoricState
 }
@@ -46,6 +55,9 @@ export default class RemoteSync {
   private readonly objectUnsubs = new Map<string, () => void>()
   private studio: Studio | undefined
   private activeSheet: Sheet | undefined
+  private historicSyncDebounce: DebouncedCallback | undefined
+  private lastBroadcastHistoricFingerprint: string | undefined
+  private historicSyncUnsubs: Array<() => void> = []
 
   constructor(private readonly project: Project) {
     if (typeof BroadcastChannel === 'undefined') return
@@ -65,23 +77,19 @@ export default class RemoteSync {
       // `_handleIncoming`).
       const channel = this.channel
       window.addEventListener('pagehide', () => {
-        const data: DisconnectData = {}
-        if (this.studio) {
-          const projectId = this.project.address.projectId
-          const historic = val(
-            this.studio.atomP.historic.coreByProject[projectId],
-          )
-          const ahistoric = val(
-            this.studio.atomP.ahistoric.coreByProject[projectId],
-          )
-          if (historic) {
-            data.historic = JSON.parse(JSON.stringify(historic))
-            if (ahistoric) {
-              data.ahistoric = JSON.parse(JSON.stringify(ahistoric))
-            }
-          }
+        this.historicSyncDebounce?.flush()
+
+        const data = this._readHistoricSnapshotFromStudio()
+        if (
+          data &&
+          this.lastBroadcastHistoricFingerprint ===
+            fingerprintHistoricSnapshot(data)
+        ) {
+          channel.postMessage({event: 'disconnect', data: {}})
+          return
         }
-        channel.postMessage({event: 'disconnect', data})
+
+        channel.postMessage({event: 'disconnect', data: data ?? {}})
       })
     }
   }
@@ -182,6 +190,82 @@ export default class RemoteSync {
       ticker.onNextTick(pollTimelinePosition)
     }
     ticker.onNextTick(pollTimelinePosition)
+
+    this.historicSyncDebounce = createDebouncedCallback(() => {
+      this._broadcastHistoricSnapshot()
+    }, REMOTE_HISTORIC_SYNC_DEBOUNCE_MS)
+
+    const scheduleHistoricSync = () => {
+      this.historicSyncDebounce?.schedule()
+    }
+
+    void studio.initialized.then(() => {
+      this.historicSyncUnsubs.push(
+        pointerToPrism(studio.atomP.historic.coreByProject[projectId]).onChange(
+          studio.ticker,
+          scheduleHistoricSync,
+          true,
+        ),
+        pointerToPrism(
+          studio.atomP.ahistoric.coreByProject[projectId],
+        ).onChange(studio.ticker, scheduleHistoricSync, true),
+      )
+    })
+  }
+
+  private _readHistoricSnapshotFromStudio():
+    | HistoricSnapshotPayload
+    | undefined {
+    if (!this.studio) return undefined
+
+    const projectId = this.project.address.projectId
+    const historic = val(
+      this.studio.atomP.historic.coreByProject[projectId],
+    )
+    if (!historic) return undefined
+
+    const data: HistoricSnapshotPayload = {
+      historic: JSON.parse(JSON.stringify(historic)),
+    }
+    const ahistoric = val(
+      this.studio.atomP.ahistoric.coreByProject[projectId],
+    )
+    if (ahistoric) {
+      data.ahistoric = JSON.parse(JSON.stringify(ahistoric))
+    }
+    return data
+  }
+
+  private _broadcastHistoricSnapshot() {
+    if (!this.channel) return
+
+    const data = this._readHistoricSnapshotFromStudio()
+    if (!data) return
+
+    const fingerprint = fingerprintHistoricSnapshot(data)
+    if (fingerprint === this.lastBroadcastHistoricFingerprint) return
+
+    this.lastBroadcastHistoricFingerprint = fingerprint
+    const message: BroadcastData = {event: 'updateHistoric', data}
+    this.channel.postMessage(message)
+  }
+
+  private _applyHistoricSnapshot(
+    historic: ProjectState_Historic,
+    ahistoric?: ProjectAhistoricState,
+  ) {
+    if (!this.studio) return
+
+    const projectId = this.project.address.projectId
+    this.studio.transaction(({drafts}) => {
+      drafts.historic.coreByProject[projectId] = historic
+      if (ahistoric) {
+        drafts.ahistoric.coreByProject[projectId] = ahistoric
+      }
+      drafts.ephemeral.coreByProject[projectId]!.loadingState = {
+        type: 'loaded',
+      }
+    })
   }
 
   private _handleIncoming(msg: BroadcastData) {
@@ -211,22 +295,23 @@ export default class RemoteSync {
         if (sheet) {
           this.activeSheet = sheet
           sheet.publicApi.sequence.position = msg.data.position
+          if (sheet.getSequenceMode() === 'page') {
+            syncPageScrollToSequencePosition(sheet.publicApi)
+          }
+        }
+        break
+      }
+      case 'updateHistoric': {
+        const {historic, ahistoric} = msg.data as HistoricSnapshotPayload
+        if (historic) {
+          this._applyHistoricSnapshot(historic, ahistoric)
         }
         break
       }
       case 'disconnect': {
-        const {historic, ahistoric} = msg.data as DisconnectData
-        if (historic && this.studio) {
-          const projectId = this.project.address.projectId
-          this.studio.transaction(({drafts}) => {
-            drafts.historic.coreByProject[projectId] = historic
-            if (ahistoric) {
-              drafts.ahistoric.coreByProject[projectId] = ahistoric
-            }
-            drafts.ephemeral.coreByProject[projectId]!.loadingState = {
-              type: 'loaded',
-            }
-          })
+        const {historic, ahistoric} = msg.data as HistoricSnapshotPayload
+        if (historic) {
+          this._applyHistoricSnapshot(historic, ahistoric)
         }
         for (const obj of this.objects.values()) {
           obj.setRemoteOverride({})
@@ -235,4 +320,8 @@ export default class RemoteSync {
       }
     }
   }
+}
+
+function fingerprintHistoricSnapshot(data: HistoricSnapshotPayload): string {
+  return JSON.stringify(data)
 }
