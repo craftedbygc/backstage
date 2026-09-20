@@ -1,7 +1,7 @@
 # @unseenco/theatre-dataverse
 
 Dataverse is the reactive dataflow library
-[Theatre.js](https://www.theatrejs.com) is built on. It is inspired by ideas in
+[Theatre.js](https://unseen-theatre.netlify.app/docs/) is built on. It is inspired by ideas in
 [functional reactive programming](https://en.wikipedia.org/wiki/Functional_reactive_programming)
 and it is optimised for interactivity and animation.
 

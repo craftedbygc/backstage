@@ -1,6 +1,6 @@
 # @unseenco/theatre-react
 
-Utilities for using [Theatre.js](https://www.theatrejs.com) or
+Utilities for using [Theatre.js](https://unseen-theatre.netlify.app/docs/) or
 [Dataverse](https://github.com/craftedbygc/theatre/tree/main/packages/dataverse)
 with React.
 
