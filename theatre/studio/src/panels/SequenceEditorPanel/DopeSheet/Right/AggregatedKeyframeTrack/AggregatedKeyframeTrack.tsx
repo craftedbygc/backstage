@@ -9,44 +9,31 @@ import type {
   SequenceEditorTree_SheetObject,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import {collectSheetObjectsFromSheetChildren} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
-import {
-  isSequenceEditorSheetScopedAggregateViewModel,
-  sequenceEditorAggregateViewModelSheetAddress,
-} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/sequenceEditorAggregateViewModel'
+import {isSequenceEditorSheetScopedAggregateViewModel} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/sequenceEditorAggregateViewModel'
 import {usePrism, useVal} from '@unseenco/theatre-react'
 import type {Prism, Pointer} from '@unseenco/theatre-dataverse'
 import {prism, val, pointerToPrism} from '@unseenco/theatre-dataverse'
-import React, {useMemo, Fragment} from 'react'
+import React, {useMemo} from 'react'
 import styled from 'styled-components'
 import type {IContextMenuItem} from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import useContextMenu from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
 import type {
-  IAggregateKeyframesAtPosition,
-  IAggregateKeyframeEditorProps,
-} from './AggregateKeyframeEditor/AggregateKeyframeEditor'
-import AggregateKeyframeEditor from './AggregateKeyframeEditor/AggregateKeyframeEditor'
-import type {
   AggregatedKeyframes,
   KeyframeWithTrack,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
-import {collectAggregateSnapPositionsObjectOrCompound} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
+import {
+  collectAggregateSnapPositionsObjectNamespace,
+  collectAggregateSnapPositionsObjectOrCompound,
+  collectAggregateSnapPositionsSheet,
+} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
 import {useLogger} from '@unseenco/theatre-studio/uiComponents/useLogger'
-import {getAggregateKeyframeEditorUtilsPrismFn} from './AggregateKeyframeEditor/useAggregateKeyframeEditorUtils'
-import DopeSnap from '@unseenco/theatre-studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
-import type {DragOpts} from '@unseenco/theatre-studio/uiComponents/useDrag'
-import type {CommitOrDiscard} from '@unseenco/theatre-studio/StudioStore/StudioStore'
-import useDrag from '@unseenco/theatre-studio/uiComponents/useDrag'
-import {useLockFrameStampPositionRef} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/FrameStampPositionProvider'
-import {useCssCursorLock} from '@unseenco/theatre-studio/uiComponents/PointerEventsHandler'
-import {valTracksByObjectForSheetVariant} from '@unseenco/theatre-studio/utils/sequenceVariantHelpers'
-import getStudio from '@unseenco/theatre-studio/getStudio'
 import {
   getStudioActiveSequenceVariant,
   getStudioSequence,
   pointerToActiveSheetSequence,
 } from '@unseenco/theatre-studio/utils/activeSequenceVariant'
-import {clampSequenceEditorPosition} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/sequenceEditLimits'
+import getStudio from '@unseenco/theatre-studio/getStudio'
 import type {SheetObjectAddress} from '@unseenco/theatre-shared/utils/addresses'
 import {
   decodePathToProp,
@@ -63,16 +50,8 @@ import KeyframeSnapTarget, {
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
 import {emptyObject} from '@unseenco/theatre-shared/utils'
 import type {KeyframeWithPathToPropFromCommonRoot} from '@unseenco/theatre-studio/store/types'
-import {
-  collectSequenceEditorSnapPositions,
-  snapToNone,
-  snapToSome,
-} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
-import {
-  collectAggregateSnapPositionsObjectNamespace,
-  collectAggregateSnapPositionsSheet,
-} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
 import type {Keyframe} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
+import AggregateKeyframeSpanBar from './AggregateKeyframeSpanBar'
 
 const AggregatedKeyframeTrackContainer = styled.div`
   position: relative;
@@ -107,30 +86,10 @@ function AggregatedKeyframeTrack_memo(props: IAggregatedKeyframeTracksProps) {
     null,
   )
 
-  const {selectedPositions, selection} = useCollectedSelectedPositions(
-    layoutP,
-    aggregatedKeyframes,
-  )
-
   const [contextMenu, _, isOpen] = useAggregatedKeyframeTrackContextMenu(
     containerNode,
     props,
     () => logger._debug('see aggregatedKeyframes', props.aggregatedKeyframes),
-  )
-
-  const posKfs: IAggregateKeyframesAtPosition[] = useMemo(
-    () =>
-      [...aggregatedKeyframes.byPosition.entries()]
-        .sort((a, b) => a[0] - b[0])
-        .map(
-          ([position, keyframes]): IAggregateKeyframesAtPosition => ({
-            position,
-            keyframes,
-            selected: selectedPositions.get(position),
-            allHere: keyframes.length === aggregatedKeyframes.tracks.length,
-          }),
-        ),
-    [aggregatedKeyframes, selectedPositions],
   )
 
   const snapPositionsState = useVal(snapPositionsStateD)
@@ -152,7 +111,7 @@ function AggregatedKeyframeTrack_memo(props: IAggregatedKeyframeTracksProps) {
             viewModel,
             snapPositions,
           ),
-    [snapPositions],
+    [snapPositions, viewModel],
   )
 
   const snapTargets = aggregateSnapPositions.map((position) => (
@@ -164,53 +123,16 @@ function AggregatedKeyframeTrack_memo(props: IAggregatedKeyframeTracksProps) {
     />
   ))
 
-  const keyframeEditorProps = useMemo(
-    () =>
-      posKfs.map(
-        (
-          {position, keyframes},
-          index,
-        ): {editorProps: IAggregateKeyframeEditorProps; position: number} => ({
-          position,
-          editorProps: {
-            index,
-            layoutP,
-            viewModel,
-            aggregateKeyframes: posKfs,
-            selection: selectedPositions.has(position) ? selection : undefined,
-          },
-        }),
-      ),
-    [posKfs, viewModel, selectedPositions],
-  )
-
-  const [isDragging] = useDragForAggregateKeyframeDot(
-    containerNode,
-    (position) => {
-      return keyframeEditorProps.find(
-        (editorProp) => editorProp.position === position,
-      )?.editorProps
-    },
-    {
-      onClickFromDrag(dragStartEvent) {
-        // TODO Aggregate inline keyframe editor
-        // openEditor(dragStartEvent, ref.current!)
-      },
-    },
-  )
-
-  const keyframeEditors = keyframeEditorProps.map((props, i) => (
-    <Fragment key={'agg-' + posKfs[i].keyframes[0].kf.id}>
-      {snapToAllKeyframes && (
+  const snapToAllTargets = snapToAllKeyframes
+    ? [...aggregatedKeyframes.byPosition.keys()].map((position) => (
         <KeyframeSnapTarget
+          key={'snap-target-all-' + position}
           layoutP={layoutP}
           leaf={viewModel}
-          position={props.position}
+          position={position}
         />
-      )}
-      <AggregateKeyframeEditor {...props.editorProps} />
-    </Fragment>
-  ))
+      ))
+    : null
 
   return (
     <AggregatedKeyframeTrackContainer
@@ -219,7 +141,12 @@ function AggregatedKeyframeTrack_memo(props: IAggregatedKeyframeTracksProps) {
         background: isOpen ? '#444850 ' : 'unset',
       }}
     >
-      {keyframeEditors}
+      <AggregateKeyframeSpanBar
+        viewModel={viewModel}
+        aggregatedKeyframes={aggregatedKeyframes}
+        layoutP={layoutP}
+      />
+      {snapToAllTargets}
       {snapTargets}
       {contextMenu}
     </AggregatedKeyframeTrackContainer>
@@ -619,168 +546,4 @@ function earliestKeyframe(keyframes: Keyframe[]) {
     }
   }
   return curEarliest
-}
-
-function useDragForAggregateKeyframeDot(
-  containerNode: HTMLDivElement | null,
-  getPropsForPosition: (
-    position: number,
-  ) => IAggregateKeyframeEditorProps | undefined,
-  options: {
-    /**
-     * hmm: this is a hack so we can actually receive the
-     * {@link MouseEvent} from the drag event handler and use
-     * it for positioning the popup.
-     */
-    onClickFromDrag(dragStartEvent: MouseEvent): void
-  },
-): [isDragging: boolean] {
-  const logger = useLogger('useDragForAggregateKeyframeDot')
-  const frameStampLock = useLockFrameStampPositionRef()
-  const useDragOpts = useMemo<DragOpts>(() => {
-    return {
-      debugName: 'AggregateKeyframeDot/useDragKeyframe',
-      onDragStart(event) {
-        logger._debug('onDragStart', {target: event.target})
-        const positionToFind = Number((event.target as HTMLElement).dataset.pos)
-        const props = getPropsForPosition(positionToFind)
-        if (!props) {
-          logger._debug('no props found for ', {positionToFind})
-          return false
-        }
-
-        frameStampLock(true, positionToFind)
-        const keyframes = prism(
-          getAggregateKeyframeEditorUtilsPrismFn(props),
-        ).getValue().cur.keyframes
-
-        const address = sequenceEditorAggregateViewModelSheetAddress(
-          props.viewModel,
-        )
-
-        const sheetStatePointer =
-          getStudio()!.atomP.historic.coreByProject[address.projectId]
-            .sheetsById[address.sheetId]
-        const sequenceVariant = getStudioActiveSequenceVariant(address)
-        const tracksByObject =
-          valTracksByObjectForSheetVariant(
-            sheetStatePointer,
-            sequenceVariant,
-          ) ?? {}
-
-        // Calculate all the valid snap positions in the sequence editor,
-        // excluding the child keyframes of this aggregate, and any selection it is part of.
-        const snapPositions = collectSequenceEditorSnapPositions(
-          tracksByObject,
-          {
-            shouldIncludeKeyframe(keyframe, {trackId, objectKey}) {
-              return (
-                // we exclude all the child keyframes of this aggregate keyframe from being a snap target
-                keyframes.every(
-                  (kfWithTrack) => keyframe.id !== kfWithTrack.kf.id,
-                ) &&
-                !(
-                  // if all of the children of the current aggregate keyframe are in a selection,
-                  (
-                    props.selection &&
-                    // then we exclude them and all other keyframes in the selection from being snap targets
-                    props.selection.byObjectKey[objectKey]?.byTrackId[trackId]
-                      ?.byKeyframeId[keyframe.id]
-                  )
-                )
-              )
-            },
-          },
-        )
-
-        snapToSome(snapPositions)
-
-        if (
-          props.selection &&
-          props.aggregateKeyframes[props.index].selected ===
-            AggregateKeyframePositionIsSelected.AllSelected
-        ) {
-          const {selection, viewModel} = props
-          const handlers = selection
-            .getDragHandlers({
-              ...address,
-              domNode: containerNode!,
-              positionAtStartOfDrag: keyframes[0].kf.position,
-            })
-            .onDragStart(event)
-
-          return (
-            handlers && {
-              ...handlers,
-              onClick: options.onClickFromDrag,
-              onDragEnd: (...args) => {
-                handlers.onDragEnd?.(...args)
-                snapToNone()
-              },
-            }
-          )
-        }
-
-        const propsAtStartOfDrag = props
-        const toUnitSpace = val(
-          propsAtStartOfDrag.layoutP.scaledSpace.toUnitSpace,
-        )
-
-        let tempTransaction: CommitOrDiscard | undefined
-
-        return {
-          onDrag(dx, dy, event) {
-            const newPosition = clampSequenceEditorPosition(
-              DopeSnap.checkIfMouseEventSnapToPos(event, {
-                // ignore: node,
-              }) ?? keyframes[0].kf.position + toUnitSpace(dx),
-              val(propsAtStartOfDrag.layoutP.sheet),
-            )
-
-            frameStampLock(true, newPosition)
-
-            tempTransaction?.discard()
-            tempTransaction = undefined
-            tempTransaction = getStudio().tempTransaction(({stateEditors}) => {
-              const sequenceVariant = getStudioActiveSequenceVariant(address)
-              for (const keyframe of keyframes) {
-                const original = keyframe.kf
-                stateEditors.coreByProject.historic.sheetsById.sequence.replaceKeyframes(
-                  {
-                    ...keyframe.track.sheetObject.address,
-                    trackId: keyframe.track.id,
-                    keyframes: [{...original, position: newPosition}],
-                    snappingFunction: getStudioSequence(
-                      val(propsAtStartOfDrag.layoutP.sheet),
-                    ).closestGridPosition,
-                    sequenceVariant,
-                  },
-                )
-              }
-            })
-          },
-          onDragEnd(dragHappened) {
-            frameStampLock(false, -1)
-            if (dragHappened) {
-              tempTransaction?.commit()
-            } else {
-              tempTransaction?.discard()
-              options.onClickFromDrag(event)
-            }
-
-            snapToNone()
-          },
-          onClick(ev) {
-            options.onClickFromDrag(ev)
-          },
-        }
-      },
-    }
-  }, [getPropsForPosition, options.onClickFromDrag])
-
-  const [isDragging] = useDrag(containerNode, useDragOpts)
-
-  useCssCursorLock(isDragging, 'draggingPositionInSequenceEditor', 'ew-resize')
-
-  return [isDragging]
 }

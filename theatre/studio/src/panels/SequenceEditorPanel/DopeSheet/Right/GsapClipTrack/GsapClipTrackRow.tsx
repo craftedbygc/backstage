@@ -13,7 +13,6 @@ import KeyframeSnapTarget, {
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {val} from '@unseenco/theatre-dataverse'
 import React, {useCallback, useMemo} from 'react'
-import styled from 'styled-components'
 import RightRow from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/Row'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import type {DragOpts} from '@unseenco/theatre-studio/uiComponents/useDrag'
@@ -42,61 +41,12 @@ import {
   limitGsapClipResizeEndDuration,
   limitGsapClipResizeStart,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/sequenceEditLimits'
-
-const Container = styled.div`
-  position: relative;
-  height: 100%;
-  width: 100%;
-`
-
-const ClipBar = styled.div<{$isTimeline?: boolean}>`
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 14px;
-  border-radius: 3px;
-  background: ${(p) => (p.$isTimeline ? '#5a735e' : '#6b8f71')};
-  border: 1px solid #8fb396;
-  box-sizing: border-box;
-  cursor: grab;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-`
-
-const ClipBarLabel = styled.span`
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.85);
-  pointer-events: none;
-  user-select: none;
-  padding: 0 6px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-`
-
-const EdgeHandle = styled.div<{$side: 'left' | 'right'}>`
-  position: absolute;
-  top: -5px;
-  bottom: -5px;
-  width: 12px;
-  cursor: ew-resize;
-  z-index: 1;
-  ${(props) => (props.$side === 'left' ? 'left: 0;' : 'right: 0;')}
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 7px;
-    bottom: 7px;
-    width: 2px;
-    border-radius: 1px;
-    background: rgba(255, 255, 255, 0.35);
-    ${(props) => (props.$side === 'left' ? 'left: 4px;' : 'right: 4px;')}
-  }
-`
+import {
+  SequencerClipBar,
+  SequencerClipBarEdgeHandle,
+  SequencerClipBarLabel,
+  SequencerClipBarTrackContainer,
+} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/keyframeRowUI/sequencerClipBarStyles'
 
 export const GsapClipTrackBarForTreeLeaf: React.VFC<{
   leaf: SequenceEditorTree_GsapClipTrack
@@ -440,21 +390,21 @@ const GsapClipTrackBar: React.VFC<{
       ))
 
   return (
-    <Container>
+    <SequencerClipBarTrackContainer>
       {snapTargets}
       {additionalSnapTargets}
       {contextMenu}
-      <ClipBar
+      <SequencerClipBar
         ref={barRef}
         style={{left: leftPx, width: widthPx}}
         title={trackData.gsapAnimationId}
-        $isTimeline={isTimeline}
+        $colorScheme={isTimeline ? 'gsapTimeline' : 'gsap'}
       >
-        <ClipBarLabel>{displayLabel}</ClipBarLabel>
-        <EdgeHandle ref={startHandleRef} $side="left" />
-        <EdgeHandle ref={endHandleRef} $side="right" />
-      </ClipBar>
-    </Container>
+        <SequencerClipBarLabel>{displayLabel}</SequencerClipBarLabel>
+        <SequencerClipBarEdgeHandle ref={startHandleRef} $side="left" />
+        <SequencerClipBarEdgeHandle ref={endHandleRef} $side="right" />
+      </SequencerClipBar>
+    </SequencerClipBarTrackContainer>
   )
 }
 
