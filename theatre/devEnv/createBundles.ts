@@ -103,6 +103,40 @@ function writeStudioSubpathShims(
   )
 }
 
+function copyCoreLitePackageArtifacts(coreDist: string, coreLiteDist: string) {
+  fs.mkdirSync(coreLiteDist, {recursive: true})
+  const liteArtifacts = [
+    'index-lite.js',
+    'index-lite.mjs',
+    'index-lite.js.map',
+    'index-lite.mjs.map',
+  ]
+  for (const file of liteArtifacts) {
+    const from = path.join(coreDist, file)
+    if (fs.existsSync(from)) {
+      const toName = file.replace('index-lite', 'index')
+      fs.copyFileSync(from, path.join(coreLiteDist, toName))
+    }
+  }
+  const indexDts = path.join(coreDist, 'index-lite.d.ts')
+  if (fs.existsSync(indexDts)) {
+    fs.copyFileSync(indexDts, path.join(coreLiteDist, 'index.d.ts'))
+  } else if (fs.existsSync(path.join(coreDist, 'index.d.ts'))) {
+    fs.copyFileSync(
+      path.join(coreDist, 'index.d.ts'),
+      path.join(coreLiteDist, 'index.d.ts'),
+    )
+  }
+
+  const privateApis = ['privateAPIs.js', 'privateAPIs.mjs', 'privateAPIs.d.ts']
+  for (const file of privateApis) {
+    const from = path.join(coreDist, file)
+    if (fs.existsSync(from)) {
+      fs.copyFileSync(from, path.join(coreLiteDist, file))
+    }
+  }
+}
+
 function copyStudioLitePackageArtifacts(
   studioDist: string,
   studioLiteDist: string,
@@ -146,8 +180,8 @@ function copyStudioLitePackageArtifacts(
  * Compare minified bundle sizes (run after `yarn workspace theatre build:js`).
  * Set `THEATRE_LITE_LOG_BUNDLE_SIZES=1` to print sizes when building.
  *
- * Phase 0: `core/dist/index.*` vs `core/dist/index-lite.*` (lite entry is a full
- * re-export until Phase 2). `studio/dist/index.*` vs `studio/dist/index-lite.*`
+ * `core/dist/index.*` vs `core/dist/index-lite.*` (published as `@unseenco/theatre-core-lite`).
+ * `studio/dist/index.*` vs `studio/dist/index-lite.*`
  * (lite omits sequence editor via `__THEATRE_LITE__` dead-code elimination as
  * gates expand).
  */
@@ -157,6 +191,7 @@ function logTheatreLiteBundleSizesIfRequested() {
   const pairs = [
     ['core', 'index'],
     ['core', 'index-lite'],
+    ['core-lite', 'index'],
     ['studio', 'index'],
     ['studio', 'index-lite'],
   ] as const
@@ -287,8 +322,19 @@ export async function createBundles(watch: boolean) {
 
   if (!watch) {
     const corePackage = path.join(__dirname, '../core')
+    const coreDist = path.join(corePackage, 'dist')
     writeCorePrivateAPIsShim(corePackage)
     writeCoreLenisShim(corePackage)
+
+    const coreIndexDts = path.join(coreDist, 'index.d.ts')
+    const coreIndexLiteDts = path.join(coreDist, 'index-lite.d.ts')
+    if (fs.existsSync(coreIndexDts) && !fs.existsSync(coreIndexLiteDts)) {
+      fs.copyFileSync(coreIndexDts, coreIndexLiteDts)
+    }
+
+    const coreLiteDist = path.join(__dirname, '../core-lite/dist')
+    copyCoreLitePackageArtifacts(coreDist, coreLiteDist)
+    writeCorePrivateAPIsShim(path.join(__dirname, '../core-lite'))
 
     const studioPackage = path.join(__dirname, '../studio')
     const studioDist = path.join(studioPackage, 'dist')

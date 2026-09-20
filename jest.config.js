@@ -29,6 +29,10 @@ module.exports = {
         supported: {
           'dynamic-import': false,
         },
+        define: {
+          __THEATRE_LITE__:
+            process.env.THEATRE_LITE_TEST === '1' ? 'true' : 'false',
+        },
       },
     ],
     '^.+\\.js$': [
@@ -37,6 +41,10 @@ module.exports = {
         sourcemap: true,
         supported: {
           'dynamic-import': false,
+        },
+        define: {
+          __THEATRE_LITE__:
+            process.env.THEATRE_LITE_TEST === '1' ? 'true' : 'false',
         },
       },
     ],

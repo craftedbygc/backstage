@@ -1,5 +1,5 @@
-import type Sequence from '@unseenco/theatre-core/sequences/Sequence'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
+import type Sequence from '@unseenco/theatre-core/sequences/Sequence'
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
 import type Project from '@unseenco/theatre-core/projects/Project'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'

@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react'
 import ReactDOM from 'react-dom/client'
-import {getProject, types} from '@unseenco/theatre-core'
+import {getProject, types} from '@unseenco/theatre-core-lite'
 import studio from '@unseenco/theatre-studio-lite'
 
 /**
- * Playground demo for `@unseenco/theatre-studio-lite` + full `@unseenco/theatre-core`.
+ * Playground demo for `@unseenco/theatre-studio-lite` + `@unseenco/theatre-core-lite`.
  * Static prop authoring, sheet variants, `onValuesChange`, and export JSON.
  */
 studio.initialize({mode: 'lite', usePersistentStorage: false})
@@ -130,16 +130,17 @@ const TheatreLiteDemo: React.FC = () => {
     >
       <div style={panelStyle}>
         <h1 style={{margin: '0 0 8px', fontSize: 22}}>
-          Theatre Lite — <code>@unseenco/theatre-studio-lite</code>
+          Theatre Lite — studio-lite + core-lite
         </h1>
         <p style={{margin: 0, color: '#94a3b8', fontSize: 14, lineHeight: 1.5}}>
-          This page imports <strong>studio-lite</strong> (not full Studio). Use
-          the outline and details panels to edit <em>static</em> props — no
-          sequence editor or keyframes. Variants <code>compact</code> /{' '}
-          <code>spacious</code> follow the window breakpoint; override values
-          per variant in Studio. Runtime updates come from{' '}
-          <code>onValuesChange</code>; export production JSON with the button
-          below (<code>createContentOfSaveFile</code>).
+          This page imports <strong>studio-lite</strong> and{' '}
+          <strong>core-lite</strong> (not full Studio/Core). Use the outline and
+          details panels to edit <em>static</em> props — no sequence editor or
+          keyframes. Variants <code>compact</code> / <code>spacious</code>{' '}
+          follow the window breakpoint; override values per variant in Studio.
+          Runtime updates come from <code>onValuesChange</code>; export
+          production JSON with the button below (
+          <code>createContentOfSaveFile</code>).
         </p>
         <p style={{margin: '12px 0 0', fontSize: 13}}>
           Width: <strong>{windowWidth}px</strong> — Runtime variant:{' '}

@@ -22,6 +22,7 @@
     "@types/styled-components": "^5.1.26",
     "@types/three": "^0.185.1",
     "@unseenco/theatre-core": "workspace:*",
+    "@unseenco/theatre-core-lite": "workspace:*",
     "@unseenco/theatre-dataverse": "workspace:*",
     "@unseenco/theatre-gsap": "workspace:*",
     "@unseenco/theatre-react": "workspace:*",

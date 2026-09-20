@@ -24,9 +24,15 @@ Join us on [Discord](https://discord.gg/bm9f8F9Y9N), follow the updates on [twit
 
 Theatre.js comes in two packages: `@unseenco/theatre-core` (the library) and `@unseenco/theatre-studio` (the editor). This package is the core library.
 
-### Theatre Lite bundle baseline (Phase 0)
+### `@unseenco/theatre-core-lite`
 
-A second esbuild entry `src/index-lite.ts` emits `dist/index-lite.{js,mjs}` for size comparison against the full bundle. Today it re-exports the full core; Phase 2 will gate sequencing code behind `__THEATRE_LITE__`. After `yarn workspace theatre build:js`, run with `THEATRE_LITE_LOG_BUNDLE_SIZES=1` to print rough KiB sizes for `index` vs `index-lite` (core and studio).
+A second esbuild entry `src/index-lite.ts` emits `dist/index-lite.{js,mjs}` (published as `@unseenco/theatre-core-lite`). It sets `__THEATRE_LITE__` so sequenced value merging, playback, GSAP, and scroll drivers are excluded from the bundle. After `yarn workspace theatre build:js`, run:
+
+```bash
+THEATRE_LITE_LOG_BUNDLE_SIZES=1 yarn workspace theatre build:js
+```
+
+to print minified KiB sizes for full vs lite (`core`, `core-lite`, `studio`, `studio-lite`).
 
 ### Listing and unloading sheets / objects
 

@@ -4303,6 +4303,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@unseenco/theatre-core-lite@workspace:*, @unseenco/theatre-core-lite@workspace:theatre/core-lite":
+  version: 0.0.0-use.local
+  resolution: "@unseenco/theatre-core-lite@workspace:theatre/core-lite"
+  dependencies:
+    "@unseenco/theatre-dataverse": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@unseenco/theatre-core@workspace:*, @unseenco/theatre-core@workspace:theatre/core":
   version: 0.0.0-use.local
   resolution: "@unseenco/theatre-core@workspace:theatre/core"
@@ -4397,7 +4405,7 @@ __metadata:
   dependencies:
     "@unseenco/theatre-dataverse": "workspace:*"
   peerDependencies:
-    "@unseenco/theatre-core": "*"
+    "@unseenco/theatre-core-lite": "*"
   languageName: unknown
   linkType: soft
 
@@ -4428,10 +4436,16 @@ __metadata:
     typescript: 5.3.3
   peerDependencies:
     "@unseenco/theatre-core": "*"
+    "@unseenco/theatre-core-lite": "*"
     "@unseenco/theatre-studio": "*"
+    "@unseenco/theatre-studio-lite": "*"
     three: ">=0.150.0"
   peerDependenciesMeta:
+    "@unseenco/theatre-core-lite":
+      optional: true
     "@unseenco/theatre-studio":
+      optional: true
+    "@unseenco/theatre-studio-lite":
       optional: true
   languageName: unknown
   linkType: soft
@@ -12029,6 +12043,7 @@ __metadata:
     "@types/styled-components": ^5.1.26
     "@types/three": ^0.185.1
     "@unseenco/theatre-core": "workspace:*"
+    "@unseenco/theatre-core-lite": "workspace:*"
     "@unseenco/theatre-dataverse": "workspace:*"
     "@unseenco/theatre-gsap": "workspace:*"
     "@unseenco/theatre-react": "workspace:*"

@@ -47,7 +47,7 @@
   },
   "sideEffects": false,
   "peerDependencies": {
-    "@unseenco/theatre-core": "*"
+    "@unseenco/theatre-core-lite": "*"
   },
   "dependencies": {
     "@unseenco/theatre-dataverse": "workspace:*"

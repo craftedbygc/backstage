@@ -1,6 +1,5 @@
 import {privateAPI, setPrivateAPI} from '@unseenco/theatre-core/privateAPIs'
 import type {IProject} from '@unseenco/theatre-core/projects/TheatreProject'
-import type TheatreSequence from '@unseenco/theatre-core/sequences/TheatreSequence'
 import type {ISequence} from '@unseenco/theatre-core/sequences/TheatreSequence'
 import type {PropTypeConfig_Compound} from '@unseenco/theatre-core/propTypes'
 import {compound} from '@unseenco/theatre-core/propTypes'
@@ -540,7 +539,7 @@ export default class TheatreSheet implements ISheet {
     return object.publicApi as $IntentionalAny
   }
 
-  get sequence(): TheatreSequence {
+  get sequence(): ISequence {
     return privateAPI(this).getSequence().publicApi
   }
 

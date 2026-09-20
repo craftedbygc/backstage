@@ -23,7 +23,7 @@ The main entry points are:
 - `update()` — call each frame when orbit mode is active
 - `dispose()` — tear down listeners and controls
 
-`three` and `@unseenco/theatre-core` are **peer dependencies**. `@unseenco/theatre-studio` is an **optional** peer (required only for `/extension`). The bundle marks them external in `devEnv/build.ts`.
+`three` and `@unseenco/theatre-core` are **peer dependencies** (use `@unseenco/theatre-core-lite` instead for Theatre Lite apps — do not install both in one bundle). `@unseenco/theatre-studio` and `@unseenco/theatre-studio-lite` are **optional** peers (required only for `/extension`; use studio-lite with core-lite). The bundle marks them external in `devEnv/build.ts`.
 
 ## Source layout
 

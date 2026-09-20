@@ -4,7 +4,7 @@ AGPL dev-time editor for static prop authoring and export. No sequence editor, k
 
 Built from `theatre/studio/src` with `__THEATRE_LITE__` and published from `dist/` (copied from `theatre/studio/dist/index-lite.*` during `yarn workspace theatre build`).
 
-Peers `@unseenco/theatre-core` (full core in Phase 1; `@unseenco/theatre-core-lite` in a later phase).
+Peers `@unseenco/theatre-core-lite`.
 
 ```ts
 import studio from '@unseenco/theatre-studio-lite'

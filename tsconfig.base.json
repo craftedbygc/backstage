@@ -17,6 +17,8 @@
     "declaration": true,
     "paths": {
       "@unseenco/theatre-core": ["./theatre/core/src/index.ts"],
+      "@unseenco/theatre-core-lite": ["./theatre/core/src/index-lite.ts"],
+      "@unseenco/theatre-core-lite/*": ["./theatre/core/src/*"],
       "@unseenco/theatre-studio": ["./theatre/studio/src/index.ts"],
       "@unseenco/theatre-studio-lite": ["./theatre/studio/src/index-lite.ts"],
       "@unseenco/theatre-studio/*": ["./theatre/studio/src/*"],

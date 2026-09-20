@@ -6,7 +6,8 @@
     "./shared",
     "./core",
     "./studio",
-    "./studio-lite"
+    "./studio-lite",
+    "./core-lite"
   ],
   "scripts": {
     "typecheck": "tsc --build",

@@ -67,6 +67,7 @@ const config = defineConfig(async ({command}) => {
       exclude: dev
         ? [
             '@unseenco/theatre-core',
+            '@unseenco/theatre-core-lite',
             '@unseenco/theatre-studio',
             '@unseenco/theatre-studio-lite',
           ]

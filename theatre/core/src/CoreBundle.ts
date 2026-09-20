@@ -1,7 +1,10 @@
 import type {Studio} from '@unseenco/theatre-studio/Studio'
 import projectsSingleton from './projects/projectsSingleton'
 import {privateAPI} from './privateAPIs'
-import * as coreExports from './coreExports'
+import * as fullCoreExports from './coreExports'
+import * as liteCoreExports from './coreExports-lite'
+
+const coreExports = __THEATRE_LITE__ ? liteCoreExports : fullCoreExports
 import {getCoreRafDriver} from './coreTicker'
 
 export type CoreBits = {

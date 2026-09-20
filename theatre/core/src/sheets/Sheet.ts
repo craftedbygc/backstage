@@ -1,5 +1,6 @@
 import type Project from '@unseenco/theatre-core/projects/Project'
-import Sequence from '@unseenco/theatre-core/sequences/Sequence'
+import type Sequence from '@unseenco/theatre-core/sequences/Sequence'
+import LiteSequence from '@unseenco/theatre-core/sequences/LiteSequence'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import type {
   SheetObjectActionsConfig,
@@ -24,22 +25,13 @@ import type {
 } from '@unseenco/theatre-shared/utils/transientPropPaths'
 import type {StrictRecord} from '@unseenco/theatre-shared/utils/types'
 import type {ILogger} from '@unseenco/theatre-shared/logger'
-import {isInteger} from 'lodash-es'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import {
   DEFAULT_SEQUENCE_VARIANT,
-  getSequenceStateFromSheet,
   validateSequenceVariantIdOrThrow,
 } from '@unseenco/theatre-core/sequences/sequenceVariants'
 import type {SheetSequenceMode} from '@unseenco/theatre-core/sheets/sheetSequenceMode'
-import {
-  PAGE_MODE_SEQUENCE_LENGTH,
-  PAGE_MODE_SUB_UNITS_PER_UNIT,
-} from '@unseenco/theatre-core/sheets/sheetSequenceMode'
-import {attachGsapSequenceBridge} from '@unseenco/theatre-core/gsap/attachGsapSequenceBridge'
-import {attachSheetScrollDriver} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
 import type {ScrollDriver} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
-import {createNativeDocumentScrollDriver} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
 import type {VoidFn} from '@unseenco/theatre-shared/utils/types'
 
 type SheetObjectMap = StrictRecord<ObjectAddressKey, SheetObject>
@@ -56,6 +48,7 @@ export type ObjectNativeObject = unknown
 export default class Sheet {
   private readonly _objects: Atom<SheetObjectMap> = new Atom<SheetObjectMap>({})
   private readonly _sequences: Record<string, Sequence> = {}
+  private readonly _liteSequences: Record<string, LiteSequence> = {}
   private readonly _activeSequenceVariant = new Atom<SequenceVariantId>(
     DEFAULT_SEQUENCE_VARIANT,
   )
@@ -69,9 +62,12 @@ export default class Sheet {
   >(undefined)
   private readonly _sequenceMode = new Atom<SheetSequenceMode>('time')
   readonly sequenceModeP = this._sequenceMode.pointer
-  private _pageScrollDisposer: VoidFn | undefined
-  private _customPageScrollDriver: ScrollDriver | undefined
-  private _gsapBridgeDisposer: VoidFn | undefined
+  /** @internal Used by full-runtime scroll/GSAP helpers (`sheetPageScrollAndGsapFull`). */
+  _pageScrollDisposer: VoidFn | undefined
+  /** @internal */
+  _customPageScrollDriver: ScrollDriver | undefined
+  /** @internal */
+  _gsapBridgeDisposer: VoidFn | undefined
   readonly activeSequenceVariantP = this._activeSequenceVariant.pointer
   readonly effectiveActiveSequenceVariantD: Prism<SequenceVariantId>
   readonly address: SheetAddress
@@ -171,8 +167,10 @@ export default class Sheet {
    */
   unload() {
     this.disposeRuntimeIntegrations()
-    for (const sequence of Object.values(this._sequences)) {
-      sequence.pause()
+    if (!__THEATRE_LITE__) {
+      for (const sequence of Object.values(this._sequences)) {
+        sequence.pause()
+      }
     }
     for (const objectKey of Object.keys(
       this._objects.get(),
@@ -184,44 +182,14 @@ export default class Sheet {
 
   getSequence(variant?: SequenceVariantId): Sequence {
     const variantId = variant ?? val(this._activeSequenceVariant.pointer)
-    if (!this._sequences[variantId]) {
-      const lengthD = prism(() => {
-        if (val(this._sequenceMode.pointer) === 'page') {
-          return PAGE_MODE_SEQUENCE_LENGTH
-        }
-        const sheetState = val(
-          this.project.pointers.historic.sheetsById[this.address.sheetId],
-        )
-        const unsanitized = getSequenceStateFromSheet(
-          sheetState,
-          variantId,
-        )?.length
-        return sanitizeSequenceLength(unsanitized)
-      })
-
-      const subUnitsPerUnitD = prism(() => {
-        if (val(this._sequenceMode.pointer) === 'page') {
-          return PAGE_MODE_SUB_UNITS_PER_UNIT
-        }
-        const sheetState = val(
-          this.project.pointers.historic.sheetsById[this.address.sheetId],
-        )
-        const unsanitized = getSequenceStateFromSheet(
-          sheetState,
-          variantId,
-        )?.subUnitsPerUnit
-        return sanitizeSequenceSubUnitsPerUnit(unsanitized)
-      })
-
-      this._sequences[variantId] = new Sequence(
-        this.template.project,
-        this,
-        lengthD,
-        subUnitsPerUnitD,
-        variantId,
-      )
+    if (__THEATRE_LITE__) {
+      if (!this._liteSequences[variantId]) {
+        this._liteSequences[variantId] = new LiteSequence()
+      }
+      return this._liteSequences[variantId]! as unknown as Sequence
     }
-    return this._sequences[variantId]!
+    const {getOrCreateFullSequence} = require('./sheetGetSequenceFull')
+    return getOrCreateFullSequence(this, this._sequences, variantId)
   }
 
   getActiveSequenceVariant(): SequenceVariantId {
@@ -272,52 +240,42 @@ export default class Sheet {
   }
 
   setSequenceMode(mode: SheetSequenceMode): void {
+    if (__THEATRE_LITE__) return
     if (this._sequenceMode.get() === mode) return
     this._sequenceMode.set(mode)
-    this.syncPageScrollDriver()
-    if (this._gsapBridgeDisposer) {
-      this._gsapBridgeDisposer()
-      this._gsapBridgeDisposer = attachGsapSequenceBridge(this.publicApi)
-    }
+    const {
+      syncPageScrollDriverForSheet,
+      reattachGsapBridgeForSheet,
+    } = require('./sheetPageScrollAndGsapFull')
+    syncPageScrollDriverForSheet(this)
+    reattachGsapBridgeForSheet(this)
   }
 
   enableGsapSequenceBridge(): void {
-    if (this._gsapBridgeDisposer) return
-    this._gsapBridgeDisposer = attachGsapSequenceBridge(this.publicApi)
-    this.syncPageScrollDriver()
+    if (__THEATRE_LITE__) return
+    const {
+      enableGsapSequenceBridgeForSheet,
+    } = require('./sheetPageScrollAndGsapFull')
+    enableGsapSequenceBridgeForSheet(this)
   }
 
   disposeRuntimeIntegrations(): void {
-    this._pageScrollDisposer?.()
-    this._pageScrollDisposer = undefined
-    this._gsapBridgeDisposer?.()
-    this._gsapBridgeDisposer = undefined
-  }
-
-  private syncPageScrollDriver(): void {
-    this._pageScrollDisposer?.()
-    this._pageScrollDisposer = undefined
-    if (this.getSequenceMode() === 'page') {
-      const driver =
-        this._customPageScrollDriver ?? createNativeDocumentScrollDriver()
-      this._pageScrollDisposer = attachSheetScrollDriver(this.publicApi, driver)
-    }
+    if (__THEATRE_LITE__) return
+    const {
+      disposeRuntimeIntegrationsForSheet,
+    } = require('./sheetPageScrollAndGsapFull')
+    disposeRuntimeIntegrationsForSheet(this)
   }
 
   setPageScrollDriver(driver: ScrollDriver | undefined): void {
-    this._customPageScrollDriver = driver
-    this.syncPageScrollDriver()
+    if (__THEATRE_LITE__) return
+    const {
+      setPageScrollDriverForSheet,
+    } = require('./sheetPageScrollAndGsapFull')
+    setPageScrollDriverForSheet(this, driver)
   }
 
   getPageScrollDriver(): ScrollDriver | undefined {
     return this._customPageScrollDriver
   }
 }
-
-const sanitizeSequenceLength = (len: number | undefined): number =>
-  typeof len === 'number' && isFinite(len) && len > 0 ? len : 10
-
-const sanitizeSequenceSubUnitsPerUnit = (subs: number | undefined): number =>
-  typeof subs === 'number' && isInteger(subs) && subs >= 1 && subs <= 1000
-    ? subs
-    : 30
