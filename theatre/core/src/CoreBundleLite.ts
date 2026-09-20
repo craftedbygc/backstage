@@ -1,15 +1,14 @@
 import type {Studio} from '@unseenco/theatre-studio/Studio'
 import projectsSingleton from './projects/projectsSingleton'
 import {privateAPI} from './privateAPIs'
-import * as fullCoreExports from './coreExports'
-import * as liteCoreExports from './coreExports-lite'
+import * as coreExports from './coreExports-lite'
 import {getCoreRafDriver} from './coreTicker'
-import {isTheatreLiteMode} from './utils/isTheatreLiteMode'
 import type {CoreBits, TheatreCoreBundle} from './coreBundleTypes'
 
-const coreExports = isTheatreLiteMode() ? liteCoreExports : fullCoreExports
-
-export default class CoreBundle implements TheatreCoreBundle {
+/**
+ * Core bundle for `@unseenco/theatre-core-lite` — never imports full `coreExports`.
+ */
+export default class CoreBundleLite implements TheatreCoreBundle {
   private _studio: Studio | undefined = undefined
   constructor() {}
 
@@ -39,4 +38,4 @@ export default class CoreBundle implements TheatreCoreBundle {
   }
 }
 
-export type {CoreBits, TheatreCoreBundle} from './coreBundleTypes'
+export type {CoreBits} from './coreBundleTypes'

@@ -19,7 +19,8 @@ export type {ISheet, ISheetObjectOptions} from './sheets/TheatreSheet'
 export type {UnknownShorthandCompoundProps} from './propTypes'
 import * as globalVariableNames from '@unseenco/theatre-shared/globalVariableNames'
 import type StudioBundle from '@unseenco/theatre-studio/StudioBundle'
-import CoreBundle from './CoreBundle'
+import CoreBundleLite from './CoreBundleLite'
+import type {TheatreCoreBundle} from './coreBundleTypes'
 import type {OnDiskState} from './projects/store/storeTypes'
 
 /**
@@ -32,7 +33,7 @@ registerCoreBundle()
 function registerCoreBundle() {
   if (typeof window == 'undefined') return
 
-  const existingBundle: CoreBundle | undefined =
+  const existingBundle: TheatreCoreBundle | undefined =
     // @ts-ignore ignore
     window[globalVariableNames.coreBundle]
 
@@ -55,7 +56,7 @@ function registerCoreBundle() {
     }
   }
 
-  const coreBundle = new CoreBundle()
+  const coreBundle = new CoreBundleLite()
 
   // @ts-ignore ignore
   window[globalVariableNames.coreBundle] = coreBundle

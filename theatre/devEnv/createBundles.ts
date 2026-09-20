@@ -286,6 +286,38 @@ export async function createBundles(watch: boolean) {
       esbuildConfig.platform = 'neutral'
       esbuildConfig.mainFields = ['browser', 'module', 'main']
       esbuildConfig.conditions = ['browser', 'node']
+
+      if (target.theatreLite) {
+        const coreSrc = path.join(pathToPackage, 'src')
+        esbuildConfig.plugins = [
+          {
+            name: 'theatre-core-lite-stubs',
+            setup(build) {
+              build.onResolve({filter: /sheetGetSequenceFull$/}, () => ({
+                path: path.join(
+                  coreSrc,
+                  'sheets/sheetGetSequenceFull.liteStub.ts',
+                ),
+              }))
+              build.onResolve({filter: /sheetPageScrollAndGsapFull$/}, () => ({
+                path: path.join(
+                  coreSrc,
+                  'sheets/sheetPageScrollAndGsapFull.liteStub.ts',
+                ),
+              }))
+              build.onResolve(
+                {filter: /sheetObjectSequencedFull$/},
+                () => ({
+                  path: path.join(
+                    coreSrc,
+                    'sheetObjects/sheetObjectSequencedFull.liteStub.ts',
+                  ),
+                }),
+              )
+            },
+          },
+        ]
+      }
     } else {
       esbuildConfig.define!['process.env.NODE_ENV'] =
         JSON.stringify('production')

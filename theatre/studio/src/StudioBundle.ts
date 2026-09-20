@@ -1,15 +1,14 @@
-import type CoreBundle from '@unseenco/theatre-core/CoreBundle'
-import type {CoreBits} from '@unseenco/theatre-core/CoreBundle'
+import type {CoreBits, TheatreCoreBundle} from '@unseenco/theatre-core/CoreBundle'
 import type {Studio} from './Studio'
 
 export default class StudioBundle {
-  private _coreBundle: undefined | CoreBundle
+  private _coreBundle: undefined | TheatreCoreBundle
   constructor(private readonly _studio: Studio) {}
   get type(): 'Theatre_StudioBundle' {
     return 'Theatre_StudioBundle'
   }
 
-  registerCoreBundle(coreBundle: CoreBundle) {
+  registerCoreBundle(coreBundle: TheatreCoreBundle) {
     if (this._coreBundle) {
       throw new Error(
         `StudioBundle.coreBundle is already registered. This is a bug.`,
