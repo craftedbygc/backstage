@@ -14,8 +14,8 @@ const gsapTimelineBarColors = css`
 `
 
 const theatreBarColors = css`
-  background: var(--studio-accent-soft);
-  border: 1px solid var(--studio-accent-secondary);
+  background: var(--studio-accent);
+  border: 1px solid var(--studio-accent-hover);
 `
 
 export const SequencerClipBarTrackContainer = styled.div`
