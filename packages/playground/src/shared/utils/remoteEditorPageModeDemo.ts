@@ -1,7 +1,7 @@
 import {isRemoteEditorWindow} from '@unseenco/theatre-core'
 
 const REMOTE_EDITOR_PLACEHOLDER =
-  'Editing in Studio — preview in the main window'
+  'Remote editor — preview in main window'
 
 const REMOTE_EDITOR_PLACEHOLDER_ID = 'remote-editor-placeholder'
 
@@ -11,14 +11,17 @@ export function isRemotePageModeEditorWindow(): boolean {
 }
 
 /**
- * Empty page shell for the remote editor: no demo DOM/GSAP targets. Studio reads
- * project state from the main window via `updateHistoric` on `editorHello`.
+ * Hide demo markup in the remote editor while keeping DOM nodes so Theatre/GSAP
+ * registration can target the same elements as the main window.
  */
-export function prepareRemoteEditorPageShell(): void {
+export function hidePageModeDemoForRemoteEditor(): void {
   const demoRoot = document.getElementById('demo-root')
   if (demoRoot) {
-    demoRoot.replaceChildren()
-    demoRoot.style.display = 'none'
+    // Keep layout in the document so page scroll metrics stay non-zero for ST
+    // layout in the remote editor (display:none collapses scroll height to 0).
+    demoRoot.style.visibility = 'hidden'
+    demoRoot.style.pointerEvents = 'none'
+    demoRoot.style.userSelect = 'none'
   }
 
   if (document.getElementById(REMOTE_EDITOR_PLACEHOLDER_ID)) {
