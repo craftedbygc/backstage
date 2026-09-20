@@ -38,7 +38,7 @@ export function uniformGuiDeclaresTexture(uniform: UniformWithGui): boolean {
 }
 
 /**
- * Reads GUI hints from a shader uniform for Theatre number or image props.
+ * Reads GUI hints from a shader uniform for Backstage number or image props.
  *
  * @param uniform - Uniform definition from the material
  * @param component - Optional vec component name for composite uniforms
@@ -86,7 +86,7 @@ export function numberTypeOptionsFromUniformGui(
   nudgeMultiplier?: number
 } {
   const parsed = parseUniformGui(uniform, component)
-  // Only include defined keys. Theatre's t.number() treats an own `range`
+  // Only include defined keys. Backstage's t.number() treats an own `range`
   // property as present even when undefined and throws in development.
   const opts: {
     range?: [number, number]

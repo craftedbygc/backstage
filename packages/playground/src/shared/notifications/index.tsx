@@ -31,7 +31,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       //   logging: {
       //     internal: true,
       //     dev: true,
-      //     min: TheatreLoggerLevel.TRACE,
+      //     min: BackstageLoggerLevel.TRACE,
       //   },
       // },
     })}

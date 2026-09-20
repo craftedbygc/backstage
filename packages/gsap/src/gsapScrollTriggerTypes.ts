@@ -1,4 +1,4 @@
-/** Minimal GSAP ScrollTrigger surface for Theatre (avoids tight GSAP coupling). */
+/** Minimal GSAP ScrollTrigger surface for Backstage (avoids tight GSAP coupling). */
 export type GsapScrollTriggerLike = {
   start: number
   end: number

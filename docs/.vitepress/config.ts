@@ -57,20 +57,20 @@ const guideSidebar = [
     ],
   },
   {
-    text: 'Theatre Lite',
+    text: 'Backstage Lite',
     collapsed: false,
     items: [
-      {text: 'Overview', link: '/guide/theatre-lite/'},
+      {text: 'Overview', link: '/guide/backstage-lite/'},
       {
         text: 'Choosing lite or full',
-        link: '/guide/theatre-lite/choosing-lite-or-full',
+        link: '/guide/backstage-lite/choosing-lite-or-full',
       },
-      {text: 'Getting started', link: '/guide/theatre-lite/getting-started'},
-      {text: 'Variants', link: '/guide/theatre-lite/variants'},
-      {text: 'Three.js', link: '/guide/theatre-lite/three-js'},
+      {text: 'Getting started', link: '/guide/backstage-lite/getting-started'},
+      {text: 'Variants', link: '/guide/backstage-lite/variants'},
+      {text: 'Three.js', link: '/guide/backstage-lite/three-js'},
       {
         text: 'Upgrading to full',
-        link: '/guide/theatre-lite/upgrading-to-full',
+        link: '/guide/backstage-lite/upgrading-to-full',
       },
     ],
   },
@@ -86,8 +86,8 @@ const guideSidebar = [
 ]
 
 export default defineConfig({
-  title: 'Theatre.js',
-  description: 'Guides and API reference for Theatre.js',
+  title: 'Backstage.js',
+  description: 'Guides and API reference for Backstage.js',
   /** Production and preview deploys live under /docs/ on the unified Netlify site. */
   base: '/docs/',
   cleanUrls: true,
@@ -107,23 +107,23 @@ export default defineConfig({
             {text: 'Overview', link: '/api/'},
             {
               text: '@unseenco/backstage',
-              link: '/api/theatre-core',
+              link: '/api/backstage-core',
             },
             {
               text: '@unseenco/backstage/studio',
-              link: '/api/theatre-studio',
+              link: '/api/backstage-studio',
             },
             {
               text: '@unseenco/backstage/threejs',
-              link: '/api/theatre-threejs',
+              link: '/api/backstage-threejs',
             },
             {
               text: '@unseenco/backstage/dataverse',
-              link: '/api/theatre-dataverse',
+              link: '/api/backstage-dataverse',
             },
             {
               text: '@unseenco/backstage/gsap',
-              link: '/api/theatre-gsap',
+              link: '/api/backstage-gsap',
             },
           ],
         },
@@ -132,7 +132,7 @@ export default defineConfig({
     socialLinks: [
       {
         icon: 'github',
-        link: 'https://github.com/craftedbygc/theatre',
+        link: 'https://github.com/@@PRESERVE_CBGC_BACKSTAGE@@',
       },
     ],
   },

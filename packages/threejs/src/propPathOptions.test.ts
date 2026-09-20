@@ -1,7 +1,7 @@
 import {expandPropPathInput, mergePropPathInputs} from './propPathOptions'
 
 describe('propPathOptions', () => {
-  test('expands flat shorthand to theatre paths', () => {
+  test('expands flat shorthand to backstage paths', () => {
     expect(expandPropPathInput(['visible', 'map'])).toEqual(
       expect.arrayContaining([
         'visible',

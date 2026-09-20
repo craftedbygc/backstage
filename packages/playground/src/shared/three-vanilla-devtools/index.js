@@ -5,18 +5,18 @@ import {
   getProject,
   setCoreRafDriver,
 } from '@unseenco/backstage'
-import {configureTheatreThreejs} from '@unseenco/backstage/threejs'
+import {configureBackstageThreejs} from '@unseenco/backstage/threejs'
 import {buildExtension} from '@unseenco/backstage/threejs/extension'
 import {bindDockedThreeViewport} from '../utils/bindDockedThreeViewport'
 import {createThreeScenes} from './ThreeScene.js'
-import state from './three-basic-vanilla-devtools.theatre-project-state.json'
+import state from './three-basic-vanilla-devtools.backstage-project-state.json'
 
 const rafDriver = createRafDriver({name: 'three-basic-vanilla-devtools'})
 setCoreRafDriver(rafDriver)
 
 studio.initialize({__experimental_rafDriver: rafDriver})
 
-configureTheatreThreejs({
+configureBackstageThreejs({
   autoAddObject: {
     exclude: {
       uniforms: ['uTime'],

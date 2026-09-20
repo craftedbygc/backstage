@@ -1,6 +1,6 @@
 # GSAP extension
 
-`@unseenco/backstage/gsap` bridges **GSAP** tweens and timelines to Theatre **sequence time mode** (v1). Register animations at runtime, then place them on the sheet sequence like keyframed props. **Page mode** (scroll-driven sequencer) and scroll drivers are documented in [Sheet sequence modes](../manual/sheet-modes.md). **ScrollTrigger** instances can be registered for **read-only** visualization on the page-mode sequencer (vertical scroll on the configured scroller, default document).
+`@unseenco/backstage/gsap` bridges **GSAP** tweens and timelines to Backstage **sequence time mode** (v1). Register animations at runtime, then place them on the sheet sequence like keyframed props. **Page mode** (scroll-driven sequencer) and scroll drivers are documented in [Sheet sequence modes](../manual/sheet-modes.md). **ScrollTrigger** instances can be registered for **read-only** visualization on the page-mode sequencer (vertical scroll on the configured scroller, default document).
 
 Studio support for GSAP clips is **built into** `@unseenco/backstage/studio`. You do **not** call `studio.extend()` for GSAP.
 
@@ -16,7 +16,7 @@ Peer dependencies: `gsap` (≥3), `@unseenco/backstage`. `@unseenco/backstage/st
 
 Typical setup:
 
-1. **`configureTheatreGsap()`** — outline namespace for proxy objects (default `GSAP`).
+1. **`configureBackstageGsap()`** — outline namespace for proxy objects (default `GSAP`).
 2. **`registerGsapAnimation()`** — bind a paused tween or timeline to a sheet; creates outline entries under `GSAP / …`.
 3. **`attachGsapSequenceBridge(sheet)`** — drive registered animations from the sequence playhead.
 4. In Studio — **Add to sequence at playhead** on a GSAP outline object (context menu, detail panel, or clip title menu).
@@ -32,14 +32,14 @@ import studio from '@unseenco/backstage/studio'
 import {
   attachGsapSequenceBridge,
   bindGsapTickerToRafDriver,
-  configureTheatreGsap,
+  configureBackstageGsap,
   registerGsapAnimation,
 } from '@unseenco/backstage/gsap'
 
 const rafDriver = createRafDriver({name: 'gsap-master-clock'})
 setCoreRafDriver(rafDriver)
 
-configureTheatreGsap({
+configureBackstageGsap({
   namespace: 'GSAP',
   outlineNamespace: {defaultCollapsed: false},
 })
@@ -59,9 +59,9 @@ void getProject('My project').ready.then(() => {
 
 ### GSAP as the master clock
 
-When GSAP should own timing (common for mixed GSAP + Theatre setups), use **`bindGsapTickerToRafDriver(rafDriver, gsap)`** after `setCoreRafDriver()`. It forwards `gsap.ticker` time (seconds) to `rafDriver.tick()` (milliseconds, like `performance.now()`).
+When GSAP should own timing (common for mixed GSAP + Backstage setups), use **`bindGsapTickerToRafDriver(rafDriver, gsap)`** after `setCoreRafDriver()`. It forwards `gsap.ticker` time (seconds) to `rafDriver.tick()` (milliseconds, like `performance.now()`).
 
-To silence the one-time integration warning (for example in tests), pass **`suppressGsapTickerRafWarning: true`** to `configureTheatreGsap()`.
+To silence the one-time integration warning (for example in tests), pass **`suppressGsapTickerRafWarning: true`** to `configureBackstageGsap()`.
 
 See the playground demo below for a full example with DOM targets and nested labels.
 
@@ -80,25 +80,25 @@ const sheet = getProject('My project').sheet('Main', {
 })
 ```
 
-`gsap: true` turns on **`attachGsapSequenceBridge`** and native document scroll sync when no custom **`scrollDriver`** is set. You can also call **`sheet.setSequenceMode('page')`**, **`attachTheatrePageScroll(sheet)`**, and **`attachGsapSequenceBridge(sheet)`** separately.
+`gsap: true` turns on **`attachGsapSequenceBridge`** and native document scroll sync when no custom **`scrollDriver`** is set. You can also call **`sheet.setSequenceMode('page')`**, **`attachBackstagePageScroll(sheet)`**, and **`attachGsapSequenceBridge(sheet)`** separately.
 
 GSAP-specific notes in page mode:
 
 - GSAP clip **`defaultDuration`** should be set in **percent** when adding clips (defaults to **10** if omitted in page mode, not tween seconds).
 
-Core scroll wiring (`configureTheatrePageScroll`, Lenis, custom **`ScrollDriver`**, overflow elements): [Sheet sequence modes — page mode](../manual/sheet-modes.md#page-mode).
+Core scroll wiring (`configureBackstagePageScroll`, Lenis, custom **`ScrollDriver`**, overflow elements): [Sheet sequence modes — page mode](../manual/sheet-modes.md#page-mode).
 
 ### GSAP page scroll + ScrollTrigger defaults
 
-When using ScrollTrigger with a non-document scroller, align Theatre and GSAP:
+When using ScrollTrigger with a non-document scroller, align Backstage and GSAP:
 
 ```ts
-import {configureTheatrePageScroll} from '@unseenco/backstage'
-import {configureTheatreGsap} from '@unseenco/backstage/gsap'
+import {configureBackstagePageScroll} from '@unseenco/backstage'
+import {configureBackstageGsap} from '@unseenco/backstage/gsap'
 
-configureTheatrePageScroll({scroller: document.documentElement})
+configureBackstagePageScroll({scroller: document.documentElement})
 
-configureTheatreGsap({
+configureBackstageGsap({
   pageScroll: {
     scroller: document.documentElement,
     // applyScrollTriggerDefaults: true — optional; sets ScrollTrigger.defaults({ scroller })
@@ -112,7 +112,7 @@ const sheet = getProject('My project').sheet('Main', {
 })
 ```
 
-Playground: **`/shared/gsap-page-mode/`** (native vertical scroll), **`/shared/gsap-page-mode-horizontal/`** (native horizontal scroll), **`/shared/gsap-page-mode-lenis/`** (Lenis + ScrollTrigger proxy + Theatre).
+Playground: **`/shared/gsap-page-mode/`** (native vertical scroll), **`/shared/gsap-page-mode-horizontal/`** (native horizontal scroll), **`/shared/gsap-page-mode-lenis/`** (Lenis + ScrollTrigger proxy + Backstage).
 
 ## registerGsapAnimation
 
@@ -127,16 +127,16 @@ registerGsapAnimation(animation, sheet, {
 
 | Option | Purpose |
 | --- | --- |
-| **`label`** | Shown after the namespace; `/` segments nest in the outline and sequence tree. Optional — when omitted, Theatre uses the GSAP tween/timeline **`vars.id`** if set. |
+| **`label`** | Shown after the namespace; `/` segments nest in the outline and sequence tree. Optional — when omitted, Backstage uses the GSAP tween/timeline **`vars.id`** if set. |
 | **`id`** | Stable clip id on the sheet object. Defaults to the sanitised object key (`GSAP / …`). Re-registering with the same id updates the registry entry. |
 | **`defaultDuration`** | Clip length when first added to the sequence (defaults to tween duration in time mode; use **percent** in page mode). |
 | **`onRebuildTimeline`** | Rebuild callback when native child timing edits cannot be applied in place (timelines with editable child spans). |
 
-Animations are **paused** on registration so Theatre can set `progress` during sequence scrubbing and playback.
+Animations are **paused** on registration so Backstage can set `progress` during sequence scrubbing and playback.
 
 ## ScrollTrigger (page mode, read-only sequencer)
 
-Requires **`sequenceMode: 'page'`**, `gsap.registerPlugin(ScrollTrigger)`, and a ScrollTrigger whose **scroller and axis** match `configureTheatreGsap({ pageScroll: { scroller, axis } })` (default: document, vertical). Set **`horizontal: true`** on triggers (or **`pageScroll: { axis: 'horizontal' }`**, which applies `ScrollTrigger.defaults({ horizontal: true })`). Theatre maps each trigger’s resolved **`start` / `end`** scroll pixels along that axis to **0–100%** on the sequence. Bars are **read-only** in Studio; GSAP still drives scrubbing on scroll.
+Requires **`sequenceMode: 'page'`**, `gsap.registerPlugin(ScrollTrigger)`, and a ScrollTrigger whose **scroller and axis** match `configureBackstageGsap({ pageScroll: { scroller, axis } })` (default: document, vertical). Set **`horizontal: true`** on triggers (or **`pageScroll: { axis: 'horizontal' }`**, which applies `ScrollTrigger.defaults({ horizontal: true })`). Backstage maps each trigger’s resolved **`start` / `end`** scroll pixels along that axis to **0–100%** on the sequence. Bars are **read-only** in Studio; GSAP still drives scrubbing on scroll.
 
 ```ts
 import gsap from 'gsap'
@@ -174,10 +174,10 @@ Outline proxies appear under **`GSAP / ScrollTriggers / …`**. They **automatic
 
 Page mode behaviour and scroller setup: [Sheet sequence modes](../manual/sheet-modes.md#page-mode).
 
-## configureTheatreGsap
+## configureBackstageGsap
 
 ```ts
-configureTheatreGsap({
+configureBackstageGsap({
   namespace: 'GSAP',
   outlineNamespace: {defaultCollapsed: true},
   pageScroll: {
@@ -200,7 +200,7 @@ After registration, each animation appears as a **proxy sheet object** (no seque
 
 Only **one clip per registered animation** on the sequence at a time (toggle add/remove rather than stacking duplicates).
 
-Runtime reads clip layout via `sheet.sequence.__experimental_getGsapClips()` (see [theatre-core API](/api/theatre-core)).
+Runtime reads clip layout via `sheet.sequence.__experimental_getGsapClips()` (see [backstage-core API](/api/backstage-core)).
 
 ## Production bundles
 
@@ -214,4 +214,4 @@ Ship **`@unseenco/backstage/gsap`** and **`@unseenco/backstage`** in production 
 
 ## API reference
 
-[@unseenco/backstage/gsap API](/api/theatre-gsap)
+[@unseenco/backstage/gsap API](/api/backstage-gsap)

@@ -3,7 +3,7 @@ import styled, {StyleSheetManager} from 'styled-components'
 import {ItemSectionWithPreviews} from './ItemSectionWithPreviews'
 import {PlaygroundHeader} from './PlaygroundHeader'
 // @ts-ignore
-import {version} from '../../../../theatre/studio/package.json'
+import {version} from '../../../../backstage/studio/package.json'
 
 const HomeContainer = styled.div`
   position: fixed;
@@ -45,7 +45,7 @@ export const PlaygroundPage = ({
             },
             {
               label: 'Github',
-              href: 'https://github.com/craftedbygc/theatre',
+              href: 'https://github.com/craftedbygc/backstage',
             },
           ]}
         />

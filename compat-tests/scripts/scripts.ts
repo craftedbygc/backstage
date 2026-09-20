@@ -13,8 +13,8 @@ import {defer} from '../utils/testUtils'
  * @param {string} pkg
  * @returns boolean
  */
-const isTheatreDependency = (pkg) =>
-  pkg === '@unseenco/backstage' || pkg.startsWith('@unseenco/theatre-')
+const isBackstageDependency = (pkg) =>
+  pkg === '@unseenco/backstage' || pkg.startsWith('@unseenco/backstage-')
 
 const verbose = !!argv['verbose']
 
@@ -75,7 +75,7 @@ export async function installFixtures(): Promise<void> {
   const verdaccioServer = await startVerdaccio(config.VERDACCIO_PORT)
   console.log(`Verdaccio is running on ${config.VERDACCIO_URL}`)
 
-  console.log('Releasing @unseenco/theatre-* packages to verdaccio')
+  console.log('Releasing @unseenco/backstage-* packages to verdaccio')
   await releaseToVerdaccio()
 
   console.log('Running `$ npm install` on test packages')
@@ -102,7 +102,7 @@ async function runNpmInstallOnTestPackages() {
     await fs.remove(path.join(pathToPackageDir, 'package-lock.json'))
     cd(path.join(pathToPackageDir, '../'))
     const tempPath = fs.mkdtempSync(
-      path.join(os.tmpdir(), 'theatre-compat-test-'),
+      path.join(os.tmpdir(), 'backstage-compat-test-'),
     )
     await fs.copy(pathToPackageDir, tempPath)
 
@@ -154,19 +154,19 @@ Original error: ${error}`)
 
 /**
  * Takes an absolute path to a package.json file and replaces all of its
- * dependencies on `@unseenco/theatre-*` packatges to `version`.
+ * dependencies on `@unseenco/backstage-*` packatges to `version`.
  *
  * @param {string} pathToPackageJson absolute path to the package.json file
- * @param {string} version The version to set all `@unseenco/theatre-*` dependencies to
+ * @param {string} version The version to set all `@unseenco/backstage-*` dependencies to
  */
-async function patchTheatreDependencies(pathToPackageJson, version) {
+async function patchBackstageDependencies(pathToPackageJson, version) {
   const originalFileContent = fs.readFileSync(pathToPackageJson, {
     encoding: 'utf-8',
   })
   // get the package.json file's content
   const packageJson = JSON.parse(originalFileContent)
 
-  // find all dependencies on '@unseenco/theatre-*' packages and replace them with the local version
+  // find all dependencies on '@unseenco/backstage-*' packages and replace them with the local version
   for (const dependencyType of [
     'dependencies',
     'devDependencies',
@@ -175,7 +175,7 @@ async function patchTheatreDependencies(pathToPackageJson, version) {
     const dependencies = packageJson[dependencyType]
     if (dependencies) {
       for (const dependencyName of Object.keys(dependencies)) {
-        if (isTheatreDependency(dependencyName)) {
+        if (isBackstageDependency(dependencyName)) {
           dependencies[dependencyName] = version
         }
       }
@@ -199,15 +199,15 @@ async function patchTestPackageJsons(): Promise<() => void> {
     (pathToPackageDir) => path.join(pathToPackageDir, 'package.json'),
   )
 
-  // replace all dependencies on @unseenco/theatre-* packages with the local version
+  // replace all dependencies on @unseenco/backstage-* packages with the local version
   for (const pathToPackageJson of packagePaths) {
-    patchTheatreDependencies(pathToPackageJson, tempVersion)
+    patchBackstageDependencies(pathToPackageJson, tempVersion)
   }
 
   return () => {
-    // replace all dependencies on @unseenco/theatre-* packages with the 0.0.1-COMPAT.1
+    // replace all dependencies on @unseenco/backstage-* packages with the 0.0.1-COMPAT.1
     for (const pathToPackageJson of packagePaths) {
-      patchTheatreDependencies(pathToPackageJson, '0.0.1-COMPAT.1')
+      patchBackstageDependencies(pathToPackageJson, '0.0.1-COMPAT.1')
     }
   }
 }
@@ -265,7 +265,7 @@ async function startVerdaccio(port: number): Promise<{close: () => void}> {
 const packagesToPublish = ['@unseenco/backstage']
 
 /**
- * Assigns a new version to each of @unseenco/theatre-* packages. If there a package depends on another package in this monorepo,
+ * Assigns a new version to each of @unseenco/backstage-* packages. If there a package depends on another package in this monorepo,
  * this function makes sure the dependency version is fixed at "version"
  *
  * @param workspacesListObjects - An Array of objects containing information about the workspaces
@@ -329,14 +329,14 @@ async function writeVersionsToPackageJSONs(
 }
 
 /**
- * Builds all the @unseenco/theatre-* packages with version number 0.0.1-COMPAT.1 and publishes
+ * Builds all the @unseenco/backstage-* packages with version number 0.0.1-COMPAT.1 and publishes
  * them all to the verdaccio registry
  */
 async function releaseToVerdaccio() {
   cd(config.MONOREPO_ROOT)
 
   // @ts-ignore ignore
-  process.env.THEATRE_IS_PUBLISHING = true
+  process.env.BACKSTAGE_IS_PUBLISHING = true
 
   const workspacesListString = await $`yarn workspaces list --json`
   const workspacesListObjects = workspacesListString.stdout

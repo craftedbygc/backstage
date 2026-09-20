@@ -1,0 +1,131 @@
+import React from 'react'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
+import {val} from '@unseenco/backstage/dataverse'
+import {usePrism, useVal} from '@unseenco/backstage/react'
+import styled from 'styled-components'
+import usePopoverPosition from '@unseenco/backstage/studio/uiComponents/Popover/usePopoverPosition'
+import {useTransition, animated, easings} from '@react-spring/web'
+import {pointerEventsAutoInNormalMode} from '@unseenco/backstage/studio/css'
+import {tooltipTarget} from './tooltipActor'
+
+export const TooltipOverlay: React.FC<{}> = () => {
+  const currentTarget = useVal(tooltipTarget)
+
+  const tooltipDisabled =
+    useVal(currentTarget?.atom.pointer.tooltipDisabled) ?? false
+
+  const title = usePrism((): React.ReactNode => {
+    const chordial = currentTarget
+    if (!chordial) return null
+    const a = chordial.atom
+    const optsFn = val(a.pointer.optsFn)
+    const opts = optsFn()
+    return opts.title
+  }, [currentTarget])
+
+  const [popoverContainerRef, positioning] = usePopoverPosition({
+    target: currentTarget?.target,
+  })
+
+  const data: Array<{
+    key: string
+    title: React.ReactNode
+    positioning: {left: number; top: number}
+  }> = []
+
+  const chordial = currentTarget
+  if (chordial && positioning && !tooltipDisabled) {
+    data.push({
+      key: chordial.id,
+      title,
+      positioning,
+    })
+  }
+
+  const transitions = useTransition(data, {
+    from: {
+      opacity: 0.5,
+      transform: `translateY(0px) perspective(200px) scale(0.95) rotateX(-45deg) `,
+    },
+    enter: {
+      opacity: 1,
+      transform: `translateY(0px) perspective(200px) scale(1) rotateX(0deg) `,
+    },
+    leave: {
+      opacity: 0,
+      transform: `translateY(0px) perspective(200px) scale(0.9) rotateX(-10deg) `,
+    },
+    keys: (item) => item.key,
+    config: (item, index, phase) => (key) => {
+      return {
+        // velocity: phase === 'leave' ? 0.5 : 6,
+        duration: phase === 'leave' ? 33 * 3 : 33 * 4,
+        easing: easings.easeOutCubic,
+      }
+    },
+  })
+
+  return (
+    <>
+      {title && (
+        <Container
+          ref={popoverContainerRef as React.MutableRefObject<$IntentionalAny>}
+          style={{opacity: 0}}
+        >
+          <Title>{title}</Title>
+        </Container>
+      )}
+
+      {transitions((style, item) => {
+        return (
+          <Container
+            style={{
+              ...style,
+              left: item.positioning.left + 'px',
+              top: item.positioning.top + 'px',
+              willChange: 'transform, opacity',
+            }}
+          >
+            <Title>{item.title}</Title>
+          </Container>
+        )
+      })}
+    </>
+  )
+}
+
+const Container = styled(animated.div)`
+  display: flex;
+  align-items: center;
+  height: 30px;
+  position: relative;
+  position: absolute;
+  transform-origin: top center;
+
+  cursor: default;
+  ${pointerEventsAutoInNormalMode};
+
+  color: white;
+  box-sizing: border-box;
+
+  border-radius: 4px;
+  background-color: var(--studio-popover-bg, #282b2f);
+  border: 0.5px solid #565e66;
+  z-index: 10000;
+  padding: 8px 8px;
+  font-size: 10px;
+
+  z-index: 10000;
+
+  & a {
+    color: inherit;
+  }
+
+  max-width: 240px;
+  padding: 8px;
+  pointer-events: none !important;
+`
+
+const Title = styled.div`
+  text-wrap: nowrap;
+`

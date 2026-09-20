@@ -7,9 +7,9 @@ import {REGISTERED_OBJECT_FLAG} from './constants'
  * Each entry is esbuild-bundled separately, so a module-level WeakMap would
  * otherwise be duplicated and selection sync would see an empty registry.
  */
-const REGISTRY_KEY = '__unseenco_theatre_threejs_objectRegistry__'
+const REGISTRY_KEY = '__unseenco_backstage_threejs_objectRegistry__'
 const REGISTRY_LISTENERS_KEY =
-  '__unseenco_theatre_threejs_objectRegistryListeners__'
+  '__unseenco_backstage_threejs_objectRegistryListeners__'
 
 type ObjectRegistryMaps = {
   objectToSheetObject: WeakMap<Object3D, ISheetObject>

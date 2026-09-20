@@ -1,0 +1,128 @@
+import getStudio from '@unseenco/backstage/studio/getStudio'
+import {decodePathToProp} from '@unseenco/backstage-shared/utils/addresses'
+import getDeep from '@unseenco/backstage-shared/utils/getDeep'
+import type {SequenceTrackId} from '@unseenco/backstage-shared/utils/ids'
+import {usePrism} from '@unseenco/backstage/react'
+import type {Pointer} from '@unseenco/backstage/dataverse'
+import {val} from '@unseenco/backstage/dataverse'
+import React from 'react'
+import styled from 'styled-components'
+import type {SequenceEditorPanelLayout} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/layout'
+import {contentWidth} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/Right/Right'
+import HorizontallyScrollableArea from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/Right/HorizontallyScrollableArea'
+import PrimitivePropGraph from './PrimitivePropGraph'
+import FrameGrid from '@unseenco/backstage/studio/panels/SequenceEditorPanel/FrameGrid/FrameGrid'
+import {transparentize} from 'polished'
+import {getStudioActiveSequenceVariant} from '@unseenco/backstage/studio/utils/activeSequenceVariant'
+import {graphEditorColors} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/graphEditorColors'
+
+export {graphEditorColors}
+
+const Container = styled.div`
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: ${transparentize(0.03, '#1a1c1e')};
+`
+
+const SVGContainer = styled.svg`
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  pointer-events: none;
+`
+
+const GraphEditor: React.FC<{
+  layoutP: Pointer<SequenceEditorPanelLayout>
+}> = ({layoutP}) => {
+  return usePrism(() => {
+    const sheet = val(layoutP.sheet)
+
+    const selectedPropsByObject = val(
+      getStudio()!.atomP.historic.projects.stateByProjectId[
+        sheet.address.projectId
+      ].stateBySheetId[sheet.address.sheetId].sequenceEditor
+        .selectedPropsByObject,
+    )
+
+    const height = val(layoutP.graphEditorDims.height)
+
+    const unitSpaceToScaledSpaceMultiplier = val(
+      layoutP.scaledSpace.fromUnitSpace,
+    )(1)
+
+    const graphs: Array<React.ReactElement> = []
+
+    if (selectedPropsByObject) {
+      for (const [objectKey, props] of Object.entries(selectedPropsByObject)) {
+        const sheetObject = sheet.getObject(objectKey)
+        if (!sheetObject) continue
+        const validSequenceTracks = val(
+          sheetObject.template.getMapOfValidSequenceTracks_forStudio(
+            getStudioActiveSequenceVariant(sheetObject.sheet.address),
+          ),
+        )
+        for (const [encodedPathToProp, graphEditorColor] of Object.entries(
+          props!,
+        )) {
+          const pathToProp = decodePathToProp(encodedPathToProp)
+          const possibleSequenceTrackId = getDeep(
+            validSequenceTracks,
+            pathToProp,
+          ) as undefined | SequenceTrackId
+          if (!possibleSequenceTrackId) continue
+
+          graphs.push(
+            <PrimitivePropGraph
+              key={`graph-${objectKey}-${encodedPathToProp}`}
+              sheetObject={sheetObject}
+              pathToProp={pathToProp}
+              layoutP={layoutP}
+              trackId={possibleSequenceTrackId}
+              color={graphEditorColor!}
+            />,
+          )
+        }
+      }
+    }
+
+    const width = val(layoutP.rightDims.width)
+    const leftWidth = val(layoutP.leftDims.width)
+    return (
+      <Container
+        style={{
+          left: leftWidth + 'px',
+          height: height + 'px',
+          // @ts-expect-error
+          '--unitSpaceToScaledSpaceMultiplier':
+            unitSpaceToScaledSpaceMultiplier,
+          '--graphEditorVerticalSpace': `${val(
+            layoutP.graphEditorVerticalSpace.space,
+          )}`,
+        }}
+      >
+        <FrameGrid layoutP={layoutP} width={width} height={height} />
+        <HorizontallyScrollableArea layoutP={layoutP} height={height}>
+          <SVGContainer
+            width={contentWidth}
+            height={height}
+            viewBox={`0 0 ${contentWidth} ${height}`}
+          >
+            <g
+              style={{
+                transform: `translate(${val(
+                  layoutP.scaledSpace.leftPadding,
+                )}px, ${val(layoutP.graphEditorDims.padding.top)}px)`,
+              }}
+            >
+              {graphs}
+            </g>
+          </SVGContainer>
+        </HorizontallyScrollableArea>
+      </Container>
+    )
+  }, [layoutP])
+}
+
+export default GraphEditor

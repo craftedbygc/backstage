@@ -40,7 +40,7 @@ function sheetObjectHasDivergedFromSavedState(
 }
 
 /**
- * True when any Theatre sheet object registered on this Three.js scene graph
+ * True when any Backstage sheet object registered on this Three.js scene graph
  * has diverged from the JSON state passed to `getProject()`.
  */
 export function sceneHasDivergedFromSavedState(scene: Scene): boolean {

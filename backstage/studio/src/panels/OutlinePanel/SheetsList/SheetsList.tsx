@@ -1,0 +1,42 @@
+import {
+  getRegisteredSheetIds,
+  getSheetOfSheetId,
+} from '@unseenco/backstage/studio/selectors'
+import {usePrism} from '@unseenco/backstage/react'
+import React from 'react'
+import {SheetItem} from './SheetItem'
+import type Project from '@unseenco/backstage/projects/Project'
+import {isSheetVisibleInOutline} from '@unseenco/backstage/studio/panels/OutlinePanel/outlinePanelUtils'
+
+const SheetsList: React.FC<{
+  project: Project
+  depth: number
+}> = ({project, depth}) => {
+  return usePrism(() => {
+    if (!project) return null
+
+    const registeredSheetIds = getRegisteredSheetIds(project)
+
+    return (
+      <>
+        {registeredSheetIds
+          .filter((sheetId) => {
+            const sheet = getSheetOfSheetId(project, sheetId)
+            return sheet ? isSheetVisibleInOutline(sheet) : false
+          })
+          .map((sheetId) => {
+            return (
+              <SheetItem
+                depth={depth}
+                sheetId={sheetId}
+                key={`sheet-${sheetId}`}
+                project={project}
+              ></SheetItem>
+            )
+          })}
+      </>
+    )
+  }, [project, depth])
+}
+
+export default SheetsList

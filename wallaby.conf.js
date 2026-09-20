@@ -2,7 +2,7 @@ module.exports = () => {
   return {
     autoDetect: true,
     tests: [
-      'theatre/**/*.test.ts',
+      'backstage/**/*.test.ts',
       'packages/dataverse/**/*.test.ts',
       '!**/node_modules/**',
     ],

@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react-swc'
 import path from 'path'
 import fg from 'fast-glob'
 import {getAliasesFromTsConfigForRollup} from '../../devEnv/getAliasesFromTsConfig'
-import {definedGlobals} from '../../theatre/devEnv/definedGlobals'
-import {theatreLiteThreePeersPlugin} from './devEnv/theatreLiteThreeVitePlugin'
+import {definedGlobals} from '../../backstage/devEnv/definedGlobals'
+import {backstageLiteThreePeersPlugin} from './devEnv/backstageLiteThreeVitePlugin'
 
 const fromPlaygroundDir = (folder: string) => path.resolve(__dirname, folder)
 const srcDir = fromPlaygroundDir('src')
@@ -45,7 +45,7 @@ const config = defineConfig(async ({command}) => {
   return {
     base,
     root: srcDir,
-    plugins: [theatreLiteThreePeersPlugin(), react()],
+    plugins: [backstageLiteThreePeersPlugin(), react()],
     appType: 'mpa',
     server: {
       port: 8082,
@@ -55,7 +55,7 @@ const config = defineConfig(async ({command}) => {
 
     resolve: {
       /*
-    This will alias paths like `@unseenco/backstage` to `path/to/theatre/core/src/index.ts` and so on,
+    This will alias paths like `@unseenco/backstage` to `path/to/backstage/core/src/index.ts` and so on,
     so vite won't treat the monorepo's packages as externals and won't pre-bundle them.
     */
       alias: [...getAliasesFromTsConfigForRollup()],

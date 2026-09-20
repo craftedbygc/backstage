@@ -1,0 +1,218 @@
+import type * as propTypes from '@unseenco/backstage/propTypes'
+import {getPointerParts} from '@unseenco/backstage/dataverse'
+import type {Pointer, Prism} from '@unseenco/backstage/dataverse'
+import {last} from 'lodash-es'
+import React, {useRef} from 'react'
+import type {useEditingToolsForSimplePropInDetailsPanel} from '@unseenco/backstage/studio/propEditors/useEditingToolsForSimpleProp'
+import styled from 'styled-components'
+import {pointerEventsAutoInNormalMode} from '@unseenco/backstage/studio/css'
+import type {PropHighlighted} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/whatPropIsHighlighted'
+import {rowIndentationFormulaCSS} from './rowIndentationFormulaCSS'
+import {useVal} from '@unseenco/backstage/react'
+import useChordial from '@unseenco/backstage/studio/uiComponents/chordial/useChodrial'
+import type {$FixMe} from '@unseenco/backstage-shared/utils/types'
+import {studioChipSurfaceCss} from '@unseenco/backstage/studio/uiComponents/studioTokens'
+
+const Container = styled.div<{
+  isHighlighted: PropHighlighted
+}>`
+  display: flex;
+  min-height: var(--studio-row-height);
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 6px;
+  padding: 0 8px 0 0;
+  position: relative;
+  box-sizing: border-box;
+  ${pointerEventsAutoInNormalMode};
+`
+
+const Gutter = styled.div`
+  box-sizing: border-box;
+  padding-left: ${rowIndentationFormulaCSS};
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 0 0 auto;
+  min-width: 18px;
+  line-height: 0;
+`
+
+const Chip = styled.div<{
+  $ownsLabel: boolean
+  $interactive: boolean
+  isHighlighted: PropHighlighted
+}>`
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: var(--studio-row-height);
+  height: var(--studio-row-height);
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  padding: ${(props) => (props.$ownsLabel ? '0' : '0 10px')};
+  box-sizing: border-box;
+  ${(props) => (props.$interactive ? 'cursor: pointer;' : '')}
+  ${studioChipSurfaceCss};
+  ${(props) =>
+    props.isHighlighted === 'self'
+      ? 'background: var(--studio-surface-active);'
+      : props.isHighlighted === 'descendent'
+      ? 'background: var(--studio-surface-hover);'
+      : ''}
+`
+
+const PropName = styled.div<{
+  isHighlighted: PropHighlighted
+  $isTransient?: boolean
+  $interactive?: boolean
+}>`
+  /* Labels keep full natural width; only the value slot may shrink. */
+  flex: 0 0 auto;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  cursor: ${(props) => (props.$interactive ? 'pointer' : 'default')};
+  font-size: 13px;
+  font-weight: 500;
+  color: ${(props) =>
+    props.isHighlighted === 'self'
+      ? 'var(--studio-text-focus)'
+      : 'var(--studio-text-label)'};
+  ${(props) => (props.$isTransient ? 'font-style: italic;' : '')}
+`
+
+const InputSlot = styled.div<{
+  $fullBleed: boolean
+}>`
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  box-sizing: border-box;
+  min-height: var(--studio-row-height);
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+  ${(props) =>
+    props.$fullBleed
+      ? `
+    flex: 1 1 auto;
+    width: 100%;
+    justify-content: stretch;
+  `
+      : `
+    flex: 1 1 auto;
+    justify-content: flex-end;
+  `}
+`
+
+type ISingleRowPropEditorProps<T> = {
+  propConfig: propTypes.PropTypeConfig
+  pointerToProp: Pointer<T>
+  editingTools: ReturnType<typeof useEditingToolsForSimplePropInDetailsPanel>
+  isPropHighlightedD: Prism<PropHighlighted>
+  objectKey: string
+  isTransient?: boolean
+}
+
+function editorOwnsLabel(propConfig: propTypes.PropTypeConfig): boolean {
+  return propConfig.type === 'number'
+}
+
+/** Whole-chip click targets (label + empty chrome) for these editors. */
+function chipHostClickable(propConfig: propTypes.PropTypeConfig): boolean {
+  return (
+    propConfig.type === 'boolean' ||
+    propConfig.type === 'string' ||
+    propConfig.type === 'rgba' ||
+    propConfig.type === 'image'
+  )
+}
+
+export function SingleRowPropEditor<T>({
+  propConfig,
+  pointerToProp,
+  editingTools,
+  children,
+  isPropHighlightedD,
+  objectKey,
+  isTransient,
+}: React.PropsWithChildren<ISingleRowPropEditorProps<T>>): React.ReactElement<
+  any,
+  any
+> | null {
+  const label = propConfig.label ?? last(getPointerParts(pointerToProp).path)
+
+  const title = [
+    objectKey,
+    'props',
+    ...getPointerParts(pointerToProp).path,
+  ].join('.')
+  const chordialTitle = isTransient ? `${title} (transient)` : title
+
+  const isHighlighted = useVal(isPropHighlightedD)
+
+  const {targetRef} = useChordial(() => {
+    return {
+      title: chordialTitle,
+      items: editingTools.contextMenuItems,
+    }
+  })
+
+  const ownsLabel = editorOwnsLabel(propConfig)
+  const interactive = chipHostClickable(propConfig)
+  const hostClickRef = useRef<((e: React.MouseEvent) => void) | null>(null)
+
+  const editor = React.Children.map(children, (child) => {
+    if (!React.isValidElement(child)) return child
+    return React.cloneElement(
+      child as React.ReactElement<{
+        label?: string
+        embedded?: boolean
+        hostClickRef?: typeof hostClickRef
+      }>,
+      {
+        ...(ownsLabel
+          ? {
+              label: typeof label === 'string' ? label : String(label ?? ''),
+              embedded: true,
+            }
+          : null),
+        ...(interactive ? {hostClickRef} : null),
+      },
+    )
+  })
+
+  return (
+    <Container isHighlighted={isHighlighted}>
+      <Gutter>{editingTools.controlIndicators}</Gutter>
+      <Chip
+        data-detail-prop-chip=""
+        $ownsLabel={ownsLabel}
+        $interactive={interactive}
+        isHighlighted={isHighlighted}
+        ref={targetRef as $FixMe}
+        onClick={
+          interactive
+            ? (e) => {
+                hostClickRef.current?.(e)
+              }
+            : undefined
+        }
+      >
+        {!ownsLabel && (
+          <PropName
+            isHighlighted={isHighlighted}
+            $isTransient={isTransient}
+            $interactive={interactive}
+          >
+            {label}
+          </PropName>
+        )}
+        <InputSlot $fullBleed={ownsLabel}>{editor}</InputSlot>
+      </Chip>
+    </Container>
+  )
+}

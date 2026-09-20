@@ -1,6 +1,6 @@
 # Concepts
 
-Theatre organizes animation around a small set of ideas. Once these click, the Studio UI and the `@unseenco/backstage` API feel consistent.
+Backstage organizes animation around a small set of ideas. Once these click, the Studio UI and the `@unseenco/backstage` API feel consistent.
 
 ## Objects
 
@@ -57,4 +57,4 @@ Each sheet’s **sequence** holds keyframes for all sequenced props on that shee
 
 ## What we skip here
 
-**Projects** (save files), **prop type** constructors, and **playback APIs** are covered in the [manual](./manual/index.md) and [API reference](/api/theatre-core).
+**Projects** (save files), **prop type** constructors, and **playback APIs** are covered in the [manual](./manual/index.md) and [API reference](/api/backstage-core).

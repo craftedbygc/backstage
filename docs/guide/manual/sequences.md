@@ -1,6 +1,6 @@
 # Working with sequences
 
-> **Not in Theatre Lite:** Sequences, keyframes, and the Sequence Editor are full-Theatre features. Lite uses static props and [sheet variants](../theatre-lite/variants.md) only. See [Choosing lite or full](../theatre-lite/choosing-lite-or-full.md).
+> **Not in Backstage Lite:** Sequences, keyframes, and the Sequence Editor are full-Backstage features. Lite uses static props and [sheet variants](../backstage-lite/variants.md) only. See [Choosing lite or full](../backstage-lite/choosing-lite-or-full.md).
 
 Each sheet has one **sequence**—the timeline of sequenced props.
 
@@ -44,4 +44,4 @@ Attach audio with `sheet.sequence.attachAudio()` ([Audio](./audio.md)).
 
 ## API
 
-[Sequence API](/api/theatre-core#sequence)
+[Sequence API](/api/backstage-core#sequence)

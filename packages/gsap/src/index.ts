@@ -13,19 +13,19 @@ export type {RegisterAllGsapScrollTriggersResult} from './registerAllGsapScrollT
 export {refreshRegisteredGsapScrollTriggerLayouts} from './registerGsapScrollTrigger'
 export type {GsapScrollTriggerLike} from './gsapScrollTriggerTypes'
 export {attachGsapSequenceBridge} from './attachGsapSequenceBridge'
-export {configureTheatreGsap, getTheatreGsapConfig} from './config'
-export type {TheatreGsapConfig, TheatreGsapPageScrollConfig} from './config'
+export {configureBackstageGsap, getBackstageGsapConfig} from './config'
+export type {BackstageGsapConfig, BackstageGsapPageScrollConfig} from './config'
 export {
-  attachTheatrePageScroll,
+  attachBackstagePageScroll,
   createDefaultPageScrollDriver,
-  getTheatrePageScrollContext,
-} from './attachTheatrePageScroll'
+  getBackstagePageScrollContext,
+} from './attachBackstagePageScroll'
 export {bindGsapScrollTriggerPlugin} from './gsapScrollTriggerPlugin'
 export {
   bindGsapTickerToRafDriver,
   isRafDriverDrivenByGsapTicker,
   scheduleGsapTickerRafWarningCheck,
-  warnIfGsapTickerNotDrivingTheatreRaf,
+  warnIfGsapTickerNotDrivingBackstageRaf,
 } from './gsapTickerRafBridge'
 export type {GsapTickerLike} from './gsapTickerRafBridge'
 export {

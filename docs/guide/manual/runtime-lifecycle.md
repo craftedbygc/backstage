@@ -1,6 +1,6 @@
 # Runtime lifecycle
 
-Theatre keeps **project state** (JSON) separate from **loaded sheet/object instances** in memory. These APIs list or tear down instances without erasing saved overrides and sequence data—recreating the same sheet or object key picks up prior Studio values.
+Backstage keeps **project state** (JSON) separate from **loaded sheet/object instances** in memory. These APIs list or tear down instances without erasing saved overrides and sequence data—recreating the same sheet or object key picks up prior Studio values.
 
 ## Listing
 
@@ -15,7 +15,7 @@ const objects = sheet.getObjects() // objects on this sheet (excludes sheet.prop
 sheet.detachObject('My Object')
 ```
 
-Theatre remembers detached values; calling `sheet.object('My Object', …)` again restores prior static values.
+Backstage remembers detached values; calling `sheet.object('My Object', …)` again restores prior static values.
 
 ## Unload sheets
 
@@ -54,4 +54,4 @@ sheet.setOutlineNamespaceCollapsed('Environment / Lighting', false)
 
 ## API
 
-[`Project.getSheets`](/api/theatre-core), [`Sheet.getObjects`](/api/theatre-core), [`Sheet.unload`](/api/theatre-core), [`Project.unloadSheet`](/api/theatre-core)
+[`Project.getSheets`](/api/backstage-core), [`Sheet.getObjects`](/api/backstage-core), [`Sheet.unload`](/api/backstage-core), [`Project.unloadSheet`](/api/backstage-core)

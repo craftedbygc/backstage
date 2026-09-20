@@ -9,26 +9,26 @@ import {
 import studio from '@unseenco/backstage/studio'
 import {
   bindGsapTickerToRafDriver,
-  configureTheatreGsap,
+  configureBackstageGsap,
   registerGsapAnimation,
 } from '@unseenco/backstage/gsap'
 
 const rafDriver = createRafDriver({name: 'gsap-time-mode'})
 setCoreRafDriver(rafDriver)
 
-configureTheatreGsap({
+configureBackstageGsap({
   namespace: 'GSAP',
   outlineNamespace: {defaultCollapsed: false},
 })
 
 studio.initialize({__experimental_rafDriver: rafDriver})
 
-const project = getProject('Theatre × GSAP demo')
+const project = getProject('Backstage × GSAP demo')
 const sheet = project.sheet('Main', {gsap: true})
 
 const panel = document.getElementById('panel')!
 const box = document.getElementById('box')!
-const theatreObjectEl = document.getElementById('theatre-object')!
+const backstageObjectEl = document.getElementById('backstage-object')!
 const toggle = document.getElementById('toggle')!
 
 const panelHidden = {autoAlpha: 0, y: -12, scale: 0.96}
@@ -100,15 +100,15 @@ void project.ready.then(() => {
     },
   })
 
-  const regularObject = sheet.object('Regular Theatre Object', {
+  const regularObject = sheet.object('Regular Backstage Object', {
     x: types.number(0, {range: [-80, 80], label: 'X'}),
     y: types.number(0, {range: [-80, 80], label: 'Y'}),
     opacity: types.number(1, {range: [0, 1], label: 'Opacity'}),
   })
 
   onChange(regularObject.props, (values) => {
-    theatreObjectEl.style.transform = `translate(${values.x}px, ${values.y}px)`
-    theatreObjectEl.style.opacity = String(values.opacity)
+    backstageObjectEl.style.transform = `translate(${values.x}px, ${values.y}px)`
+    backstageObjectEl.style.opacity = String(values.opacity)
   })
 
   syncPanelRuntimeState()

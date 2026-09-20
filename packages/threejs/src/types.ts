@@ -56,7 +56,7 @@ export type ToolConfig =
 
 export type ToolsetConfig = Array<ToolConfig>
 
-export interface TheatreExtension {
+export interface BackstageExtension {
   id: string
   toolbars?: {
     [key in 'global' | string]: (

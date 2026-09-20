@@ -4,18 +4,18 @@ import {privateAPI} from '@unseenco/backstage/privateAPIs'
 import {buildGsapSheetObjectKey} from '@unseenco/backstage-shared/gsap/buildGsapSheetObjectKey'
 import {resolveGsapAnimationRegistrationLabel} from '@unseenco/backstage-shared/gsap/gsapAnimationLabel'
 import {getAnimationEntry} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
-import {getTheatreGsapConfig} from './config'
+import {getBackstageGsapConfig} from './config'
 import {registerAnimationInRegistry} from './animationRegistry'
 import {formatOutlineNamespacePathKey} from '@unseenco/backstage-shared/utils/outlineNamespaces'
 import {scheduleGsapTickerRafWarningCheck} from './gsapTickerRafBridge'
 
 export type RegisterGsapAnimationOptions = {
   /**
-   * Theatre object label (shown after the `GSAP/` namespace). When omitted,
+   * Backstage object label (shown after the `GSAP/` namespace). When omitted,
    * uses the tween/timeline `vars.id` if set.
    */
   label?: string
-  /** Override namespace from {@link configureTheatreGsap}. */
+  /** Override namespace from {@link configureBackstageGsap}. */
   namespace?: string
   /**
    * Stable id for this animation on the sheet object. When omitted, defaults to
@@ -35,17 +35,17 @@ export type RegisterGsapAnimationResult = {
 }
 
 /**
- * Registers a GSAP tween for Theatre sequence bridging and creates an outline
+ * Registers a GSAP tween for Backstage sequence bridging and creates an outline
  * proxy object under `GSAP/<label>` (namespace configurable).
  *
- * The animation is paused immediately so Theatre can drive progress.
+ * The animation is paused immediately so Backstage can drive progress.
  */
 export function registerGsapAnimation(
   animation: GsapTweenLike,
   sheet: ISheet,
   options: RegisterGsapAnimationOptions,
 ): RegisterGsapAnimationResult {
-  const config = getTheatreGsapConfig()
+  const config = getBackstageGsapConfig()
   const namespace = options.namespace ?? config.namespace ?? 'GSAP'
   const label = resolveGsapAnimationRegistrationLabel(animation, options.label)
   const objectKey = buildGsapSheetObjectKey(namespace, label)

@@ -1,15 +1,14 @@
 {
-  "name": "@unseenco/theatre-react",
+  "name": "@unseenco/backstage-react",
   "version": "0.6.0",
   "license": "Apache-2.0",
   "author": {
     "name": "Aria Minaei",
-    "email": "aria@theatrejs.com",
     "url": "https://github.com/AriaMinaei"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/craftedbygc/theatre",
+    "url": "https://github.com/craftedbygc/backstage",
     "directory": "packages/react"
   },
   "main": "dist/index.js",
@@ -49,7 +48,6 @@
     "typescript": "5.3.3"
   },
   "dependencies": {
-    "@unseenco/theatre-dataverse": "workspace:*",
     "lodash-es": "^4.17.21",
     "queue-microtask": "^1.2.3"
   },

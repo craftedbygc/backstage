@@ -1,5 +1,5 @@
 /**
- * Builds api-extractor doc models for Theatre public packages and runs
+ * Builds api-extractor doc models for Backstage public packages and runs
  * @microsoft/api-documenter to emit Markdown under docs/api/ (served at /docs/api/).
  */
 import {execSync} from 'node:child_process'
@@ -19,22 +19,22 @@ function run(command, options = {}) {
 }
 
 console.log('Building TypeScript declarations for @unseenco/backstage and studio…')
-run('yarn workspace theatre run build:ts')
+run('yarn workspace backstage run build:ts')
 
 console.log('Generating api-extractor doc models (core, studio)…')
-run('yarn workspace theatre run build:api-json')
+run('yarn workspace backstage run build:api-json')
 
-console.log('Building @unseenco/theatre-threejs (types + api model)…')
-run('yarn workspace @unseenco/theatre-threejs run build:ts')
-run('yarn workspace @unseenco/theatre-threejs run build:api-json')
+console.log('Building @unseenco/backstage/threejs (types + api model)…')
+run('yarn workspace @unseenco/backstage-threejs run build:ts')
+run('yarn workspace @unseenco/backstage-threejs run build:api-json')
 
-console.log('Building @unseenco/theatre-dataverse (types + api model)…')
-run('yarn workspace @unseenco/theatre-dataverse run build:ts')
-run('yarn workspace @unseenco/theatre-dataverse run build:api-json')
+console.log('Building @unseenco/backstage/dataverse (types + api model)…')
+run('yarn workspace @unseenco/backstage-dataverse run build:ts')
+run('yarn workspace @unseenco/backstage-dataverse run build:api-json')
 
-console.log('Building @unseenco/theatre-gsap (types + api model)…')
-run('yarn workspace @unseenco/theatre-gsap run build:ts')
-run('yarn workspace @unseenco/theatre-gsap run build:api-json')
+console.log('Building @unseenco/backstage/gsap (types + api model)…')
+run('yarn workspace @unseenco/backstage-gsap run build:ts')
+run('yarn workspace @unseenco/backstage-gsap run build:api-json')
 
 const apiJsonDir = path.join(root, '.temp', 'api')
 const outputDir = path.join(docsDir, 'api')

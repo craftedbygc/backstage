@@ -1,4 +1,4 @@
-import type {TheatreExtension, ToolsetConfig} from './types'
+import type {BackstageExtension, ToolsetConfig} from './types'
 import {isRemoteEditorWindow} from '@unseenco/backstage'
 import {
   isRemoteEditorOpen,
@@ -92,7 +92,7 @@ export interface ThreejsDevtoolsConfig {
 }
 
 export interface ThreejsDevtools {
-  extension: TheatreExtension
+  extension: BackstageExtension
   getCamera(): Camera
   isOrbitMode(): boolean
   update(): void
@@ -643,7 +643,7 @@ export function buildExtension(config: ThreejsDevtoolsConfig): ThreejsDevtools {
     }
   }
 
-  const updateTheatreCameraProps = () => {
+  const updateBackstageCameraProps = () => {
     if (mode !== 'orbit' || !shouldPersistDevtoolsState()) return
     persistCameraProps(studio, getActiveStateObj(), orbitCamera, controls)
   }
@@ -674,7 +674,7 @@ export function buildExtension(config: ThreejsDevtoolsConfig): ThreejsDevtools {
   })
 
   window.addEventListener('resize', onResize)
-  controls.addEventListener('end', updateTheatreCameraProps)
+  controls.addEventListener('end', updateBackstageCameraProps)
 
   selectionSync = setupSelectionSync({
     studio,
@@ -702,7 +702,7 @@ export function buildExtension(config: ThreejsDevtoolsConfig): ThreejsDevtools {
     onToolbarUpdateNeeded: updateToolbarConfig,
   })
 
-  const extension: TheatreExtension = {
+  const extension: BackstageExtension = {
     id: EXTENSION_ID,
     toolbars: {
       global(set) {
@@ -781,7 +781,7 @@ export function buildExtension(config: ThreejsDevtoolsConfig): ThreejsDevtools {
       unsubscribeFromRemoteEditor()
       unsubDockedResize()
       window.removeEventListener('resize', onResize)
-      controls.removeEventListener('end', updateTheatreCameraProps)
+      controls.removeEventListener('end', updateBackstageCameraProps)
       controls.dispose()
       for (let index = 0; index < cameraHelpers.length; index++) {
         const helper = cameraHelpers[index]

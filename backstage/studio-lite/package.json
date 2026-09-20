@@ -1,0 +1,49 @@
+{
+  "name": "@unseenco/backstage-studio-lite",
+  "version": "0.6.0",
+  "license": "AGPL-3.0-only",
+  "description": "Static authoring editor for Backstage.js (no sequencing UI)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/craftedbygc/backstage",
+    "directory": "backstage/studio-lite"
+  },
+  "author": {
+    "name": "TheaterJS Oy",
+    "url": "https://unseen-theatre.netlify.app"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./getStudio": {
+      "types": "./dist/getStudio.d.ts",
+      "import": "./dist/getStudio.mjs",
+      "require": "./dist/getStudio.js"
+    },
+    "./propEditors/projectHasDivergedFromSavedState": {
+      "types": "./dist/propEditors/projectHasDivergedFromSavedState.d.ts",
+      "import": "./dist/propEditors/projectHasDivergedFromSavedState.mjs",
+      "require": "./dist/propEditors/projectHasDivergedFromSavedState.js"
+    },
+    "./propEditors/objectHasDivergedFromSavedState": {
+      "types": "./dist/propEditors/objectHasDivergedFromSavedState.d.ts",
+      "import": "./dist/propEditors/objectHasDivergedFromSavedState.mjs",
+      "require": "./dist/propEditors/objectHasDivergedFromSavedState.js"
+    }
+  },
+  "files": [
+    "dist/*"
+  ],
+  "scripts": {
+    "prepublish": "node ../../devEnv/ensurePublishing.js"
+  },
+  "sideEffects": false,
+  "private": true
+}

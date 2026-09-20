@@ -1,6 +1,6 @@
 # With React Three Fiber
 
-The upstream Theatre project shipped **`@theatre/r3f`**, a dedicated React Three Fiber extension. **This fork (`craftedbygc/theatre`) does not publish that package.** You can still use Theatre with R3F by wiring Three.js objects manually or via `@unseenco/backstage/threejs`.
+The upstream Backstage project shipped **`@backstage/r3f`**, a dedicated React Three Fiber extension. **This fork (`craftedbygc/backstage`) does not publish that package.** You can still use Backstage with R3F by wiring Three.js objects manually or via `@unseenco/backstage/threejs`.
 
 ## Recommended approach today
 
@@ -36,9 +36,9 @@ const sheet = project.sheet('Main')
 function Box() {
   const ref = useRef<THREE.Mesh>(null)
   useFrame(() => {
-    if (ref.current && !ref.current.userData.theatreRegistered) {
+    if (ref.current && !ref.current.userData.backstageRegistered) {
       autoAddObject(ref.current, sheet, {name: 'Box'})
-      ref.current.userData.theatreRegistered = true
+      ref.current.userData.backstageRegistered = true
     }
   })
   return <mesh ref={ref}>...</mesh>
@@ -51,11 +51,11 @@ Prefer registering in `useLayoutEffect` when the object is stable; the pattern a
 
 ## `@unseenco/backstage/react`
 
-The monorepo includes **`@unseenco/backstage/react`** for binding Theatre to React trees (see package source and API JSON). It is not a drop-in replacement for the old `@theatre/r3f` JSX helpers; check the playground and package exports for current hooks.
+The monorepo includes **`@unseenco/backstage/react`** for binding Backstage to React trees (see package source and API JSON). It is not a drop-in replacement for the old `@backstage/r3f` JSX helpers; check the playground and package exports for current hooks.
 
-## If you need the old `@theatre/r3f` API
+## If you need the old `@backstage/r3f` API
 
-Track [craftedbygc/theatre issues](https://github.com/craftedbygc/theatre/issues) or port bindings yourself using `sheet.object` / `autoAddObject`. Legacy getting-started copy that referenced `@theatre/r3f@0.5` is **not** ported verbatim.
+Track [craftedbygc/backstage issues](https://github.com/craftedbygc/backstage/issues) or port bindings yourself using `sheet.object` / `autoAddObject`. Legacy getting-started copy that referenced `@backstage/r3f@0.5` is **not** ported verbatim.
 
 ## Next steps
 

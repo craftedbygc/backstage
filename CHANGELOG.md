@@ -1,4 +1,10 @@
-# Theatre.js changelog
+# Backstage.js changelog
+
+## Unreleased
+
+- **Breaking:** Public API symbols renamed from `Theatre*` to `Backstage*` (projects, sheets, sequences, studio types, GSAP/Three.js helpers, lite mode flags). Browser bundle global is `window.Backstage`. Compile-time flags use `BACKSTAGE_*` / `__BACKSTAGE_LITE__` / `__BackstageJS_*`.
+- **Breaking:** Monorepo workspace root moved from `theatre/` to `backstage/`; saved project state files use `.backstage-project-state.json`. Legacy `@unseenco/theatre-*` TypeScript path aliases removed from `tsconfig.base.json` (use `@unseenco/backstage/*`).
+- **Docs:** User-facing guides and playground routes use `backstage-lite` paths; GitHub metadata references `craftedbygc/backstage`.
 
 ## 0.6.0
 

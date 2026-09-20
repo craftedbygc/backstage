@@ -1,30 +1,30 @@
 {
-  "name": "theatre-monorepo",
+  "name": "backstage-monorepo",
   "license": "Apache-2.0",
   "version": "0.6.0",
   "workspaces": [
     "packages/*",
     "examples/*",
-    "theatre",
+    "backstage",
     "compat-tests",
     "docs"
   ],
   "scripts": {
     "cli": "node -r esbuild-register devEnv/cli.ts",
-    "docs:dev": "yarn workspace @unseenco/theatre-docs run dev",
-    "docs:build": "yarn workspace @unseenco/theatre-docs run build",
+    "docs:dev": "yarn workspace @unseenco/backstage-docs run dev",
+    "docs:build": "yarn workspace @unseenco/backstage-docs run build",
     "build:site": "node -r esbuild-register devEnv/build-site.ts",
     "playground": "yarn workspace playground run serve",
     "typecheck": "yarn run build:ts",
     "build:ts": "tsc --build ./devEnv/typecheck-all-projects/tsconfig.all.json",
     "test": "jest",
-    "test:compat:install": "yarn workspace @unseenco/theatre-compat-tests run install-fixtures",
+    "test:compat:install": "yarn workspace @unseenco/backstage-compat-tests run install-fixtures",
     "test:compat:run": "jest --config jest.compat-tests.config.js",
     "postinstall": "husky install",
     "lint:all": "eslint . --ext ts,tsx --ignore-path=.gitignore --rulesdir ./devEnv/eslint/rules"
   },
   "lint-staged": {
-    "(theatre|packages|devEnv|compat-tests)/**/*.(t|j)s?(x)": [
+    "(backstage|packages|devEnv|compat-tests)/**/*.(t|j)s?(x)": [
       "eslint --rulesdir ./devEnv/eslint/rules --fix"
     ],
     "**/*.(t|j)s?(x)": [

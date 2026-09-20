@@ -2,7 +2,7 @@
 
 ## rafDrivers
 
-A **raf driver** controls when Theatre advances time. The default driver uses `requestAnimationFrame`. Custom drivers help you:
+A **raf driver** controls when Backstage advances time. The default driver uses `requestAnimationFrame`. Custom drivers help you:
 
 - Share one animation loop with GSAP, Lenis, or `@react-three/fiber`
 - Use `xr.requestAnimationFrame` in WebXR
@@ -28,7 +28,7 @@ onChange(
 sheet.sequence.play({rafDriver})
 ```
 
-Optional `start` / `stop` hooks let Theatre start and stop your loop when nothing needs updating.
+Optional `start` / `stop` hooks let Backstage start and stop your loop when nothing needs updating.
 
 ### Core ticker
 
@@ -76,6 +76,6 @@ List, detach, or unload sheets and objects without clearing saved project JSONâ€
 
 ## API
 
-[`createRafDriver`](/api/theatre-core), [`onChange`](/api/theatre-core)
+[`createRafDriver`](/api/backstage-core), [`onChange`](/api/backstage-core)
 
-> **Note:** Legacy docs described `RafDriverProvider` from `@theatre/r3f`. That package is not part of this fork; pass `rafDriver` into `onChange` and `sequence.play()` instead.
+> **Note:** Legacy docs described `RafDriverProvider` from `@backstage/r3f`. That package is not part of this fork; pass `rafDriver` into `onChange` and `sequence.play()` instead.

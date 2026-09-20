@@ -48,7 +48,7 @@ function getAliasesFromTsConfigForRollup() {
     if (key.match(/\/\*$/)) {
       key = key.replace(/\/\*$/, '/([^?]*)')
     } else {
-      // like '@unseenco/backstage' — allow Vite import queries (`?theatre-lite-peers`, etc.)
+      // like '@unseenco/backstage' — allow Vite import queries (`?backstage-lite-peers`, etc.)
       key = key + '(\\?.*)?$'
     }
     aliases.push({

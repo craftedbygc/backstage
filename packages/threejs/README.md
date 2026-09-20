@@ -1,6 +1,6 @@
 # @unseenco/backstage/threejs
 
-Three.js helpers and Studio extension for [Theatre.js](https://unseen-theatre.netlify.app).
+Three.js helpers and Studio extension for [Backstage.js](https://unseen-theatre.netlify.app).
 
 Runtime helpers (`autoAddObject`, `autoAddMaterial`, `autoAddCamera`, …) import from the package root and do **not** load Studio. Studio devtools (`buildExtension`) import from `@unseenco/backstage/threejs/extension`.
 
@@ -13,7 +13,7 @@ import {buildExtension} from '@unseenco/backstage/threejs/extension'
 
 let activeScene = scene1
 
-// Register Three.js objects on Theatre sheets
+// Register Three.js objects on Backstage sheets
 autoAddObject(mesh, sheet)
 
 const devtools = buildExtension({
@@ -47,14 +47,14 @@ function loop() {
 
 The extension adds a toolbar flyout to switch between scenes (when more than one is configured), a toggle between your scene camera and an OrbitControls dev camera, and orbit-mode tools for camera frustum visualization, line overlays, and interactive transform editing. Use `devtools.isOrbitMode()` to read the current mode. Pass `onOrbitModeSwitch` / `onSceneSwitch` in the `buildExtension` config to react to persisted restore during init; the returned `devtools.onOrbitModeSwitch()` / `devtools.onSceneSwitch()` methods also accept late subscribers but only receive subsequent changes. Call `devtools.switchScene(nameOrIndex)` when your app changes scenes outside the toolbar so the extension stays in sync; `devtools.getActiveSceneName()` returns the current scene name.
 
-## configureTheatreThreejs
+## configureBackstageThreejs
 
 Set project-wide defaults once at startup. Excludes from defaults and per-call `autoAddObject` options are merged.
 
 ```js
-import {configureTheatreThreejs} from '@unseenco/backstage/threejs'
+import {configureBackstageThreejs} from '@unseenco/backstage/threejs'
 
-configureTheatreThreejs({
+configureBackstageThreejs({
   autoAddObject: {
     exclude: {uniforms: ['uTime']},
   },
@@ -63,7 +63,7 @@ configureTheatreThreejs({
 
 ## autoAddObject
 
-Automatically adds a Three.js `Object3D` to a Theatre sheet, parsing transform data (position, rotation, scale, visible) and material properties (colors, scalars, vectors, textures, shader uniforms).
+Automatically adds a Three.js `Object3D` to a Backstage sheet, parsing transform data (position, rotation, scale, visible) and material properties (colors, scalars, vectors, textures, shader uniforms).
 
 ```js
 import {autoAddObject} from '@unseenco/backstage/threejs'
@@ -78,34 +78,34 @@ const sheetObject = autoAddObject(mesh, sheet, {
 
 ### Shared materials
 
-If two meshes registered with `autoAddObject` share the same Three.js `Material` instance, the package auto-splits that material into its own Theatre object under `Shared Materials / <material.name>`, removes material props from the first mesh, and links both via `showPropsOf`. Name your materials for stable keys; unnamed materials warn and fall back to a UUID-based key. Use `trackMaterial: false` to opt out, or call `autoAddMaterial` first to own the material object yourself.
+If two meshes registered with `autoAddObject` share the same Three.js `Material` instance, the package auto-splits that material into its own Backstage object under `Shared Materials / <material.name>`, removes material props from the first mesh, and links both via `showPropsOf`. Name your materials for stable keys; unnamed materials warn and fall back to a UUID-based key. Use `trackMaterial: false` to opt out, or call `autoAddMaterial` first to own the material object yourself.
 
 ### Static and transient props
 
-When `autoAddObject` registers props on a Theatre sheet object, most props are **static**: they are saved in project state, can be keyframed, and reload on refresh. Transform props, material colors/scalars/vectors, and shader uniform numbers all fall in this category.
+When `autoAddObject` registers props on a Backstage sheet object, most props are **static**: they are saved in project state, can be keyframed, and reload on refresh. Transform props, material colors/scalars/vectors, and shader uniform numbers all fall in this category.
 
 **Transient** props are excluded from exported project state JSON. They still appear in Studio for the current session but reset on refresh. `autoAddObject` registers material texture slots and shader uniform textures as transient image props (`persist: false`).
 
 ### Texture props
 
-Material texture slots (`map`, `normalMap`, etc.) and shader uniform textures are exposed as transient Theatre image props (see [Static and transient props](#static-and-transient-props)). Assignments apply for the current session only and are cleared on refresh. When you swap a texture, wrap/repeat/filter settings from the existing texture are preserved.
+Material texture slots (`map`, `normalMap`, etc.) and shader uniform textures are exposed as transient Backstage image props (see [Static and transient props](#static-and-transient-props)). Assignments apply for the current session only and are cleared on refresh. When you swap a texture, wrap/repeat/filter settings from the existing texture are preserved.
 
 Shader uniform textures are detected by name (`uDiffuseMap`, `tDiffuse`, etc.) or by `gui: { type: 'texture' }` on the uniform.
 
 When used together with `buildExtension`, selection is synced bidirectionally in orbit mode:
 
-- Click a registered mesh in the viewport to select it in the Theatre outline
+- Click a registered mesh in the viewport to select it in the Backstage outline
 - Select an object in the outline to show a `BoxHelper` around the matching mesh
 
 ### Shader uniform `gui` options
 
-For `ShaderMaterial` / `RawShaderMaterial`, `autoAddObject` reads optional `gui` metadata on each uniform and maps it to Theatre number prop options:
+For `ShaderMaterial` / `RawShaderMaterial`, `autoAddObject` reads optional `gui` metadata on each uniform and maps it to Backstage number prop options:
 
-| Uniform `gui` | Theatre `types.number()` option |
+| Uniform `gui` | Backstage `types.number()` option |
 | --- | --- |
 | `min` / `max` | `range: [min, max]` |
 | `step` | `nudgeMultiplier` |
-| `type: 'texture'` | Registers the uniform as a Theatre image prop (useful when the uniform value is `null`) |
+| `type: 'texture'` | Registers the uniform as a Backstage image prop (useful when the uniform value is `null`) |
 
 ```js
 import {ShaderMaterial, Color} from 'three'
@@ -119,7 +119,7 @@ const material = new ShaderMaterial({
       gui: {min: 0, max: 1, step: 0.01},
     },
     uDiffuseMap: {value: null},
-    uTime: {value: 0}, // often excluded via configureTheatreThreejs when driven by your render loop
+    uTime: {value: 0}, // often excluded via configureBackstageThreejs when driven by your render loop
   },
   // vertexShader / fragmentShader ...
 })
@@ -143,7 +143,7 @@ If `gui` is omitted, number uniforms default to `nudgeMultiplier: 0.01` with no 
 
 ## autoAddMaterial
 
-Register a Three.js `Material` (or material array) on a Theatre sheet with auto-parsed material properties only — no transforms or Object3D selection sync. Use this when a material is shared across meshes, or when you only want to animate material props.
+Register a Three.js `Material` (or material array) on a Backstage sheet with auto-parsed material properties only — no transforms or Object3D selection sync. Use this when a material is shared across meshes, or when you only want to animate material props.
 
 ```js
 import {autoAddMaterial} from '@unseenco/backstage/threejs'
@@ -155,11 +155,11 @@ autoAddMaterial(mesh.material, sheet, {
 })
 ```
 
-Material / uniform `exclude` and `include` lists merge with `configureTheatreThreejs({ autoAddObject })` defaults the same way as `autoAddObject`. Texture slots are registered as transient image props (see [Static and transient props](#static-and-transient-props)).
+Material / uniform `exclude` and `include` lists merge with `configureBackstageThreejs({ autoAddObject })` defaults the same way as `autoAddObject`. Texture slots are registered as transient image props (see [Static and transient props](#static-and-transient-props)).
 
 ## autoAddCamera
 
-Register a Three.js `Camera` on a Theatre sheet with transform props and camera-specific props. Scale is excluded by default (cameras are not meaningfully scaled in Three.js).
+Register a Three.js `Camera` on a Backstage sheet with transform props and camera-specific props. Scale is excluded by default (cameras are not meaningfully scaled in Three.js).
 
 ```js
 import {autoAddCamera} from '@unseenco/backstage/threejs'
@@ -196,7 +196,7 @@ The extension clones matching geometry into cyan overlay helpers; the original l
 
 ### Transform controls
 
-When enabled and a registered object with transform props is selected in the Theatre outline, Three.js `TransformControls` appear in the viewport. Dragging the gizmo writes position, rotation, and scale back to the Theatre sheet as an undoable scrub. Orbit controls are disabled while dragging.
+When enabled and a registered object with transform props is selected in the Backstage outline, Three.js `TransformControls` appear in the viewport. Dragging the gizmo writes position, rotation, and scale back to the Backstage sheet as an undoable scrub. Orbit controls are disabled while dragging.
 
 The toolbar adds translate / rotate / scale and world / local space switches when an object is attached. The selected object must be in the active scene graph — pass `scene` to `autoAddCamera` if your camera is not already parented to a scene.
 

@@ -1,16 +1,16 @@
 # AGENTS.md — `@unseenco/backstage/gsap`
 
-Bridge GSAP tweens to Theatre.js **sequence time mode** (v1). ScrollTriggers / page scroll modes are planned for v2 — see notes at the end.
+Bridge GSAP tweens to Backstage.js **sequence time mode** (v1). ScrollTriggers / page scroll modes are planned for v2 — see notes at the end.
 
 ## Package layout
 
 | Entry | Purpose |
 | --- | --- |
-| `@unseenco/backstage/gsap` | Runtime: `registerGsapAnimation`, `attachGsapSequenceBridge`, `configureTheatreGsap`, registry helpers |
+| `@unseenco/backstage/gsap` | Runtime: `registerGsapAnimation`, `attachGsapSequenceBridge`, `configureBackstageGsap`, registry helpers |
 
 Peers: `gsap`, `@unseenco/backstage`; optional `@unseenco/backstage/studio` for authoring.
 
-Studio GSAP UI (outline menus, sequence clip tracks) lives in **`theatre/studio/src/gsap/`** — not a separate `studio.extend()` package export.
+Studio GSAP UI (outline menus, sequence clip tracks) lives in **`backstage/studio/src/gsap/`** — not a separate `studio.extend()` package export.
 
 ## Typical integration
 
@@ -20,11 +20,11 @@ import studio from '@unseenco/backstage/studio'
 import gsap from 'gsap'
 import {
   attachGsapSequenceBridge,
-  configureTheatreGsap,
+  configureBackstageGsap,
   registerGsapAnimation,
 } from '@unseenco/backstage/gsap'
 
-configureTheatreGsap({
+configureBackstageGsap({
   namespace: 'GSAP',
   outlineNamespace: {defaultCollapsed: true},
 })
@@ -47,13 +47,13 @@ User-facing docs: `docs/guide/extensions/gsap.md`.
 | --- | --- |
 | Build package | `yarn workspace @unseenco/backstage/gsap run build` |
 | Monorepo typecheck | `yarn typecheck` |
-| Unit tests | `yarn test packages/gsap theatre/shared/src/sequence/trackData.test.ts` |
+| Unit tests | `yarn test packages/gsap backstage/shared/src/sequence/trackData.test.ts` |
 
 Register in root `devEnv/cli.ts`, `tsconfig.base.json`, and `devEnv/typecheck-all-projects/tsconfig.all.json` when adding exports (already done for this package).
 
 ## v2 notes (partial)
 
 - **Page mode (sequencer):** `project.sheet(id, { sequenceMode: 'page', gsap: true })` — see `docs/guide/extensions/gsap.md`. Playground: `/shared/gsap-page-mode/`.
-- **ScrollTrigger (page mode):** `registerGsapScrollTrigger()` / `registerAllGsapScrollTriggers()` — read-only sequencer bars (document vertical scroll only). Theatre resolves the plugin from `gsap/ScrollTrigger` (or `bindGsapScrollTriggerPlugin()` / `globalThis.ScrollTrigger`).
+- **ScrollTrigger (page mode):** `registerGsapScrollTrigger()` / `registerAllGsapScrollTriggers()` — read-only sequencer bars (document vertical scroll only). Backstage resolves the plugin from `gsap/ScrollTrigger` (or `bindGsapScrollTriggerPlugin()` / `globalThis.ScrollTrigger`).
 - **Page / route modes (later):** multiple sequences per route; variant-aware binding.
 - Time mode playground: `/shared/gsap-time-mode/`

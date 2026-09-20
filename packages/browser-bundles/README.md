@@ -1,6 +1,6 @@
-# Theatre.js browser bundles
+# Backstage.js browser bundles
 
-A custom build of Theatre.js that you can use via a `<script>` tag rather than using a bundler.
+A custom build of Backstage.js that you can use via a `<script>` tag rather than using a bundler.
 
 ## How to use
 
@@ -17,10 +17,10 @@ Example:
 <script src="path/to/core-and-studio.js"></script>
 <script>
   // here, core is equal to `import * as core from '@unseenco/backstage`
-  const core = Theatre.core
+  const core = Backstage.core
   // here, studio is equal to `import studio from '@unseenco/backstage/studio`.
   // Note this would be undefined if you're using `core-only.min.js`
-  const studio = Theatre.studio
+  const studio = Backstage.studio
 
   // only call this if you're using the core-and-studio.js bundle
   studio.initialize()

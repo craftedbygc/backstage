@@ -1,0 +1,823 @@
+import type {
+  IProject,
+  IRafDriver,
+  ISheet,
+  ISheetObject,
+} from '@unseenco/backstage'
+import type {Prism, Pointer} from '@unseenco/backstage/dataverse'
+import {prism} from '@unseenco/backstage/dataverse'
+import SimpleCache from '@unseenco/backstage-shared/utils/SimpleCache'
+import type {
+  $IntentionalAny,
+  VoidFn,
+} from '@unseenco/backstage-shared/utils/types'
+import type {IScrub} from '@unseenco/backstage/studio/Scrub'
+import type {Studio} from '@unseenco/backstage/studio/Studio'
+import {
+  isSheetObjectPublicAPI,
+  isSheetPublicAPI,
+} from '@unseenco/backstage-shared/instanceTypes'
+import {getOutlineSelection} from './selectors'
+import type SheetObject from '@unseenco/backstage/sheetObjects/SheetObject'
+import getStudio from './getStudio'
+import {debounce} from 'lodash-es'
+import type Sheet from '@unseenco/backstage/sheets/Sheet'
+import type {
+  PaneInstanceId,
+  ProjectId,
+} from '@unseenco/backstage-shared/utils/ids'
+import {
+  __experimental_disblePlayPauseKeyboardShortcut,
+  __experimental_enablePlayPauseKeyboardShortcut,
+} from './UIRoot/useKeyboardShortcuts'
+import type BackstageSheetObject from '@unseenco/backstage/sheetObjects/BackstageSheetObject'
+import type BackstageSheet from '@unseenco/backstage/sheets/BackstageSheet'
+import type {__UNSTABLE_Project_OnDiskState} from '@unseenco/backstage'
+
+export interface ITransactionAPI {
+  /**
+   * Set the value of a prop by its pointer. If the prop is sequenced, the value
+   * will be a keyframe at the current sequence position.
+   *
+   * @example
+   * Usage:
+   * ```ts
+   * const obj = sheet.object("box", {x: 0, y: 0})
+   * studio.transaction(({set}) => {
+   *   // set a specific prop's value
+   *   set(obj.props.x, 10) // New value is {x: 10, y: 0}
+   *   // values are set partially
+   *   set(obj.props, {y: 11}) // New value is {x: 10, y: 11}
+   *
+   *   // this will error, as there is no such prop as 'z'
+   *   set(obj.props.z, 10)
+   * })
+   * ```
+   * @param pointer - A Pointer, like object.props
+   * @param value - The value to override the existing value. This is treated as a deep partial value.
+   */
+  set<V>(pointer: Pointer<V>, value: V): void
+  /**
+   * Unsets the value of a prop by its pointer.
+   *
+   * @example
+   * Usage:
+   * ```ts
+   * const obj = sheet.object("box", {x: 0, y: 0})
+   * studio.transaction(({set}) => {
+   *   // set props.x to its default value
+   *   unset(obj.props.x)
+   *   // set all props to their default value
+   *   set(obj.props)
+   * })
+   * ```
+   * @param pointer - A pointer, like object.props
+   */
+  unset<V>(pointer: Pointer<V>): void
+
+  /**
+   * EXPERIMENTAL API - this api may be removed without notice.
+   *
+   * Makes Backstage forget about this object. This means all the prop overrides and sequenced props
+   * will be reset, and the object won't show up in the exported state.
+   */
+  __experimental_forgetObject(object: BackstageSheetObject): void
+
+  /**
+   * EXPERIMENTAL API - this api may be removed without notice.
+   *
+   * Makes Backstage forget about this sheet.
+   */
+  __experimental_forgetSheet(sheet: BackstageSheet): void
+}
+/**
+ * Definition of a custom Studio pane type registered by an extension.
+ */
+export interface PaneClassDefinition {
+  /**
+   * Each pane has a `class`, which is a string.
+   */
+  class: string
+  // /**
+  //  * A react component that renders the content of the pane. It is given
+  //  * a single prop, `paneId`, which is a unique identifier for the pane.
+  //  *
+  //  * If you wish to store and persist the state of the pane,
+  //  * simply use a sheet and an object.
+  //  */
+  // component: React.ComponentType<{
+  //   /**
+  //    * The unique identifier of the pane
+  //    */
+  //   paneId: string
+  // }>
+
+  /** Mount the pane into a DOM node; return a dispose function when unmounting. */
+  mount: (opts: {paneId: string; node: HTMLElement}) => () => void
+}
+
+/** Toolbar icon button configuration for extension toolsets. */
+export type ToolConfigIcon = {
+  type: 'Icon'
+  svgSource: string
+  title: string
+  onClick: () => void
+  /**
+   * When true, the button is rendered in its selected/active style.
+   */
+  selected?: boolean
+}
+
+/** Single option in a toolbar switch control. */
+export type ToolConfigOption = {
+  value: string
+  label: string
+  svgSource: string
+}
+
+/** Toolbar switch control that selects one of several options. */
+export type ToolConfigSwitch = {
+  type: 'Switch'
+  value: string
+  onChange: (value: string) => void
+  options: ToolConfigOption[]
+}
+
+export type ToolconfigFlyoutMenuItem = {
+  label: string
+  onClick?: () => void
+  /** Orange unsaved dot (same as outline toolbar). */
+  showUnsavedIndicator?: boolean
+}
+
+export type ToolConfigFlyoutMenu = {
+  /**
+   * A flyout menu
+   */
+  type: 'Flyout'
+  /**
+   * The label of the trigger button
+   */
+  label: string | React.ReactElement
+  /**
+   * Optional tooltip for the trigger button
+   */
+  title?: string
+  /**
+   * Optional test id for the trigger button
+   */
+  'data-testid'?: string
+  items: ToolconfigFlyoutMenuItem[]
+  /** Orange unsaved dot on the flyout trigger (e.g. any scene has diverged state). */
+  showUnsavedIndicator?: boolean
+}
+
+/** One toolbar control in an extension toolset (icon, switch, or flyout menu). */
+export type ToolConfig =
+  | ToolConfigIcon
+  | ToolConfigSwitch
+  | ToolConfigFlyoutMenu
+
+/** Ordered list of toolbar controls shown for an extension toolset. */
+export type ToolsetConfig = Array<ToolConfig>
+
+/**
+ * A Backstage.js Studio extension. You can define one either
+ * in a separate package, or within your project.
+ */
+export interface IExtension {
+  /**
+   * Pick a unique ID for your extension. Ideally the name would be unique if
+   * the extension was to be published to the npm repository.
+   */
+  id: string
+  /**
+   * Set this if you'd like to add a component to the global toolbar (on the top)
+   *
+   * @example
+   * TODO
+   */
+  toolbars?: {
+    [key in 'global' | string]: (
+      set: (config: ToolsetConfig) => void,
+      studio: IStudio,
+    ) => () => void
+  }
+
+  /**
+   * Introduces new pane types.
+   * @example
+   * TODO
+   */
+  panes?: Array<PaneClassDefinition>
+}
+
+/** Handle to a mounted extension pane instance in the Studio. */
+export type PaneInstance<ClassName extends string> = {
+  extensionId: string
+  instanceId: PaneInstanceId
+  definition: PaneClassDefinition
+}
+
+/** Screen-space rectangle of the Studio's docked inner viewport (pixels). */
+export type IDockedViewport = {
+  top: number
+  left: number
+  width: number
+  height: number
+}
+
+/** Controls for showing, hiding, and docking the Studio UI. */
+export interface IStudioUI {
+  /**
+   * Temporarily hides the studio
+   */
+  hide(): void
+  /**
+   * Whether the studio is currently visible or hidden
+   */
+  readonly isHidden: boolean
+  /**
+   * Makes the studio visible again.
+   */
+  restore(): void
+
+  /**
+   * Whether the studio UI is in docked layout mode.
+   */
+  readonly isDocked: boolean
+
+  /**
+   * The inner viewport rectangle when docked and visible.
+   * `null` when floating or when the studio is hidden.
+   */
+  readonly dockedViewport: IDockedViewport | null
+
+  /**
+   * Listen for docked layout mode changes. Called immediately with the
+   * current value.
+   */
+  onDockedToggle(listener: (docked: boolean) => void): VoidFn
+
+  /**
+   * Listen for inner viewport size/position changes while docked. Called
+   * immediately with the current viewport if docked. Called with `null` when
+   * the viewport is released (e.g. studio hidden while docked).
+   */
+  onDockedResize(listener: (viewport: IDockedViewport | null) => void): VoidFn
+
+  /**
+   * Renders an extension toolset into a DOM node.
+   *
+   * @param toolsetId - Toolset id from the extension's `toolbars` config
+   * @param htmlNode - Container element for the toolbar controls
+   * @returns Disposer that unmounts the toolset
+   */
+  renderToolset(toolsetId: string, htmlNode: HTMLElement): () => void
+}
+
+/** Options passed to {@link IStudio.initialize}. */
+export interface _StudioInitializeOpts {
+  /**
+   * The local storage key to use to persist the state.
+   *
+   * Default: "backstagejs:0.4"
+   */
+  persistenceKey?: string
+  /**
+   * Whether to persist the changes in the browser's temporary storage.
+   * It is useful to set this to false in the test environment or when debugging things.
+   *
+   * Default: true
+   */
+  usePersistentStorage?: boolean
+
+  /** Optional custom raf driver shared with `@unseenco/backstage` for synchronized ticking. */
+  __experimental_rafDriver?: IRafDriver | undefined
+
+  /**
+   * Source hex for Studio’s accent palette (selection, outline, keyframes,
+   * playhead, etc.). All other accent colors are derived from this value.
+   *
+   * Default: `"#617a8d"`
+   *
+   * @example
+   * ```ts
+   * studio.initialize({accentHex: '#c026d3'})
+   * ```
+   */
+  accentHex?: string
+
+  /**
+   * `'lite'` disables sequencing UI and sequence state mutations (static authoring only).
+   * Implicit when importing `@unseenco/backstage/studio-lite`.
+   */
+  mode?: 'full' | 'lite'
+}
+
+/**
+ * This is the public api of Backstage's studio. It is exposed through:
+ *
+ * @example
+ * Basic usage:
+ * ```ts
+ * import studio from '@unseenco/backstage/studio'
+ *
+ * studio.initialize()
+ * ```
+ *
+ * @example
+ * Custom accent color:
+ * ```ts
+ * import studio from '@unseenco/backstage/studio'
+ *
+ * studio.initialize({accentHex: '#c026d3'})
+ * ```
+ *
+ * @example
+ * Usage with **tree-shaking**:
+ * ```ts
+ * import studio from '@unseenco/backstage/studio'
+ *
+ * if (process.env.NODE_ENV !== 'production') {
+ *   studio.initialize()
+ * }
+ * ```
+ */
+export interface IStudio {
+  /** UI visibility, docking, and extension toolbar rendering. */
+  readonly ui: IStudioUI
+
+  /**
+   * Initializes the studio. Call it once in your index.js/index.ts module.
+   * It silently ignores subsequent calls.
+   */
+  initialize(opts?: _StudioInitializeOpts): void
+
+  /**
+   * Runs an undo-able transaction. Creates a single undo level for all
+   * the operations inside the transaction.
+   *
+   * Will roll back if an error is thrown.
+   *
+   * Pass `{undoable: false}` to persist the changes without recording an undo
+   * level — useful for frequently-updated values such as a camera position that
+   * should survive a page refresh but should not pollute the undo/redo stack.
+   *
+   * @example
+   * Usage:
+   * ```ts
+   * studio.transaction(({set, unset}) => {
+   *   set(obj.props.x, 10) // set the value of obj.props.x to 10
+   *   unset(obj.props.y) // unset the override at obj.props.y
+   * })
+   *
+   * // Non-undoable: persisted but not recorded in undo history
+   * studio.transaction(({set}) => {
+   *   set(obj.props.cameraPosition, newPos)
+   * }, {undoable: false})
+   * ```
+   */
+  transaction(
+    fn: (api: ITransactionAPI) => void,
+    opts?: {undoable?: boolean},
+  ): void
+
+  /**
+   * Creates a scrub, which is just like a transaction, except you
+   * can run it multiple times without creating extra undo levels.
+   *
+   * @example
+   * Usage:
+   * ```ts
+   * const scrub = studio.scrub()
+   * scrub.capture(({set}) => {
+   *   set(obj.props.x, 10) // set the value of obj.props.x to 10
+   * })
+   *
+   * // half a second later...
+   * scrub.capture(({set}) => {
+   *   set(obj.props.y, 11) // set the value of obj.props.y to 11
+   *   // note that since we're not setting obj.props.x, its value reverts back to its old value (ie. not 10)
+   * })
+   *
+   * // then either:
+   * scrub.commit() // commits the scrub and creates a single undo level
+   * // or:
+   * scrub.reset() // clear all the ops in the scrub so we can run scrub.capture() again
+   * // or:
+   * scrub.discard() // clears the ops and destroys it (ie. can't call scrub.capture() anymore)
+   * ```
+   */
+  scrub(): IScrub
+
+  /**
+   * Creates a debounced scrub, which is just like a normal scrub, but
+   * automatically runs scrub.commit() after `threshhold` milliseconds have
+   * passed after the last `scrub.capture`.
+   *
+   * @param threshhold - How long to wait before committing the scrub
+   *
+   * @example
+   * Usage:
+   * ```ts
+   * // Will create a new undo-level after 2 seconds have passed
+   * // since the last scrub.capture()
+   * const scrub = studio.debouncedScrub(2000)
+   *
+   * // capture some ops
+   * scrub.capture(...)
+   * // wait one second
+   * await delay(1000)
+   * // capture more ops but no new undo level is made,
+   * // because the last scrub.capture() was called less than 2 seconds ago
+   * scrub.capture(...)
+   *
+   * // wait another seonc and half
+   * await delay(1500)
+   * // still no new undo level, because less than 2 seconds have passed
+   * // since the last capture
+   * scrub.capture(...)
+   *
+   * // wait 3 seconds
+   * await delay(3000) // at this point, one undo level is created.
+   *
+   * // this call to capture will start a new undo level
+   * scrub.capture(...)
+   * ```
+   */
+  debouncedScrub(threshhold: number): Pick<IScrub, 'capture'>
+
+  /**
+   * Sets the current selection.
+   *
+   * @example
+   * Usage:
+   * ```ts
+   * const sheet1: ISheet = ...
+   * const obj1: ISheetObject<any> = ...
+   *
+   * studio.setSelection([sheet1, obj1])
+   * ```
+   *
+   * You can read the current selection from studio.selection
+   */
+  setSelection(selection: Array<ISheetObject<any> | ISheet>): void
+
+  /**
+   * Calls fn every time the current selection changes.
+   */
+  onSelectionChange(
+    fn: (s: Array<ISheetObject<{}> | ISheet>) => void,
+  ): VoidFunction
+
+  /**
+   * The current selection, consisting of Sheets and Sheet Objects
+   *
+   * @example
+   * Usage:
+   * ```ts
+   * console.log(studio.selection) // => [ISheetObject, ISheet]
+   * ```
+   */
+  readonly selection: Array<ISheetObject<{}> | ISheet>
+
+  /**
+   * Registers an extension
+   */
+  extend(
+    /**
+     * The extension's definition
+     */
+    extension: IExtension,
+    opts?: {
+      /**
+       * Whether to reconfigure the extension. This is useful if you're
+       * hot-reloading the extension.
+       *
+       * If the old version of the extension defines a pane,
+       * and the new version doesn't, all instances of that pane will disappear, as expected.
+       * _However_, if you again reconfigure the extension with the old version, the instances
+       * of the pane that pane will re-appear.
+       */
+      __experimental_reconfigure?: boolean
+    },
+  ): void
+
+  /**
+   * Creates a new pane
+   *
+   * @param paneClass - The class name of the pane (provided by an extension)
+   */
+  createPane<PaneClass extends string>(
+    paneClass: PaneClass,
+  ): PaneInstance<PaneClass>
+
+  /**
+   * Returns the Backstage.js project that contains the studio's sheets and objects.
+   *
+   * It is useful if you'd like to have sheets/objects that are present only when
+   * studio is present.
+   */
+  getStudioProject(): IProject
+
+  /**
+   * Creates a JSON object that contains the state of the project. You can use this
+   * to programmatically save the state of your projects to the storage system of your
+   * choice, rather than manually clicking on the "Export" button in the UI.
+   *
+   * @param projectId - same projectId as in `core.getProject(projectId)`
+   *
+   * @example
+   * Usage:
+   * ```ts
+   * const projectId = "project"
+   * const json = studio.createContentOfSaveFile(projectId)
+   * const string = JSON.stringify(json)
+   * fetch(`/projects/${projectId}/state`, {method: 'POST', body: string}).then(() => {
+   *   console.log("Saved")
+   * })
+   * ```
+   */
+  createContentOfSaveFile(projectId: string): Record<string, unknown>
+
+  /**
+   * Clears the persisted studio state (panel layout, sequencer scroll/zoom,
+   * pin states, etc.) and resets the in-memory studio preferences to their
+   * defaults. Project animation data is not affected.
+   *
+   * @param persistenceKey - same persistenceKey as in `studio.initialize(opts)`, if any
+   */
+  clearStudioState(persistenceKey?: string): void
+
+  /**
+   * Clears the persisted project state (keyframes, sheets, static overrides,
+   * etc.) and resets the in-memory project data. Each loaded project is
+   * re-initialized from its on-disk state (if any). Studio preferences are
+   * not affected.
+   *
+   * @param persistenceKey - same persistenceKey as in `studio.initialize(opts)`, if any
+   */
+  clearProjectState(persistenceKey?: string): Promise<void>
+
+  /** Experimental Studio APIs that may change without notice. */
+  __experimental: {
+    /**
+     * Warning: This is an experimental API and will change in the future.
+     *
+     * Disables the play/pause keyboard shortcut (spacebar)
+     * Also see `__experimental_enablePlayPauseKeyboardShortcut()` to re-enable it.
+     */
+    __experimental_disblePlayPauseKeyboardShortcut(): void
+    /**
+     * Warning: This is an experimental API and will change in the future.
+     *
+     * Disables the play/pause keyboard shortcut (spacebar)
+     */
+    __experimental_enablePlayPauseKeyboardShortcut(): void
+    /**
+     * Clears persistent storage and ensures that the current state will not be
+     * saved on window unload. Further changes to state will continue writing to
+     * persistent storage, if enabled during initialization.
+     *
+     * @param persistenceKey - same persistencyKey as in `studio.initialize(opts)`, if any
+     */
+    __experimental_clearPersistentStorage(persistenceKey?: string): void
+
+    /**
+     * Warning: This is an experimental API and will change in the future.
+     *
+     * This is functionally the same as `studio.createContentOfSaveFile()`, but
+     * returns a typed object instead of a JSON object.
+     *
+     * See {@link __UNSTABLE_Project_OnDiskState} for more information.
+     */
+    __experimental_createContentOfSaveFileTyped(
+      projectId: string,
+    ): __UNSTABLE_Project_OnDiskState
+  }
+}
+
+export default class BackstageStudio implements IStudio {
+  readonly ui = {
+    hide() {
+      getStudio().ui.hide()
+    },
+
+    get isHidden(): boolean {
+      return getStudio().ui.isHidden
+    },
+
+    restore() {
+      getStudio().ui.restore()
+    },
+
+    get isDocked(): boolean {
+      return getStudio().ui.isDocked
+    },
+
+    get dockedViewport() {
+      return getStudio().ui.dockedViewport
+    },
+
+    onDockedToggle(listener: (docked: boolean) => void) {
+      return getStudio().ui.onDockedToggle(listener)
+    },
+
+    onDockedResize(listener: (viewport: IDockedViewport | null) => void) {
+      return getStudio().ui.onDockedResize(listener)
+    },
+
+    renderToolset(toolsetId: string, htmlNode: HTMLElement) {
+      return getStudio().ui.renderToolset(toolsetId, htmlNode)
+    },
+  }
+
+  private readonly _cache = new SimpleCache()
+
+  __experimental = {
+    __experimental_disblePlayPauseKeyboardShortcut(): void {
+      // This is an experimental API to respond to this issue: https://discord.com/channels/870988717190426644/870988717190426647/1067906775602430062
+      // Ideally we need a coherent way for the user to control keyboard inputs, so we will remove this method in the future.
+      // Here is the procedure for removing it:
+      // 1. Replace this code with a `throw new Error("This is experimental method is now deprecated, and here is how to migrate: ...")`
+      // 2. Then keep it for a few months, and then remove it.
+      __experimental_disblePlayPauseKeyboardShortcut()
+    },
+    __experimental_enablePlayPauseKeyboardShortcut(): void {
+      // see __experimental_disblePlayPauseKeyboardShortcut()
+      __experimental_enablePlayPauseKeyboardShortcut()
+    },
+    __experimental_clearPersistentStorage(persistenceKey?: string): void {
+      return getStudio().clearPersistentStorage(persistenceKey)
+    },
+    __experimental_createContentOfSaveFileTyped(
+      projectId: string,
+    ): __UNSTABLE_Project_OnDiskState {
+      return getStudio().createContentOfSaveFile(projectId) as $IntentionalAny
+    },
+  }
+
+  /**
+   * @internal
+   */
+  constructor(internals: Studio) {}
+
+  initialize(opts?: Parameters<IStudio['initialize']>[0]): Promise<void> {
+    const studio = getStudio()
+    return studio.initialize(opts)
+  }
+
+  extend(
+    extension: IExtension,
+    opts?: {__experimental_reconfigure?: boolean},
+  ): void {
+    getStudio().extend(extension, opts)
+  }
+
+  transaction(
+    fn: (api: ITransactionAPI) => void,
+    opts?: {undoable?: boolean},
+  ): void {
+    return getStudio().transaction(({set, unset, stateEditors}) => {
+      const __experimental_forgetObject = (object: BackstageSheetObject) => {
+        if (!isSheetObjectPublicAPI(object)) {
+          throw new Error(
+            `object in transactionApi.__experimental_forgetObject(object) must be the return type of sheet.object(...)`,
+          )
+        }
+
+        stateEditors.coreByProject.historic.sheetsById.forgetObject(
+          object.address,
+        )
+      }
+
+      const __experimental_forgetSheet = (sheet: BackstageSheet) => {
+        if (!isSheetPublicAPI(sheet)) {
+          throw new Error(
+            `sheet in transactionApi.__experimental_forgetSheet(sheet) must be the return type of project.sheet()`,
+          )
+        }
+
+        stateEditors.coreByProject.historic.sheetsById.forgetSheet(
+          sheet.address,
+        )
+      }
+
+      return fn({
+        set,
+        unset,
+        __experimental_forgetObject,
+        __experimental_forgetSheet,
+      })
+    }, opts)
+  }
+
+  private _getSelectionPrism(): Prism<(ISheetObject | ISheet)[]> {
+    return this._cache.get('_getSelectionPrism()', () =>
+      prism((): (ISheetObject | ISheet)[] => {
+        return getOutlineSelection()
+          .filter(
+            (s): s is SheetObject | Sheet =>
+              s.type === 'Backstage_SheetObject' || s.type === 'Backstage_Sheet',
+          )
+          .map((s) => s.publicApi)
+      }),
+    )
+  }
+
+  private _getSelection(): (ISheetObject | ISheet)[] {
+    return this._getSelectionPrism().getValue()
+  }
+
+  setSelection(selection: Array<ISheetObject | ISheet>): void {
+    const sanitizedSelection = [...selection]
+      .filter((s) => isSheetObjectPublicAPI(s) || isSheetPublicAPI(s))
+      .map((s) => getStudio().corePrivateAPI!(s))
+
+    getStudio().transaction(({stateEditors}) => {
+      stateEditors.studio.historic.panels.outline.selection.set(
+        sanitizedSelection,
+      )
+    })
+  }
+
+  onSelectionChange(fn: (s: (ISheetObject | ISheet)[]) => void): VoidFn {
+    const studio = getStudio()
+
+    return this._getSelectionPrism().onChange(studio.ticker, fn, true)
+  }
+
+  get selection(): Array<ISheetObject | ISheet> {
+    return this._getSelection()
+  }
+
+  scrub(): IScrub {
+    return getStudio().scrub()
+  }
+
+  getStudioProject() {
+    const core = getStudio().core
+    if (!core) {
+      throw new Error(`You're calling studio.getStudioProject() before \`@unseenco/backstage\` is loaded. To fix this:
+1. Check if \`@unseenco/backstage\` is import/required in your bundle.
+2. Check the stack trace of this error and make sure the funciton that calls getStudioProject() is run after \`@unseenco/backstage\` is loaded.`)
+    }
+    return getStudio().getStudioProject(core)
+  }
+
+  debouncedScrub(threshold: number = 1000): Pick<IScrub, 'capture'> {
+    let currentScrub: IScrub | undefined
+    const scheduleCommit = debounce(() => {
+      const s = currentScrub
+      if (!s) return
+      currentScrub = undefined
+      s.commit()
+    }, threshold)
+
+    const capture = (arg: $IntentionalAny) => {
+      if (!currentScrub) {
+        currentScrub = this.scrub()
+      }
+      let errored = true
+      try {
+        currentScrub.capture(arg)
+        errored = false
+      } finally {
+        if (errored) {
+          const s = currentScrub
+          currentScrub = undefined
+          s.discard()
+        } else {
+          scheduleCommit()
+        }
+      }
+    }
+
+    return {capture}
+  }
+
+  createPane<PaneClass extends string>(
+    paneClass: PaneClass,
+  ): PaneInstance<PaneClass> {
+    return getStudio().paneManager.createPane(paneClass)
+  }
+
+  destroyPane(paneId: string): void {
+    return getStudio().paneManager.destroyPane(paneId as PaneInstanceId)
+  }
+
+  createContentOfSaveFile(projectId: string): Record<string, unknown> {
+    return getStudio().createContentOfSaveFile(
+      projectId as ProjectId,
+    ) as $IntentionalAny
+  }
+
+  clearStudioState(persistenceKey?: string): void {
+    getStudio().clearStudioPersistentStorage(persistenceKey)
+  }
+
+  clearProjectState(persistenceKey?: string): Promise<void> {
+    return getStudio().clearProjectPersistentStorage(persistenceKey)
+  }
+}

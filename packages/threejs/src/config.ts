@@ -14,7 +14,7 @@ export type ExcludeInput = readonly string[] | ExcludeConfig
 /** Same shape as {@link ExcludeInput}; paths are expanded when passed to `sheet.object()`. */
 export type PropPathInput = ExcludeInput
 
-/** Default options merged into each {@link autoAddObject} call from {@link configureTheatreThreejs}. */
+/** Default options merged into each {@link autoAddObject} call from {@link configureBackstageThreejs}. */
 export type AutoAddObjectDefaults = {
   exclude?: ExcludeInput
   include?: ExcludeInput
@@ -23,8 +23,8 @@ export type AutoAddObjectDefaults = {
   static?: PropPathInput
 }
 
-/** Project-wide defaults for {@link autoAddObject} via {@link configureTheatreThreejs}. */
-export type TheatreThreejsConfig = {
+/** Project-wide defaults for {@link autoAddObject} via {@link configureBackstageThreejs}. */
+export type BackstageThreejsConfig = {
   autoAddObject?: AutoAddObjectDefaults
 }
 
@@ -34,7 +34,7 @@ type ResolvedExcludeConfig = {
   uniforms: string[]
 }
 
-let activeConfig: TheatreThreejsConfig = {}
+let activeConfig: BackstageThreejsConfig = {}
 
 function dedupe(values: string[]): string[] {
   return [...new Set(values)]
@@ -84,26 +84,26 @@ export function mergeExcludeInput(
   }
 }
 
-export function getTheatreThreejsConfig(): TheatreThreejsConfig {
+export function getBackstageThreejsConfig(): BackstageThreejsConfig {
   return activeConfig
 }
 
-export function setTheatreThreejsConfig(config: TheatreThreejsConfig): void {
+export function setBackstageThreejsConfig(config: BackstageThreejsConfig): void {
   activeConfig = config
 }
 
 /** Clears project-wide `@unseenco/backstage/threejs` configuration back to defaults. */
-export function resetTheatreThreejsConfig(): void {
+export function resetBackstageThreejsConfig(): void {
   activeConfig = {}
 }
 
 /**
  * Sets project-wide defaults for `@unseenco/backstage/threejs` auto-add helpers.
  *
- * @param config - Configuration to apply until {@link resetTheatreThreejsConfig} or `reset()` from the return value
+ * @param config - Configuration to apply until {@link resetBackstageThreejsConfig} or `reset()` from the return value
  * @returns Object with `reset()` restoring the previous config
  */
-export function configureTheatreThreejs(config: TheatreThreejsConfig): {
+export function configureBackstageThreejs(config: BackstageThreejsConfig): {
   reset: () => void
 } {
   const previousConfig = activeConfig

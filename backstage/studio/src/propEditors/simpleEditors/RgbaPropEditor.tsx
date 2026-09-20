@@ -1,0 +1,156 @@
+import type {PropTypeConfig_Rgba} from '@unseenco/backstage/propTypes'
+import type {Rgba} from '@unseenco/backstage-shared/utils/color'
+import {validHexRegExp} from '@unseenco/backstage-shared/utils/color'
+import {
+  decorateRgba,
+  rgba2hex,
+  parseRgbaFromHex,
+} from '@unseenco/backstage-shared/utils/color'
+import React, {useCallback, useLayoutEffect, useRef} from 'react'
+import {RgbaColorPicker} from '@unseenco/backstage/studio/uiComponents/colorPicker'
+import styled from 'styled-components'
+import usePopover from '@unseenco/backstage/studio/uiComponents/Popover/usePopover'
+import BasicStringInput from '@unseenco/backstage/studio/uiComponents/form/BasicStringInput'
+import {popoverBackgroundColor} from '@unseenco/backstage/studio/uiComponents/Popover/BasicPopover'
+import type {ISimplePropEditorReactProps} from './ISimplePropEditorReactProps'
+
+const RowContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  width: 100%;
+  gap: 8px;
+  /* Chip already provides the outer horizontal inset. */
+  padding: 0;
+  box-sizing: border-box;
+`
+
+interface ColorPreviewPuckProps {
+  rgbaColor: Rgba
+}
+
+const ColorPreviewPuck = styled.div.attrs<ColorPreviewPuckProps>((props) => ({
+  style: {
+    // weirdly, rgba2hex is needed to ensure initial render was correct background?
+    // huge head scratcher.
+    background: rgba2hex(props.rgbaColor),
+  },
+}))<ColorPreviewPuckProps>`
+  height: 18px;
+  width: 18px;
+  flex: 0 0 auto;
+  aspect-ratio: 1;
+  border-radius: var(--studio-radius, 4px);
+  border: 1px solid var(--studio-border);
+  cursor: pointer;
+`
+
+const HexInput = styled(BasicStringInput)`
+  flex: 0 0 auto;
+  margin-left: auto;
+`
+
+const noop = () => {}
+
+const RgbaPopover = styled.div`
+  position: absolute;
+  background-color: ${popoverBackgroundColor};
+  color: white;
+  margin: 0;
+  cursor: default;
+  border-radius: var(--studio-radius);
+  z-index: 10000;
+
+  padding: 4px;
+  pointer-events: all;
+
+  border: none;
+`
+
+function RgbaPropEditor({
+  editingTools,
+  value,
+  autoFocus,
+  hostClickRef,
+}: ISimplePropEditorReactProps<PropTypeConfig_Rgba>) {
+  const containerRef = useRef<HTMLDivElement>(null!)
+
+  const onChange = useCallback(
+    (color: string) => {
+      const rgba = decorateRgba(parseRgbaFromHex(color))
+      editingTools.permanentlySetValue(rgba)
+    },
+    [editingTools],
+  )
+
+  const popover = usePopover({debugName: 'RgbaPropEditor'}, () => (
+    <RgbaPopover
+      // Portal content still bubbles through the React tree to the chip host.
+      // Stop that so a saturation/hue drag mouseup→click does not toggle-close.
+      onMouseDown={(e) => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <RgbaColorPicker
+        color={{
+          r: value.r,
+          g: value.g,
+          b: value.b,
+          a: value.a,
+        }}
+        temporarilySetValue={(color) => {
+          const rgba = decorateRgba(color)
+          editingTools.temporarilySetValue(rgba)
+        }}
+        permanentlySetValue={(color) => {
+          const rgba = decorateRgba(color)
+          editingTools.permanentlySetValue(rgba)
+        }}
+        discardTemporaryValue={editingTools.discardTemporaryValue}
+      />
+    </RgbaPopover>
+  ))
+
+  const openPicker = useCallback(
+    (e: React.MouseEvent) => {
+      popover.toggle(e, containerRef.current)
+    },
+    [popover.toggle],
+  )
+
+  useLayoutEffect(() => {
+    if (!hostClickRef) return
+    hostClickRef.current = openPicker
+    return () => {
+      hostClickRef.current = null
+    }
+  }, [hostClickRef, openPicker])
+
+  return (
+    <>
+      <RowContainer>
+        <HexInput
+          value={rgba2hex(value, {removeAlphaIfOpaque: true})}
+          temporarilySetValue={noop}
+          discardTemporaryValue={noop}
+          permanentlySetValue={onChange}
+          isValid={(v) => !!v.match(validHexRegExp)}
+          autoFocus={autoFocus}
+          fitContent
+        />
+        <ColorPreviewPuck
+          rgbaColor={value}
+          ref={containerRef}
+          onClick={(e) => {
+            // Don't also fire the chip host handler (would toggle twice).
+            e.stopPropagation()
+            openPicker(e)
+          }}
+        />
+      </RowContainer>
+      {popover.node}
+    </>
+  )
+}
+
+export default RgbaPropEditor

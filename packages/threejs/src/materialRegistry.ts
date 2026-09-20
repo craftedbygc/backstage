@@ -5,7 +5,7 @@ import type {MaterialApplier} from './buildMaterialProps'
 /**
  * Shared across the runtime and `/extension` bundles via `globalThis`.
  */
-const REGISTRY_KEY = '__unseenco_theatre_threejs_materialRegistry__'
+const REGISTRY_KEY = '__unseenco_backstage_threejs_materialRegistry__'
 
 export type MaterialBinding = {
   applyMaterial?: MaterialApplier
@@ -80,8 +80,8 @@ export function resolveSharedMaterialObjectKey(
     : material.uuid.slice(0, 8)
 
   console.warn(
-    `[theatre-threejs] A material used by multiple objects has no name. ` +
-      `Name the material (material.name = '...') so Theatre can persist stable state for it. ` +
+    `[backstage-threejs] A material used by multiple objects has no name. ` +
+      `Name the material (material.name = '...') so Backstage can persist stable state for it. ` +
       `Using temporary key "${SHARED_MATERIALS_NAMESPACE} / Material (${uuid})" for this session.`,
   )
 

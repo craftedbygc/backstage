@@ -1,6 +1,6 @@
 # Linking props with `showPropsOf`
 
-Sometimes one on-screen thing is authored as several Theatre objects—for example a mesh and a shared **Appearance** object, or a layout box that should expose another object’s props in the same Details Panel.
+Sometimes one on-screen thing is authored as several Backstage objects—for example a mesh and a shared **Appearance** object, or a layout box that should expose another object’s props in the same Details Panel.
 
 **`showPropsOf`** embeds another sheet object’s props in an object’s Studio details pane. It is **UI-only**: edits and sequencing still target the **source** objects. Nothing about the link is stored in exported project JSON.
 
@@ -43,4 +43,4 @@ Run `yarn playground` and open **`/shared/show-props-of/`** (`packages/playgroun
 
 ## API
 
-[`ISheetObject.showPropsOf`](/api/theatre-core), [`getShowPropsOf`](/api/theatre-core)
+[`ISheetObject.showPropsOf`](/api/backstage-core), [`getShowPropsOf`](/api/backstage-core)

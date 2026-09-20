@@ -1,0 +1,97 @@
+import React, {useRef} from 'react'
+import styled from 'styled-components'
+import {pointerEventsAutoInNormalMode} from '@unseenco/backstage/studio/css'
+import type {
+  ToolConfigFlyoutMenu,
+  ToolconfigFlyoutMenuItem,
+} from '@unseenco/backstage/studio/BackstageStudio'
+import ToolbarIconButton from '@unseenco/backstage/studio/uiComponents/toolbar/ToolbarIconButton'
+import BaseMenu from '@unseenco/backstage/studio/uiComponents/simpleContextMenu/ContextMenu/BaseMenu'
+import usePopover from '@unseenco/backstage/studio/uiComponents/Popover/usePopover'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
+import FlyoutMenuLabel from './FlyoutMenuLabel'
+import UnsavedChangesDot, {
+  statusDotTopLeft,
+} from '@unseenco/backstage/studio/uiComponents/UnsavedChangesDot'
+
+const FlyoutTriggerButton = styled(ToolbarIconButton)`
+  ${pointerEventsAutoInNormalMode};
+  position: relative;
+  min-width: 32px;
+  width: auto;
+  padding: 0 8px;
+  font-size: 11px;
+`
+
+const FlyoutTriggerUnsavedDot = styled(UnsavedChangesDot)`
+  ${statusDotTopLeft}
+`
+
+const ExtensionFlyoutMenu: React.FC<{
+  config: ToolConfigFlyoutMenu
+}> = ({config}) => {
+  const triggerRef = useRef<null | HTMLElement>(null)
+
+  const popover = usePopover(
+    () => {
+      const triggerBounds = triggerRef.current!.getBoundingClientRect()
+      return {
+        debugName: 'ExtensionFlyoutMenu:' + config.label,
+
+        constraints: {
+          maxX: triggerBounds.right,
+          maxY: 8,
+          minX: triggerBounds.left,
+          minY: 8,
+        },
+        verticalGap: 2,
+      }
+    },
+    () => {
+      return (
+        <BaseMenu
+          items={config.items.map(
+            (option: ToolconfigFlyoutMenuItem, index: number) => ({
+              label: (
+                <FlyoutMenuLabel
+                  text={option.label}
+                  showUnsavedIndicator={option.showUnsavedIndicator}
+                />
+              ),
+              callback: () => {
+                // this is a user-defined function, so we need to wrap it in a try/catch
+                try {
+                  option.onClick?.()
+                } catch (e) {
+                  console.error(e)
+                }
+              },
+            }),
+          )}
+          onRequestClose={() => {
+            popover.close('clicked')
+          }}
+        />
+      )
+    },
+  )
+
+  return (
+    <>
+      {popover.node}
+      <FlyoutTriggerButton
+        ref={triggerRef as $IntentionalAny}
+        data-testid={config['data-testid']}
+        title={config.title}
+        onClick={(e) => {
+          popover.open(e, triggerRef.current!)
+        }}
+      >
+        {config.showUnsavedIndicator ? <FlyoutTriggerUnsavedDot /> : null}
+        {typeof config.label === 'string' ? config.label : config.label}
+      </FlyoutTriggerButton>
+    </>
+  )
+}
+
+export default ExtensionFlyoutMenu

@@ -5,12 +5,11 @@
   "description": "Motion design editor for the web — unified package",
   "repository": {
     "type": "git",
-    "url": "https://github.com/craftedbygc/theatre",
+    "url": "https://github.com/craftedbygc/backstage",
     "directory": "packages/backstage"
   },
   "author": {
     "name": "TheaterJS Oy",
-    "email": "hello@theatrejs.com",
     "url": "https://unseen-theatre.netlify.app"
   },
   "type": "commonjs",

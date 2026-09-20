@@ -1,9 +1,0 @@
-{
-  "name": "@unseenco/backstage-shared",
-  "private": true,
-  "license": "Apache-2.0",
-  "dependencies": {
-    "@unseenco/theatre-core": "workspace:*",
-    "@unseenco/theatre-studio": "workspace:*"
-  }
-}

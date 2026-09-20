@@ -2,8 +2,8 @@
 module.exports = {
   testMatch: [
     '<rootDir>/packages/*/src/**/*.test.ts',
-    '<rootDir>/theatre/*/src/**/*.test.ts',
-    '<rootDir>/theatre/*/src/**/*.test.ts',
+    '<rootDir>/backstage/*/src/**/*.test.ts',
+    '<rootDir>/backstage/*/src/**/*.test.ts',
     '<rootDir>/devEnv/**/*.test.ts',
   ],
   moduleNameMapper: {
@@ -19,7 +19,7 @@ module.exports = {
     'react-icons/(.*)': 'identity-obj-proxy',
     'react-merge-refs': 'identity-obj-proxy',
   },
-  setupFiles: ['./theatre/shared/src/setupTestEnv.ts'],
+  setupFiles: ['./backstage/shared/src/setupTestEnv.ts'],
   automock: false,
   transform: {
     '^.+\\.tsx?$': [
@@ -30,8 +30,8 @@ module.exports = {
           'dynamic-import': false,
         },
         define: {
-          __THEATRE_LITE__:
-            process.env.THEATRE_LITE_TEST === '1' ? 'true' : 'false',
+          __BACKSTAGE_LITE__:
+            process.env.BACKSTAGE_LITE_TEST === '1' ? 'true' : 'false',
         },
       },
     ],
@@ -43,8 +43,8 @@ module.exports = {
           'dynamic-import': false,
         },
         define: {
-          __THEATRE_LITE__:
-            process.env.THEATRE_LITE_TEST === '1' ? 'true' : 'false',
+          __BACKSTAGE_LITE__:
+            process.env.BACKSTAGE_LITE_TEST === '1' ? 'true' : 'false',
         },
       },
     ],

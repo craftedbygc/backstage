@@ -2,7 +2,7 @@
 
 **Studio** (`@unseenco/backstage/studio`) is the visual editor. It appears only when you call `studio.initialize()`—keep that behind a development flag in production.
 
-> **Studio vs studio-lite:** Full Studio includes the Sequence Editor, keyframes, GSAP rows, and playback. [`@unseenco/backstage/studio-lite`](../theatre-lite/index.md) keeps outline, details, variants, and export for static authoring only—pair with `@unseenco/backstage/core-lite` in production.
+> **Studio vs studio-lite:** Full Studio includes the Sequence Editor, keyframes, GSAP rows, and playback. [`@unseenco/backstage/studio-lite`](../backstage-lite/index.md) keeps outline, details, variants, and export for static authoring only—pair with `@unseenco/backstage/core-lite` in production.
 
 Toggle visibility: `Alt`/`Option` + `\`.
 
@@ -63,4 +63,4 @@ Open the project row in the outline → export JSON (and asset zip when needed).
 
 ## API
 
-[Studio API](/api/theatre-studio)
+[Studio API](/api/backstage-studio)

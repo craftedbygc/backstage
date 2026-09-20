@@ -19,13 +19,13 @@ import {
   Vector3,
 } from 'three'
 import type {Blending, Side, Material} from 'three'
-import {applyTheatreRgbaToColor, colorToTheatreRgba} from './colorUtils'
+import {applyBackstageRgbaToColor, colorToBackstageRgba} from './colorUtils'
 import {numberTypeOptionsFromUniformGui} from './parseUniformGui'
 import type {UniformWithGui} from './parseUniformGui'
 import {
   createTextureSlotApplier,
   isMaterialTextureProp,
-  isTheatreImageAsset,
+  isBackstageImageAsset,
   isTexture,
   isUniformTextureProp,
   isUnsupportedUniformValue,
@@ -272,7 +272,7 @@ function buildMaterialPropConfig(
   if (isTexture(value)) return undefined
 
   if (value instanceof Color) {
-    return types.rgba(colorToTheatreRgba(value), {label: key})
+    return types.rgba(colorToBackstageRgba(value), {label: key})
   }
 
   if (value instanceof Vector2) {
@@ -322,7 +322,7 @@ function applyMaterialPropValue(
 
   if (
     isMaterialTextureProp(material, key, current) &&
-    (isTheatreImageAsset(value) || value === undefined)
+    (isBackstageImageAsset(value) || value === undefined)
   ) {
     if (!applyTexture) return
 
@@ -345,7 +345,7 @@ function applyMaterialPropValue(
   }
 
   if (current instanceof Color && value && typeof value === 'object') {
-    applyTheatreRgbaToColor(
+    applyBackstageRgbaToColor(
       current,
       value as {r: number; g: number; b: number; a: number},
     )
@@ -504,7 +504,7 @@ function buildUniformsConfig(
     if (isUnsupportedUniformValue(value)) continue
 
     if (value instanceof Color) {
-      config[key] = types.rgba(colorToTheatreRgba(value), {label: key})
+      config[key] = types.rgba(colorToBackstageRgba(value), {label: key})
       continue
     }
 
@@ -575,7 +575,7 @@ function applyUniforms(
 
     if (
       isUniformTextureProp(key, uniform.value, uniform as UniformWithGui) &&
-      (isTheatreImageAsset(value) || value === undefined)
+      (isBackstageImageAsset(value) || value === undefined)
     ) {
       if (!applyTexture) continue
 
@@ -595,7 +595,7 @@ function applyUniforms(
     }
 
     if (uniform.value instanceof Color && value && typeof value === 'object') {
-      applyTheatreRgbaToColor(
+      applyBackstageRgbaToColor(
         uniform.value,
         value as {r: number; g: number; b: number; a: number},
       )

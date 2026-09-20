@@ -1,16 +1,15 @@
 {
-  "name": "@unseenco/theatre-gsap",
+  "name": "@unseenco/backstage-gsap",
   "version": "0.6.0",
   "license": "AGPL-3.0-only",
-  "description": "GSAP time-mode bridge for Theatre.js",
+  "description": "GSAP time-mode bridge for Backstage.js",
   "author": {
     "name": "Aria Minaei",
-    "email": "aria@theatrejs.com",
     "url": "https://github.com/AriaMinaei"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/craftedbygc/theatre",
+    "url": "https://github.com/craftedbygc/backstage",
     "directory": "packages/gsap"
   },
   "main": "dist/index.js",
@@ -40,7 +39,7 @@
   "devDependencies": {
     "@microsoft/api-extractor": "^7.18.11",
     "@types/node": "^15.6.2",
-    "@unseenco/theatre-core": "workspace:*",
+    "@unseenco/backstage": "workspace:*",
     "esbuild": "^0.18.18",
     "esbuild-register": "^2.5.0",
     "gsap": "^3.12.5",
@@ -48,7 +47,7 @@
     "typescript": "5.1.6"
   },
   "peerDependencies": {
-    "@unseenco/theatre-core": "*",
+    "@unseenco/backstage": "*",
     "gsap": ">=3.0.0"
   },
   "private": true

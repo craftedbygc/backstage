@@ -1,7 +1,7 @@
 /**
  * @packageDocumentation
  *
- * Runtime helpers for binding Three.js objects to Theatre.js sheets.
+ * Runtime helpers for binding Three.js objects to Backstage.js sheets.
  * For Studio devtools (`buildExtension`), import from
  * `@unseenco/backstage/threejs/extension`.
  */
@@ -10,9 +10,9 @@ export {autoAddObject} from './autoAddObject'
 export {autoAddCamera} from './autoAddCamera'
 export {autoAddMaterial} from './autoAddMaterial'
 export {
-  configureTheatreThreejs,
+  configureBackstageThreejs,
   mergeExcludeInput,
-  resetTheatreThreejsConfig,
+  resetBackstageThreejsConfig,
 } from './config'
 export {parseUniformGui} from './parseUniformGui'
 export {EXTENSION_ID} from './constants'
@@ -34,7 +34,7 @@ export type {
   ExcludeConfig,
   ExcludeInput,
   PropPathInput,
-  TheatreThreejsConfig,
+  BackstageThreejsConfig,
 } from './config'
 
 export type {

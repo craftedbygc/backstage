@@ -34,6 +34,6 @@ Study **`@unseenco/backstage/threejs/extension`** (`packages/threejs/src/extensi
 
 ## API
 
-[Studio API](/api/theatre-studio) — search for `IExtension`, `toolbars`, and `panes`.
+[Studio API](/api/backstage-studio) — search for `IExtension`, `toolbars`, and `panes`.
 
 Legacy step-by-step tutorials with screenshots lived on the old website; port more examples here as the extension API stabilizes.

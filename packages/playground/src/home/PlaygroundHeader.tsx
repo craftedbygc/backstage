@@ -76,7 +76,7 @@ export function PlaygroundHeader(props: {
   return (
     <PlaygroundHeaderContainer>
       <HeaderGroup>
-        <TheatreLogo />
+        <BackstageLogo />
         {props.version && (
           <PlaygroundHeaderVersion>
             {props.version.displayText}
@@ -94,7 +94,7 @@ export function PlaygroundHeader(props: {
   )
 }
 
-const TheatreLogo = () => (
+const BackstageLogo = () => (
   <svg
     width="100"
     height="25"

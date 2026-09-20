@@ -3,7 +3,7 @@
  */
 import {privateAPI} from '@unseenco/backstage/privateAPIs'
 import {BoxGeometry, Mesh, MeshPhongMaterial} from 'three'
-import {autoAddObject, configureTheatreThreejs} from './index'
+import {autoAddObject, configureBackstageThreejs} from './index'
 import {setupTestSheet} from '@unseenco/backstage-shared/testUtils'
 
 async function setupSheet() {
@@ -54,9 +54,9 @@ describe('autoAddObject transient/static options', () => {
     )
   })
 
-  test('merges configureTheatreThreejs defaults with per-call options', async () => {
+  test('merges configureBackstageThreejs defaults with per-call options', async () => {
     const sheet = await setupSheet()
-    const {reset} = configureTheatreThreejs({
+    const {reset} = configureBackstageThreejs({
       autoAddObject: {
         static: {transform: ['scale']},
       },

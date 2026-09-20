@@ -1,12 +1,12 @@
 # Assets
 
-Image props use Theatre **assets**: files referenced by id and resolved at runtime via `project.getAssetUrl()`.
+Image props use Backstage **assets**: files referenced by id and resolved at runtime via `project.getAssetUrl()`.
 
 ## Base URL
 
 ```ts
 const project = getProject('My project', {
-  assets: {baseUrl: '/theatre-assets'},
+  assets: {baseUrl: '/backstage-assets'},
 })
 ```
 
@@ -35,4 +35,4 @@ Texture props created by `@unseenco/backstage/threejs` `autoAddObject` treat ima
 
 ## API
 
-[`types.image`](/api/theatre-core), [`Project.getAssetUrl`](/api/theatre-core)
+[`types.image`](/api/backstage-core), [`Project.getAssetUrl`](/api/backstage-core)

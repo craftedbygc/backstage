@@ -9,5 +9,5 @@
     "noEmit": true
   },
   "files": ["index.tsx", "Scene.tsx", "useDrag.ts", "vite.config.ts"],
-  "references": [{"path": "../../theatre"}]
+  "references": [{"path": "../../backstage"}]
 }

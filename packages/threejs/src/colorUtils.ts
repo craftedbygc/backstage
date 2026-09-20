@@ -1,15 +1,15 @@
 import {Color} from 'three'
 
-type TheatreRgba = {r: number; g: number; b: number; a: number}
+type BackstageRgba = {r: number; g: number; b: number; a: number}
 
 const tempColor = new Color()
 
-/** Match 8-bit sRGB channels so Theatre's rgba hex display (truncates) stays accurate. */
+/** Match 8-bit sRGB channels so Backstage's rgba hex display (truncates) stays accurate. */
 function quantizeSrgbChannel(value: number): number {
   return Math.round(value * 255) / 255
 }
 
-export function colorToTheatreRgba(color: Color): TheatreRgba {
+export function colorToBackstageRgba(color: Color): BackstageRgba {
   tempColor.copy(color).convertLinearToSRGB()
   return {
     r: quantizeSrgbChannel(tempColor.r),
@@ -19,7 +19,7 @@ export function colorToTheatreRgba(color: Color): TheatreRgba {
   }
 }
 
-export function applyTheatreRgbaToColor(color: Color, rgba: TheatreRgba): void {
+export function applyBackstageRgbaToColor(color: Color, rgba: BackstageRgba): void {
   tempColor.setRGB(rgba.r, rgba.g, rgba.b).convertSRGBToLinear()
   color.copy(tempColor)
 }

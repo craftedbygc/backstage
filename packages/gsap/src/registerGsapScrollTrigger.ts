@@ -9,8 +9,8 @@ import {
 } from '@unseenco/backstage-shared/gsap/scrollTriggerRegistry'
 import type {GsapScrollTriggerRegistryEntry} from '@unseenco/backstage-shared/gsap/scrollTriggerRegistry'
 import {formatOutlineNamespacePathKey} from '@unseenco/backstage-shared/utils/outlineNamespaces'
-import {getTheatreGsapConfig} from './config'
-import {getTheatrePageScrollContext} from './attachTheatrePageScroll'
+import {getBackstageGsapConfig} from './config'
+import {getBackstagePageScrollContext} from './attachBackstagePageScroll'
 import type {GsapScrollTriggerLike} from './gsapScrollTriggerTypes'
 import {
   refreshGsapScrollTriggers,
@@ -52,7 +52,7 @@ export function registerOneGsapScrollTriggerOnSheet(
   options: RegisterGsapScrollTriggerOptions,
   fallbackIndex: number,
 ): RegisterGsapScrollTriggerResult | null {
-  const config = getTheatreGsapConfig()
+  const config = getBackstageGsapConfig()
   const namespace = options.namespace ?? config.namespace ?? 'GSAP'
   const sheetInternal = privateAPI(sheet)
   const sheetKey = sheetAddressKey(sheetInternal.address)
@@ -61,7 +61,7 @@ export function registerOneGsapScrollTriggerOnSheet(
   const existingByInstance = findScrollTriggerEntryByInstance(sheetKey, st)
   if (existingByInstance?.sheetObject) {
     console.warn(
-      `[theatre-gsap] ScrollTrigger "${options.label}" is already registered for this sheet (id "${existingByInstance.id}"). Skipping duplicate registration.`,
+      `[backstage-gsap] ScrollTrigger "${options.label}" is already registered for this sheet (id "${existingByInstance.id}"). Skipping duplicate registration.`,
     )
     return {
       id: existingByInstance.id,
@@ -71,7 +71,7 @@ export function registerOneGsapScrollTriggerOnSheet(
 
   refreshGsapScrollTriggers()
 
-  const pageScrollContext = getTheatrePageScrollContext()
+  const pageScrollContext = getBackstagePageScrollContext()
 
   const extracted = extractScrollTriggerLayout(st, {
     sequenceLength,
@@ -84,11 +84,11 @@ export function registerOneGsapScrollTriggerOnSheet(
   if (!extracted.ok) {
     if (extracted.reason === 'unsupported_scroller') {
       console.warn(
-        `[theatre-gsap] Skipped ScrollTrigger "${options.label}": scroller or scroll axis does not match configured page scroll (see configureTheatreGsap pageScroll scroller and axis).`,
+        `[backstage-gsap] Skipped ScrollTrigger "${options.label}": scroller or scroll axis does not match configured page scroll (see configureBackstageGsap pageScroll scroller and axis).`,
       )
     } else {
       console.warn(
-        `[theatre-gsap] Skipped ScrollTrigger "${options.label}": no linked tween or timeline found.`,
+        `[backstage-gsap] Skipped ScrollTrigger "${options.label}": no linked tween or timeline found.`,
       )
     }
     return null
@@ -160,6 +160,6 @@ export function refreshRegisteredGsapScrollTriggerLayouts(sheet: ISheet): void {
   refreshScrollTriggerLayoutsForSheet(
     sheetKey,
     sequenceLengthForSheet(sheet),
-    getTheatrePageScrollContext(),
+    getBackstagePageScrollContext(),
   )
 }

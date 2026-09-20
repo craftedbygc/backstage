@@ -1,7 +1,7 @@
 # @unseenco/backstage/react
 
-Utilities for using [Theatre.js](https://unseen-theatre.netlify.app) or
-[Dataverse](https://github.com/craftedbygc/theatre/tree/main/packages/dataverse)
+Utilities for using [Backstage.js](https://unseen-theatre.netlify.app) or
+[Dataverse](https://github.com/craftedbygc/backstage/tree/main/packages/dataverse)
 with React.
 
 ## Documentation
@@ -38,7 +38,7 @@ function Component() {
 }
 ```
 
-Usage with Theatre.js pointers:
+Usage with Backstage.js pointers:
 
 ```tsx
 import {useVal} from '@unseenco/backstage/react'

@@ -12,8 +12,8 @@ For the original project, docs, and community, see [theatrejs.com](https://unsee
 
 | Package | Description |
 | --- | --- |
-| [`@unseenco/backstage`](./theatre/core/README.md) | Runtime animation library (ships in production bundles) |
-| [`@unseenco/backstage/studio`](./theatre/studio/README.md) | Visual editor (dev-time only) |
+| [`@unseenco/backstage`](./backstage/core/README.md) | Runtime animation library (ships in production bundles) |
+| [`@unseenco/backstage/studio`](./backstage/studio/README.md) | Visual editor (dev-time only) |
 | [`@unseenco/backstage/threejs`](./packages/threejs/README.md) | Three.js Studio devtools extension — orbit camera and scene inspection (dev-time only) |
 | [`@unseenco/backstage/dataverse`](./packages/dataverse/README.md) | Reactive dataflow library used internally |
 | [`@unseenco/backstage/react`](./packages/react/README.md) | React bindings |

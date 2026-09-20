@@ -1,0 +1,325 @@
+import type {SequenceEditorPanelLayout} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/layout'
+import RoomToClick from '@unseenco/backstage/studio/uiComponents/RoomToClick'
+import useRefAndState from '@unseenco/backstage/studio/utils/useRefAndState'
+import {usePrism, useVal} from '@unseenco/backstage/react'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
+import type {Pointer} from '@unseenco/backstage/dataverse'
+import {val} from '@unseenco/backstage/dataverse'
+import clamp from 'lodash-es/clamp'
+import React, {useState} from 'react'
+import styled from 'styled-components'
+import {zIndexes} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/SequenceEditorPanel'
+import {
+  includeLockFrameStampAttrs,
+  useLockFrameStampPosition,
+} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/FrameStampPositionProvider'
+import {pointerEventsAutoInNormalMode} from '@unseenco/backstage/studio/css'
+import BasicPopover from '@unseenco/backstage/studio/uiComponents/Popover/BasicPopover'
+import PlayheadPositionPopover from './PlayheadPositionPopover'
+import {getIsPlayheadAttachedToFocusRange} from '@unseenco/backstage/studio/UIRoot/useKeyboardShortcuts'
+import {
+  lockedCursorCssVarName,
+  useCssCursorLock,
+} from '@unseenco/backstage/studio/uiComponents/PointerEventsHandler'
+import getStudio from '@unseenco/backstage/studio/getStudio'
+import DopeSnap from './DopeSnap'
+import {
+  snapToAll,
+  snapToNone,
+} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
+import {generateSequenceMarkerId} from '@unseenco/backstage-shared/utils/ids'
+import useChordial from '@unseenco/backstage/studio/uiComponents/chordial/useChodrial'
+import {mergeRefs} from 'react-merge-refs'
+import {getStudioSequence} from '@unseenco/backstage/studio/utils/activeSequenceVariant'
+import {syncPageScrollToSequencePosition} from '@unseenco/backstage/studio/sheets/syncPageScrollToSequencePosition'
+import usePopover from '@unseenco/backstage/studio/uiComponents/Popover/usePopover'
+import {transportStripHeight} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/PlaybackControls/constants'
+
+const Container = styled.div<{isVisible: boolean}>`
+  --thumbColor: var(--studio-accent-playhead);
+  position: absolute;
+  top: ${transportStripHeight}px;
+  left: 0;
+  width: 5px;
+  height: calc(100% - ${transportStripHeight}px);
+  z-index: ${() => zIndexes.playhead};
+  pointer-events: none;
+
+  display: ${(props) => (props.isVisible ? 'block' : 'none')};
+`
+
+const Rod = styled.div`
+  position: absolute;
+  top: 8px;
+  width: 0;
+  height: calc(100% - 8px);
+  border-left: 1px solid var(--studio-accent-playhead-line);
+  z-index: 10;
+  pointer-events: none;
+
+  #pointer-root.draggingPositionInSequenceEditor &:not(.seeking) {
+    /* pointer-events: auto; */
+    /* cursor: var(${lockedCursorCssVarName}); */
+
+    &:after {
+      position: absolute;
+      inset: -8px;
+      display: block;
+      content: ' ';
+    }
+  }
+`
+
+const Thumb = styled.div`
+  background-color: var(--thumbColor);
+  position: absolute;
+  width: 5px;
+  height: 18px;
+  top: 0px;
+  left: -2px;
+  z-index: 11;
+  cursor: ew-resize;
+  --sunblock-color: var(--studio-accent-sunblock-idle);
+
+  ${pointerEventsAutoInNormalMode};
+
+  ${Container}.seeking > &, ${Container}.popoverOpen > & {
+    pointer-events: none !important;
+  }
+
+  #pointer-root.draggingPositionInSequenceEditor
+    ${Container}:not(.seeking)
+    > & {
+    pointer-events: auto;
+    cursor: var(${lockedCursorCssVarName});
+  }
+
+  ${Container}.playheadattachedtofocusrange > & {
+    top: -8px;
+    --sunblock-color: var(--studio-accent-sunblock);
+    &:before,
+    &:after {
+      border-bottom-width: 8px;
+    }
+  }
+
+  &:before {
+    position: absolute;
+    display: block;
+    content: ' ';
+    left: -2px;
+    width: 0;
+    height: 0;
+    border-bottom: 4px solid var(--sunblock-color);
+    border-left: 2px solid transparent;
+  }
+
+  &:after {
+    position: absolute;
+    display: block;
+    content: ' ';
+    right: -2px;
+    width: 0;
+    height: 0;
+    border-bottom: 4px solid var(--sunblock-color);
+    border-right: 2px solid transparent;
+  }
+`
+
+const Squinch = styled.div`
+  position: absolute;
+  left: 1px;
+  right: 1px;
+  top: 18px;
+  border-top: 3px solid var(--thumbColor);
+  border-right: 1px solid transparent;
+  border-left: 1px solid transparent;
+  pointer-events: none;
+
+  &:before {
+    position: absolute;
+    display: block;
+    content: ' ';
+    top: -4px;
+    left: -2px;
+    height: 8px;
+    width: 2px;
+    background: none;
+    border-radius: 0 100% 0 0;
+    border-top: 1px solid var(--thumbColor);
+    border-right: 1px solid var(--thumbColor);
+  }
+
+  &:after {
+    position: absolute;
+    display: block;
+    content: ' ';
+    top: -4px;
+    right: -2px;
+    height: 8px;
+    width: 2px;
+    background: none;
+    border-radius: 100% 0 0 0;
+    border-top: 1px solid var(--thumbColor);
+    border-left: 1px solid var(--thumbColor);
+  }
+`
+
+const Playhead: React.FC<{layoutP: Pointer<SequenceEditorPanelLayout>}> = ({
+  layoutP,
+}) => {
+  const [thumbRef, thumbNode] = useRefAndState<HTMLElement | null>(null)
+
+  const {
+    isVisible,
+    posInClippedSpace,
+    isSeeking,
+    isPlayheadAttachedToFocusRange,
+    posInUnitSpace,
+    sequence,
+  } = usePrism(() => {
+    const isSeeking = val(layoutP.seeker.isSeeking)
+
+    const sequence = getStudioSequence(val(layoutP.sheet))
+
+    const isPlayheadAttachedToFocusRange = val(
+      getIsPlayheadAttachedToFocusRange(sequence),
+    )
+
+    const posInUnitSpace = sequence.positionPrism.getValue()
+
+    const posInClippedSpace = val(layoutP.clippedSpace.fromUnitSpace)(
+      posInUnitSpace,
+    )
+    const isVisible =
+      posInClippedSpace >= 0 &&
+      posInClippedSpace <= val(layoutP.clippedSpace.width)
+
+    return {
+      isVisible,
+      posInClippedSpace,
+      isSeeking,
+      isPlayheadAttachedToFocusRange,
+      posInUnitSpace,
+      sequence,
+    }
+  }, [layoutP])
+
+  const [isDragging, setIsDragging] = useState(false)
+
+  const c = useChordial(() => {
+    return {
+      title: sequence.positionFormatter.formatForPlayhead(
+        sequence.closestGridPosition(posInUnitSpace),
+      ),
+      menuTitle: 'Playhead',
+      invoke: (e) => {
+        if (e?.type === 'MouseEvent') {
+          popover.open(e.event, thumbRef.current!)
+        }
+      },
+      items: [
+        {
+          type: 'normal',
+          label: 'Place marker',
+          callback: () => {
+            getStudio().transaction(({stateEditors}) => {
+              const sheet = val(layoutP.sheet)
+              const sheetSequence = getStudioSequence(sheet)
+              stateEditors.studio.historic.projects.stateByProjectId.stateBySheetId.sequenceEditor.replaceMarkers(
+                {
+                  sheetAddress: sheet.address,
+                  markers: [
+                    {
+                      id: generateSequenceMarkerId(),
+                      position: sheetSequence.position,
+                    },
+                  ],
+                  snappingFunction: sheetSequence.closestGridPosition,
+                },
+              )
+            })
+          },
+        },
+      ],
+      drag: {
+        debugName: 'RightOverlay/Playhead',
+        onDragStart() {
+          const sequence = getStudioSequence(val(layoutP.sheet))
+          const posBeforeSeek = sequence.position
+          const scaledSpaceToUnitSpace = val(layoutP.scaledSpace.toUnitSpace)
+
+          const setIsSeeking = val(layoutP.seeker.setIsSeeking)
+          setIsSeeking(true)
+          setIsDragging(true)
+
+          snapToAll()
+
+          return {
+            onDrag(dx, _, event) {
+              const deltaPos = scaledSpaceToUnitSpace(dx)
+
+              sequence.position =
+                DopeSnap.checkIfMouseEventSnapToPos(event, {
+                  ignore: thumbNode,
+                }) ?? clamp(posBeforeSeek + deltaPos, 0, sequence.length)
+              syncPageScrollToSequencePosition(val(layoutP.sheet))
+            },
+            onDragEnd() {
+              setIsSeeking(false)
+              setIsDragging(false)
+              snapToNone()
+            },
+          }
+        },
+      },
+    }
+  })
+
+  useCssCursorLock(isDragging, 'draggingPositionInSequenceEditor', 'ew-resize')
+
+  useLockFrameStampPosition(useVal(layoutP.seeker.isSeeking) || isDragging, -1)
+
+  const popover = usePopover({debugName: 'Playhead'}, () => {
+    return (
+      <BasicPopover showPopoverEdgeTriangle={true}>
+        <PlayheadPositionPopover
+          layoutP={layoutP}
+          onRequestClose={popover.close}
+        />
+      </BasicPopover>
+    )
+  })
+
+  c.useDisableTooltip(popover.isOpen)
+
+  return (
+    <>
+      {popover.node}
+
+      <Container
+        isVisible={isVisible}
+        style={{transform: `translate3d(${posInClippedSpace}px, 0, 0)`}}
+        className={`${isSeeking && 'seeking'} ${
+          popover.isOpen && 'popoverOpen'
+        } ${isPlayheadAttachedToFocusRange && 'playheadattachedtofocusrange'}`}
+        {...includeLockFrameStampAttrs('hide')}
+      >
+        <Thumb
+          ref={mergeRefs([thumbRef, c.targetRef]) as $IntentionalAny}
+          {...DopeSnap.includePositionSnapAttrs(posInUnitSpace)}
+        >
+          <RoomToClick room={8} />
+          <Squinch />
+        </Thumb>
+
+        <Rod
+          {...DopeSnap.includePositionSnapAttrs(posInUnitSpace)}
+          className={isSeeking ? 'seeking' : ''}
+        />
+      </Container>
+    </>
+  )
+}
+
+export default Playhead

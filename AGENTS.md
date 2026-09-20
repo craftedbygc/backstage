@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Concise agent-facing notes for the Theatre.js monorepo. Read `CONTRIBUTING.md` for the human-facing version.
+Concise agent-facing notes for the Backstage.js monorepo. Read `CONTRIBUTING.md` for the human-facing version.
 
 ## Toolchain
 
@@ -30,19 +30,19 @@ CI order (`.github/workflows/ci.yml`): `Build`, `Docs`, `Lint`, `Test`, `Typeche
 
 ## Architecture / package boundaries
 
-Yarn workspaces: `packages/*`, `examples/*`, `theatre`, `compat-tests`, `docs`. **All published packages share one version number** (set in root `package.json` and bumped by the release CLI). Release uses fixed-version mode in `devEnv/cli.ts` (not Lerna).
+Yarn workspaces: `packages/*`, `examples/*`, `backstage`, `compat-tests`, `docs`. **All published packages share one version number** (set in root `package.json` and bumped by the release CLI). Release uses fixed-version mode in `devEnv/cli.ts` (not Lerna).
 
 Published packages → source location:
-- `@unseenco/backstage` → `theatre/core/` — runtime animation library (Apache-2.0, ships in user bundles)
-- `@unseenco/backstage/studio` → `theatre/studio/` — visual editor (AGPL-3.0, dev-time only)
+- `@unseenco/backstage` → `backstage/core/` — runtime animation library (Apache-2.0, ships in user bundles)
+- `@unseenco/backstage/studio` → `backstage/studio/` — visual editor (AGPL-3.0, dev-time only)
 - `@unseenco/backstage/threejs` → `packages/threejs/` — Three.js helpers + Studio extension (AGPL-3.0). Package root is runtime-only (`autoAddObject`, etc.); Studio `buildExtension` is `@unseenco/backstage/threejs/extension`. When developing this package, read `packages/threejs/AGENTS.md`.
 - `@unseenco/backstage/dataverse` → `packages/dataverse/` — reactive dataflow (published; API reference generated into VitePress via api-extractor)
 - `@unseenco/backstage/react` → `packages/react/`
 - `@unseenco/backstage/browser-bundles` → `packages/browser-bundles/`
 
-Non-published: `packages/playground` (dev harness), `theatre/shared` (`private: true`), `theatre/devEnv`, `compat-tests`, `docs` (`@unseenco/theatre-docs`), `examples/basic-dom`.
+Non-published: `packages/playground` (dev harness), `backstage/shared` (`private: true`), `backstage/devEnv`, `compat-tests`, `docs` (`@unseenco/backstage-docs`), `examples/basic-dom`.
 
-TypeScript path aliases (`tsconfig.base.json`) map `@unseenco/theatre-*` directly to `src/index.ts` of each package — imports resolve to source, not `dist`. Jest uses the same aliases (see `devEnv/getAliasesFromTsConfig.ts`). Don't add relative cross-package imports; use the `@unseenco/theatre-*` aliases.
+TypeScript path aliases (`tsconfig.base.json`) map `@unseenco/backstage` and `@unseenco/backstage/*` subpaths to source under `backstage/` and `packages/` (legacy `@unseenco/theatre-*` aliases were removed). Jest uses the same aliases (see `devEnv/getAliasesFromTsConfig.ts`). Yarn workspace names use hyphenated scopes (e.g. `@unseenco/backstage-core`, `@unseenco/backstage-gsap`); do not use slashes in `package.json` `name` fields.
 
 ## Build / codegen quirks
 
@@ -53,10 +53,10 @@ TypeScript path aliases (`tsconfig.base.json`) map `@unseenco/theatre-*` directl
 
 ## Testing quirks
 
-- Jest config picks up `packages/*/src/**/*.test.ts`, `theatre/*/src/**/*.test.ts`, `devEnv/**/*.test.ts`. Compat tests use a **separate** config (`jest.compat-tests.config.js`) — `yarn test` will not run them.
+- Jest config picks up `packages/*/src/**/*.test.ts`, `backstage/*/src/**/*.test.ts`, `devEnv/**/*.test.ts`. Compat tests use a **separate** config (`jest.compat-tests.config.js`) — `yarn test` will not run them.
 - `moduleNameMapper` rewrites ES-module-only deps (`uuid`, `nanoid`, `lodash-es`, `react-use/esm`, css/svg/png) — if a test fails on a missing ESM export, add the mapping here rather than changing the import.
-- `setupFiles: theatre/shared/src/setupTestEnv.ts` is loaded for every unit test.
-- **Compat tests** are two-phase: `test:compat:install` spins up verdaccio, publishes a real build, and runs `npm install` in each `compat-tests/fixtures/*/package`. Fixtures: **Vite + React 18** (`vite-react18`); **full stack** (`vite-theatre-full-stack`) — core, studio, threejs extension, `@unseenco/backstage/gsap`, `three`, and `gsap`.
+- `setupFiles: backstage/shared/src/setupTestEnv.ts` is loaded for every unit test.
+- **Compat tests** are two-phase: `test:compat:install` spins up verdaccio, publishes a real build, and runs `npm install` in each `compat-tests/fixtures/*/package`. Fixtures: **Vite + React 18** (`vite-react18`); **full stack** (`vite-backstage-full-stack`) — core, studio, threejs extension, `@unseenco/backstage/gsap`, `three`, and `gsap`.
 
 ## Pre-commit hook
 
@@ -66,7 +66,7 @@ TypeScript path aliases (`tsconfig.base.json`) map `@unseenco/theatre-*` directl
 
 `yarn cli release x.y.z` (see `devEnv/cli.ts`):
 - Valid version shapes: `x.y.z`, `x.y.z-dev.w`, `x.y.z-rc.w`, `x.y.z-beta.w` (regex-enforced).
-- Requires a clean git tree; sets `THEATRE_IS_PUBLISHING=1` so packages' `prepublish` guards pass.
+- Requires a clean git tree; sets `BACKSTAGE_IS_PUBLISHING=1` so packages' `prepublish` guards pass.
 - Bumps versions in all `packagesWhoseVersionsShouldBump` (root + each package JSON), builds, commits + tags with the version string, then `npm publish --access public --tag <latest|dev|rc|beta>`.
 
 ## Workflow conventions

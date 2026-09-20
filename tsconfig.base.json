@@ -6,7 +6,11 @@
     "allowSyntheticDefaultImports": true,
     "module": "ESNext",
     "target": "ESNext",
-    "lib": ["es2017", "dom", "ESNext"],
+    "lib": [
+      "es2017",
+      "dom",
+      "ESNext"
+    ],
     "isolatedModules": true,
     "noFallthroughCasesInSwitch": true,
     "jsx": "react",
@@ -16,33 +20,65 @@
     "stripInternal": true,
     "declaration": true,
     "paths": {
-      "@unseenco/backstage": ["./theatre/core/src/index.ts"],
-      "@unseenco/backstage/privateAPIs": ["./theatre/core/src/privateAPIs.ts"],
-      "@unseenco/backstage/lenis": ["./theatre/core/src/lenis.ts"],
-      "@unseenco/backstage/core-lite": ["./theatre/core/src/index-lite.ts"],
-      "@unseenco/backstage/core-lite/*": ["./theatre/core/src/*"],
-      "@unseenco/backstage/studio": ["./theatre/studio/src/index.ts"],
-      "@unseenco/backstage/studio-lite": ["./theatre/studio/src/index-lite.ts"],
-      "@unseenco/backstage/studio-lite/*": ["./theatre/studio/src/*"],
-      "@unseenco/backstage/studio/*": ["./theatre/studio/src/*"],
-      "@unseenco/backstage/dataverse": ["./packages/dataverse/src/index.ts"],
-      "@unseenco/backstage/dataverse/*": ["./packages/dataverse/*"],
-      "@unseenco/backstage/react": ["./packages/react/src/index.ts"],
-      "@unseenco/backstage/threejs": ["./packages/threejs/src/index.ts"],
+      "@unseenco/backstage": [
+        "./backstage/core/src/index.ts"
+      ],
+      "@unseenco/backstage/privateAPIs": [
+        "./backstage/core/src/privateAPIs.ts"
+      ],
+      "@unseenco/backstage/lenis": [
+        "./backstage/core/src/lenis.ts"
+      ],
+      "@unseenco/backstage/core-lite": [
+        "./backstage/core/src/index-lite.ts"
+      ],
+      "@unseenco/backstage/core-lite/*": [
+        "./backstage/core/src/*"
+      ],
+      "@unseenco/backstage/studio": [
+        "./backstage/studio/src/index.ts"
+      ],
+      "@unseenco/backstage/studio-lite": [
+        "./backstage/studio/src/index-lite.ts"
+      ],
+      "@unseenco/backstage/studio-lite/*": [
+        "./backstage/studio/src/*"
+      ],
+      "@unseenco/backstage/studio/*": [
+        "./backstage/studio/src/*"
+      ],
+      "@unseenco/backstage/dataverse": [
+        "./packages/dataverse/src/index.ts"
+      ],
+      "@unseenco/backstage/dataverse/*": [
+        "./packages/dataverse/*"
+      ],
+      "@unseenco/backstage/react": [
+        "./packages/react/src/index.ts"
+      ],
+      "@unseenco/backstage/threejs": [
+        "./packages/threejs/src/index.ts"
+      ],
       "@unseenco/backstage/threejs/extension": [
         "./packages/threejs/src/extension.ts"
       ],
-      "@unseenco/backstage/gsap": ["./packages/gsap/src/index.ts"],
-      "@unseenco/backstage/*": ["./theatre/core/src/*"],
-      "@unseenco/theatre-core": ["./theatre/core/src/index.ts"],
-      "@unseenco/theatre-core/*": ["./theatre/core/src/*"],
-      "@unseenco/theatre-dataverse": ["./packages/dataverse/src/index.ts"],
-      "@unseenco/theatre-dataverse/*": ["./packages/dataverse/*"],
-      "@unseenco/theatre-studio": ["./theatre/studio/src/index.ts"],
-      "@unseenco/theatre-studio/*": ["./theatre/studio/src/*"],
-      "@unseenco/backstage-shared/*": ["./theatre/shared/src/*"]
+      "@unseenco/backstage/gsap": [
+        "./packages/gsap/src/index.ts"
+      ],
+      "@unseenco/backstage/*": [
+        "./backstage/core/src/*"
+      ],
+      "@unseenco/backstage-shared/*": [
+        "./backstage/shared/src/*"
+      ]
     },
     "forceConsistentCasingInFileNames": true
   },
-  "exclude": ["**/node_modules", "**/.*", "**/xeno", "**/dist", "**/.temp"]
+  "exclude": [
+    "**/node_modules",
+    "**/.*",
+    "**/xeno",
+    "**/dist",
+    "**/.temp"
+  ]
 }

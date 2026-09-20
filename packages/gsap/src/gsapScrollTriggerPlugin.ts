@@ -5,7 +5,7 @@ let boundScrollTrigger: GsapScrollTriggerStaticLike | undefined
 
 /**
  * Optional: bind the ScrollTrigger plugin instance your app registered with GSAP.
- * When omitted, Theatre resolves ScrollTrigger from `gsap/ScrollTrigger` (ESM) or `globalThis.ScrollTrigger`.
+ * When omitted, Backstage resolves ScrollTrigger from `gsap/ScrollTrigger` (ESM) or `globalThis.ScrollTrigger`.
  */
 export function bindGsapScrollTriggerPlugin(
   scrollTrigger: GsapScrollTriggerStaticLike,
@@ -32,7 +32,7 @@ export function requireGsapScrollTriggerPlugin(): GsapScrollTriggerStaticLike {
   const plugin = getGsapScrollTriggerPlugin()
   if (!plugin) {
     throw new Error(
-      'ScrollTrigger is not available. Import ScrollTrigger from "gsap/ScrollTrigger", call gsap.registerPlugin(ScrollTrigger), and optionally bindGsapScrollTriggerPlugin(ScrollTrigger) before registering scroll triggers with Theatre.',
+      'ScrollTrigger is not available. Import ScrollTrigger from "gsap/ScrollTrigger", call gsap.registerPlugin(ScrollTrigger), and optionally bindGsapScrollTriggerPlugin(ScrollTrigger) before registering scroll triggers with Backstage.',
     )
   }
   return plugin

@@ -4,7 +4,7 @@ import {autoAddMaterial} from './autoAddMaterial'
 import {buildMaterialProps} from './buildMaterialProps'
 import {buildTransformProps} from './buildTransformProps'
 import type {ExcludeInput, PropPathInput} from './config'
-import {getTheatreThreejsConfig, resolveAutoAddObjectOptions} from './config'
+import {getBackstageThreejsConfig, resolveAutoAddObjectOptions} from './config'
 import {
   buildSheetObjectPathOptions,
   mergePropPathInputs,
@@ -29,14 +29,14 @@ export type AutoAddObjectOptions = {
   trackMaterial?: boolean
   /**
    * Prop paths excluded from exported project state (merged with
-   * `configureTheatreThreejs` defaults). Texture props from material parsing
+   * `configureBackstageThreejs` defaults). Texture props from material parsing
    * are always transient. Use flat keys (`'visible'`, `'map'`) or dot paths
    * (`'transform.position'`, `'material.color'`).
    */
   transient?: PropPathInput
   /**
    * Prop paths saved to state but not sequenced (merged with
-   * `configureTheatreThreejs` defaults).
+   * `configureBackstageThreejs` defaults).
    */
   static?: PropPathInput
 }
@@ -88,7 +88,7 @@ function splitEmbeddedMaterial(args: {
   })
 
   binding.applyMaterial = undefined
-  const pathDefaults = getTheatreThreejsConfig().autoAddObject ?? {}
+  const pathDefaults = getBackstageThreejsConfig().autoAddObject ?? {}
   const hostPathOptions = buildSheetObjectPathOptions(transformOnlyConfig, {
     transient: mergePropPathInputs(pathDefaults.transient, transient),
     static: mergePropPathInputs(pathDefaults.static, staticPropPaths),
@@ -108,12 +108,12 @@ function splitEmbeddedMaterial(args: {
 }
 
 /**
- * Registers a Three.js `Object3D` on a Theatre sheet with auto-parsed transform and material props.
+ * Registers a Three.js `Object3D` on a Backstage sheet with auto-parsed transform and material props.
  *
  * @param object - Mesh or other object to bind
- * @param sheet - Theatre sheet that owns the new object
+ * @param sheet - Backstage sheet that owns the new object
  * @param options - Object key, excludes, material tracking, etc.
- * @returns The Theatre sheet object handle
+ * @returns The Backstage sheet object handle
  */
 export function autoAddObject<T extends Object3D>(
   object: T,
@@ -125,12 +125,12 @@ export function autoAddObject<T extends Object3D>(
   }
 
   if (!sheet) {
-    throw new Error('autoAddObject() requires a Theatre sheet.')
+    throw new Error('autoAddObject() requires a Backstage sheet.')
   }
 
   const objectKey = resolveObjectKey(object, options)
   const resolved = resolveAutoAddObjectOptions(options)
-  const defaults = getTheatreThreejsConfig().autoAddObject ?? {}
+  const defaults = getBackstageThreejsConfig().autoAddObject ?? {}
   const userTransientPaths = mergePropPathInputs(
     defaults.transient,
     options.transient,

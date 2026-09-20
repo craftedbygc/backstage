@@ -5,10 +5,10 @@ const packageRoot = path.join(__dirname, '..')
 const monorepoRoot = path.join(packageRoot, '../..')
 
 const distCopies: Array<{from: string; to: string}> = [
-  {from: 'theatre/core/dist', to: 'dist/core'},
-  {from: 'theatre/core-lite/dist', to: 'dist/core-lite'},
-  {from: 'theatre/studio/dist', to: 'dist/studio'},
-  {from: 'theatre/studio-lite/dist', to: 'dist/studio-lite'},
+  {from: 'backstage/core/dist', to: 'dist/core'},
+  {from: 'backstage/core-lite/dist', to: 'dist/core-lite'},
+  {from: 'backstage/studio/dist', to: 'dist/studio'},
+  {from: 'backstage/studio-lite/dist', to: 'dist/studio-lite'},
   {from: 'packages/dataverse/dist', to: 'dist/dataverse'},
   {from: 'packages/react/dist', to: 'dist/react'},
   {from: 'packages/threejs/dist', to: 'dist/threejs'},
@@ -31,10 +31,10 @@ function copyDir(from: string, to: string) {
 
 function copyLicenseFiles() {
   const licenseCopies = [
-    ['theatre/core/LICENSE', 'LICENSE-APACHE-CORE'],
+    ['backstage/core/LICENSE', 'LICENSE-APACHE-CORE'],
     ['packages/dataverse/LICENSE', 'LICENSE-APACHE-DATAVERSE'],
     ['packages/react/LICENSE', 'LICENSE-APACHE-REACT'],
-    ['theatre/studio/LICENSE', 'LICENSE-AGPL-STUDIO'],
+    ['backstage/studio/LICENSE', 'LICENSE-AGPL-STUDIO'],
     ['packages/threejs/LICENSE', 'LICENSE-AGPL-THREEJS'],
     ['packages/gsap/LICENSE', 'LICENSE-AGPL-GSAP'],
     ['packages/browser-bundles/LICENSE', 'LICENSE-BROWSER-BUNDLES'],
@@ -49,7 +49,7 @@ function copyLicenseFiles() {
   if (!fs.existsSync(readmeLicense)) {
     fs.writeFileSync(
       readmeLicense,
-      `This package bundles multiple Theatre.js components under different licenses.\nSee LICENSE-* files in this directory.\n`,
+      `This package bundles multiple Backstage.js components under different licenses.\nSee LICENSE-* files in this directory.\n`,
     )
   }
 }

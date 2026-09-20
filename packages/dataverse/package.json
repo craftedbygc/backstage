@@ -1,15 +1,14 @@
 {
-  "name": "@unseenco/theatre-dataverse",
+  "name": "@unseenco/backstage-dataverse",
   "version": "0.6.0",
   "license": "Apache-2.0",
   "author": {
     "name": "Aria Minaei",
-    "email": "aria@theatrejs.com",
     "url": "https://github.com/AriaMinaei"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/craftedbygc/theatre",
+    "url": "https://github.com/craftedbygc/backstage",
     "directory": "packages/dataverse"
   },
   "main": "dist/index.js",
