@@ -10,6 +10,7 @@ const HomeContainer = styled.div`
   inset: 0;
   background: #1b1c1e;
   overflow: auto;
+  font-family: ui-sans-serif, sans-serif;
 `
 const ContentContainer = styled.div`
   padding: 0 5rem;

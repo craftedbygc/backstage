@@ -22,6 +22,8 @@ const Box3DTextCSS: CSSProperties = {
   transform: 'translate(-50%, -50%)',
   textAlign: 'center',
   width: '100%',
+  color: 'white',
+  fontFamily: 'sans-serif',
 }
 
 export const Box3D: React.FC<{

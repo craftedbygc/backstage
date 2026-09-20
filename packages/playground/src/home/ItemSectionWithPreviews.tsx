@@ -8,7 +8,6 @@ export const ItemSectionWithPreviews = (props: {
   collapsible: boolean
 }) => {
   const {groupName, modules, collapsedByDefault, collapsible} = props
-  console.log(groupName)
 
   const [collapsed, setCollapsed] = React.useState(
     collapsible && collapsedByDefault,
@@ -37,7 +36,6 @@ export const ItemSectionWithPreviews = (props: {
                 <ItemLink href={href}>
                   <ItemDesc>
                     <h3>{moduleName}</h3>
-                    <p>{href}</p>
                   </ItemDesc>
                 </ItemLink>
               </ItemContainer>
@@ -109,38 +107,6 @@ const ItemListContainer = styled.div`
   margin-bottom: 2rem;
 `
 
-const PreviewContainer = styled.div`
-  --previewHeight: 450px;
-  --previewWidth: 800px;
-  --previewScale: 0.3;
-  position: relative;
-  overflow: hidden;
-  height: calc(var(--previewHeight) * var(--previewScale));
-  width: calc(var(--previewWidth) * var(--previewScale));
-
-  /* Neutral/Neutral800 */
-  background: rgba(33, 35, 39, 0.9);
-
-  &::after {
-    content: '';
-    position: absolute;
-    display: block;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    height: calc(var(--previewHeight) * var(--previewScale));
-    width: calc(var(--previewWidth) * var(--previewScale));
-  }
-
-  iframe {
-    /* don't want original size of iframe affecting layout */
-    position: absolute;
-    transform-origin: top left;
-    transform: scale(var(--previewScale));
-    height: var(--previewHeight);
-    width: var(--previewWidth);
-  }
-`
 const ItemLink = styled.a`
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 4px;
@@ -149,4 +115,9 @@ const ItemLink = styled.a`
 
   display: flex;
   flex-direction: column;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.16);
+    background-color: rgba(255, 255, 255, 0.04);
+  }
 `

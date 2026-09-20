@@ -5,7 +5,7 @@ import React from 'react'
 // like [{'./shared/hello/index.html': () => import('./shared/hello/index.html')}]
 const modules: Record<string, () => Promise<unknown>> = (
   import.meta as any
-).glob('./(shared|personal|tests)/*/index.html')
+).glob('./(shared|personal)/*/index.html')
 
 const groups = (Object.keys(modules) as string[]).reduce((acc, path) => {
   const [_, groupName, moduleName] = path.split('/')
