@@ -85,7 +85,7 @@ import {
   limitGsapClipResizeStart,
   limitKeyframeGroupTranslate,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/sequenceEditLimits'
-import {graphEditorColors} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/GraphEditor/GraphEditor'
+import {graphEditorColors} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/graphEditorColors'
 import type {
   KeyframeWithPathToPropFromCommonRoot,
   OutlineSelectable,

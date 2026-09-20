@@ -14,15 +14,9 @@ import PrimitivePropGraph from './PrimitivePropGraph'
 import FrameGrid from '@unseenco/theatre-studio/panels/SequenceEditorPanel/FrameGrid/FrameGrid'
 import {transparentize} from 'polished'
 import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
+import {graphEditorColors} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/graphEditorColors'
 
-export const graphEditorColors = {
-  '1': {iconColor: '#b98b08'},
-  '2': {iconColor: '#70a904'},
-  '3': {iconColor: '#2e928a'},
-  '4': {iconColor: '#a943bb'},
-  '5': {iconColor: '#b90808'},
-  '6': {iconColor: '#b4bf0e'},
-}
+export {graphEditorColors}
 
 const Container = styled.div`
   position: absolute;

@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs'
 import * as esbuild from 'esbuild'
 import {definedGlobals} from './definedGlobals'
+import {createStudioLiteEsbuildStubsPlugin} from './studioLiteEsbuildStubs'
 
 function writeCoreLenisShim(pathToPackage: string) {
   const dist = path.join(pathToPackage, 'dist')
@@ -176,16 +177,18 @@ function copyStudioLitePackageArtifacts(
   }
 }
 
+function formatKiB(bytes: number): string {
+  return (bytes / 1024).toFixed(1)
+}
+
 /**
- * Compare minified bundle sizes (run after `yarn workspace theatre build:js`).
+ * Compare bundle sizes (run after `yarn workspace theatre build:js`).
  * Set `THEATRE_LITE_LOG_BUNDLE_SIZES=1` to print sizes when building.
  *
- * `core/dist/index.*` vs `core/dist/index-lite.*` (published as `@unseenco/theatre-core-lite`).
- * `studio/dist/index.*` vs `studio/dist/index-lite.*`
- * (lite omits sequence editor via `__THEATRE_LITE__` dead-code elimination as
- * gates expand).
+ * Core artifacts are built **unminified**; studio artifacts are **minified**.
+ * Also prints minified (core) / unminified (studio) via one-off esbuild passes.
  */
-function logTheatreLiteBundleSizesIfRequested() {
+async function logTheatreLiteBundleSizesIfRequested() {
   if (process.env.THEATRE_LITE_LOG_BUNDLE_SIZES !== '1') return
 
   const pairs = [
@@ -201,10 +204,133 @@ function logTheatreLiteBundleSizesIfRequested() {
     for (const ext of ['js', 'mjs'] as const) {
       const file = path.join(dist, `${base}.${ext}`)
       if (fs.existsSync(file)) {
-        const kb = (fs.statSync(file).size / 1024).toFixed(1)
+        const kb = formatKiB(fs.statSync(file).size)
         console.log(`[theatre-lite sizes] ${pkg}/${base}.${ext}: ${kb} KiB`)
       }
     }
+  }
+
+  const metrics: Array<{
+    label: string
+    entry: string
+    theatreLite: boolean
+    which: 'core' | 'studio'
+  }> = [
+    {
+      label: 'core',
+      entry: 'index.ts',
+      theatreLite: false,
+      which: 'core',
+    },
+    {
+      label: 'core-lite',
+      entry: 'index-lite.ts',
+      theatreLite: true,
+      which: 'core',
+    },
+    {
+      label: 'studio',
+      entry: 'index.ts',
+      theatreLite: false,
+      which: 'studio',
+    },
+    {
+      label: 'studio-lite',
+      entry: 'index-lite.ts',
+      theatreLite: true,
+      which: 'studio',
+    },
+  ]
+
+  console.log(
+    '[theatre-lite sizes] --- unminified / minified (index.js, esbuild) ---',
+  )
+
+  for (const {label, entry, theatreLite, which} of metrics) {
+    const pathToPackage = path.join(__dirname, '../', which)
+    const builtFile = path.join(
+      pathToPackage,
+      'dist',
+      entry === 'index-lite.ts' ? 'index-lite.js' : 'index.js',
+    )
+
+    const sharedConfig: Parameters<typeof esbuild.build>[0] = {
+      entryPoints: [path.join(pathToPackage, 'src', entry)],
+      target: 'es2020',
+      loader: {'.png': 'dataurl', '.svg': 'dataurl'},
+      bundle: true,
+      write: false,
+      supported: {'template-literal': false},
+      define: {
+        ...definedGlobals,
+        __THEATRE_LITE__: theatreLite ? 'true' : 'false',
+        __IS_VISUAL_REGRESSION_TESTING: 'false',
+        ...(which === 'studio'
+          ? {'process.env.NODE_ENV': JSON.stringify('production')}
+          : {}),
+      },
+      external: ['@unseenco/theatre-dataverse'],
+      format: 'cjs',
+    }
+
+    if (which === 'core') {
+      sharedConfig.platform = 'neutral'
+      sharedConfig.mainFields = ['browser', 'module', 'main']
+      sharedConfig.conditions = ['browser', 'node']
+      if (theatreLite) {
+        const coreSrc = path.join(pathToPackage, 'src')
+        sharedConfig.plugins = [
+          {
+            name: 'theatre-core-lite-stubs',
+            setup(build) {
+              build.onResolve({filter: /sheetGetSequenceFull$/}, () => ({
+                path: path.join(
+                  coreSrc,
+                  'sheets/sheetGetSequenceFull.liteStub.ts',
+                ),
+              }))
+              build.onResolve({filter: /sheetPageScrollAndGsapFull$/}, () => ({
+                path: path.join(
+                  coreSrc,
+                  'sheets/sheetPageScrollAndGsapFull.liteStub.ts',
+                ),
+              }))
+              build.onResolve(
+                {filter: /sheetObjectSequencedFull$/},
+                () => ({
+                  path: path.join(
+                    coreSrc,
+                    'sheetObjects/sheetObjectSequencedFull.liteStub.ts',
+                  ),
+                }),
+              )
+            },
+          },
+        ]
+      }
+    } else if (theatreLite) {
+      sharedConfig.plugins = [
+        createStudioLiteEsbuildStubsPlugin(path.join(pathToPackage, 'src')),
+      ]
+    }
+
+    const unminResult = await esbuild.build({
+      ...sharedConfig,
+      minify: false,
+    })
+    const minResult = await esbuild.build({
+      ...sharedConfig,
+      minify: true,
+    })
+    const unminBytes = unminResult.outputFiles?.[0]?.contents.byteLength ?? 0
+    const minBytes = minResult.outputFiles?.[0]?.contents.byteLength ?? 0
+    const builtBytes = fs.existsSync(builtFile)
+      ? fs.statSync(builtFile).size
+      : 0
+
+    console.log(
+      `[theatre-lite sizes] ${label}: unminified ${formatKiB(unminBytes)} KiB, minified ${formatKiB(minBytes)} KiB (on-disk dist ${formatKiB(builtBytes)} KiB)`,
+    )
   }
 }
 
@@ -323,6 +449,13 @@ export async function createBundles(watch: boolean) {
         JSON.stringify('production')
 
       esbuildConfig.minify = true
+
+      if (target.theatreLite) {
+        const studioSrc = path.join(pathToPackage, 'src')
+        esbuildConfig.plugins = [
+          createStudioLiteEsbuildStubsPlugin(studioSrc),
+        ]
+      }
     }
 
     const outputs: Array<{outfile: string; format: 'cjs' | 'esm'}> = [
@@ -421,6 +554,10 @@ export async function createBundles(watch: boolean) {
       await ctx.dispose()
     }
 
-    logTheatreLiteBundleSizesIfRequested()
+    try {
+      await logTheatreLiteBundleSizesIfRequested()
+    } catch (err) {
+      console.warn('[theatre-lite sizes] extended metrics failed:', err)
+    }
   }
 }

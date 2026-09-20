@@ -1,0 +1,95 @@
+import fs from 'fs'
+import path from 'path'
+import type {Plugin} from 'vite'
+
+/** Suffix for imports that must resolve Theatre peers to core-lite / studio-lite. */
+export const THEATRE_LITE_PEERS_QUERY = '?theatre-lite-peers'
+
+const PEER_REWRITES: Array<[string, string]> = [
+  ['@unseenco/theatre-core', '@unseenco/theatre-core-lite'],
+  ['@unseenco/theatre-studio', '@unseenco/theatre-studio-lite'],
+]
+
+function stripLitePeersQuery(id: string): string {
+  return id.endsWith(THEATRE_LITE_PEERS_QUERY)
+    ? id.slice(0, -THEATRE_LITE_PEERS_QUERY.length)
+    : id
+}
+
+function withLitePeersQuery(id: string): string {
+  return id.endsWith(THEATRE_LITE_PEERS_QUERY)
+    ? id
+    : id + THEATRE_LITE_PEERS_QUERY
+}
+
+/**
+ * Playground-only: `@unseenco/theatre-threejs` normally imports full core/studio.
+ * Lite demos append `?theatre-lite-peers` so the dependency graph uses lite packages.
+ */
+function rewriteTheatrePeersInSource(code: string): string {
+  let out = code
+  for (const [from, to] of PEER_REWRITES) {
+    out = out.replaceAll(from, to)
+  }
+  return out
+}
+
+export function theatreLiteThreePeersPlugin(): Plugin {
+  return {
+    name: 'theatre-lite-three-peers',
+    enforce: 'pre',
+    async resolveId(source, importer, options) {
+      if (source.endsWith(THEATRE_LITE_PEERS_QUERY)) {
+        const bare = source.slice(0, -THEATRE_LITE_PEERS_QUERY.length)
+        const resolved = await this.resolve(bare, importer, {
+          ...options,
+          skipSelf: true,
+        })
+        if (resolved) {
+          return withLitePeersQuery(resolved.id)
+        }
+        return null
+      }
+
+      if (!importer?.includes(THEATRE_LITE_PEERS_QUERY)) {
+        return null
+      }
+
+      for (const [from, to] of PEER_REWRITES) {
+        if (source === from || source.startsWith(`${from}/`)) {
+          const rewritten = source.replace(from, to)
+          const resolved = await this.resolve(rewritten, importer, {
+            ...options,
+            skipSelf: true,
+          })
+          if (resolved) {
+            return withLitePeersQuery(resolved.id)
+          }
+        }
+      }
+
+      if (source.startsWith('.')) {
+        const resolved = await this.resolve(source, importer, {
+          ...options,
+          skipSelf: true,
+        })
+        if (resolved?.id.includes(`${path.sep}packages${path.sep}threejs${path.sep}`)) {
+          return withLitePeersQuery(resolved.id)
+        }
+      }
+
+      return null
+    },
+    load(id) {
+      if (!id.endsWith(THEATRE_LITE_PEERS_QUERY)) {
+        return null
+      }
+      const realId = stripLitePeersQuery(id)
+      const source = fs.readFileSync(realId, 'utf-8')
+      if (realId.includes(`${path.sep}packages${path.sep}threejs${path.sep}`)) {
+        return rewriteTheatrePeersInSource(source)
+      }
+      return source
+    },
+  }
+}

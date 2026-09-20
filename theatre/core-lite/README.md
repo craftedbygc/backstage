@@ -25,11 +25,11 @@ Run from the monorepo root after `yarn workspace theatre build:js`:
 THEATRE_LITE_LOG_BUNDLE_SIZES=1 yarn workspace theatre build:js
 ```
 
-Measured unminified output (same options as CI `build:js`; core entries are **not** minified):
+Measured with `THEATRE_LITE_LOG_BUNDLE_SIZES=1` (core `dist` is **unminified**; minified column from the same esbuild graph):
 
-| Package | `index.js` | vs full |
-| --- | ---: | --- |
-| `@unseenco/theatre-core` | ~318 KiB | — |
-| `@unseenco/theatre-core-lite` | ~243 KiB | **~24% smaller (~75 KiB)** |
+| Package | Unminified | Minified | vs full core |
+| --- | ---: | ---: | ---: |
+| `@unseenco/theatre-core` | ~318 KiB | ~139 KiB | — |
+| `@unseenco/theatre-core-lite` | ~243 KiB | ~107 KiB | **~24% unminified / ~23% minified** |
 
 Sequence interpolation, playback controllers, GSAP/scroll drivers, and full `coreExports` integrations are excluded from the lite import graph, not merely gated at runtime.
