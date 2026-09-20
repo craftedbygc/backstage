@@ -48,7 +48,8 @@ export function getNativeDocumentMaxScroll(
   }
   const el = document.documentElement
   if (axis === 'horizontal') {
-    return Math.max(0, el.scrollWidth - window.innerWidth)
+    const scrolling = (document.scrollingElement ?? el) as HTMLElement
+    return Math.max(0, scrolling.scrollWidth - scrolling.clientWidth)
   }
   return Math.max(0, el.scrollHeight - window.innerHeight)
 }

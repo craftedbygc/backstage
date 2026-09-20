@@ -18,11 +18,20 @@ function rememberSheetScrollDriver(sheet: ISheet, driver: ScrollDriver): void {
   sheetScrollDrivers.set(sheet, driver)
 }
 
-function progressFromScrollPosition(y: number, max: number): number {
+function progressFromScrollPosition(position: number, max: number): number {
   if (max <= 0) return 0
-  if (y <= 1) return 0
-  if (y >= max - 1) return 1
-  return y / max
+  if (position <= 0) return 0
+  if (position >= max - 1) return 1
+  return position / max
+}
+
+function getNativeDocumentScrollingElement(): HTMLElement {
+  return (document.scrollingElement ?? document.documentElement) as HTMLElement
+}
+
+function addNativeDocumentScrollListener(handler: () => void): () => void {
+  document.addEventListener('scroll', handler, {passive: true, capture: true})
+  return () => document.removeEventListener('scroll', handler, {capture: true})
 }
 
 function createScrollDriverFromElement(
@@ -91,28 +100,29 @@ export function createNativeDocumentScrollDriver(): ScrollDriver {
     getMaxScroll,
     () => window.scrollY,
     (y) => window.scrollTo({top: y, behavior: 'instant'}),
-    (handler) => {
-      window.addEventListener('scroll', handler, {passive: true})
-      return () => window.removeEventListener('scroll', handler)
-    },
+    addNativeDocumentScrollListener,
   )
 }
 
 /** Native `window` / `documentElement` horizontal scroll. */
 export function createNativeDocumentHorizontalScrollDriver(): ScrollDriver {
   const getMaxScroll = (): number => {
-    const el = document.documentElement
-    return Math.max(0, el.scrollWidth - window.innerWidth)
+    const el = getNativeDocumentScrollingElement()
+    return Math.max(0, el.scrollWidth - el.clientWidth)
+  }
+
+  const getScrollLeft = (): number => {
+    const el = getNativeDocumentScrollingElement()
+    return el.scrollLeft
   }
 
   return createScrollDriverFromElement(
     getMaxScroll,
-    () => window.scrollX,
-    (x) => window.scrollTo({left: x, behavior: 'instant'}),
-    (handler) => {
-      window.addEventListener('scroll', handler, {passive: true})
-      return () => window.removeEventListener('scroll', handler)
+    getScrollLeft,
+    (x) => {
+      getNativeDocumentScrollingElement().scrollLeft = x
     },
+    addNativeDocumentScrollListener,
   )
 }
 

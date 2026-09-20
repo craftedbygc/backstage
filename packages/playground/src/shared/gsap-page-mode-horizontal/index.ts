@@ -1,8 +1,8 @@
 import gsap from 'gsap'
 import {ScrollTrigger} from 'gsap/ScrollTrigger'
 import {
-  attachTheatrePageScroll,
   configureTheatrePageScroll,
+  createDefaultPageScrollDriver,
   createRafDriver,
   getProject,
   setCoreRafDriver,
@@ -33,15 +33,17 @@ configureTheatreGsap({
 studio.initialize({__experimental_rafDriver: rafDriver})
 
 const project = getProject('GSAP horizontal page mode demo')
-const sheet = project.sheet('Main', {sequenceMode: 'page', gsap: true})
+const sheet = project.sheet('Main', {
+  sequenceMode: 'page',
+  gsap: true,
+  scrollDriver: createDefaultPageScrollDriver(),
+})
 
 const heroBox = document.getElementById('hero-box')!
 const stPanelA = document.getElementById('st-panel-a')!
 const stTarget = document.getElementById('st-target')!
 
 void project.ready.then(() => {
-  attachTheatrePageScroll(sheet)
-
   sheet.object(
     'Hero box',
     {
