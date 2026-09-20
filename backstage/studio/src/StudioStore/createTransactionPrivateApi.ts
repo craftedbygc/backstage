@@ -15,7 +15,7 @@ import type {
   PropTypeConfig_AllSimples,
   PropTypeConfig_Compound,
 } from '@unseenco/backstage/propTypes'
-import type {PathToProp} from '@unseenco/backstage-shared/src/utils/addresses'
+import type {PathToProp} from '@unseenco/backstage-shared/utils/addresses'
 import deepEqual from 'fast-deep-equal'
 import {
   getPropConfigByPath,
