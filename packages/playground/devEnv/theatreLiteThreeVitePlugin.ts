@@ -9,6 +9,26 @@ const PEER_REWRITES: Array<[string, string]> = [
   ['@unseenco/backstage/studio', '@unseenco/backstage/studio-lite'],
 ]
 
+/** Separate workspace packages under the `@unseenco/backstage/*` namespace (not core sources). */
+const BACKSTAGE_NON_CORE_SUBPATHS = new Set([
+  'threejs',
+  'gsap',
+  'react',
+  'dataverse',
+  'studio',
+  'studio-lite',
+  'core-lite',
+])
+
+export function shouldRewriteBackstageImportToCoreLite(
+  specifier: string,
+): boolean {
+  if (specifier === '@unseenco/backstage') return true
+  if (!specifier.startsWith('@unseenco/backstage/')) return false
+  const subpath = specifier.slice('@unseenco/backstage/'.length).split('/')[0]
+  return !BACKSTAGE_NON_CORE_SUBPATHS.has(subpath)
+}
+
 /** Vite always uses `/` in module ids, even on Windows. */
 export function normalizeModulePath(filePath: string): string {
   return filePath.split('?')[0].replace(/\\/g, '/')
@@ -63,12 +83,20 @@ function isTheatreThreejsImport(source: string): boolean {
 export function rewriteTheatrePeersInSource(code: string): string {
   return code
     .replace(
-      /@unseenco\/theatre-core(?!-lite)(?=\/|['"])/g,
+      /@unseenco\/backstage\/studio(?!-lite)(?=\/|['"])/g,
+      '@unseenco/backstage/studio-lite',
+    )
+    .replace(
+      /@unseenco\/backstage(?!\/core-lite|\/studio-lite|\/threejs|\/gsap|\/react|\/dataverse|\/studio)(?=\/|['"])/g,
       '@unseenco/backstage/core-lite',
     )
     .replace(
+      /@unseenco\/theatre-core(?!-lite)(?=\/|['"])/g,
+      '@unseenco/theatre-core-lite',
+    )
+    .replace(
       /@unseenco\/theatre-studio(?!-lite)(?=\/|['"])/g,
-      '@unseenco/backstage/studio-lite',
+      '@unseenco/theatre-studio-lite',
     )
 }
 
@@ -118,6 +146,11 @@ export function theatreLiteThreePeersPlugin(): Plugin {
       }
 
       for (const [from, to] of PEER_REWRITES) {
+        if (from === '@unseenco/backstage') {
+          if (!shouldRewriteBackstageImportToCoreLite(source)) {
+            continue
+          }
+        }
         if (
           source === from ||
           (source.startsWith(`${from}/`) && !source.startsWith(`${to}/`))
