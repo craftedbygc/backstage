@@ -65,7 +65,11 @@ const config = defineConfig(async ({command}) => {
     },
     optimizeDeps: {
       exclude: dev
-        ? ['@unseenco/theatre-core', '@unseenco/theatre-studio']
+        ? [
+            '@unseenco/theatre-core',
+            '@unseenco/theatre-studio',
+            '@unseenco/theatre-studio-lite',
+          ]
         : [],
       // include: !dev ? ['@unseenco/theatre-core', '@unseenco/theatre-studio'] : [],
       // needsInterop: ['@unseenco/theatre-core', '@unseenco/theatre-studio'],

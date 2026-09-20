@@ -26,6 +26,7 @@
     "@unseenco/theatre-gsap": "workspace:*",
     "@unseenco/theatre-react": "workspace:*",
     "@unseenco/theatre-studio": "workspace:*",
+    "@unseenco/theatre-studio-lite": "workspace:*",
     "@unseenco/theatre-threejs": "workspace:*",
     "@vitejs/plugin-react": "^4.0.0",
     "@vitejs/plugin-react-swc": "^3.3.2",
