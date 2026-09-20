@@ -13,25 +13,25 @@ import {
   defaultPageScrollContext,
   isPageScrollTrigger,
   resolvePageScrollAxis,
-} from '@unseenco/theatre-shared/sheets/pageScrollContext'
-import type {PageScrollContext} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+} from '@unseenco/backstage-shared/sheets/pageScrollContext'
+import type {PageScrollContext} from '@unseenco/backstage-shared/sheets/pageScrollContext'
 import {
   getMaxScrollForPageScrollContext,
   scrollPixelsToPageUnits,
 } from './scrollTriggerLayout'
-import {resolveMaxScrollPxForPageLayout} from '@unseenco/theatre-shared/sheets/remotePageScrollMetrics'
+import {resolveMaxScrollPxForPageLayout} from '@unseenco/backstage-shared/sheets/remotePageScrollMetrics'
 
 export type {
   PageScrollContext,
   PageScrollScroller,
-} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+} from '@unseenco/backstage-shared/sheets/pageScrollContext'
 export {
   defaultPageScrollContext,
   isPageScrollTrigger,
   isVerticalPageScrollTrigger,
   pageScrollScrollersMatch,
   resolvePageScrollScroller,
-} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+} from '@unseenco/backstage-shared/sheets/pageScrollContext'
 
 export type ExtractedScrollTriggerLayout = {
   id: string

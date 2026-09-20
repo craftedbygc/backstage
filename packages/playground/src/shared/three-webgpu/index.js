@@ -1,9 +1,9 @@
-import studio from '@unseenco/theatre-studio'
-import {getProject} from '@unseenco/theatre-core'
-import {configureTheatreThreejs} from '@unseenco/theatre-threejs'
-import {buildExtension} from '@unseenco/theatre-threejs/extension'
+import studio from '@unseenco/backstage/studio'
+import {getProject} from '@unseenco/backstage'
+import {configureTheatreThreejs} from '@unseenco/backstage/threejs'
+import {buildExtension} from '@unseenco/backstage/threejs/extension'
 import {bindDockedThreeViewport} from '../utils/bindDockedThreeViewport'
-import {autoAddCamera, autoAddObject} from '@unseenco/theatre-threejs'
+import {autoAddCamera, autoAddObject} from '@unseenco/backstage/threejs'
 
 // Import everything from three/webgpu to avoid duplicating the three bundle
 import {
@@ -52,7 +52,11 @@ async function main() {
 
   const knot = new Mesh(
     new TorusKnotGeometry(2, 0.6, 128, 32),
-    new MeshStandardMaterial({color: 0x5555ff, roughness: 0.35, metalness: 0.6}),
+    new MeshStandardMaterial({
+      color: 0x5555ff,
+      roughness: 0.35,
+      metalness: 0.6,
+    }),
   )
   knot.name = 'Torus Knot'
   scene.add(knot)

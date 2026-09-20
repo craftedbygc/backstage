@@ -92,13 +92,13 @@ export function setTheatreThreejsConfig(config: TheatreThreejsConfig): void {
   activeConfig = config
 }
 
-/** Clears project-wide `@unseenco/theatre-threejs` configuration back to defaults. */
+/** Clears project-wide `@unseenco/backstage/threejs` configuration back to defaults. */
 export function resetTheatreThreejsConfig(): void {
   activeConfig = {}
 }
 
 /**
- * Sets project-wide defaults for `@unseenco/theatre-threejs` auto-add helpers.
+ * Sets project-wide defaults for `@unseenco/backstage/threejs` auto-add helpers.
  *
  * @param config - Configuration to apply until {@link resetTheatreThreejsConfig} or `reset()` from the return value
  * @returns Object with `reset()` restoring the previous config

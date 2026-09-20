@@ -1,16 +1,16 @@
-import {getAnimationEntryForSheetObject} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import {getAnimationEntryForSheetObject} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
 import {
   isGsapScrollTriggerSheetObjectKey,
   isGsapSheetObjectKey,
-} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
+} from '@unseenco/backstage-shared/gsap/gsapSheetObjectKey'
 import {
   getScrollTriggerEntryForSheetObject,
   introspectScrollTriggerDetails,
-} from '@unseenco/theatre-shared/gsap/introspectScrollTriggerDetails'
-import {readGsapTargets} from '@unseenco/theatre-shared/gsap/introspectGsapTweenDetails'
-import type {GsapTargetDescriptor} from '@unseenco/theatre-shared/gsap/introspectGsapTweenDetails'
-import {linkGsapTimelineChildAnimations} from '@unseenco/theatre-shared/gsap/introspectGsapTimelineChildren'
-import {resolveScrollTriggerAnimation} from '@unseenco/theatre-shared/gsap/scrollTriggerGuards'
+} from '@unseenco/backstage-shared/gsap/introspectScrollTriggerDetails'
+import {readGsapTargets} from '@unseenco/backstage-shared/gsap/introspectGsapTweenDetails'
+import type {GsapTargetDescriptor} from '@unseenco/backstage-shared/gsap/introspectGsapTweenDetails'
+import {linkGsapTimelineChildAnimations} from '@unseenco/backstage-shared/gsap/introspectGsapTimelineChildren'
+import {resolveScrollTriggerAnimation} from '@unseenco/backstage-shared/gsap/scrollTriggerGuards'
 import type {SequenceEditorTree_AllRowTypes} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 
 function firstConnectedElementTarget(

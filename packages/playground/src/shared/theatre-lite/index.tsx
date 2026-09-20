@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react'
 import ReactDOM from 'react-dom/client'
-import {getProject, types} from '@unseenco/theatre-core-lite'
-import studio from '@unseenco/theatre-studio-lite'
+import {getProject, types} from '@unseenco/backstage/core-lite'
+import studio from '@unseenco/backstage/studio-lite'
 
 /**
- * Playground demo for `@unseenco/theatre-studio-lite` + `@unseenco/theatre-core-lite`.
+ * Playground demo for `@unseenco/backstage/studio-lite` + `@unseenco/backstage/core-lite`.
  * Static prop authoring, sheet variants, `onValuesChange`, and export JSON.
  */
 studio.initialize({usePersistentStorage: false})

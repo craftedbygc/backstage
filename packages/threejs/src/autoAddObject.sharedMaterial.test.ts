@@ -3,7 +3,7 @@
  */
 import {BoxGeometry, Mesh, MeshPhongMaterial} from 'three'
 import {autoAddMaterial, autoAddObject} from './index'
-import {setupTestSheet} from '@unseenco/theatre-shared/testUtils'
+import {setupTestSheet} from '@unseenco/backstage-shared/testUtils'
 
 async function setupSheet() {
   const {sheet} = await setupTestSheet({

@@ -1,5 +1,5 @@
 import getStudio from '@unseenco/theatre-studio/getStudio'
-import {useVal} from '@unseenco/theatre-react'
+import {useVal} from '@unseenco/backstage/react'
 import type {DockedLayoutSizes} from '@unseenco/theatre-studio/store/types/historic'
 import {notifyDockedToggle} from '@unseenco/theatre-studio/UI/dockedViewport'
 import React, {useContext, useLayoutEffect, useMemo} from 'react'

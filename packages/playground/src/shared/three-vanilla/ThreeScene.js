@@ -1,4 +1,4 @@
-import {types} from '@unseenco/theatre-core'
+import {types} from '@unseenco/backstage'
 import {bindDockedThreeViewport} from '../utils/bindDockedThreeViewport'
 import {
   Color,
@@ -16,7 +16,7 @@ import {
 } from 'three'
 
 /**
- * @param {import('@unseenco/theatre-core').IProject} project
+ * @param {import('@unseenco/backstage').IProject} project
  */
 export function createThreeScene(project) {
   const canvas = document.getElementById('canvas')

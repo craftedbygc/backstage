@@ -7,7 +7,7 @@ import type {
 } from '@unseenco/theatre-studio/uiComponents/Popover/usePopover'
 import BasicPopover from '@unseenco/theatre-studio/uiComponents/Popover/BasicPopover'
 import {DeterminePropEditorForKeyframeTree} from './DeterminePropEditorForSingleKeyframe'
-import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
+import type {SequenceTrackId} from '@unseenco/backstage-shared/utils/ids'
 import type {Keyframe} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import type {
@@ -15,7 +15,7 @@ import type {
   PropTypeConfig_Compound,
   PropTypeConfig_Enum,
 } from '@unseenco/theatre-core/propTypes'
-import type {PathToProp} from '@unseenco/theatre-shared/utils/addresses'
+import type {PathToProp} from '@unseenco/backstage-shared/utils/addresses'
 import type {UnknownValidCompoundProps} from '@unseenco/theatre-core/propTypes/internals'
 
 /**

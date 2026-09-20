@@ -7,12 +7,12 @@ import type {
 import type {
   PathToProp,
   PathToProp_Encoded,
-} from '@unseenco/theatre-shared/utils/addresses'
-import {encodePathToProp} from '@unseenco/theatre-shared/utils/addresses'
-import {getPropConfigByPath} from '@unseenco/theatre-shared/propTypes/utils'
-import removePathFromObject from '@unseenco/theatre-shared/utils/removePathFromObject'
-import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
-import type {SerializableMap} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/addresses'
+import {encodePathToProp} from '@unseenco/backstage-shared/utils/addresses'
+import {getPropConfigByPath} from '@unseenco/backstage-shared/propTypes/utils'
+import removePathFromObject from '@unseenco/backstage-shared/utils/removePathFromObject'
+import type {ObjectAddressKey} from '@unseenco/backstage-shared/utils/ids'
+import type {SerializableMap} from '@unseenco/backstage-shared/utils/types'
 import {cloneDeep} from 'lodash-es'
 
 export type TransientPropPath = string | readonly (string | number)[]

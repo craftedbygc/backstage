@@ -7,7 +7,7 @@ import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/Se
 import type {
   SequenceTrackId,
   StudioSheetItemKey,
-} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import React from 'react'
 import styled from 'styled-components'
@@ -19,7 +19,7 @@ import GraphEditorDotScalar from './GraphEditorDotScalar'
 import GraphEditorDotNonScalar from './GraphEditorDotNonScalar'
 import GraphEditorNonScalarDash from './GraphEditorNonScalarDash'
 import type {PropTypeConfig_AllSimples} from '@unseenco/theatre-core/propTypes'
-import type {PathToProp} from '@unseenco/theatre-shared/utils/addresses'
+import type {PathToProp} from '@unseenco/backstage-shared/utils/addresses'
 
 const Container = styled.g`
   /* position: absolute; */

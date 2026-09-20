@@ -1,8 +1,8 @@
 import React, {useCallback, useState} from 'react'
 import type {CSSProperties} from 'react'
-import type {IProject, ISheet} from '@unseenco/theatre-core'
-import {onChange, types} from '@unseenco/theatre-core'
-import getStudio from '@unseenco/theatre-studio/getStudio'
+import type {IProject, ISheet} from '@unseenco/backstage'
+import {onChange, types} from '@unseenco/backstage'
+import getStudio from '@unseenco/backstage/studio/getStudio'
 
 const boxConfig = {
   x: types.number(40, {range: [0, 500], label: 'X'}),

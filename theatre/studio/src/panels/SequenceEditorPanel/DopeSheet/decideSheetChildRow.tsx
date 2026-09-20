@@ -6,7 +6,7 @@ import LeftSheetObjectRow from './Left/SheetObjectRow'
 import LeftObjectNamespaceRow from './Left/ObjectNamespaceRow'
 import RightSheetObjectRow from './Right/SheetObjectRow'
 import RightObjectNamespaceRow from './Right/ObjectNamespaceRow'
-import uniqueKeyForAnyObject from '@unseenco/theatre-shared/utils/uniqueKeyForAnyObject'
+import uniqueKeyForAnyObject from '@unseenco/backstage-shared/utils/uniqueKeyForAnyObject'
 
 export function decideLeftSheetChildRow(
   child: SequenceEditorTree_SheetChild,

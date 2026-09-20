@@ -31,7 +31,7 @@ obj.onValuesChange((values) => {
 })
 ```
 
-Texture props created by `@unseenco/theatre-threejs` `autoAddObject` treat image slots as transient where documented in [Three.js extension](../extensions/threejs.md).
+Texture props created by `@unseenco/backstage/threejs` `autoAddObject` treat image slots as transient where documented in [Three.js extension](../extensions/threejs.md).
 
 ## API
 

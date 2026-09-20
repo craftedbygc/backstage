@@ -1,9 +1,9 @@
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
-import {getAnimationEntryForSheetObject} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import {getAnimationEntryForSheetObject} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
 import {
   isGsapScrollTriggerSheetObjectKey,
   isGsapSheetObjectKey,
-} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
+} from '@unseenco/backstage-shared/gsap/gsapSheetObjectKey'
 import React from 'react'
 import styled from 'styled-components'
 

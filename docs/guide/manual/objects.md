@@ -80,7 +80,7 @@ sheet.object(
 )
 ```
 
-`@unseenco/theatre-threejs` **`autoAddObject()`** accepts the same `transient` / `static` paths (dot or array notation), merged with `configureTheatreThreejs()` defaults.
+`@unseenco/backstage/threejs` **`autoAddObject()`** accepts the same `transient` / `static` paths (dot or array notation), merged with `configureTheatreThreejs()` defaults.
 
 ## API
 

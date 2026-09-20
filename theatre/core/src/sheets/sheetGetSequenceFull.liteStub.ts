@@ -9,6 +9,6 @@ export function getOrCreateFullSequence(
   _variantId: SequenceVariantId,
 ): Sequence {
   throw new Error(
-    'Full sequence playback is not available in @unseenco/theatre-core-lite',
+    'Full sequence playback is not available in @unseenco/theatre-core/core-lite',
   )
 }

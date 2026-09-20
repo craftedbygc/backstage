@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import React from 'react'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import BasicTooltip from './BasicTooltip'
 
 const Container = styled(BasicTooltip)`

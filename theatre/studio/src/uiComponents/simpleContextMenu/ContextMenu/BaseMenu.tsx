@@ -1,7 +1,7 @@
 import type {ElementType} from 'react'
 import React from 'react'
 import Item from './Item'
-import type {$FixMe} from '@unseenco/theatre-shared/utils/types'
+import type {$FixMe} from '@unseenco/backstage-shared/utils/types'
 import styled from 'styled-components'
 import {pointerEventsAutoInNormalMode} from '@unseenco/theatre-studio/css'
 

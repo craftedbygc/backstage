@@ -1,7 +1,7 @@
 import type {GsapClipTrack} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
-import {applyTimelineChildTimingToGsap} from '@unseenco/theatre-shared/gsap/applyTimelineChildTiming'
-import {getAnimationEntry} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import {applyTimelineChildTimingToGsap} from '@unseenco/backstage-shared/gsap/applyTimelineChildTiming'
+import {getAnimationEntry} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
 
 /** Pushes persisted clip child timing onto the registered GSAP timeline/tween. */
 export function applyGsapClipTrackToAnimation(

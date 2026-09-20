@@ -15,7 +15,7 @@ import DopeSnap from '@unseenco/theatre-studio/panels/SequenceEditorPanel/RightO
 import type {ISingleKeyframeEditorProps} from './SingleKeyframeEditor'
 import {absoluteDims} from '@unseenco/theatre-studio/utils/absoluteDims'
 import {useLogger} from '@unseenco/theatre-studio/uiComponents/useLogger'
-import type {ILogger} from '@unseenco/theatre-shared/logger'
+import type {ILogger} from '@unseenco/backstage-shared/logger'
 import {copyableKeyframesFromSelection} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/selections'
 import {pointerEventsAutoInNormalMode} from '@unseenco/theatre-studio/css'
 import {

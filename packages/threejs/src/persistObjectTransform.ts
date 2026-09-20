@@ -1,4 +1,4 @@
-import type {ISheetObject} from '@unseenco/theatre-core'
+import type {ISheetObject} from '@unseenco/backstage'
 import type {Object3D} from 'three'
 import type {
   StudioLike,

@@ -1,5 +1,5 @@
-import {getProject, types} from '@unseenco/theatre-core'
-import studio from '@unseenco/theatre-studio'
+import {getProject, types} from '@unseenco/backstage'
+import studio from '@unseenco/backstage/studio'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 

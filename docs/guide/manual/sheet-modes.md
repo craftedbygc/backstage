@@ -26,14 +26,14 @@ Behaviour matches the rest of the manual:
 - **`sheet.sequence.attachAudio()`** is supported ([Audio](./audio.md)).
 - Sequence length and editing behave like a normal timeline ([Sequences](./sequences.md)).
 
-Extensions such as `@unseenco/theatre-gsap` attach bridges in time mode so registered tweens follow the same playhead. See [GSAP extension — time mode](../extensions/gsap.md#quick-start-time-mode).
+Extensions such as `@unseenco/backstage/gsap` attach bridges in time mode so registered tweens follow the same playhead. See [GSAP extension — time mode](../extensions/gsap.md#quick-start-time-mode).
 
 ## Page mode
 
 Page mode maps scroll on a **scroller** (vertical or horizontal) to the sequence playhead. Studio scrubbing updates scroll position; scrolling the page updates the playhead.
 
 ```ts
-import {getProject} from '@unseenco/theatre-core'
+import {getProject} from '@unseenco/backstage'
 
 const sheet = getProject('My project').sheet('Main', {
   sequenceMode: 'page',
@@ -49,14 +49,14 @@ You can also call **`sheet.setSequenceMode('page')`** after the sheet exists.
 - **`sequence.attachAudio()`** is not supported in page mode.
 - Clip or keyframe spans on the timeline use **percent** along the 0–100 axis, not seconds.
 
-### Wiring scroll (`@unseenco/theatre-core`)
+### Wiring scroll (`@unseenco/backstage`)
 
 Page scroll does **not** require GSAP. Use the core APIs to choose which element scrolls and how progress is read and written.
 
 **Shared scroller context** — call **`configureTheatrePageScroll()`** once so Studio and helpers know which element scrolls and which axis is active (`null` / omitted scroller = document; default axis = vertical):
 
 ```ts
-import {configureTheatrePageScroll} from '@unseenco/theatre-core'
+import {configureTheatrePageScroll} from '@unseenco/backstage'
 
 configureTheatrePageScroll({scroller: document.documentElement})
 // horizontal native document scroll:
@@ -91,8 +91,8 @@ GSAP ScrollTrigger registration must use **`horizontal: true`** on each trigger 
 import {
   configureTheatrePageScroll,
   getProject,
-} from '@unseenco/theatre-core'
-import {createLenisScrollDriver} from '@unseenco/theatre-core/lenis'
+} from '@unseenco/backstage'
+import {createLenisScrollDriver} from '@unseenco/backstage/lenis'
 
 configureTheatrePageScroll({scroller: document.documentElement})
 
@@ -113,7 +113,7 @@ import {
   attachTheatrePageScroll,
   configureTheatrePageScroll,
   type ScrollDriver,
-} from '@unseenco/theatre-core'
+} from '@unseenco/backstage'
 
 configureTheatrePageScroll({scroller: document.documentElement})
 
@@ -143,4 +143,4 @@ Playground demos (GSAP + page mode): **`/shared/gsap-page-mode/`** (native verti
 
 ## API
 
-[`sequenceMode` / sheet options](/api/theatre-core), [`configureTheatrePageScroll`](/api/theatre-core), [`attachTheatrePageScroll`](/api/theatre-core), [`ScrollDriver`](/api/theatre-core). Lenis helper: import `createLenisScrollDriver` from `@unseenco/theatre-core/lenis` (see package `exports` in [@unseenco/theatre-core](/api/theatre-core)).
+[`sequenceMode` / sheet options](/api/theatre-core), [`configureTheatrePageScroll`](/api/theatre-core), [`attachTheatrePageScroll`](/api/theatre-core), [`ScrollDriver`](/api/theatre-core). Lenis helper: import `createLenisScrollDriver` from `@unseenco/backstage/lenis` (see package `exports` in [@unseenco/backstage](/api/theatre-core)).

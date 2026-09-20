@@ -3,7 +3,7 @@ import type {
   SequenceEditorTree_GsapScrollTriggerChild,
   SequenceEditorTree_GsapScrollTriggerTrack,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {val} from '@unseenco/theatre-dataverse'
 import React from 'react'

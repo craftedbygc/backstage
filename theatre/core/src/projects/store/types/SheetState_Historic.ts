@@ -1,14 +1,14 @@
-import type {PathToProp_Encoded} from '@unseenco/theatre-shared/utils/addresses'
+import type {PathToProp_Encoded} from '@unseenco/backstage-shared/utils/addresses'
 import type {
   KeyframeId,
   ObjectAddressKey,
   SequenceTrackId,
-} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
 import type {
   SerializableMap,
   SerializableValue,
   StrictRecord,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 
 export interface SheetState_Historic {
   /**
@@ -143,7 +143,7 @@ export type BasicKeyframedTrack = TrackDataCommon<'BasicKeyframedTrack'> & {
 
 /**
  * A GSAP tween segment on the Theatre sequence timeline, bridged at runtime
- * via `@unseenco/theatre-gsap`.
+ * via `@unseenco/theatre-core/gsap`.
  */
 export type GsapTimelineChildClip = {
   /** Stable id for this child tween within the parent timeline clip. */

@@ -1,4 +1,4 @@
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 
 type PointerFriendlySelector<S, R, Args extends $IntentionalAny[]> = <

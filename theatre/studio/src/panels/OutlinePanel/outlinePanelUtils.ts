@@ -1,17 +1,17 @@
 import type Project from '@unseenco/theatre-core/projects/Project'
 import {useCallback} from 'react'
 import getStudio from '@unseenco/theatre-studio/getStudio'
-import {useVal} from '@unseenco/theatre-react'
+import {useVal} from '@unseenco/backstage/react'
 import {val} from '@unseenco/theatre-dataverse'
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
-import type {ProjectId} from '@unseenco/theatre-shared/utils/ids'
+import type {ProjectId} from '@unseenco/backstage-shared/utils/ids'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
-import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
+import {isSheetPropsObjectKey} from '@unseenco/backstage-shared/utils/sheetProps'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import {
   formatOutlineNamespacePathKey,
   getOutlineNamespaceItemKey,
-} from '@unseenco/theatre-shared/utils/outlineNamespaces'
+} from '@unseenco/backstage-shared/utils/outlineNamespaces'
 
 export type NamespacedObjects = Map<
   string,
@@ -26,7 +26,7 @@ export {
   formatOutlineNamespacePathKey,
   getOutlineNamespaceItemKey,
   parseOutlineNamespacePath,
-} from '@unseenco/theatre-shared/utils/outlineNamespaces'
+} from '@unseenco/backstage-shared/utils/outlineNamespaces'
 
 /** Internal project used by Studio extensions via `studio.getStudioProject()`. */
 export const STUDIO_PROJECT_ID = 'Studio' as ProjectId

@@ -14,7 +14,7 @@ export type {ISequence} from './sequences/TheatreSequence'
 export type {ISheetObject} from './sheetObjects/TheatreSheetObject'
 export type {ISheet, ISheetObjectOptions} from './sheets/TheatreSheet'
 export type {UnknownShorthandCompoundProps} from './propTypes'
-import * as globalVariableNames from '@unseenco/theatre-shared/globalVariableNames'
+import * as globalVariableNames from '@unseenco/backstage-shared/globalVariableNames'
 import type StudioBundle from '@unseenco/theatre-studio/StudioBundle'
 import CoreBundle from './CoreBundle'
 import type {OnDiskState} from './projects/store/storeTypes'
@@ -42,7 +42,7 @@ function registerCoreBundle() {
   // This only works in a browser environment
   if (typeof window == 'undefined') return
 
-  // `@unseenco/theatre-core-lite` sets this before registering. If the bundler
+  // `@unseenco/theatre-core/core-lite` sets this before registering. If the bundler
   // also resolves a stray full-core entry (mis-alias), skip a second registration.
   if (
     (globalThis as typeof globalThis & {__THEATRE_FORCE_LITE__?: boolean})

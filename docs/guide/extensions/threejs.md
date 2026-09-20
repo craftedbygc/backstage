@@ -1,22 +1,22 @@
 # Three.js extension
 
-`@unseenco/theatre-threejs` provides runtime helpers and a Studio extension entry point.
+`@unseenco/backstage/threejs` provides runtime helpers and a Studio extension entry point.
 
 ## Install
 
 ```bash
-yarn add @unseenco/theatre-core @unseenco/theatre-studio @unseenco/theatre-threejs three
+yarn add @unseenco/backstage @unseenco/backstage/studio @unseenco/backstage/threejs three
 ```
 
-> **Theatre Lite:** Peer `@unseenco/theatre-core-lite` and `@unseenco/theatre-studio-lite` instead for static + variant workflows. Runtime helpers and `/extension` work the same; see [Three.js with Theatre Lite](../theatre-lite/three-js.md).
+> **Theatre Lite:** Peer `@unseenco/backstage/core-lite` and `@unseenco/backstage/studio-lite` instead for static + variant workflows. Runtime helpers and `/extension` work the same; see [Three.js with Theatre Lite](../theatre-lite/three-js.md).
 
 ## Studio (development)
 
 Import the extension from the **`/extension`** subpath so production bundles do not pull Studio:
 
 ```ts
-import studio from '@unseenco/theatre-studio'
-import extension from '@unseenco/theatre-threejs/extension'
+import studio from '@unseenco/backstage/studio'
+import extension from '@unseenco/backstage/threejs/extension'
 
 studio.initialize()
 studio.extend(extension({renderer, studio, scenes: [{name: 'Main', scene, camera}]}))
@@ -29,7 +29,7 @@ Breaking change from upstream Theatre: **`buildExtension()` lives on `/extension
 Registers a `THREE.Object3D` on a sheet with parsed transform, material, shader uniform, and texture props:
 
 ```ts
-import {autoAddObject, configureTheatreThreejs} from '@unseenco/theatre-threejs'
+import {autoAddObject, configureTheatreThreejs} from '@unseenco/backstage/threejs'
 
 configureTheatreThreejs({
   autoAddObject: {
@@ -55,7 +55,7 @@ const sheetObject = autoAddObject(mesh, sheet, {
 Track a shared `Material` on its own sheet object (material props only—no mesh transform):
 
 ```ts
-import {autoAddMaterial} from '@unseenco/theatre-threejs'
+import {autoAddMaterial} from '@unseenco/backstage/threejs'
 
 autoAddMaterial(material, sheet, {name: 'Glass'})
 ```
@@ -109,8 +109,8 @@ With `buildExtension()` active, clicking a registered mesh in the viewport selec
 
 ## Production
 
-Ship only `@unseenco/theatre-threejs` runtime imports (`autoAddObject`, …). Do not import `/extension` or `@unseenco/theatre-studio` in production.
+Ship only `@unseenco/backstage/threejs` runtime imports (`autoAddObject`, …). Do not import `/extension` or `@unseenco/backstage/studio` in production.
 
 ## API
 
-[@unseenco/theatre-threejs API](/api/theatre-threejs)
+[@unseenco/backstage/threejs API](/api/theatre-threejs)

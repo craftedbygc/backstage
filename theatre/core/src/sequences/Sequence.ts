@@ -1,9 +1,9 @@
 import type Project from '@unseenco/theatre-core/projects/Project'
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
-import {encodePathToProp} from '@unseenco/theatre-shared/utils/addresses'
-import type {SequenceAddress} from '@unseenco/theatre-shared/utils/addresses'
-import didYouMean from '@unseenco/theatre-shared/utils/didYouMean'
-import {InvalidArgumentError} from '@unseenco/theatre-shared/utils/errors'
+import {encodePathToProp} from '@unseenco/backstage-shared/utils/addresses'
+import type {SequenceAddress} from '@unseenco/backstage-shared/utils/addresses'
+import didYouMean from '@unseenco/backstage-shared/utils/didYouMean'
+import {InvalidArgumentError} from '@unseenco/backstage-shared/utils/errors'
 import type {
   Prism,
   Pointer,
@@ -24,7 +24,7 @@ import TheatreSequence from './TheatreSequence'
 import {
   listScrollTriggerEntriesForSheet,
   sheetAddressKey,
-} from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
+} from '@unseenco/backstage-shared/gsap/scrollTriggerRegistry'
 import type {
   GsapClipTrack,
   GsapTimelineChildClip,
@@ -33,21 +33,21 @@ import type {
 import {
   isBasicKeyframedTrack,
   isGsapClipTrack,
-} from '@unseenco/theatre-shared/sequence/trackData'
+} from '@unseenco/backstage-shared/sequence/trackData'
 import type {
   ObjectAddressKey,
   SequenceTrackId,
-} from '@unseenco/theatre-shared/utils/ids'
-import type {ILogger} from '@unseenco/theatre-shared/logger'
+} from '@unseenco/backstage-shared/utils/ids'
+import type {ILogger} from '@unseenco/backstage-shared/logger'
 import type {ISequence} from '..'
-import {notify} from '@unseenco/theatre-shared/notify'
+import {notify} from '@unseenco/backstage-shared/notify'
 import type {$IntentionalAny} from '@unseenco/theatre-dataverse/src/types'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import {
   DEFAULT_SEQUENCE_VARIANT,
   getSequenceStateFromSheet,
 } from '@unseenco/theatre-core/sequences/sequenceVariants'
-import {isSheetObject} from '@unseenco/theatre-shared/instanceTypes'
+import {isSheetObject} from '@unseenco/backstage-shared/instanceTypes'
 
 export type IPlaybackRange = [from: number, to: number]
 

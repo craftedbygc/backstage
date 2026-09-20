@@ -1,8 +1,8 @@
 import {privateAPI} from '@unseenco/theatre-core/privateAPIs'
 import type {ISheet} from '@unseenco/theatre-core/sheets/TheatreSheet'
-import {sheetObjectAddressKeyFromParts} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
-import {subscribeGsapClipSyncAtPlayhead} from '@unseenco/theatre-shared/gsap/subscribeGsapClipSyncAtPlayhead'
-import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
+import {sheetObjectAddressKeyFromParts} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
+import {subscribeGsapClipSyncAtPlayhead} from '@unseenco/backstage-shared/gsap/subscribeGsapClipSyncAtPlayhead'
+import type {ObjectAddressKey} from '@unseenco/backstage-shared/utils/ids'
 
 /**
  * Drives registered GSAP animations from the sheet sequence playhead.

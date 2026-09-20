@@ -21,7 +21,7 @@ yarn workspace @unseenco/theatre-docs run generate:api
 
 `docs/api/` is gitignored; CI and Netlify always regenerate it during `build`.
 
-**Note:** `@unseenco/theatre-threejs/extension` is a separate entry point; only the package root is covered by api-extractor today. Extension API docs would need an additional api-extractor config.
+**Note:** `@unseenco/backstage/threejs/extension` is a separate entry point; only the package root is covered by api-extractor today. Extension API docs would need an additional api-extractor config.
 
 ## Local development
 
@@ -40,7 +40,7 @@ yarn docs:build
 yarn workspace @unseenco/theatre-docs run preview   # optional; preview also uses /docs/
 ```
 
-The first run compiles `theatre`, `@unseenco/theatre-threejs`, `@unseenco/theatre-dataverse`, and `@unseenco/theatre-gsap` declarations and may take a minute.
+The first run compiles `theatre`, `@unseenco/backstage/threejs`, `@unseenco/backstage/dataverse`, and `@unseenco/backstage/gsap` declarations and may take a minute.
 
 ### Playground base path
 

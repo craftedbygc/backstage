@@ -9,43 +9,43 @@ import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
 import type {
   PathToProp,
   SheetAddress,
-} from '@unseenco/theatre-shared/utils/addresses'
+} from '@unseenco/backstage-shared/utils/addresses'
 import type {
   SequenceTrackId,
   StudioSheetItemKey,
-} from '@unseenco/theatre-shared/utils/ids'
-import {createStudioSheetItemKey} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
+import {createStudioSheetItemKey} from '@unseenco/backstage-shared/utils/ids'
 import type {
   $FixMe,
   $IntentionalAny,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import {prism, val, pointerToPrism} from '@unseenco/theatre-dataverse'
-import logger from '@unseenco/theatre-shared/logger'
+import logger from '@unseenco/backstage-shared/logger'
 import {titleBarHeight} from '@unseenco/theatre-studio/panels/BasePanel/common'
 import {transportStripHeight} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/PlaybackControls/constants'
 import type {Studio} from '@unseenco/theatre-studio/Studio'
 import type {UnknownValidCompoundProps} from '@unseenco/theatre-core/propTypes/internals'
 import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 import {DEFAULT_SEQUENCE_VARIANT} from '@unseenco/theatre-studio/utils/sequenceVariantHelpers'
-import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
+import {isSheetPropsObjectKey} from '@unseenco/backstage-shared/utils/sheetProps'
 import type {
   GsapClipTrack,
   SheetState_Historic,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import {getSequenceStateFromSheet} from '@unseenco/theatre-studio/utils/sequenceVariantHelpers'
-import {isGsapClipTrack} from '@unseenco/theatre-shared/sequence/trackData'
-import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
-import {isGsapScrollTriggerSheetObjectKey} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
-import {getAnimationEntryForSheetObject} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
-import {resolveGsapTimelineChildSequencerLabel} from '@unseenco/theatre-shared/gsap/gsapAnimationLabel'
-import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
-import {scrollTriggerChildInSequenceSpace} from '@unseenco/theatre-shared/gsap/extractScrollTriggerLayout'
+import {isGsapClipTrack} from '@unseenco/backstage-shared/sequence/trackData'
+import {isGsapSheetObjectKey} from '@unseenco/backstage-shared/gsap/gsapSheetObjectKey'
+import {isGsapScrollTriggerSheetObjectKey} from '@unseenco/backstage-shared/gsap/gsapSheetObjectKey'
+import {getAnimationEntryForSheetObject} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
+import {resolveGsapTimelineChildSequencerLabel} from '@unseenco/backstage-shared/gsap/gsapAnimationLabel'
+import {gsapStudioRegistryRevisionPointer} from '@unseenco/backstage-shared/gsap/gsapStudioRegistryRevision'
+import {scrollTriggerChildInSequenceSpace} from '@unseenco/backstage-shared/gsap/extractScrollTriggerLayout'
 import {
   isRegisteredScrollTriggerSheetObject,
   listScrollTriggerEntriesForSheet,
   sheetAddressKey,
-} from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
+} from '@unseenco/backstage-shared/gsap/scrollTriggerRegistry'
 import type {GsapTimelineChildClip} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type {NamespacedObjects} from '@unseenco/theatre-studio/panels/OutlinePanel/outlinePanelUtils'
 import {buildSequenceEditorNamespaceMap} from './sequenceEditorObjectNamespaces'

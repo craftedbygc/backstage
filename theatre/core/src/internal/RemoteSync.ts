@@ -12,19 +12,19 @@ import {
 } from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
 import {
   getMaxScrollForPageScrollContext,
-} from '@unseenco/theatre-shared/gsap/scrollTriggerLayout'
+} from '@unseenco/backstage-shared/gsap/scrollTriggerLayout'
 import {
   getActivePageScrollContext,
   resolvePageScrollAxis,
-} from '@unseenco/theatre-shared/sheets/pageScrollContext'
-import {resolveDomElementHighlightTarget} from '@unseenco/theatre-shared/gsap/domElementHighlightTarget'
-import type {RemoteDomHighlightTarget} from '@unseenco/theatre-shared/gsap/domElementHighlightTarget'
-import {setRemoteDomElementHighlight} from '@unseenco/theatre-shared/sheets/remoteDomElementHighlight'
-import {setRemotePageScrollMetrics} from '@unseenco/theatre-shared/sheets/remotePageScrollMetrics'
+} from '@unseenco/backstage-shared/sheets/pageScrollContext'
+import {resolveDomElementHighlightTarget} from '@unseenco/backstage-shared/gsap/domElementHighlightTarget'
+import type {RemoteDomHighlightTarget} from '@unseenco/backstage-shared/gsap/domElementHighlightTarget'
+import {setRemoteDomElementHighlight} from '@unseenco/backstage-shared/sheets/remoteDomElementHighlight'
+import {setRemotePageScrollMetrics} from '@unseenco/backstage-shared/sheets/remotePageScrollMetrics'
 import type {Studio} from '@unseenco/theatre-studio/Studio'
 import {getCoreTicker} from '@unseenco/theatre-core/coreTicker'
 import {pointerToPrism, val} from '@unseenco/theatre-dataverse'
-import type {SerializableMap} from '@unseenco/theatre-shared/utils/types'
+import type {SerializableMap} from '@unseenco/backstage-shared/utils/types'
 import {
   createDebouncedCallback,
   type DebouncedCallback,

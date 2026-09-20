@@ -1,11 +1,11 @@
 import type {PropTypeConfig_Rgba} from '@unseenco/theatre-core/propTypes'
-import type {Rgba} from '@unseenco/theatre-shared/utils/color'
-import {validHexRegExp} from '@unseenco/theatre-shared/utils/color'
+import type {Rgba} from '@unseenco/backstage-shared/utils/color'
+import {validHexRegExp} from '@unseenco/backstage-shared/utils/color'
 import {
   decorateRgba,
   rgba2hex,
   parseRgbaFromHex,
-} from '@unseenco/theatre-shared/utils/color'
+} from '@unseenco/backstage-shared/utils/color'
 import React, {useCallback, useLayoutEffect, useRef} from 'react'
 import {RgbaColorPicker} from '@unseenco/theatre-studio/uiComponents/colorPicker'
 import styled from 'styled-components'

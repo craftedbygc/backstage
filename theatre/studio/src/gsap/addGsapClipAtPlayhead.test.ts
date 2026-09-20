@@ -1,6 +1,6 @@
 import {Atom} from '@unseenco/theatre-dataverse'
 import type {SheetState_Historic} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
-import {registerGsapObjectBinding} from '@unseenco/theatre-shared/gsap/gsapObjectBinding'
+import {registerGsapObjectBinding} from '@unseenco/backstage-shared/gsap/gsapObjectBinding'
 import getStudio, {setStudio} from '@unseenco/theatre-studio/getStudio'
 import {addGsapClipAtPlayhead} from './addGsapClipAtPlayhead'
 

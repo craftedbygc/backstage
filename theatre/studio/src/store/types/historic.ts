@@ -6,9 +6,9 @@ import type {
   SheetAddress,
   SheetObjectAddress,
   WithoutSheetInstance,
-} from '@unseenco/theatre-shared/utils/addresses'
-import type {StrictRecord} from '@unseenco/theatre-shared/utils/types'
-import type {PointableSet} from '@unseenco/theatre-shared/utils/PointableSet'
+} from '@unseenco/backstage-shared/utils/addresses'
+import type {StrictRecord} from '@unseenco/backstage-shared/utils/types'
+import type {PointableSet} from '@unseenco/backstage-shared/utils/PointableSet'
 import type Project from '@unseenco/theatre-core/projects/Project'
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
@@ -19,7 +19,7 @@ import type {
   SequenceMarkerId,
   SheetId,
   UIPanelId,
-} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
 
 export type PanelPosition = {

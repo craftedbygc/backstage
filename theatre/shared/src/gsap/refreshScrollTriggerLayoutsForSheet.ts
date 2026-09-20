@@ -1,6 +1,6 @@
 import {extractScrollTriggerLayout} from './extractScrollTriggerLayout'
-import {defaultPageScrollContext} from '@unseenco/theatre-shared/sheets/pageScrollContext'
-import type {PageScrollContext} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+import {defaultPageScrollContext} from '@unseenco/backstage-shared/sheets/pageScrollContext'
+import type {PageScrollContext} from '@unseenco/backstage-shared/sheets/pageScrollContext'
 import {refreshGsapScrollTriggersFromGlobal} from './scrollTriggerGlobal'
 import {
   listScrollTriggerEntriesForSheet,

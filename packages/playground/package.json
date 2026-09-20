@@ -21,14 +21,6 @@
     "@types/react-dom": "^18.2.7",
     "@types/styled-components": "^5.1.26",
     "@types/three": "^0.185.1",
-    "@unseenco/theatre-core": "workspace:*",
-    "@unseenco/theatre-core-lite": "workspace:*",
-    "@unseenco/theatre-dataverse": "workspace:*",
-    "@unseenco/theatre-gsap": "workspace:*",
-    "@unseenco/theatre-react": "workspace:*",
-    "@unseenco/theatre-studio": "workspace:*",
-    "@unseenco/theatre-studio-lite": "workspace:*",
-    "@unseenco/theatre-threejs": "workspace:*",
     "@vitejs/plugin-react": "^4.0.0",
     "@vitejs/plugin-react-swc": "^3.3.2",
     "fast-glob": "^3.3.0",
@@ -42,5 +34,8 @@
     "three": "^0.185.1",
     "typescript": "5.3.3",
     "vite": "^4.3.9"
+  },
+  "dependencies": {
+    "@unseenco/backstage": "workspace:*"
   }
 }

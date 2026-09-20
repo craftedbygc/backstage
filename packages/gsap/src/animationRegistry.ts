@@ -1,4 +1,4 @@
-import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
+import type SheetObject from '@unseenco/backstage/sheetObjects/SheetObject'
 import type {GsapTweenLike} from './gsapTypes'
 import {
   clearAnimationRegistryForTests as clearSharedAnimationRegistryForTests,
@@ -6,8 +6,8 @@ import {
   getAnimationEntryForSheetObject as getSharedAnimationEntryForSheetObject,
   listAnimationEntries as listSharedAnimationEntries,
   registerAnimationInRegistry as registerSharedAnimationInRegistry,
-} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
-import {readGsapTweenTimelineDuration} from '@unseenco/theatre-shared/gsap/syncGsapClipProgress'
+} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
+import {readGsapTweenTimelineDuration} from '@unseenco/backstage-shared/gsap/syncGsapClipProgress'
 
 export type GsapAnimationRegistryEntry = {
   id: string

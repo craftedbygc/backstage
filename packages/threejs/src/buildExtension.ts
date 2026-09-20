@@ -1,12 +1,12 @@
 import type {TheatreExtension, ToolsetConfig} from './types'
-import {isRemoteEditorWindow} from '@unseenco/theatre-core'
+import {isRemoteEditorWindow} from '@unseenco/backstage'
 import {
   isRemoteEditorOpen,
   onRemoteEditorOpenChange,
   getStudio,
   studioHasDivergedFromSavedState,
-} from '@unseenco/theatre-studio'
-import {pointerToPrism} from '@unseenco/theatre-dataverse'
+} from '@unseenco/backstage/studio'
+import {pointerToPrism} from '@unseenco/backstage/dataverse'
 import {OrthographicCamera, PerspectiveCamera, CameraHelper} from 'three'
 import type {Camera, Scene} from 'three'
 import type {ThreejsRenderer} from './types'

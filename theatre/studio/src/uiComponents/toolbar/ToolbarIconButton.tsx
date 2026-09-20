@@ -4,7 +4,7 @@ import React from 'react'
 import type {
   $FixMe,
   $IntentionalAny,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import {mergeRefs} from 'react-merge-refs'
 import ToolbarSwitchSelectContainer from './ToolbarSwitchSelectContainer'
 import useChordial from '@unseenco/theatre-studio/uiComponents/chordial/useChodrial'

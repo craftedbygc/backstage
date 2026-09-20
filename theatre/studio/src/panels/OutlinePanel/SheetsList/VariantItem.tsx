@@ -5,7 +5,7 @@ import {
   getStudioActiveSequenceVariant,
   setStudioActiveSequenceVariant,
 } from '@unseenco/theatre-studio/utils/activeSequenceVariant'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import React, {useCallback} from 'react'
 import styled from 'styled-components'
 import BaseItem from '@unseenco/theatre-studio/panels/OutlinePanel/BaseItem'

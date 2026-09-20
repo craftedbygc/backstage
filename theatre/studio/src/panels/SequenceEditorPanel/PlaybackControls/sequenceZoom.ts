@@ -1,4 +1,4 @@
-import type {IRange} from '@unseenco/theatre-shared/utils/types'
+import type {IRange} from '@unseenco/backstage-shared/utils/types'
 import {clamp} from 'lodash-es'
 
 /** Matches pinch-zoom max extent in HorizontallyScrollableArea (time mode). */

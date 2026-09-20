@@ -6,28 +6,28 @@ import {compound} from '@unseenco/theatre-core/propTypes'
 import type {ISheetObject} from '@unseenco/theatre-core/sheetObjects/TheatreSheetObject'
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
 import type {ScrollDriver} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
-import type {SheetAddress} from '@unseenco/theatre-shared/utils/addresses'
-import {InvalidArgumentError} from '@unseenco/theatre-shared/utils/errors'
-import {validateAndSanitiseSlashedPathOrThrow} from '@unseenco/theatre-shared/utils/slashedPaths'
-import {parseOutlineNamespacePath} from '@unseenco/theatre-shared/utils/outlineNamespaces'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
-import userReadableTypeOfValue from '@unseenco/theatre-shared/utils/userReadableTypeOfValue'
+import type {SheetAddress} from '@unseenco/backstage-shared/utils/addresses'
+import {InvalidArgumentError} from '@unseenco/backstage-shared/utils/errors'
+import {validateAndSanitiseSlashedPathOrThrow} from '@unseenco/backstage-shared/utils/slashedPaths'
+import {parseOutlineNamespacePath} from '@unseenco/backstage-shared/utils/outlineNamespaces'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
+import userReadableTypeOfValue from '@unseenco/backstage-shared/utils/userReadableTypeOfValue'
 import deepEqual from 'fast-deep-equal'
 import type {
   UnknownShorthandCompoundProps,
   UnknownValidCompoundProps,
 } from '@unseenco/theatre-core/propTypes/internals'
-import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
+import type {ObjectAddressKey} from '@unseenco/backstage-shared/utils/ids'
 import {
   isSheetPropsObjectKey,
   SHEET_PROPS_OBJECT_KEY,
-} from '@unseenco/theatre-shared/utils/sheetProps'
+} from '@unseenco/backstage-shared/utils/sheetProps'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
-import {notify} from '@unseenco/theatre-shared/notify'
+import {notify} from '@unseenco/backstage-shared/notify'
 import type {
   TransientPropPath,
   StaticPropPath,
-} from '@unseenco/theatre-shared/utils/transientPropPaths'
+} from '@unseenco/backstage-shared/utils/transientPropPaths'
 import {resolveShowPropsOfSources} from '@unseenco/theatre-core/sheetObjects/resolveShowPropsOf'
 import {
   getUnsanitizedObjectProps,
@@ -217,7 +217,7 @@ export interface ISheet {
    * or collapsed the folder yet.
    *
    * This method is part of `@unseenco/theatre-core` so you can configure outline folders
-   * without importing `@unseenco/theatre-studio`.
+   * without importing `@unseenco/theatre-core/studio`.
    *
    * @param namespacePath - The namespace path, e.g. `"My Folder"` or `"My Folder / Subfolder"`
    * @param opts - Optional configuration for the namespace folder

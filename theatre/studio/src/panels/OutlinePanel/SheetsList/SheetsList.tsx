@@ -2,7 +2,7 @@ import {
   getRegisteredSheetIds,
   getSheetOfSheetId,
 } from '@unseenco/theatre-studio/selectors'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import React from 'react'
 import {SheetItem} from './SheetItem'
 import type Project from '@unseenco/theatre-core/projects/Project'

@@ -5,7 +5,7 @@ All Theatre work lives in a **project**. One page often uses a single project; y
 ## Creating a project
 
 ```ts
-import {getProject} from '@unseenco/theatre-core'
+import {getProject} from '@unseenco/backstage'
 
 const project = getProject('My Project')
 ```
@@ -16,7 +16,7 @@ const project = getProject('My Project')
 
 Project **state** is the JSON snapshot of sheets, objects, keyframes, and overrides. With Studio open, edits are stored in the browser (typically `localStorage`). For shipping, export state from the outline and load it in code.
 
-> **Theatre Lite:** The same export/import flow works for static-only projects—load `{ state }` in `@unseenco/theatre-core-lite` and omit Studio from production. See [Theatre Lite — Getting started](../theatre-lite/getting-started.md).
+> **Theatre Lite:** The same export/import flow works for static-only projects—load `{ state }` in `@unseenco/backstage/core-lite` and omit Studio from production. See [Theatre Lite — Getting started](../theatre-lite/getting-started.md).
 
 ```ts
 import projectState from './state.json'

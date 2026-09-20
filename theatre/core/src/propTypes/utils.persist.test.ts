@@ -2,7 +2,7 @@ import {
   getNonPersistingPropPathEncodings,
   propTypeConfigPersists,
   stripNonPersistingPropValuesFromMap,
-} from '@unseenco/theatre-shared/propTypes/utils'
+} from '@unseenco/backstage-shared/propTypes/utils'
 import {compound, image, rgba} from './index'
 
 describe('propTypes utils persist', () => {

@@ -5,7 +5,7 @@ import {applySheetRuntimeOptions} from '@unseenco/theatre-core/sheets/applySheet
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
 import SheetTemplate from '@unseenco/theatre-core/sheets/SheetTemplate'
 import type {Studio} from '@unseenco/theatre-studio/Studio'
-import type {ProjectAddress} from '@unseenco/theatre-shared/utils/addresses'
+import type {ProjectAddress} from '@unseenco/backstage-shared/utils/addresses'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {PointerProxy} from '@unseenco/theatre-dataverse'
 import {Atom} from '@unseenco/theatre-dataverse'
@@ -13,35 +13,35 @@ import initialiseProjectState from './initialiseProjectState'
 import projectsSingleton from './projectsSingleton'
 import RemoteSync from '@unseenco/theatre-core/internal/RemoteSync'
 import type {ProjectState, ProjectAhistoricState} from './store/storeTypes'
-import type {Deferred} from '@unseenco/theatre-shared/utils/defer'
-import {defer} from '@unseenco/theatre-shared/utils/defer'
-import globals from '@unseenco/theatre-shared/globals'
+import type {Deferred} from '@unseenco/backstage-shared/utils/defer'
+import {defer} from '@unseenco/backstage-shared/utils/defer'
+import globals from '@unseenco/backstage-shared/globals'
 import type {
   ObjectAddressKey,
   ProjectId,
   SheetId,
   SheetInstanceId,
-} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
 import type {
   ILogger,
   ITheatreLoggerConfig,
   ITheatreLoggingConfig,
-} from '@unseenco/theatre-shared/logger'
-import type {OutlineNamespaceConfig} from '@unseenco/theatre-shared/utils/outlineNamespaces'
+} from '@unseenco/backstage-shared/logger'
+import type {OutlineNamespaceConfig} from '@unseenco/backstage-shared/utils/outlineNamespaces'
 import {_coreLogger} from '@unseenco/theatre-core/_coreLogger'
-import type {PathToProp_Encoded} from '@unseenco/theatre-shared/utils/addresses'
+import type {PathToProp_Encoded} from '@unseenco/backstage-shared/utils/addresses'
 import type {PropTypeConfig} from '@unseenco/theatre-core/propTypes'
 import {
   isDirectAssetUrl,
   stripImageAssetsFromAhistoricStaticOverrides,
-} from '@unseenco/theatre-shared/utils/assets'
-import {getNonPersistingPropPathEncodings} from '@unseenco/theatre-shared/propTypes/utils'
+} from '@unseenco/backstage-shared/utils/assets'
+import {getNonPersistingPropPathEncodings} from '@unseenco/backstage-shared/propTypes/utils'
 import {
   stripTransientPropsFromObjectInSheetState,
   stripSequenceTracksForPathsFromObjectInSheetState,
   stripTransientPathsFromSerializableMap,
   getOrphanedTopLevelPropPathEncodings,
-} from '@unseenco/theatre-shared/utils/transientPropPaths'
+} from '@unseenco/backstage-shared/utils/transientPropPaths'
 
 type ICoreAssetStorage = {
   /** Returns a URL for the provided asset ID */
@@ -174,7 +174,7 @@ export default class Project {
 
     if (config.state) {
       setTimeout(() => {
-        // The user has provided config.state but in case @unseenco/theatre-studio is loaded,
+        // The user has provided config.state but in case @unseenco/theatre-core/studio is loaded,
         // let's give it one tick to attach itself
         if (!this._studio) {
           this._studioReadyDeferred.resolve(undefined)
@@ -197,9 +197,9 @@ export default class Project {
           if (!this._studio) {
             throw new Error(
               `Argument config.state in Theatre.getProject("${id}", config) is empty. This is fine ` +
-                `while you are using @unseenco/theatre-core along with @unseenco/theatre-studio. But since @unseenco/theatre-studio ` +
+                `while you are using @unseenco/theatre-core along with @unseenco/theatre-core/studio. But since @unseenco/theatre-core/studio ` +
                 `is not loaded, the state of project "${id}" will be empty.\n\n` +
-                `To fix this, you need to add @unseenco/theatre-studio into the bundle and export ` +
+                `To fix this, you need to add @unseenco/theatre-core/studio into the bundle and export ` +
                 `the project's state. Learn how to do that at https://unseen-theatre.netlify.app/docs/guide/manual/projects#state\n`,
             )
           }

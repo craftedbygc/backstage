@@ -4,7 +4,7 @@ A fork of [Theatre.js](https://github.com/theatre-js/theatre), maintained intern
 
 See [CHANGELOG.md](./CHANGELOG.md) for what's changed.
 
-Theatre.js is a motion-design library for the web: you define animations in code and refine them in a visual editor (Studio). This fork publishes under the `@unseenco` npm scope (e.g. `@unseenco/theatre-core`, `@unseenco/theatre-studio`).
+Theatre.js is a motion-design library for the web: you define animations in code and refine them in a visual editor (Studio). This fork publishes under the `@unseenco` npm scope (e.g. `@unseenco/backstage`, `@unseenco/backstage/studio`).
 
 For the original project, docs, and community, see [theatrejs.com](https://unseen-theatre.netlify.app).
 
@@ -12,12 +12,12 @@ For the original project, docs, and community, see [theatrejs.com](https://unsee
 
 | Package | Description |
 | --- | --- |
-| [`@unseenco/theatre-core`](./theatre/core/README.md) | Runtime animation library (ships in production bundles) |
-| [`@unseenco/theatre-studio`](./theatre/studio/README.md) | Visual editor (dev-time only) |
-| [`@unseenco/theatre-threejs`](./packages/threejs/README.md) | Three.js Studio devtools extension — orbit camera and scene inspection (dev-time only) |
-| [`@unseenco/theatre-dataverse`](./packages/dataverse/README.md) | Reactive dataflow library used internally |
-| [`@unseenco/theatre-react`](./packages/react/README.md) | React bindings |
-| [`@unseenco/theatre-browser-bundles`](./packages/browser-bundles/README.md) | Pre-built browser bundles |
+| [`@unseenco/backstage`](./theatre/core/README.md) | Runtime animation library (ships in production bundles) |
+| [`@unseenco/backstage/studio`](./theatre/studio/README.md) | Visual editor (dev-time only) |
+| [`@unseenco/backstage/threejs`](./packages/threejs/README.md) | Three.js Studio devtools extension — orbit camera and scene inspection (dev-time only) |
+| [`@unseenco/backstage/dataverse`](./packages/dataverse/README.md) | Reactive dataflow library used internally |
+| [`@unseenco/backstage/react`](./packages/react/README.md) | React bindings |
+| [`@unseenco/backstage/browser-bundles`](./packages/browser-bundles/README.md) | Pre-built browser bundles |
 
 ## Development
 
@@ -43,8 +43,8 @@ yarn cli release x.y.z
 
 This fork inherits the upstream licenses:
 
-- `@unseenco/theatre-core` and most packages: **Apache-2.0**
-- `@unseenco/theatre-studio`: **AGPL-3.0** (editor only; not included in production bundles)
-- `@unseenco/theatre-threejs`: **AGPL-3.0** (Studio extension only; not included in production bundles)
+- `@unseenco/backstage` and most packages: **Apache-2.0**
+- `@unseenco/backstage/studio`: **AGPL-3.0** (editor only; not included in production bundles)
+- `@unseenco/backstage/threejs`: **AGPL-3.0** (Studio extension only; not included in production bundles)
 
 Original copyright notices are preserved in each package's `LICENSE` file.

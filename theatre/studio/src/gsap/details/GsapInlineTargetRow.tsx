@@ -1,4 +1,4 @@
-import type {GsapTargetDescriptor} from '@unseenco/theatre-shared/gsap/introspectGsapTweenDetails'
+import type {GsapTargetDescriptor} from '@unseenco/backstage-shared/gsap/introspectGsapTweenDetails'
 import React from 'react'
 import styled from 'styled-components'
 import GsapTargetPill from './GsapTargetPill'

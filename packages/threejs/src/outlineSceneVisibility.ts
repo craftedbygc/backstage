@@ -1,4 +1,4 @@
-import type {ISheet, ISheetObject} from '@unseenco/theatre-core'
+import type {ISheet, ISheetObject} from '@unseenco/backstage'
 import type {Object3D, Scene} from 'three'
 import {
   getSheetObjectForObject3D,

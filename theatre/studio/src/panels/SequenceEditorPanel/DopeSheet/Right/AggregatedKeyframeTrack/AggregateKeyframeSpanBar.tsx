@@ -2,7 +2,7 @@ import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/Se
 import type {SequenceEditorAggregateViewModel} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/sequenceEditorAggregateViewModel'
 import {sequenceEditorAggregateViewModelSheetAddress} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/sequenceEditorAggregateViewModel'
 import type {AggregatedKeyframes} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
-import {useVal} from '@unseenco/theatre-react'
+import {useVal} from '@unseenco/backstage/react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {val} from '@unseenco/theatre-dataverse'
 import React, {useCallback, useMemo} from 'react'

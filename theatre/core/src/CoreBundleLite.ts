@@ -6,7 +6,7 @@ import {getCoreRafDriver} from './coreTicker'
 import type {CoreBits, TheatreCoreBundle} from './coreBundleTypes'
 
 /**
- * Core bundle for `@unseenco/theatre-core-lite` — never imports full `coreExports`.
+ * Core bundle for `@unseenco/theatre-core/core-lite` — never imports full `coreExports`.
  */
 export default class CoreBundleLite implements TheatreCoreBundle {
   private _studio: Studio | undefined = undefined
@@ -23,7 +23,7 @@ export default class CoreBundleLite implements TheatreCoreBundle {
   getBitsForStudio(studio: Studio, callback: (bits: CoreBits) => void) {
     if (this._studio) {
       throw new Error(
-        `@unseenco/theatre-core is already attached to @unseenco/theatre-studio`,
+        `@unseenco/theatre-core is already attached to @unseenco/theatre-core/studio`,
       )
     }
     this._studio = studio

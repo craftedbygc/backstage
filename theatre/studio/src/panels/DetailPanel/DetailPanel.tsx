@@ -2,8 +2,8 @@ import {
   getOutlineSelection,
   getSheetPropsObject,
 } from '@unseenco/theatre-studio/selectors'
-import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
-import {usePrism, useVal} from '@unseenco/theatre-react'
+import {isSheetPropsObjectKey} from '@unseenco/backstage-shared/utils/sheetProps'
+import {usePrism, useVal} from '@unseenco/backstage/react'
 import React, {
   createContext,
   useContext,
@@ -16,7 +16,7 @@ import {
   isProject,
   isSheet,
   isSheetObject,
-} from '@unseenco/theatre-shared/instanceTypes'
+} from '@unseenco/backstage-shared/instanceTypes'
 import {
   panelZIndexes,
   TitleBar_Piece,
@@ -35,7 +35,7 @@ import BasePanel, {
   usePanel,
 } from '@unseenco/theatre-studio/panels/BasePanel/BasePanel'
 import PanelResizeHandle from '@unseenco/theatre-studio/panels/BasePanel/PanelResizeHandle'
-import type {UIPanelId} from '@unseenco/theatre-shared/utils/ids'
+import type {UIPanelId} from '@unseenco/backstage-shared/utils/ids'
 import type {PanelPosition} from '@unseenco/theatre-studio/store/types'
 import {useLayoutMode} from '@unseenco/theatre-studio/UIRoot/LayoutModeContext'
 import DockResizeHandle from '@unseenco/theatre-studio/UIRoot/DockResizeHandle'

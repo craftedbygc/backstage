@@ -1,8 +1,8 @@
-import type {IUtilContext} from '@unseenco/theatre-shared/logger'
+import type {IUtilContext} from '@unseenco/backstage-shared/logger'
 import type {
   $IntentionalAny,
   GenericAction,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import mapValues from 'lodash-es/mapValues'
 
 /**

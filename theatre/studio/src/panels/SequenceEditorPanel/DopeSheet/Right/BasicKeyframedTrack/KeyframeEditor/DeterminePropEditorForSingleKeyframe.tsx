@@ -10,7 +10,7 @@ import type {
 } from './useSingleKeyframeInlineEditorPopover'
 import last from 'lodash-es/last'
 import {useTempTransactionEditingTools} from './useTempTransactionEditingTools'
-import {valueInProp} from '@unseenco/theatre-shared/propTypes/utils'
+import {valueInProp} from '@unseenco/backstage-shared/propTypes/utils'
 import {
   getStudioSequence,
   getStudioTrackSequenceVariant,

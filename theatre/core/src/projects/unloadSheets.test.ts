@@ -1,12 +1,12 @@
 /*
  * @jest-environment jsdom
  */
-import {setupTestSheet} from '@unseenco/theatre-shared/testUtils'
+import {setupTestSheet} from '@unseenco/backstage-shared/testUtils'
 import {getProject} from '@unseenco/theatre-core'
 import {getCoreTicker} from '@unseenco/theatre-core/coreTicker'
 import * as t from '@unseenco/theatre-core/propTypes'
-import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
-import globals from '@unseenco/theatre-shared/globals'
+import type {ObjectAddressKey} from '@unseenco/backstage-shared/utils/ids'
+import globals from '@unseenco/backstage-shared/globals'
 import type {ProjectState_Historic} from '@unseenco/theatre-core/projects/store/storeTypes'
 
 let projectN = 0

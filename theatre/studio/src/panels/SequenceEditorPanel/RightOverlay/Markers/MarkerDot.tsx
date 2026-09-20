@@ -1,6 +1,6 @@
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {val} from '@unseenco/theatre-dataverse'
-import {useVal} from '@unseenco/theatre-react'
+import {useVal} from '@unseenco/backstage/react'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import {
   lockedCursorCssVarName,
@@ -12,8 +12,8 @@ import React, {useMemo, useRef} from 'react'
 import styled from 'styled-components'
 import {useLockFrameStampPosition} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/FrameStampPositionProvider'
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
-import type {SequenceMarkerId} from '@unseenco/theatre-shared/utils/ids'
-import type {SheetAddress} from '@unseenco/theatre-shared/utils/addresses'
+import type {SequenceMarkerId} from '@unseenco/backstage-shared/utils/ids'
+import type {SheetAddress} from '@unseenco/backstage-shared/utils/addresses'
 import useDrag from '@unseenco/theatre-studio/uiComponents/useDrag'
 import type {DragOpts} from '@unseenco/theatre-studio/uiComponents/useDrag'
 import type {CommitOrDiscard} from '@unseenco/theatre-studio/StudioStore/StudioStore'

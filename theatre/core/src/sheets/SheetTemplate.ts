@@ -3,7 +3,7 @@ import SheetObjectTemplate from '@unseenco/theatre-core/sheetObjects/SheetObject
 import type {
   SheetAddress,
   WithoutSheetInstance,
-} from '@unseenco/theatre-shared/utils/addresses'
+} from '@unseenco/backstage-shared/utils/addresses'
 import {Atom} from '@unseenco/theatre-dataverse'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import Sheet from './Sheet'
@@ -16,9 +16,9 @@ import type {
   ObjectAddressKey,
   SheetId,
   SheetInstanceId,
-} from '@unseenco/theatre-shared/utils/ids'
-import type {StrictRecord} from '@unseenco/theatre-shared/utils/types'
-import type {OutlineNamespaceConfig} from '@unseenco/theatre-shared/utils/outlineNamespaces'
+} from '@unseenco/backstage-shared/utils/ids'
+import type {StrictRecord} from '@unseenco/backstage-shared/utils/types'
+import type {OutlineNamespaceConfig} from '@unseenco/backstage-shared/utils/outlineNamespaces'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import {
   DEFAULT_SEQUENCE_VARIANT,
@@ -27,7 +27,7 @@ import {
 import type {
   TransientPropPath,
   StaticPropPath,
-} from '@unseenco/theatre-shared/utils/transientPropPaths'
+} from '@unseenco/backstage-shared/utils/transientPropPaths'
 
 type SheetTemplateObjectTemplateMap = StrictRecord<
   ObjectAddressKey,

@@ -5,13 +5,13 @@ import type {
   GsapTimelineChildClip,
   Keyframe,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
-import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
+import type {SequenceTrackId} from '@unseenco/backstage-shared/utils/ids'
 import type {ISequence} from './TheatreSequence'
 
 const LITE_DEFAULT_LENGTH = 10
 
 /**
- * Inert `ISequence` for `@unseenco/theatre-core-lite` (position 0, no playback).
+ * Inert `ISequence` for `@unseenco/theatre-core/core-lite` (position 0, no playback).
  */
 export default class TheatreSequenceLite implements ISequence {
   readonly type = 'Theatre_Sequence_PublicAPI' as const
@@ -76,7 +76,7 @@ export default class TheatreSequenceLite implements ISequence {
   }> {
     return Promise.reject(
       new Error(
-        'sequence.attachAudio() is not available in @unseenco/theatre-core-lite',
+        'sequence.attachAudio() is not available in @unseenco/theatre-core/core-lite',
       ),
     )
   }

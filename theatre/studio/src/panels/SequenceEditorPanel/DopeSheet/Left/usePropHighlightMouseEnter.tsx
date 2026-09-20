@@ -1,5 +1,5 @@
 import type {SequenceEditorTree_AllRowTypes} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
-import type {PropAddress} from '@unseenco/theatre-shared/utils/addresses'
+import type {PropAddress} from '@unseenco/backstage-shared/utils/addresses'
 import {useLayoutEffect} from 'react'
 import {whatPropIsHighlighted} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/whatPropIsHighlighted'
 

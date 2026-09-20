@@ -1,5 +1,5 @@
 import type {Pointer} from '@unseenco/theatre-dataverse'
-import {useVal} from '@unseenco/theatre-react'
+import {useVal} from '@unseenco/backstage/react'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import React from 'react'
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'

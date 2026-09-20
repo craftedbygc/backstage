@@ -1,5 +1,5 @@
 import {Atom} from '@unseenco/theatre-dataverse'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import {useEffect} from 'react'
 import type {ElementType, MutableRefObject} from 'react'
 import type {DragOpts} from '@unseenco/theatre-studio/uiComponents/useDrag'

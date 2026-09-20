@@ -3,7 +3,7 @@ import type {
   $FixMe,
   SerializableMap,
   SerializableValue,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import type {
   PropTypeConfig,
   PropTypeConfig_Compound,

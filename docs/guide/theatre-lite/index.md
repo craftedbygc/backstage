@@ -8,10 +8,10 @@ Use it when you author layout and design tokens in Studio, export JSON, and driv
 
 | Package | License | Role |
 | --- | --- | --- |
-| [`@unseenco/theatre-core-lite`](https://www.npmjs.com/package/@unseenco/theatre-core-lite) | Apache-2.0 | Production runtime: projects, sheets, objects, prop types, static + variant value resolution, `onValuesChange` / `val`. |
-| [`@unseenco/theatre-studio-lite`](https://www.npmjs.com/package/@unseenco/theatre-studio-lite) | AGPL-3.0-only | Dev-time editor: outline, details, variants, export. Peers `core-lite`. |
+| [`@unseenco/backstage/core-lite`](https://www.npmjs.com/package/@unseenco/backstage/core-lite) | Apache-2.0 | Production runtime: projects, sheets, objects, prop types, static + variant value resolution, `onValuesChange` / `val`. |
+| [`@unseenco/backstage/studio-lite`](https://www.npmjs.com/package/@unseenco/backstage/studio-lite) | AGPL-3.0-only | Dev-time editor: outline, details, variants, export. Peers `core-lite`. |
 
-[`@unseenco/theatre-threejs`](/guide/extensions/threejs.md) stays one package: runtime helpers work with either core; the `/extension` entry peers full Studio or studio-lite.
+[`@unseenco/backstage/threejs`](/guide/extensions/threejs.md) stays one package: runtime helpers work with either core; the `/extension` entry peers full Studio or studio-lite.
 
 Quick API notes live in the package READMEs under `theatre/core-lite/` and `theatre/studio-lite/` in the monorepo. This guide is the narrative walkthrough.
 
@@ -25,10 +25,10 @@ THEATRE_LITE_LOG_BUNDLE_SIZES=1 yarn workspace theatre build:js
 
 | Package | Unminified | Minified | vs full |
 | --- | ---: | ---: | ---: |
-| `@unseenco/theatre-core` | ~318 KiB | ~139 KiB | — |
-| `@unseenco/theatre-core-lite` | ~243 KiB | ~107 KiB | ~24% / ~23% smaller |
-| `@unseenco/theatre-studio` | ~2150 KiB | ~960 KiB | — |
-| `@unseenco/theatre-studio-lite` | ~1602 KiB | ~744 KiB | ~23% smaller |
+| `@unseenco/backstage` | ~318 KiB | ~139 KiB | — |
+| `@unseenco/backstage/core-lite` | ~243 KiB | ~107 KiB | ~24% / ~23% smaller |
+| `@unseenco/backstage/studio` | ~2150 KiB | ~960 KiB | — |
+| `@unseenco/backstage/studio-lite` | ~1602 KiB | ~744 KiB | ~23% smaller |
 
 Lite builds **exclude** sequence interpolation, playback controllers, GSAP/scroll drivers, and the full sequence editor UI from the import graph—not merely disabled at runtime.
 

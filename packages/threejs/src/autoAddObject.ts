@@ -1,4 +1,4 @@
-import type {ISheet, ISheetObject} from '@unseenco/theatre-core'
+import type {ISheet, ISheetObject} from '@unseenco/backstage'
 import type {Material, Mesh, Object3D} from 'three'
 import {autoAddMaterial} from './autoAddMaterial'
 import {buildMaterialProps} from './buildMaterialProps'
@@ -17,7 +17,7 @@ import {
 } from './materialRegistry'
 import type {MaterialBinding} from './materialRegistry'
 import {registerObjectLink} from './objectRegistry'
-import type {TransientPropPath} from '@unseenco/theatre-shared/utils/transientPropPaths'
+import type {TransientPropPath} from '@unseenco/backstage-shared/utils/transientPropPaths'
 
 /** Options for {@link autoAddObject}. */
 export type AutoAddObjectOptions = {

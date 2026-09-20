@@ -1,4 +1,4 @@
-import type {RemoteDomHighlightTarget} from '@unseenco/theatre-shared/gsap/domElementHighlightTarget'
+import type {RemoteDomHighlightTarget} from '@unseenco/backstage-shared/gsap/domElementHighlightTarget'
 
 const channelCache = new Map<string, BroadcastChannel>()
 

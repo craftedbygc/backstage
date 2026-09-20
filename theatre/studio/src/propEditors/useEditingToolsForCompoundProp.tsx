@@ -1,33 +1,33 @@
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import type {ContextMenuItem} from '@unseenco/theatre-studio/uiComponents/chordial/chordialInternals'
-import getDeep from '@unseenco/theatre-shared/utils/getDeep'
-import {usePrism} from '@unseenco/theatre-react'
+import getDeep from '@unseenco/backstage-shared/utils/getDeep'
+import {usePrism} from '@unseenco/backstage/react'
 import type {
   $IntentionalAny,
   SerializablePrimitive,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import {getPointerParts, prism, val} from '@unseenco/theatre-dataverse'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import get from 'lodash-es/get'
 import React from 'react'
 import DefaultOrStaticValueIndicator from './DefaultValueIndicator'
 import type {PropTypeConfig_Compound} from '@unseenco/theatre-core/propTypes'
-import type {PathToProp} from '@unseenco/theatre-shared/utils/addresses'
+import type {PathToProp} from '@unseenco/backstage-shared/utils/addresses'
 import {
   compoundHasSimpleDescendants,
   isPropConfigComposite,
   iteratePropType,
-} from '@unseenco/theatre-shared/propTypes/utils'
-import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
-import {createStudioSheetItemKey} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/propTypes/utils'
+import type {SequenceTrackId} from '@unseenco/backstage-shared/utils/ids'
+import {createStudioSheetItemKey} from '@unseenco/backstage-shared/utils/ids'
 import type {IPropPathToTrackIdTree} from '@unseenco/theatre-core/sheetObjects/SheetObjectTemplate'
-import pointerDeep from '@unseenco/theatre-shared/utils/pointerDeep'
+import pointerDeep from '@unseenco/backstage-shared/utils/pointerDeep'
 import type {NearbyKeyframesControls} from './NextPrevKeyframeCursors'
 import NextPrevKeyframeCursors from './NextPrevKeyframeCursors'
 import {getNearbyKeyframesOfTrack} from './getNearbyKeyframesOfTrack'
 import type {KeyframeWithTrack} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
-import {emptyObject} from '@unseenco/theatre-shared/utils'
+import {emptyObject} from '@unseenco/backstage-shared/utils'
 import {
   getStudioActiveSequenceVariant,
   getStudioSequence,
@@ -39,8 +39,8 @@ import {
   compoundCanRevertToSavedState,
   revertPropToSavedState,
 } from './revertPropToSavedState'
-import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/sequence/trackData'
-import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
+import {isGsapSheetObjectKey} from '@unseenco/backstage-shared/sequence/trackData'
+import {gsapStudioRegistryRevisionPointer} from '@unseenco/backstage-shared/gsap/gsapStudioRegistryRevision'
 import GsapClipSequenceIndicator from '@unseenco/theatre-studio/gsap/GsapClipSequenceIndicator'
 import {getGsapStudioOutlineMenuItems} from '@unseenco/theatre-studio/gsap/gsapOutlineMenuItems'
 import {isTheatreLiteStudio} from '@unseenco/theatre-studio/utils/theatreLiteMode'

@@ -1,4 +1,4 @@
-import type {ISheet, ISheetObject} from '@unseenco/theatre-core'
+import type {ISheet, ISheetObject} from '@unseenco/backstage'
 import type {Camera, Scene} from 'three'
 import {buildCameraProps} from './buildCameraProps'
 import {attachCameraSelectionHitbox} from './cameraHitbox'

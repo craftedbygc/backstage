@@ -4,7 +4,7 @@ import {
   gsapClipIsOnSequence,
   listGsapClipTrackIdsOnSequence,
   resolveGsapAnimationIdForSheetObject,
-} from '@unseenco/theatre-shared/gsap/gsapClipOnSequence'
+} from '@unseenco/backstage-shared/gsap/gsapClipOnSequence'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 

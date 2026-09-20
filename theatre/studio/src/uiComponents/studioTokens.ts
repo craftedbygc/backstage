@@ -13,7 +13,7 @@ import {
   saturate,
   transparentize,
 } from 'polished'
-import userReadableTypeOfValue from '@unseenco/theatre-shared/utils/userReadableTypeOfValue'
+import userReadableTypeOfValue from '@unseenco/backstage-shared/utils/userReadableTypeOfValue'
 
 export const studioFontUi = `system-ui, -apple-system, 'SF Pro Display', sans-serif`
 export const studioFontMono = `ui-monospace, 'SF Mono', Menlo, Consolas, monospace`

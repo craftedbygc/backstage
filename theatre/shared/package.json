@@ -1,5 +1,5 @@
 {
-  "name": "@unseenco/theatre-shared",
+  "name": "@unseenco/backstage-shared",
   "private": true,
   "license": "Apache-2.0",
   "dependencies": {

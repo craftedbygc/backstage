@@ -1,10 +1,10 @@
 import {prism, val} from '@unseenco/theatre-dataverse'
-import {usePrism} from '@unseenco/theatre-react'
-import type {UIPanelId} from '@unseenco/theatre-shared/utils/ids'
+import {usePrism} from '@unseenco/backstage/react'
+import type {UIPanelId} from '@unseenco/backstage-shared/utils/ids'
 import type {
   $IntentionalAny,
   VoidFn,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import type {PanelPosition} from '@unseenco/theatre-studio/store/types'
 import useLockSet from '@unseenco/theatre-studio/uiComponents/useLockSet'

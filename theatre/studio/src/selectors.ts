@@ -7,8 +7,8 @@ import {
   isProject,
   isSheet,
   isSheetObject,
-} from '@unseenco/theatre-shared/instanceTypes'
-import type {SheetInstanceId} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/instanceTypes'
+import type {SheetInstanceId} from '@unseenco/backstage-shared/utils/ids'
 import {uniq} from 'lodash-es'
 import getStudio from './getStudio'
 import type {OutlineSelectable, OutlineSelection} from './store/types'
@@ -17,7 +17,7 @@ import {
   STUDIO_PROJECT_ID,
   isSheetVisibleInOutline,
 } from '@unseenco/theatre-studio/panels/OutlinePanel/outlinePanelUtils'
-import type {ProjectId} from '@unseenco/theatre-shared/utils/ids'
+import type {ProjectId} from '@unseenco/backstage-shared/utils/ids'
 
 export function getSheetPropsObject(
   sheet: Sheet,

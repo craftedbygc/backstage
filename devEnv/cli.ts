@@ -28,28 +28,10 @@ $.quote = function quote(arg) {
   )
 }
 
-const packagesToPublish = [
-  '@unseenco/theatre-core',
-  '@unseenco/theatre-core-lite',
-  '@unseenco/theatre-studio',
-  '@unseenco/theatre-studio-lite',
-  '@unseenco/theatre-dataverse',
-  '@unseenco/theatre-react',
-  '@unseenco/theatre-browser-bundles',
-  '@unseenco/theatre-threejs',
-  '@unseenco/theatre-gsap',
-]
+const packagesToPublish = ['@unseenco/backstage']
 
 const packageDirByName: Record<string, string> = {
-  '@unseenco/theatre-core': 'theatre/core',
-  '@unseenco/theatre-core-lite': 'theatre/core-lite',
-  '@unseenco/theatre-studio': 'theatre/studio',
-  '@unseenco/theatre-studio-lite': 'theatre/studio-lite',
-  '@unseenco/theatre-dataverse': 'packages/dataverse',
-  '@unseenco/theatre-react': 'packages/react',
-  '@unseenco/theatre-browser-bundles': 'packages/browser-bundles',
-  '@unseenco/theatre-threejs': 'packages/threejs',
-  '@unseenco/theatre-gsap': 'packages/gsap',
+  '@unseenco/backstage': 'packages/backstage',
 }
 
 /**
@@ -92,6 +74,7 @@ prog
       '@unseenco/theatre-browser-bundles',
       '@unseenco/theatre-threejs',
       '@unseenco/theatre-gsap',
+      '@unseenco/backstage',
     ]
 
     await Promise.all([
@@ -115,6 +98,7 @@ prog.command('build', 'Builds all the main packages').action(async () => {
         (workspace) => $`yarn workspace ${workspace} run build`,
       ),
     ])
+    await $`yarn workspace @unseenco/backstage run build`
   }
 
   void build()
@@ -154,6 +138,7 @@ prog
       'packages/browser-bundles',
       'packages/threejs',
       'packages/gsap',
+      'packages/backstage',
     ]
 
     // our packages will check for this env variable to make sure their
@@ -239,6 +224,7 @@ prog
             : $`yarn workspace ${workspace} run build`,
         ),
       )
+      await $`yarn workspace @unseenco/backstage run build`
 
       // temporarily rolling back the version assignments to make sure they don't show
       // up in `$ git status`. (would've been better to just ignore hese particular changes
@@ -342,7 +328,9 @@ prog
       const fromIndex = packagesToPublish.indexOf(opts.from)
       if (fromIndex === -1) {
         throw new Error(
-          `Unknown package "${opts.from}". Expected one of: ${packagesToPublish.join(', ')}`,
+          `Unknown package "${
+            opts.from
+          }". Expected one of: ${packagesToPublish.join(', ')}`,
         )
       }
       toPublish = packagesToPublish.slice(fromIndex)

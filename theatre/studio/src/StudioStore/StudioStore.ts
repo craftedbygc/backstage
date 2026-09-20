@@ -11,11 +11,11 @@ import type {
   StudioEphemeralState,
   StudioHistoricState,
 } from '@unseenco/theatre-studio/store/types'
-import type {Deferred} from '@unseenco/theatre-shared/utils/defer'
-import {defer} from '@unseenco/theatre-shared/utils/defer'
+import type {Deferred} from '@unseenco/backstage-shared/utils/defer'
+import {defer} from '@unseenco/backstage-shared/utils/defer'
 import atomFromReduxStore from '@unseenco/theatre-studio/utils/redux/atomFromReduxStore'
 import configureStore from '@unseenco/theatre-studio/utils/redux/configureStore'
-import type {VoidFn} from '@unseenco/theatre-shared/utils/types'
+import type {VoidFn} from '@unseenco/backstage-shared/utils/types'
 import type {Atom, Pointer} from '@unseenco/theatre-dataverse'
 import type {Draft} from 'immer'
 import {createDraft, finishDraft} from 'immer'
@@ -35,16 +35,16 @@ import {generateDiskStateRevision} from './generateDiskStateRevision'
 import {
   createTransientPropPathsLookup,
   stripTransientPropsFromOnDiskState,
-} from '@unseenco/theatre-shared/utils/transientPropPaths'
+} from '@unseenco/backstage-shared/utils/transientPropPaths'
 import {
   createObjectPropConfigLookup,
   stripDefaultPropValuesFromOnDiskState,
-} from '@unseenco/theatre-shared/utils/defaultPropValues'
+} from '@unseenco/backstage-shared/utils/defaultPropValues'
 import {stripSequenceDataFromOnDiskState} from './stripSequenceDataFromOnDiskState'
 import {isTheatreLiteStudio} from '@unseenco/theatre-studio/utils/theatreLiteMode'
 
 import createTransactionPrivateApi from './createTransactionPrivateApi'
-import type {ProjectId} from '@unseenco/theatre-shared/utils/ids'
+import type {ProjectId} from '@unseenco/backstage-shared/utils/ids'
 
 export type Drafts = {
   historic: Draft<StudioHistoricState>

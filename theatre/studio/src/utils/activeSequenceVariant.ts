@@ -9,12 +9,12 @@ import type {IStateEditors} from '@unseenco/theatre-studio/store/stateEditors'
 import type {
   WithoutSheetInstance,
   SheetAddress,
-} from '@unseenco/theatre-shared/utils/addresses'
+} from '@unseenco/backstage-shared/utils/addresses'
 import type {
   SequenceTrackId,
   SheetId,
   SheetInstanceId,
-} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
 import {val} from '@unseenco/theatre-dataverse'
 
 const DEFAULT_SEQUENCE_VARIANT = 'default' as SequenceVariantId

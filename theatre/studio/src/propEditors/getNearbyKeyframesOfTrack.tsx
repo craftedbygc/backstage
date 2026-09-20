@@ -1,6 +1,6 @@
 import type {TrackData} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
-import {createStudioSheetItemKey} from '@unseenco/theatre-shared/utils/ids'
+import {createStudioSheetItemKey} from '@unseenco/backstage-shared/utils/ids'
 import type {
   KeyframeWithTrack,
   TrackWithId,

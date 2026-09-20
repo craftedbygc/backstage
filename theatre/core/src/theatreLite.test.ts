@@ -4,22 +4,22 @@
  * Run with compile-time lite gates:
  *   THEATRE_LITE_TEST=1 yarn test theatre/core/src/theatreLite.test.ts
  */
-import {setupTestSheet} from '@unseenco/theatre-shared/testUtils'
-import {encodePathToProp} from '@unseenco/theatre-shared/utils/addresses'
+import {setupTestSheet} from '@unseenco/backstage-shared/testUtils'
+import {encodePathToProp} from '@unseenco/backstage-shared/utils/addresses'
 import {
   asKeyframeId,
   asSequenceTrackId,
-} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
 import type {
   ObjectAddressKey,
   SequenceTrackId,
-} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
 import {iterateOver, prism} from '@unseenco/theatre-dataverse'
 
 const describeLite =
   process.env.THEATRE_LITE_TEST === '1' ? describe : describe.skip
 
-describeLite('@unseenco/theatre-core-lite value resolution', () => {
+describeLite('@unseenco/theatre-core/core-lite value resolution', () => {
   test('ignores sequence tracks; static overrides and variants still apply', async () => {
     const {objPublicAPI, sheet} = await setupTestSheet({
       staticOverrides: {

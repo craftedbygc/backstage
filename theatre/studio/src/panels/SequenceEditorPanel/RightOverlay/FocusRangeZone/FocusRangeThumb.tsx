@@ -1,10 +1,10 @@
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {prism, val} from '@unseenco/theatre-dataverse'
-import {usePrism, useVal} from '@unseenco/theatre-react'
+import {usePrism, useVal} from '@unseenco/backstage/react'
 import type {
   $IntentionalAny,
   IRange,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import {

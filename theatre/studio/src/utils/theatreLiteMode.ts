@@ -19,7 +19,7 @@ export function isTheatreLiteStudioCompileTime(): boolean {
   return typeof __THEATRE_LITE__ !== 'undefined' && __THEATRE_LITE__ === true
 }
 
-/** True when loaded via `@unseenco/theatre-studio-lite` from source without esbuild lite define. */
+/** True when loaded via `@unseenco/backstage/studio-lite` from source without esbuild lite define. */
 export function isTheatreLiteStudioForceFromEntry(): boolean {
   if (typeof globalThis === 'undefined') {
     return false

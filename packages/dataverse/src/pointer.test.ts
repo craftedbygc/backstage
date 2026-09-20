@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {pointer, getPointerParts, Atom} from '@unseenco/theatre-dataverse'
+import {pointer, getPointerParts, Atom} from '@unseenco/backstage/dataverse'
 
 describe(`pointer`, () => {
   test(`Basic useage of pointer`, async () => {

@@ -2,12 +2,12 @@ import type {AggregatedKeyframes} from '@unseenco/theatre-studio/panels/Sequence
 import type {KeyframeWithTrack} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
 import type {Keyframe} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
-import type {SheetObjectAddress} from '@unseenco/theatre-shared/utils/addresses'
-import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
+import type {SheetObjectAddress} from '@unseenco/backstage-shared/utils/addresses'
+import type {SequenceTrackId} from '@unseenco/backstage-shared/utils/ids'
 import type {CommitOrDiscard} from '@unseenco/theatre-studio/StudioStore/StudioStore'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import {clampSequenceEditorPosition} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/sequenceEditLimits'
-import {transformNumber} from '@unseenco/theatre-shared/utils/transformNumber'
+import {transformNumber} from '@unseenco/backstage-shared/utils/transformNumber'
 import {aggregateKeyframeSpanInUnitSpace} from './aggregateKeyframeSpanLayout'
 
 type TrackKeyframeBatch = {

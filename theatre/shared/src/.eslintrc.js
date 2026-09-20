@@ -5,7 +5,7 @@ module.exports = {
       {
         selector: `ImportDeclaration[importKind!='type'][source.value=/@unseenco\\u002Ftheatre-(core|studio)/]`,
         message:
-          '@unseenco/theatre-shared may not import @unseenco/theatre-core or @unseenco/theatre-studio modules except via type imports.',
+          '@unseenco/backstage-shared may not import @unseenco/backstage or @unseenco/backstage/studio modules except via type imports.',
       },
     ],
   },

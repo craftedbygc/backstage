@@ -1,5 +1,5 @@
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
-import {usePrism, useVal} from '@unseenco/theatre-react'
+import {usePrism, useVal} from '@unseenco/backstage/react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {val} from '@unseenco/theatre-dataverse'
 import React from 'react'

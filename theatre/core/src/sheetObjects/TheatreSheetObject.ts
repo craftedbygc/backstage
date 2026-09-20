@@ -1,13 +1,13 @@
 import {privateAPI, setPrivateAPI} from '@unseenco/theatre-core/privateAPIs'
 import type {IProject} from '@unseenco/theatre-core/projects/TheatreProject'
 import type {ISheet} from '@unseenco/theatre-core/sheets/TheatreSheet'
-import type {SheetObjectAddress} from '@unseenco/theatre-shared/utils/addresses'
-import SimpleCache from '@unseenco/theatre-shared/utils/SimpleCache'
+import type {SheetObjectAddress} from '@unseenco/backstage-shared/utils/addresses'
+import SimpleCache from '@unseenco/backstage-shared/utils/SimpleCache'
 import type {
   $FixMe,
   DeepPartialOfSerializableValue,
   VoidFn,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import type {Prism, Pointer} from '@unseenco/theatre-dataverse'
 import {prism, val} from '@unseenco/theatre-dataverse'
 import type SheetObject from './SheetObject'
@@ -26,7 +26,7 @@ import {mergeUnsanitizedObjectProps} from './unsanitizedObjectProps'
 import type {
   TransientPropPath,
   StaticPropPath,
-} from '@unseenco/theatre-shared/utils/transientPropPaths'
+} from '@unseenco/backstage-shared/utils/transientPropPaths'
 
 export type SheetObjectValuesChangeMeta = {
   /**

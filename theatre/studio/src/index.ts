@@ -7,8 +7,8 @@
 import {setStudio} from '@unseenco/theatre-studio/getStudio'
 import {Studio} from '@unseenco/theatre-studio/Studio'
 
-import * as globalVariableNames from '@unseenco/theatre-shared/globalVariableNames'
-import type {$FixMe} from '@unseenco/theatre-shared/utils/types'
+import * as globalVariableNames from '@unseenco/backstage-shared/globalVariableNames'
+import type {$FixMe} from '@unseenco/backstage-shared/utils/types'
 import StudioBundle from './StudioBundle'
 import type CoreBundle from '@unseenco/theatre-core/CoreBundle'
 import type {IStudio} from '@unseenco/theatre-studio/TheatreStudio'
@@ -39,10 +39,10 @@ function registerStudioBundle() {
       typeof existingStudioBundle.version === 'string'
     ) {
       throw new Error(
-        `It seems that the module '@unseenco/theatre-studio' is loaded more than once. This could have two possible causes:\n` +
+        `It seems that the module '@unseenco/backstage/studio' is loaded more than once. This could have two possible causes:\n` +
           `1. You might have two separate versions of Theatre.js in node_modules.\n` +
           `2. Or this might be a bundling misconfiguration, in case you're using a bundler like Webpack/ESBuild/Rollup.\n\n` +
-          `Note that it **is okay** to import '@unseenco/theatre-studio' multiple times. But those imports should point to the same module.`,
+          `Note that it **is okay** to import '@unseenco/backstage/studio' multiple times. But those imports should point to the same module.`,
       )
     } else {
       throw new Error(
@@ -89,8 +89,8 @@ export {
 } from '@unseenco/theatre-studio/remoteEditor'
 
 /**
- * Returns the Studio singleton. Extension packages (e.g. `@unseenco/theatre-threejs`)
- * import this from `@unseenco/theatre-studio` so they share the same instance as the
+ * Returns the Studio singleton. Extension packages (e.g. `@unseenco/theatre-core/threejs`)
+ * import this from `@unseenco/backstage/studio` so they share the same instance as the
  * default export.
  */
 export {default as getStudio, setStudio} from './getStudio'

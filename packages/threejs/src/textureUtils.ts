@@ -1,4 +1,4 @@
-import type {Asset} from '@unseenco/theatre-shared/utils/assets'
+import type {Asset} from '@unseenco/backstage-shared/utils/assets'
 import {DataTexture, RepeatWrapping, TextureLoader} from 'three'
 import type {Material, Texture} from 'three'
 import type {UniformWithGui} from './parseUniformGui'

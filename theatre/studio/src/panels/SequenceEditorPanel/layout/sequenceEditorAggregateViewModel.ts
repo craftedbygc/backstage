@@ -4,7 +4,7 @@ import type {
   SequenceEditorTree_Sheet,
   SequenceEditorTree_SheetObject,
 } from './tree'
-import type {SheetAddress} from '@unseenco/theatre-shared/utils/addresses'
+import type {SheetAddress} from '@unseenco/backstage-shared/utils/addresses'
 
 export type SequenceEditorAggregateViewModel =
   | SequenceEditorTree_PropWithChildren

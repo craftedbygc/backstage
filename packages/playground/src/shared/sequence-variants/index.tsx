@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react'
 import ReactDOM from 'react-dom/client'
-import {getProject, types} from '@unseenco/theatre-core'
-import studio from '@unseenco/theatre-studio'
+import {getProject, types} from '@unseenco/backstage'
+import studio from '@unseenco/backstage/studio'
 
 studio.initialize()
 

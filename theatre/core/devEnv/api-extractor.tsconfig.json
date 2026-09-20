@@ -4,7 +4,14 @@
   "compilerOptions": {
     "paths": {
       "@unseenco/theatre-core/*": ["../../.temp/declarations/core/src/*"],
-      "@unseenco/theatre-shared/*": ["../../.temp/declarations/shared/src/*"]
+      "@unseenco/theatre-dataverse": [
+        "../../.temp/declarations/dataverse/src/index.d.ts"
+      ],
+      "@unseenco/theatre-dataverse/*": [
+        "../../.temp/declarations/dataverse/src/*"
+      ],
+      "@unseenco/theatre-studio/*": ["../../studio/src/*"],
+      "@unseenco/backstage-shared/*": ["../../.temp/declarations/shared/src/*"]
     }
   }
 }

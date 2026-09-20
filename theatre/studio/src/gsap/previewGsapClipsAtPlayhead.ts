@@ -1,8 +1,8 @@
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
-import type {ObjectAddressKey, SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
+import type {ObjectAddressKey, SequenceTrackId} from '@unseenco/backstage-shared/utils/ids'
 import {val} from '@unseenco/theatre-dataverse'
-import {sheetObjectAddressKeyFromParts} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
-import {syncGsapClipsAtSequencePosition} from '@unseenco/theatre-shared/gsap/syncGsapClipsAtSequencePosition'
+import {sheetObjectAddressKeyFromParts} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
+import {syncGsapClipsAtSequencePosition} from '@unseenco/backstage-shared/gsap/syncGsapClipsAtSequencePosition'
 
 export type GsapClipTimingOverride = {
   trackId: SequenceTrackId

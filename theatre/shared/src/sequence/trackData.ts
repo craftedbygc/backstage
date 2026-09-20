@@ -9,7 +9,7 @@ export {
   getConfiguredGsapSheetObjectNamespace,
   isGsapSheetObjectKey,
   setConfiguredGsapSheetObjectNamespace,
-} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
+} from '@unseenco/backstage-shared/gsap/gsapSheetObjectKey'
 
 export function isBasicKeyframedTrack(
   track: TrackData,

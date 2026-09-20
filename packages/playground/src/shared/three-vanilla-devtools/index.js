@@ -1,12 +1,12 @@
 import {Clock} from 'three'
-import studio from '@unseenco/theatre-studio'
+import studio from '@unseenco/backstage/studio'
 import {
   createRafDriver,
   getProject,
   setCoreRafDriver,
-} from '@unseenco/theatre-core'
-import {configureTheatreThreejs} from '@unseenco/theatre-threejs'
-import {buildExtension} from '@unseenco/theatre-threejs/extension'
+} from '@unseenco/backstage'
+import {configureTheatreThreejs} from '@unseenco/backstage/threejs'
+import {buildExtension} from '@unseenco/backstage/threejs/extension'
 import {bindDockedThreeViewport} from '../utils/bindDockedThreeViewport'
 import {createThreeScenes} from './ThreeScene.js'
 import state from './three-basic-vanilla-devtools.theatre-project-state.json'

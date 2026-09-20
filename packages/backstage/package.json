@@ -1,0 +1,157 @@
+{
+  "name": "@unseenco/backstage",
+  "version": "0.6.0",
+  "license": "SEE LICENSE IN LICENSE",
+  "description": "Motion design editor for the web — unified package",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/craftedbygc/theatre",
+    "directory": "packages/backstage"
+  },
+  "author": {
+    "name": "TheaterJS Oy",
+    "email": "hello@theatrejs.com",
+    "url": "https://unseen-theatre.netlify.app"
+  },
+  "type": "commonjs",
+  "files": [
+    "dist/**",
+    "LICENSE*"
+  ],
+  "sideEffects": [
+    "./dist/core/index.js",
+    "./dist/core/index.mjs",
+    "./dist/core-lite/index.js",
+    "./dist/core-lite/index.mjs"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.mjs",
+      "require": "./dist/core/index.js"
+    },
+    "./privateAPIs": {
+      "types": "./dist/core/privateAPIs.d.ts",
+      "import": "./dist/core/privateAPIs.mjs",
+      "require": "./dist/core/privateAPIs.js"
+    },
+    "./lenis": {
+      "types": "./dist/core/lenis.d.ts",
+      "import": "./dist/core/lenis.mjs",
+      "require": "./dist/core/lenis.js"
+    },
+    "./core-lite": {
+      "types": "./dist/core-lite/index.d.ts",
+      "import": "./dist/core-lite/index.mjs",
+      "require": "./dist/core-lite/index.js"
+    },
+    "./core-lite/privateAPIs": {
+      "types": "./dist/core-lite/privateAPIs.d.ts",
+      "import": "./dist/core-lite/privateAPIs.mjs",
+      "require": "./dist/core-lite/privateAPIs.js"
+    },
+    "./studio": {
+      "types": "./dist/studio/index.d.ts",
+      "import": "./dist/studio/index.mjs",
+      "require": "./dist/studio/index.js"
+    },
+    "./studio/getStudio": {
+      "types": "./dist/studio/getStudio.d.ts",
+      "import": "./dist/studio/getStudio.mjs",
+      "require": "./dist/studio/getStudio.js"
+    },
+    "./studio/propEditors/projectHasDivergedFromSavedState": {
+      "types": "./dist/studio/propEditors/projectHasDivergedFromSavedState.d.ts",
+      "import": "./dist/studio/propEditors/projectHasDivergedFromSavedState.mjs",
+      "require": "./dist/studio/propEditors/projectHasDivergedFromSavedState.js"
+    },
+    "./studio/propEditors/objectHasDivergedFromSavedState": {
+      "types": "./dist/studio/propEditors/objectHasDivergedFromSavedState.d.ts",
+      "import": "./dist/studio/propEditors/objectHasDivergedFromSavedState.mjs",
+      "require": "./dist/studio/propEditors/objectHasDivergedFromSavedState.js"
+    },
+    "./studio-lite": {
+      "types": "./dist/studio-lite/index.d.ts",
+      "import": "./dist/studio-lite/index.mjs",
+      "require": "./dist/studio-lite/index.js"
+    },
+    "./studio-lite/getStudio": {
+      "types": "./dist/studio-lite/getStudio.d.ts",
+      "import": "./dist/studio-lite/getStudio.mjs",
+      "require": "./dist/studio-lite/getStudio.js"
+    },
+    "./studio-lite/propEditors/projectHasDivergedFromSavedState": {
+      "types": "./dist/studio-lite/propEditors/projectHasDivergedFromSavedState.d.ts",
+      "import": "./dist/studio-lite/propEditors/projectHasDivergedFromSavedState.mjs",
+      "require": "./dist/studio-lite/propEditors/projectHasDivergedFromSavedState.js"
+    },
+    "./studio-lite/propEditors/objectHasDivergedFromSavedState": {
+      "types": "./dist/studio-lite/propEditors/objectHasDivergedFromSavedState.d.ts",
+      "import": "./dist/studio-lite/propEditors/objectHasDivergedFromSavedState.mjs",
+      "require": "./dist/studio-lite/propEditors/objectHasDivergedFromSavedState.js"
+    },
+    "./dataverse": {
+      "types": "./dist/dataverse/index.d.ts",
+      "import": "./dist/dataverse/index.mjs",
+      "require": "./dist/dataverse/index.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.mjs",
+      "require": "./dist/react/index.js"
+    },
+    "./threejs": {
+      "types": "./dist/threejs/index.d.ts",
+      "import": "./dist/threejs/index.mjs",
+      "require": "./dist/threejs/index.js"
+    },
+    "./threejs/extension": {
+      "types": "./dist/threejs/extension.d.ts",
+      "import": "./dist/threejs/extension.mjs",
+      "require": "./dist/threejs/extension.js"
+    },
+    "./gsap": {
+      "types": "./dist/gsap/index.d.ts",
+      "import": "./dist/gsap/index.mjs",
+      "require": "./dist/gsap/index.js"
+    },
+    "./browser-bundles/*": "./dist/browser-bundles/*"
+  },
+  "dependencies": {
+    "lodash-es": "^4.17.21"
+  },
+  "peerDependencies": {
+    "gsap": ">=3.0.0",
+    "lenis": ">=1.0.0",
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0",
+    "three": ">=0.185.0"
+  },
+  "peerDependenciesMeta": {
+    "gsap": {
+      "optional": true
+    },
+    "lenis": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "three": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^15.12.3",
+    "esbuild-register": "^3.4.2",
+    "typescript": "5.3.3"
+  },
+  "scripts": {
+    "build": "node -r esbuild-register ./devEnv/assemble.ts",
+    "clean": "rm -rf ./dist",
+    "prepublish": "node ../../devEnv/ensurePublishing.js"
+  }
+}

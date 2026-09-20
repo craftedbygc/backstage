@@ -1,4 +1,4 @@
-import {useVal} from '@unseenco/theatre-react'
+import {useVal} from '@unseenco/backstage/react'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import React from 'react'
 import styled from 'styled-components'
@@ -6,9 +6,9 @@ import {generateDiskStateRevision} from '@unseenco/theatre-studio/StudioStore/ge
 import type {ProjectEphemeralState} from '@unseenco/theatre-core/projects/store/storeTypes'
 import useTooltip from '@unseenco/theatre-studio/uiComponents/Popover/useTooltip'
 import BasicTooltip from '@unseenco/theatre-studio/uiComponents/Popover/BasicTooltip'
-import type {$FixMe} from '@unseenco/theatre-shared/utils/types'
+import type {$FixMe} from '@unseenco/backstage-shared/utils/types'
 import DetailPanelButton from '@unseenco/theatre-studio/uiComponents/DetailPanelButton'
-import type {ProjectId} from '@unseenco/theatre-shared/utils/ids'
+import type {ProjectId} from '@unseenco/backstage-shared/utils/ids'
 
 const Container = styled.div`
   padding: 8px 10px;

@@ -1,13 +1,13 @@
-# `@unseenco/theatre-studio-lite`
+# `@unseenco/backstage/studio-lite`
 
 AGPL dev-time editor for static prop authoring and export. No sequence editor, keyframes, or “Sequence this prop”.
 
 Built from `theatre/studio/src` with `__THEATRE_LITE__` and published from `dist/` (copied from `theatre/studio/dist/index-lite.*` during `yarn workspace theatre build`).
 
-Peers `@unseenco/theatre-core-lite`.
+Peers `@unseenco/backstage/core-lite`.
 
 ```ts
-import studio from '@unseenco/theatre-studio-lite'
+import studio from '@unseenco/backstage/studio-lite'
 
 studio.initialize()
 ```
@@ -26,8 +26,8 @@ Published `dist/index.js` is **minified** (same as full studio). Esbuild also pr
 
 | Package | Unminified | Minified (published `dist`) | vs full studio |
 | --- | ---: | ---: | ---: |
-| `@unseenco/theatre-studio` | ~2150 KiB | ~960 KiB | — |
-| `@unseenco/theatre-studio-lite` | ~1602 KiB | **~744 KiB** | **~23% smaller (~216 KiB)** |
+| `@unseenco/backstage/studio` | ~2150 KiB | ~960 KiB | — |
+| `@unseenco/backstage/studio-lite` | ~1602 KiB | **~744 KiB** | **~23% smaller (~216 KiB)** |
 
 ### Excluded from the lite import graph (esbuild stubs)
 

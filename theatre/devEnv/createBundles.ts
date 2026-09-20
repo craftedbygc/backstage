@@ -43,7 +43,7 @@ function writeCorePrivateAPIsShim(pathToPackage: string) {
   )
 }
 
-/** Re-export shims so deep imports (e.g. from published `@unseenco/theatre-threejs`) resolve to the main bundle singleton. */
+/** Re-export shims so deep imports (e.g. from published `@unseenco/backstage/threejs`) resolve to the main bundle singleton. */
 function writeStudioSubpathShims(
   dist: string,
   indexBasename: 'index' | 'index-lite',
@@ -269,7 +269,7 @@ async function logTheatreLiteBundleSizesIfRequested() {
           ? {'process.env.NODE_ENV': JSON.stringify('production')}
           : {}),
       },
-      external: ['@unseenco/theatre-dataverse'],
+      external: ['@unseenco/backstage/dataverse'],
       format: 'cjs',
     }
 
@@ -295,15 +295,12 @@ async function logTheatreLiteBundleSizesIfRequested() {
                   'sheets/sheetPageScrollAndGsapFull.liteStub.ts',
                 ),
               }))
-              build.onResolve(
-                {filter: /sheetObjectSequencedFull$/},
-                () => ({
-                  path: path.join(
-                    coreSrc,
-                    'sheetObjects/sheetObjectSequencedFull.liteStub.ts',
-                  ),
-                }),
-              )
+              build.onResolve({filter: /sheetObjectSequencedFull$/}, () => ({
+                path: path.join(
+                  coreSrc,
+                  'sheetObjects/sheetObjectSequencedFull.liteStub.ts',
+                ),
+              }))
             },
           },
         ]
@@ -329,7 +326,11 @@ async function logTheatreLiteBundleSizesIfRequested() {
       : 0
 
     console.log(
-      `[theatre-lite sizes] ${label}: unminified ${formatKiB(unminBytes)} KiB, minified ${formatKiB(minBytes)} KiB (on-disk dist ${formatKiB(builtBytes)} KiB)`,
+      `[theatre-lite sizes] ${label}: unminified ${formatKiB(
+        unminBytes,
+      )} KiB, minified ${formatKiB(minBytes)} KiB (on-disk dist ${formatKiB(
+        builtBytes,
+      )} KiB)`,
     )
   }
 }
@@ -387,14 +388,14 @@ export async function createBundles(watch: boolean) {
         __IS_VISUAL_REGRESSION_TESTING: 'false',
       },
       external: [
-        '@unseenco/theatre-dataverse',
+        '@unseenco/backstage/dataverse',
         /**
          * Prevents double-bundling react.
          *
          * @remarks
          * Ideally we'd want to just bundle our own fixed version of react to keep things
          * simple, but for now we keep react external because we're exposing these
-         * react-dependant API from \@unseenco/theatre-studio:
+         * react-dependant API from \@unseenco/backstage/studio:
          *
          * - `ToolbarIconButton`
          * - `IStudio['extend']({globalToolbar: {component}})`
@@ -431,15 +432,12 @@ export async function createBundles(watch: boolean) {
                   'sheets/sheetPageScrollAndGsapFull.liteStub.ts',
                 ),
               }))
-              build.onResolve(
-                {filter: /sheetObjectSequencedFull$/},
-                () => ({
-                  path: path.join(
-                    coreSrc,
-                    'sheetObjects/sheetObjectSequencedFull.liteStub.ts',
-                  ),
-                }),
-              )
+              build.onResolve({filter: /sheetObjectSequencedFull$/}, () => ({
+                path: path.join(
+                  coreSrc,
+                  'sheetObjects/sheetObjectSequencedFull.liteStub.ts',
+                ),
+              }))
             },
           },
         ]
@@ -452,9 +450,7 @@ export async function createBundles(watch: boolean) {
 
       if (target.theatreLite) {
         const studioSrc = path.join(pathToPackage, 'src')
-        esbuildConfig.plugins = [
-          createStudioLiteEsbuildStubsPlugin(studioSrc),
-        ]
+        esbuildConfig.plugins = [createStudioLiteEsbuildStubsPlugin(studioSrc)]
       }
     }
 
@@ -539,7 +535,7 @@ export async function createBundles(watch: boolean) {
         __THEATRE_LITE__: 'false',
         __IS_VISUAL_REGRESSION_TESTING: 'false',
       },
-      external: ['@unseenco/theatre-dataverse'],
+      external: ['@unseenco/backstage/dataverse'],
       platform: 'neutral',
       mainFields: ['browser', 'module', 'main'],
       conditions: ['browser', 'node'],

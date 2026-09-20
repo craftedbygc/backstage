@@ -1,4 +1,4 @@
-import {validateAndSanitiseSlashedPathOrThrow} from '@unseenco/theatre-shared/utils/slashedPaths'
+import {validateAndSanitiseSlashedPathOrThrow} from '@unseenco/backstage-shared/utils/slashedPaths'
 
 /**
  * Theatre sheet object key for a GSAP outline proxy (`Namespace / label`),

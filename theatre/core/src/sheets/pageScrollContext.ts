@@ -2,7 +2,7 @@ export type {
   PageScrollContext,
   PageScrollScroller,
   PageScrollAxis,
-} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+} from '@unseenco/backstage-shared/sheets/pageScrollContext'
 export {
   defaultPageScrollContext,
   getActivePageScrollContext,
@@ -14,4 +14,4 @@ export {
   resolvePageScrollAxis,
   resolvePageScrollScroller,
   setActivePageScrollContext,
-} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+} from '@unseenco/backstage-shared/sheets/pageScrollContext'

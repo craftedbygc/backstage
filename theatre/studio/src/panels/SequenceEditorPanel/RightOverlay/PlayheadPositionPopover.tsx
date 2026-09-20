@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import type {BasicNumberInputNudgeFn} from '@unseenco/theatre-studio/uiComponents/form/BasicNumberInput'
 import BasicNumberInput from '@unseenco/theatre-studio/uiComponents/form/BasicNumberInput'
 import {propNameTextCSS} from '@unseenco/theatre-studio/propEditors/utils/propNameTextCSS'

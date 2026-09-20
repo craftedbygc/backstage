@@ -1,10 +1,10 @@
 import {prism, val} from '@unseenco/theatre-dataverse'
-import type {PaneInstanceId} from '@unseenco/theatre-shared/utils/ids'
-import SimpleCache from '@unseenco/theatre-shared/utils/SimpleCache'
+import type {PaneInstanceId} from '@unseenco/backstage-shared/utils/ids'
+import SimpleCache from '@unseenco/backstage-shared/utils/SimpleCache'
 import type {
   $IntentionalAny,
   StrictRecord,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import type {Studio} from './Studio'
 import type {PaneInstance} from './TheatreStudio'
 

@@ -2,16 +2,16 @@ import type {
   IPlaybackDirection,
   IPlaybackRange,
 } from '@unseenco/theatre-core/sequences/Sequence'
-import {defer} from '@unseenco/theatre-shared/utils/defer'
-import {InvalidArgumentError} from '@unseenco/theatre-shared/utils/errors'
-import noop from '@unseenco/theatre-shared/utils/noop'
+import {defer} from '@unseenco/backstage-shared/utils/defer'
+import {InvalidArgumentError} from '@unseenco/backstage-shared/utils/errors'
+import noop from '@unseenco/backstage-shared/utils/noop'
 import type {Prism, Pointer, Ticker} from '@unseenco/theatre-dataverse'
 import {Atom} from '@unseenco/theatre-dataverse'
 import type {
   IPlaybackController,
   IPlaybackState,
 } from './DefaultPlaybackController'
-import {notify} from '@unseenco/theatre-shared/notify'
+import {notify} from '@unseenco/backstage-shared/notify'
 
 export default class AudioPlaybackController implements IPlaybackController {
   _mainGain: GainNode

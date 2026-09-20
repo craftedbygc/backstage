@@ -1,12 +1,12 @@
 /*
  * @jest-environment jsdom
  */
-import type {ObjectAddressKey, SheetId} from '@unseenco/theatre-shared/utils/ids'
+import type {ObjectAddressKey, SheetId} from '@unseenco/backstage-shared/utils/ids'
 import {
   setupTestProject,
   setupTestSheet,
-} from '@unseenco/theatre-shared/testUtils'
-import globals from '@unseenco/theatre-shared/globals'
+} from '@unseenco/backstage-shared/testUtils'
+import globals from '@unseenco/backstage-shared/globals'
 import type {ProjectState_Historic} from '@unseenco/theatre-core/projects/store/storeTypes'
 import {
   projectHasDivergedFromSavedState,

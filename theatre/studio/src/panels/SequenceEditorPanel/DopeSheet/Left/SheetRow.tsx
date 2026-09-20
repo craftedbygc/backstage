@@ -1,5 +1,5 @@
 import type {SequenceEditorTree_Sheet} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import React from 'react'
 import AnyCompositeRow from './AnyCompositeRow'
 import {setCollapsedSheetItem} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/setCollapsedSheetObjectOrCompoundProp'

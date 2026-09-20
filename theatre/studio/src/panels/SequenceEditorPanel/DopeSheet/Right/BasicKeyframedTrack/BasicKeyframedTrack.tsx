@@ -3,7 +3,7 @@ import type {BasicKeyframedTrack} from '@unseenco/theatre-core/projects/store/ty
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import type {SequenceEditorTree_PrimitiveProp} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import type {Keyframe} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
-import {usePrism, useVal} from '@unseenco/theatre-react'
+import {usePrism, useVal} from '@unseenco/backstage/react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {val} from '@unseenco/theatre-dataverse'
 import React, {useMemo} from 'react'
@@ -13,12 +13,12 @@ import type {IContextMenuItem} from '@unseenco/theatre-studio/uiComponents/simpl
 import useContextMenu from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
 import getStudio from '@unseenco/theatre-studio/getStudio'
-import {arePathsEqual} from '@unseenco/theatre-shared/utils/addresses'
+import {arePathsEqual} from '@unseenco/backstage-shared/utils/addresses'
 import type {KeyframeWithPathToPropFromCommonRoot} from '@unseenco/theatre-studio/store/types'
 import KeyframeSnapTarget, {
   snapPositionsStateD,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
-import {createStudioSheetItemKey} from '@unseenco/theatre-shared/utils/ids'
+import {createStudioSheetItemKey} from '@unseenco/backstage-shared/utils/ids'
 import {
   getStudioSequence,
   getStudioTrackSequenceVariant,

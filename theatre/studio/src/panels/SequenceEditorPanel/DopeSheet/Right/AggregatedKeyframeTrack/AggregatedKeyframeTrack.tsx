@@ -10,7 +10,7 @@ import type {
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import {collectSheetObjectsFromSheetChildren} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import {isSequenceEditorSheetScopedAggregateViewModel} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/sequenceEditorAggregateViewModel'
-import {usePrism, useVal} from '@unseenco/theatre-react'
+import {usePrism, useVal} from '@unseenco/backstage/react'
 import type {Prism, Pointer} from '@unseenco/theatre-dataverse'
 import {prism, val, pointerToPrism} from '@unseenco/theatre-dataverse'
 import React, {useMemo} from 'react'
@@ -34,21 +34,21 @@ import {
   pointerToActiveSheetSequence,
 } from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 import getStudio from '@unseenco/theatre-studio/getStudio'
-import type {SheetObjectAddress} from '@unseenco/theatre-shared/utils/addresses'
+import type {SheetObjectAddress} from '@unseenco/backstage-shared/utils/addresses'
 import {
   decodePathToProp,
   doesPathStartWith,
   encodePathToProp,
-} from '@unseenco/theatre-shared/utils/addresses'
+} from '@unseenco/backstage-shared/utils/addresses'
 import type {
   ObjectAddressKey,
   SequenceTrackId,
-} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
 import type Sequence from '@unseenco/theatre-core/sequences/Sequence'
 import KeyframeSnapTarget, {
   snapPositionsStateD,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
-import {emptyObject} from '@unseenco/theatre-shared/utils'
+import {emptyObject} from '@unseenco/backstage-shared/utils'
 import type {KeyframeWithPathToPropFromCommonRoot} from '@unseenco/theatre-studio/store/types'
 import type {Keyframe} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import AggregateKeyframeSpanBar from './AggregateKeyframeSpanBar'

@@ -1,5 +1,5 @@
 import type {PropTypeConfig_Image} from '@unseenco/theatre-core/propTypes'
-import type {$FixMe} from '@unseenco/theatre-shared/utils/types'
+import type {$FixMe} from '@unseenco/backstage-shared/utils/types'
 import {Trash} from '@unseenco/theatre-studio/uiComponents/icons'
 import React, {useCallback, useEffect, useLayoutEffect, useRef} from 'react'
 import styled from 'styled-components'

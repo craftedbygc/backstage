@@ -1,4 +1,4 @@
-# AGENTS.md — `@unseenco/theatre-gsap`
+# AGENTS.md — `@unseenco/backstage/gsap`
 
 Bridge GSAP tweens to Theatre.js **sequence time mode** (v1). ScrollTriggers / page scroll modes are planned for v2 — see notes at the end.
 
@@ -6,23 +6,23 @@ Bridge GSAP tweens to Theatre.js **sequence time mode** (v1). ScrollTriggers / p
 
 | Entry | Purpose |
 | --- | --- |
-| `@unseenco/theatre-gsap` | Runtime: `registerGsapAnimation`, `attachGsapSequenceBridge`, `configureTheatreGsap`, registry helpers |
+| `@unseenco/backstage/gsap` | Runtime: `registerGsapAnimation`, `attachGsapSequenceBridge`, `configureTheatreGsap`, registry helpers |
 
-Peers: `gsap`, `@unseenco/theatre-core`; optional `@unseenco/theatre-studio` for authoring.
+Peers: `gsap`, `@unseenco/backstage`; optional `@unseenco/backstage/studio` for authoring.
 
 Studio GSAP UI (outline menus, sequence clip tracks) lives in **`theatre/studio/src/gsap/`** — not a separate `studio.extend()` package export.
 
 ## Typical integration
 
 ```ts
-import {getProject, onChange, types} from '@unseenco/theatre-core'
-import studio from '@unseenco/theatre-studio'
+import {getProject, onChange, types} from '@unseenco/backstage'
+import studio from '@unseenco/backstage/studio'
 import gsap from 'gsap'
 import {
   attachGsapSequenceBridge,
   configureTheatreGsap,
   registerGsapAnimation,
-} from '@unseenco/theatre-gsap'
+} from '@unseenco/backstage/gsap'
 
 configureTheatreGsap({
   namespace: 'GSAP',
@@ -45,7 +45,7 @@ User-facing docs: `docs/guide/extensions/gsap.md`.
 
 | Task | Command |
 | --- | --- |
-| Build package | `yarn workspace @unseenco/theatre-gsap run build` |
+| Build package | `yarn workspace @unseenco/backstage/gsap run build` |
 | Monorepo typecheck | `yarn typecheck` |
 | Unit tests | `yarn test packages/gsap theatre/shared/src/sequence/trackData.test.ts` |
 

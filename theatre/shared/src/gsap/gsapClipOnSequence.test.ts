@@ -1,6 +1,6 @@
 import type {SheetState_Historic} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
-import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
+import type {ObjectAddressKey} from '@unseenco/backstage-shared/utils/ids'
 import {registerGsapObjectBinding} from './gsapObjectBinding'
 import {
   gsapClipIsOnSequence,

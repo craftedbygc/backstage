@@ -7,15 +7,15 @@ import {
   getProject,
   setCoreRafDriver,
   types,
-} from '@unseenco/theatre-core'
-import studio from '@unseenco/theatre-studio'
+} from '@unseenco/backstage'
+import studio from '@unseenco/backstage/studio'
 import {
   bindGsapTickerToRafDriver,
   configureTheatreGsap,
   registerAllGsapScrollTriggers,
   registerGsapAnimation,
   registerGsapScrollTrigger,
-} from '@unseenco/theatre-gsap'
+} from '@unseenco/backstage/gsap'
 import {
   hidePageModeDemoForRemoteEditor,
   isRemotePageModeEditorWindow,
@@ -45,9 +45,7 @@ const project = getProject('GSAP horizontal page mode demo')
 const sheet = project.sheet('Main', {
   sequenceMode: 'page',
   gsap: true,
-  ...(remoteEditor
-    ? {}
-    : {scrollDriver: createDefaultPageScrollDriver()}),
+  ...(remoteEditor ? {} : {scrollDriver: createDefaultPageScrollDriver()}),
 })
 
 const heroBox = document.getElementById('hero-box')!

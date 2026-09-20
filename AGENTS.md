@@ -33,12 +33,12 @@ CI order (`.github/workflows/ci.yml`): `Build`, `Docs`, `Lint`, `Test`, `Typeche
 Yarn workspaces: `packages/*`, `examples/*`, `theatre`, `compat-tests`, `docs`. **All published packages share one version number** (set in root `package.json` and bumped by the release CLI). Release uses fixed-version mode in `devEnv/cli.ts` (not Lerna).
 
 Published packages → source location:
-- `@unseenco/theatre-core` → `theatre/core/` — runtime animation library (Apache-2.0, ships in user bundles)
-- `@unseenco/theatre-studio` → `theatre/studio/` — visual editor (AGPL-3.0, dev-time only)
-- `@unseenco/theatre-threejs` → `packages/threejs/` — Three.js helpers + Studio extension (AGPL-3.0). Package root is runtime-only (`autoAddObject`, etc.); Studio `buildExtension` is `@unseenco/theatre-threejs/extension`. When developing this package, read `packages/threejs/AGENTS.md`.
-- `@unseenco/theatre-dataverse` → `packages/dataverse/` — reactive dataflow (published; API reference generated into VitePress via api-extractor)
-- `@unseenco/theatre-react` → `packages/react/`
-- `@unseenco/theatre-browser-bundles` → `packages/browser-bundles/`
+- `@unseenco/backstage` → `theatre/core/` — runtime animation library (Apache-2.0, ships in user bundles)
+- `@unseenco/backstage/studio` → `theatre/studio/` — visual editor (AGPL-3.0, dev-time only)
+- `@unseenco/backstage/threejs` → `packages/threejs/` — Three.js helpers + Studio extension (AGPL-3.0). Package root is runtime-only (`autoAddObject`, etc.); Studio `buildExtension` is `@unseenco/backstage/threejs/extension`. When developing this package, read `packages/threejs/AGENTS.md`.
+- `@unseenco/backstage/dataverse` → `packages/dataverse/` — reactive dataflow (published; API reference generated into VitePress via api-extractor)
+- `@unseenco/backstage/react` → `packages/react/`
+- `@unseenco/backstage/browser-bundles` → `packages/browser-bundles/`
 
 Non-published: `packages/playground` (dev harness), `theatre/shared` (`private: true`), `theatre/devEnv`, `compat-tests`, `docs` (`@unseenco/theatre-docs`), `examples/basic-dom`.
 
@@ -46,7 +46,7 @@ TypeScript path aliases (`tsconfig.base.json`) map `@unseenco/theatre-*` directl
 
 ## Build / codegen quirks
 
-- `yarn cli build` runs TypeScript solution build AND each package's own `build` script in parallel. A package's `build` typically emits dist via esbuild (`devEnv/build.ts` per package) plus `api-extractor` for the public API surface. `@unseenco/theatre-dataverse` also runs `build:api-json`.
+- `yarn cli build` runs TypeScript solution build AND each package's own `build` script in parallel. A package's `build` typically emits dist via esbuild (`devEnv/build.ts` per package) plus `api-extractor` for the public API surface. `@unseenco/backstage/dataverse` also runs `build:api-json`.
 - `yarn docs:build` runs `docs/scripts/generate-api-reference.mjs` (api-extractor + api-documenter) then VitePress. Generated API markdown lives in `docs/api/` (gitignored).
 - `examples/*` consume built `dist/` output — you MUST `yarn cli build` before running any example (`cd examples/<name> && yarn start`). The `playground` is the exception: it rebuilds packages live via Vite.
 - Types are emitted with `declarationMap`; consumers in the monorepo still resolve to source via path aliases.
@@ -56,7 +56,7 @@ TypeScript path aliases (`tsconfig.base.json`) map `@unseenco/theatre-*` directl
 - Jest config picks up `packages/*/src/**/*.test.ts`, `theatre/*/src/**/*.test.ts`, `devEnv/**/*.test.ts`. Compat tests use a **separate** config (`jest.compat-tests.config.js`) — `yarn test` will not run them.
 - `moduleNameMapper` rewrites ES-module-only deps (`uuid`, `nanoid`, `lodash-es`, `react-use/esm`, css/svg/png) — if a test fails on a missing ESM export, add the mapping here rather than changing the import.
 - `setupFiles: theatre/shared/src/setupTestEnv.ts` is loaded for every unit test.
-- **Compat tests** are two-phase: `test:compat:install` spins up verdaccio, publishes a real build, and runs `npm install` in each `compat-tests/fixtures/*/package`. Fixtures: **Vite + React 18** (`vite-react18`); **full stack** (`vite-theatre-full-stack`) — core, studio, threejs extension, `@unseenco/theatre-gsap`, `three`, and `gsap`.
+- **Compat tests** are two-phase: `test:compat:install` spins up verdaccio, publishes a real build, and runs `npm install` in each `compat-tests/fixtures/*/package`. Fixtures: **Vite + React 18** (`vite-react18`); **full stack** (`vite-theatre-full-stack`) — core, studio, threejs extension, `@unseenco/backstage/gsap`, `three`, and `gsap`.
 
 ## Pre-commit hook
 

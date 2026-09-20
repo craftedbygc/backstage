@@ -12,7 +12,7 @@ import GsapChildClipTrackRow from './GsapClipTrack/GsapChildClipTrackRow'
 import GsapScrollTriggerTrackRow, {
   GsapScrollTriggerChildTrackRow,
 } from './GsapScrollTriggerTrack/GsapScrollTriggerTrackRow'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import React from 'react'
 import PrimitivePropRow from './PrimitivePropRow'

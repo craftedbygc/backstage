@@ -1,7 +1,7 @@
-import type {IRafDriver} from '@unseenco/theatre-core'
+import type {IRafDriver} from '@unseenco/backstage'
 const mockGetTheatreCoreRafDriver = jest.fn()
 
-jest.doMock('@unseenco/theatre-core/privateAPIs', () => ({
+jest.doMock('@unseenco/backstage/privateAPIs', () => ({
   getTheatreCoreRafDriver: () => mockGetTheatreCoreRafDriver(),
 }))
 

@@ -1,5 +1,5 @@
 import type {GsapTimelineChildClip} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
-import {gsapClipSyncProgress} from '@unseenco/theatre-shared/sequence/trackData'
+import {gsapClipSyncProgress} from '@unseenco/backstage-shared/sequence/trackData'
 import {applyTimelineChildTimingToGsap} from './applyTimelineChildTiming'
 import {getAnimationEntryBySheetAddressKey} from './gsapAnimationRegistry'
 import type {GsapAnimationRegistryEntry} from './gsapAnimationRegistry'

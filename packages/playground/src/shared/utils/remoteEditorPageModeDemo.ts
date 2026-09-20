@@ -1,7 +1,6 @@
-import {isRemoteEditorWindow} from '@unseenco/theatre-core'
+import {isRemoteEditorWindow} from '@unseenco/backstage'
 
-const REMOTE_EDITOR_PLACEHOLDER =
-  'Remote editor — preview in main window'
+const REMOTE_EDITOR_PLACEHOLDER = 'Remote editor — preview in main window'
 
 const REMOTE_EDITOR_PLACEHOLDER_ID = 'remote-editor-placeholder'
 

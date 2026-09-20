@@ -3,8 +3,8 @@
  */
 import {getProject, types} from '@unseenco/theatre-core'
 import {privateAPI} from '@unseenco/theatre-core/privateAPIs'
-import {SHEET_PROPS_OBJECT_KEY} from '@unseenco/theatre-shared/utils/sheetProps'
-import {setupTestSheet} from '@unseenco/theatre-shared/testUtils'
+import {SHEET_PROPS_OBJECT_KEY} from '@unseenco/backstage-shared/utils/sheetProps'
+import {setupTestSheet} from '@unseenco/backstage-shared/testUtils'
 
 describe('sheet.props', () => {
   test('creates a hidden carrier object and excludes it from getObjects', async () => {

@@ -2239,8 +2239,7 @@ __metadata:
   dependencies:
     "@types/react": ^18.2.18
     "@types/react-dom": ^18.2.7
-    "@unseenco/theatre-core": "workspace:*"
-    "@unseenco/theatre-studio": "workspace:*"
+    "@unseenco/backstage": "workspace:*"
     "@vitejs/plugin-react": ^4.0.0
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -4272,6 +4271,43 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@unseenco/backstage-shared@workspace:theatre/shared":
+  version: 0.0.0-use.local
+  resolution: "@unseenco/backstage-shared@workspace:theatre/shared"
+  dependencies:
+    "@unseenco/theatre-core": "workspace:*"
+    "@unseenco/theatre-studio": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@unseenco/backstage@workspace:*, @unseenco/backstage@workspace:packages/backstage":
+  version: 0.0.0-use.local
+  resolution: "@unseenco/backstage@workspace:packages/backstage"
+  dependencies:
+    "@types/node": ^15.12.3
+    esbuild-register: ^3.4.2
+    lodash-es: ^4.17.21
+    typescript: 5.3.3
+  peerDependencies:
+    gsap: ">=3.0.0"
+    lenis: ">=1.0.0"
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+    three: ">=0.185.0"
+  peerDependenciesMeta:
+    gsap:
+      optional: true
+    lenis:
+      optional: true
+    react:
+      optional: true
+    react-dom:
+      optional: true
+    three:
+      optional: true
+  languageName: unknown
+  linkType: soft
+
 "@unseenco/theatre-browser-bundles@workspace:packages/browser-bundles":
   version: 0.0.0-use.local
   resolution: "@unseenco/theatre-browser-bundles@workspace:packages/browser-bundles"
@@ -4303,7 +4339,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@unseenco/theatre-core-lite@workspace:*, @unseenco/theatre-core-lite@workspace:theatre/core-lite":
+"@unseenco/theatre-core-lite@workspace:theatre/core-lite":
   version: 0.0.0-use.local
   resolution: "@unseenco/theatre-core-lite@workspace:theatre/core-lite"
   dependencies:
@@ -4349,7 +4385,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@unseenco/theatre-gsap@workspace:*, @unseenco/theatre-gsap@workspace:packages/gsap":
+"@unseenco/theatre-gsap@workspace:packages/gsap":
   version: 0.0.0-use.local
   resolution: "@unseenco/theatre-gsap@workspace:packages/gsap"
   dependencies:
@@ -4390,16 +4426,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@unseenco/theatre-shared@workspace:theatre/shared":
-  version: 0.0.0-use.local
-  resolution: "@unseenco/theatre-shared@workspace:theatre/shared"
-  dependencies:
-    "@unseenco/theatre-core": "workspace:*"
-    "@unseenco/theatre-studio": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
-"@unseenco/theatre-studio-lite@workspace:*, @unseenco/theatre-studio-lite@workspace:theatre/studio-lite":
+"@unseenco/theatre-studio-lite@workspace:theatre/studio-lite":
   version: 0.0.0-use.local
   resolution: "@unseenco/theatre-studio-lite@workspace:theatre/studio-lite"
   dependencies:
@@ -4419,7 +4446,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@unseenco/theatre-threejs@workspace:*, @unseenco/theatre-threejs@workspace:packages/threejs":
+"@unseenco/theatre-threejs@workspace:packages/threejs":
   version: 0.0.0-use.local
   resolution: "@unseenco/theatre-threejs@workspace:packages/threejs"
   dependencies:
@@ -4435,18 +4462,11 @@ __metadata:
     three: ^0.185.1
     typescript: 5.3.3
   peerDependencies:
-    "@unseenco/theatre-core": "*"
-    "@unseenco/theatre-core-lite": "*"
-    "@unseenco/theatre-studio": "*"
-    "@unseenco/theatre-studio-lite": "*"
+    "@unseenco/backstage": "*"
     three: ">=0.150.0"
   peerDependenciesMeta:
-    "@unseenco/theatre-core-lite":
-      optional: true
-    "@unseenco/theatre-studio":
-      optional: true
-    "@unseenco/theatre-studio-lite":
-      optional: true
+    "@unseenco/backstage":
+      optional: false
   languageName: unknown
   linkType: soft
 
@@ -12042,14 +12062,7 @@ __metadata:
     "@types/react-dom": ^18.2.7
     "@types/styled-components": ^5.1.26
     "@types/three": ^0.185.1
-    "@unseenco/theatre-core": "workspace:*"
-    "@unseenco/theatre-core-lite": "workspace:*"
-    "@unseenco/theatre-dataverse": "workspace:*"
-    "@unseenco/theatre-gsap": "workspace:*"
-    "@unseenco/theatre-react": "workspace:*"
-    "@unseenco/theatre-studio": "workspace:*"
-    "@unseenco/theatre-studio-lite": "workspace:*"
-    "@unseenco/theatre-threejs": "workspace:*"
+    "@unseenco/backstage": "workspace:*"
     "@vitejs/plugin-react": ^4.0.0
     "@vitejs/plugin-react-swc": ^3.3.2
     fast-glob: ^3.3.0

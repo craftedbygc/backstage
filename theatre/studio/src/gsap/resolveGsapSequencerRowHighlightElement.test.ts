@@ -1,10 +1,10 @@
 /*
  * @jest-environment jsdom
  */
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
-import {clearAnimationRegistryForTests} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
-import {registerAnimationInRegistry} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
-import {clearScrollTriggerRegistryForTests} from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
+import {clearAnimationRegistryForTests} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
+import {registerAnimationInRegistry} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
+import {clearScrollTriggerRegistryForTests} from '@unseenco/backstage-shared/gsap/scrollTriggerRegistry'
 import type {SequenceEditorTree_SheetObject} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import {
   isGsapSequencerHighlightRow,

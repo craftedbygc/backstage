@@ -1,6 +1,6 @@
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import type {SequenceEditorTree_GsapChildClip} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {val} from '@unseenco/theatre-dataverse'
 import React, {useCallback, useMemo} from 'react'
@@ -28,12 +28,12 @@ import {gsapTimelineChildClipInSequenceSpace} from './gsapTimelineChildBarLayout
 import {
   applyTimelineChildTimingToGsap,
   readTimelineSpanSeconds,
-} from '@unseenco/theatre-shared/gsap/applyTimelineChildTiming'
-import {getAnimationEntry} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+} from '@unseenco/backstage-shared/gsap/applyTimelineChildTiming'
+import {getAnimationEntry} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
 import {
   gsapTimelineChildTimingDeviatesFromBaseline,
   resolveGsapClipBaselineTiming,
-} from '@unseenco/theatre-shared/gsap/gsapClipBaseline'
+} from '@unseenco/backstage-shared/gsap/gsapClipBaseline'
 
 const Container = styled.div`
   position: relative;
@@ -390,10 +390,8 @@ function useGsapChildClipContextMenu(
           opts.leaf.sheetObject.address.projectId
         ].sheetsById[opts.leaf.sheetObject.address.sheetId],
       )
-      const track = getSequenceStateFromSheet(
-        sheetState,
-        opts.sequenceVariant,
-      )?.tracksByObject[opts.leaf.sheetObject.address.objectKey]?.trackData[
+      const track = getSequenceStateFromSheet(sheetState, opts.sequenceVariant)
+        ?.tracksByObject[opts.leaf.sheetObject.address.objectKey]?.trackData[
         opts.leaf.parentTrackId
       ]
       if (track?.type !== 'GsapClipTrack') {

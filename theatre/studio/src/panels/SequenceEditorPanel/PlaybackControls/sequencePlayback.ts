@@ -1,15 +1,15 @@
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import type {IPlaybackRange} from '@unseenco/theatre-core/sequences/Sequence'
 import type Sequence from '@unseenco/theatre-core/sequences/Sequence'
-import {maxGsapClipEndTime} from '@unseenco/theatre-shared/sequence/trackData'
+import {maxGsapClipEndTime} from '@unseenco/backstage-shared/sequence/trackData'
 import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 import type {Prism} from '@unseenco/theatre-dataverse'
 import {Atom, prism, val} from '@unseenco/theatre-dataverse'
-import memoizeFn from '@unseenco/theatre-shared/utils/memoizeFn'
+import memoizeFn from '@unseenco/backstage-shared/utils/memoizeFn'
 import type {
   SheetAddress,
   WithoutSheetInstance,
-} from '@unseenco/theatre-shared/utils/addresses'
+} from '@unseenco/backstage-shared/utils/addresses'
 import {syncPageScrollToSequencePosition} from '@unseenco/theatre-studio/sheets/syncPageScrollToSequencePosition'
 
 function syncPageScrollAfterTransportSeek(sequence: Sequence): void {

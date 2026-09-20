@@ -50,5 +50,6 @@
   "peerDependencies": {
     "@unseenco/theatre-core": "*",
     "gsap": ">=3.0.0"
-  }
+  },
+  "private": true
 }

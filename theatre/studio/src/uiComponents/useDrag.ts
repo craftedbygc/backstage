@@ -1,9 +1,9 @@
-import type {$FixMe} from '@unseenco/theatre-shared/utils/types'
+import type {$FixMe} from '@unseenco/backstage-shared/utils/types'
 import {useLayoutEffect, useRef} from 'react'
 import {useCssCursorLock} from './PointerEventsHandler'
 import type {CapturedPointer} from '@unseenco/theatre-studio/UIRoot/PointerCapturing'
 import {usePointerCapturing} from '@unseenco/theatre-studio/UIRoot/PointerCapturing'
-import noop from '@unseenco/theatre-shared/utils/noop'
+import noop from '@unseenco/backstage-shared/utils/noop'
 import {isSafari} from './isSafari'
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
 

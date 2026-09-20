@@ -1,5 +1,5 @@
 import type {GsapClipTrack} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
-import {buildGsapClipBaselineTiming} from '@unseenco/theatre-shared/gsap/gsapClipBaseline'
+import {buildGsapClipBaselineTiming} from '@unseenco/backstage-shared/gsap/gsapClipBaseline'
 
 /** Mirrors baseline assignment in addGsapClipTrack for unit coverage. */
 function baselineFromAddParams(p: {

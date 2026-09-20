@@ -1,5 +1,5 @@
 import getStudio from '@unseenco/theatre-studio/getStudio'
-import type {SerializableValue} from '@unseenco/theatre-shared/utils/types'
+import type {SerializableValue} from '@unseenco/backstage-shared/utils/types'
 import type {
   CommitOrDiscard,
   ITransactionPrivateApi,
@@ -7,7 +7,7 @@ import type {
 import type {IEditingTools} from '@unseenco/theatre-studio/propEditors/utils/IEditingTools'
 import {useMemo} from 'react'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
-import type {Asset} from '@unseenco/theatre-shared/utils/assets'
+import type {Asset} from '@unseenco/backstage-shared/utils/assets'
 
 /**
  * This function takes a function `writeTx` that sets a value in the private Studio API and

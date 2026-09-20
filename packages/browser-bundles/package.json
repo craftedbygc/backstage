@@ -30,5 +30,6 @@
   "peerDependencies": {
     "@unseenco/theatre-core": "*",
     "@unseenco/theatre-studio": "*"
-  }
+  },
+  "private": true
 }

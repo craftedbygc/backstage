@@ -16,13 +16,13 @@ You can use Theatre.js to:
 
 Guides and API reference live in the monorepo `docs/` workspace. Run `yarn docs:dev` from the repo root, or see the deployed site from [craftedbygc/theatre](https://github.com/craftedbygc/theatre).
 
-## `@unseenco/theatre-core`
+## `@unseenco/backstage`
 
-Theatre.js comes in two packages: `@unseenco/theatre-core` (the library) and `@unseenco/theatre-studio` (the editor). This package is the core library.
+Theatre.js comes in two packages: `@unseenco/backstage` (the library) and `@unseenco/backstage/studio` (the editor). This package is the core library.
 
-### `@unseenco/theatre-core-lite`
+### `@unseenco/backstage/core-lite`
 
-A second esbuild entry `src/index-lite.ts` emits `dist/index-lite.{js,mjs}` (published as `@unseenco/theatre-core-lite`). It sets `__THEATRE_LITE__` so sequenced value merging, playback, GSAP, and scroll drivers are excluded from the bundle. After `yarn workspace theatre build:js`, run:
+A second esbuild entry `src/index-lite.ts` emits `dist/index-lite.{js,mjs}` (published as `@unseenco/backstage/core-lite`). It sets `__THEATRE_LITE__` so sequenced value merging, playback, GSAP, and scroll drivers are excluded from the bundle. After `yarn workspace theatre build:js`, run:
 
 ```bash
 THEATRE_LITE_LOG_BUNDLE_SIZES=1 yarn workspace theatre build:js
@@ -35,7 +35,7 @@ to print minified KiB sizes for full vs lite (`core`, `core-lite`, `studio`, `st
 Runtime helpers for tearing down loaded sheets and objects (for example when switching scenes). These drop in-memory instances so Studio stops showing them, but **do not** clear persisted project state. Recreating the same `sheetId` / object `key` restores prior prop overrides and sequence data.
 
 ```ts
-import {getProject} from '@unseenco/theatre-core'
+import {getProject} from '@unseenco/backstage'
 
 const project = getProject('My project')
 const sheet = project.sheet('Scene')
@@ -60,7 +60,7 @@ Try the interactive demo in the playground: `/shared/unload-sheets/`.
 
 ## Bundle size
 
-`@unseenco/theatre-core` is currently around 20KiB compressed with all its dependencies.
+`@unseenco/backstage` is currently around 20KiB compressed with all its dependencies.
 
 ## License
 

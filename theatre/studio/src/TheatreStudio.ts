@@ -6,17 +6,17 @@ import type {
 } from '@unseenco/theatre-core'
 import type {Prism, Pointer} from '@unseenco/theatre-dataverse'
 import {prism} from '@unseenco/theatre-dataverse'
-import SimpleCache from '@unseenco/theatre-shared/utils/SimpleCache'
+import SimpleCache from '@unseenco/backstage-shared/utils/SimpleCache'
 import type {
   $IntentionalAny,
   VoidFn,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import type {IScrub} from '@unseenco/theatre-studio/Scrub'
 import type {Studio} from '@unseenco/theatre-studio/Studio'
 import {
   isSheetObjectPublicAPI,
   isSheetPublicAPI,
-} from '@unseenco/theatre-shared/instanceTypes'
+} from '@unseenco/backstage-shared/instanceTypes'
 import {getOutlineSelection} from './selectors'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import getStudio from './getStudio'
@@ -25,7 +25,7 @@ import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
 import type {
   PaneInstanceId,
   ProjectId,
-} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
 import {
   __experimental_disblePlayPauseKeyboardShortcut,
   __experimental_enablePlayPauseKeyboardShortcut,
@@ -310,7 +310,7 @@ export interface _StudioInitializeOpts {
 
   /**
    * `'lite'` disables sequencing UI and sequence state mutations (static authoring only).
-   * Implicit when importing `@unseenco/theatre-studio-lite`.
+   * Implicit when importing `@unseenco/backstage/studio-lite`.
    */
   mode?: 'full' | 'lite'
 }
@@ -321,7 +321,7 @@ export interface _StudioInitializeOpts {
  * @example
  * Basic usage:
  * ```ts
- * import studio from '@unseenco/theatre-studio'
+ * import studio from '@unseenco/backstage/studio'
  *
  * studio.initialize()
  * ```
@@ -329,7 +329,7 @@ export interface _StudioInitializeOpts {
  * @example
  * Custom accent color:
  * ```ts
- * import studio from '@unseenco/theatre-studio'
+ * import studio from '@unseenco/backstage/studio'
  *
  * studio.initialize({accentHex: '#c026d3'})
  * ```
@@ -337,7 +337,7 @@ export interface _StudioInitializeOpts {
  * @example
  * Usage with **tree-shaking**:
  * ```ts
- * import studio from '@unseenco/theatre-studio'
+ * import studio from '@unseenco/backstage/studio'
  *
  * if (process.env.NODE_ENV !== 'production') {
  *   studio.initialize()

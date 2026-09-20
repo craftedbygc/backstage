@@ -9,12 +9,12 @@ import deepEqual from 'fast-deep-equal'
 import type {
   PathToProp,
   PathToProp_Encoded,
-} from '@unseenco/theatre-shared/utils/addresses'
-import {encodePathToProp} from '@unseenco/theatre-shared/utils/addresses'
-import type {SerializableMap, SerializableValue} from '@unseenco/theatre-shared/utils/types'
-import {stripTransientPathsFromSerializableMap} from '@unseenco/theatre-shared/utils/transientPropPaths'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
-import memoizeFn from '@unseenco/theatre-shared/utils/memoizeFn'
+} from '@unseenco/backstage-shared/utils/addresses'
+import {encodePathToProp} from '@unseenco/backstage-shared/utils/addresses'
+import type {SerializableMap, SerializableValue} from '@unseenco/backstage-shared/utils/types'
+import {stripTransientPathsFromSerializableMap} from '@unseenco/backstage-shared/utils/transientPropPaths'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
+import memoizeFn from '@unseenco/backstage-shared/utils/memoizeFn'
 
 /**
  * Either compound or enum properties can be considered "composite"

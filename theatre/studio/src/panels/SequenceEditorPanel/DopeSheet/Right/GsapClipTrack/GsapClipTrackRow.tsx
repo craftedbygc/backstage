@@ -1,7 +1,7 @@
 import type {GsapClipTrack} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
 import type {SequenceEditorTree_GsapClipTrack} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
-import {usePrism, useVal} from '@unseenco/theatre-react'
+import {usePrism, useVal} from '@unseenco/backstage/react'
 import DopeSnap from '@unseenco/theatre-studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
 import KeyframeSnapTarget, {
   collectSequenceEditorSnapPositions,
@@ -31,11 +31,11 @@ import {applyGsapClipTrackToAnimation} from '@unseenco/theatre-studio/gsap/apply
 import {previewGsapClipsAtCurrentPlayhead} from '@unseenco/theatre-studio/gsap/previewGsapClipsAtPlayhead'
 import {gsapClipBarLayoutInScaledSpace} from './gsapClipBarLayout'
 import GsapChildClipTrackRow from './GsapChildClipTrackRow'
-import {getAnimationEntry} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import {getAnimationEntry} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
 import {
   gsapClipTimingDeviatesFromBaseline,
   resolveGsapClipBaselineTiming,
-} from '@unseenco/theatre-shared/gsap/gsapClipBaseline'
+} from '@unseenco/backstage-shared/gsap/gsapClipBaseline'
 import {
   limitGsapClipMoveStart,
   limitGsapClipResizeEndDuration,

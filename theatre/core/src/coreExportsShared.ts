@@ -2,11 +2,11 @@ import projectsSingleton from './projects/projectsSingleton'
 import type {OnDiskState} from './projects/store/storeTypes'
 import type {IProject, IProjectConfig} from './projects/TheatreProject'
 import TheatreProject from './projects/TheatreProject'
-import globals from '@unseenco/theatre-shared/globals'
+import globals from '@unseenco/backstage-shared/globals'
 import * as types from './propTypes'
-import {InvalidArgumentError} from '@unseenco/theatre-shared/utils/errors'
-import {validateName} from '@unseenco/theatre-shared/utils/sanitizers'
-import userReadableTypeOfValue from '@unseenco/theatre-shared/utils/userReadableTypeOfValue'
+import {InvalidArgumentError} from '@unseenco/backstage-shared/utils/errors'
+import {validateName} from '@unseenco/backstage-shared/utils/sanitizers'
+import userReadableTypeOfValue from '@unseenco/backstage-shared/utils/userReadableTypeOfValue'
 import deepEqual from 'fast-deep-equal'
 import type {PointerType, Prism} from '@unseenco/theatre-dataverse'
 import {isPointer} from '@unseenco/theatre-dataverse'
@@ -14,13 +14,13 @@ import {isPrism, pointerToPrism} from '@unseenco/theatre-dataverse'
 import type {
   $IntentionalAny,
   VoidFn,
-} from '@unseenco/theatre-shared/utils/types'
-import type {ProjectId} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/types'
+import type {ProjectId} from '@unseenco/backstage-shared/utils/ids'
 import {_coreLogger} from './_coreLogger'
 import {getCoreTicker} from './coreTicker'
 import type {IRafDriver} from './rafDrivers'
 import {privateAPI} from './privateAPIs'
-export {notify} from '@unseenco/theatre-shared/notify'
+export {notify} from '@unseenco/backstage-shared/notify'
 /**
  * Prop type factories (`number`, `rgba`, `compound`, etc.) for {@link ISheet.object} definitions.
  * (api-extractor does not attach this comment to the synthesized `types` namespace node.)
@@ -34,7 +34,7 @@ export {isRemoteEditorWindow} from './internal/remoteEditor'
  * Returns a project of the given id, or creates one if it doesn't already exist.
  *
  * @remarks
- * If \@unseenco/theatre-studio is also loaded, then the state of the project will be managed by the studio.
+ * If \@unseenco/theatre-core/studio is also loaded, then the state of the project will be managed by the studio.
  *
  * [Learn more about exporting](https://www.theatrejs.com/docs/latest/manual/projects#state)
  *
@@ -238,7 +238,7 @@ export function val<T>(pointer: PointerType<T>): T {
 }
 
 /**
- * @internal Used by extension packages (`@unseenco/theatre-gsap`, etc.). Not part of the
+ * @internal Used by extension packages (`@unseenco/theatre-core/gsap`, etc.). Not part of the
  * public API; exported only so published subpath `./privateAPIs` shares the main bundle singleton.
  */
 export {privateAPI, setPrivateAPI, getTheatreCoreRafDriver} from './privateAPIs'

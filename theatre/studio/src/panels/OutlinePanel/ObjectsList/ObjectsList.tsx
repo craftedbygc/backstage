@@ -1,5 +1,5 @@
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
-import {usePrism} from '@unseenco/theatre-react'
+import {usePrism} from '@unseenco/backstage/react'
 import {val} from '@unseenco/theatre-dataverse'
 import React from 'react'
 import styled from 'styled-components'

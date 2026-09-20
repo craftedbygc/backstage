@@ -1,7 +1,7 @@
 import {
   isPropValueEqualToDefault,
   stripDefaultPropValuesFromMap,
-} from '@unseenco/theatre-shared/propTypes/utils'
+} from '@unseenco/backstage-shared/propTypes/utils'
 import {compound, number, rgba} from '@unseenco/theatre-core/propTypes'
 
 describe('propTypes utils default stripping', () => {

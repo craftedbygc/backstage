@@ -1,4 +1,4 @@
-import type {$FixMe} from '@unseenco/theatre-shared/utils/types'
+import type {$FixMe} from '@unseenco/backstage-shared/utils/types'
 import type {PanelPosition} from '@unseenco/theatre-studio/store/types'
 import type {PaneInstance} from '@unseenco/theatre-studio/TheatreStudio'
 import React, {useCallback, useLayoutEffect, useState} from 'react'
@@ -14,7 +14,7 @@ import {panelZIndexes} from '@unseenco/theatre-studio/panels/BasePanel/common'
 import type {
   PaneInstanceId,
   UIPanelId,
-} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
 
 const defaultPosition: PanelPosition = {
   edges: {

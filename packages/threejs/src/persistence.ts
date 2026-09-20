@@ -1,9 +1,9 @@
-import {types} from '@unseenco/theatre-core'
+import {types} from '@unseenco/backstage'
 import type {
   ISheet,
   ISheetObject,
   UnknownShorthandCompoundProps,
-} from '@unseenco/theatre-core'
+} from '@unseenco/backstage'
 import type {PerspectiveCamera} from 'three'
 import type {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js'
 import {DEVTOOLS_SHEET_ID} from './constants'

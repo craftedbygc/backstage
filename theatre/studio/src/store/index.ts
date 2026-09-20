@@ -5,8 +5,8 @@ import {
   historicActions,
   withHistory,
 } from '@unseenco/theatre-studio/utils/redux/withHistory/withHistory'
-import type {ReduxReducer} from '@unseenco/theatre-shared/utils/types'
-import logger from '@unseenco/theatre-shared/logger'
+import type {ReduxReducer} from '@unseenco/backstage-shared/utils/types'
+import logger from '@unseenco/backstage-shared/logger'
 
 const initialState: StudioState = {
   ahistoric: {

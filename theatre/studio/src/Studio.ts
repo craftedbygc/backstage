@@ -13,21 +13,21 @@ import TheatreStudio from './TheatreStudio'
 import {nanoid} from 'nanoid/non-secure'
 import type Project from '@unseenco/theatre-core/projects/Project'
 import type {CoreBits} from '@unseenco/theatre-core/CoreBundle'
-import SimpleCache from '@unseenco/theatre-shared/utils/SimpleCache'
+import SimpleCache from '@unseenco/backstage-shared/utils/SimpleCache'
 import type {IProject, ISheet} from '@unseenco/theatre-core'
 import {isRemoteEditorWindow} from './remoteEditor'
 import PaneManager from './PaneManager'
 import type * as _coreExports from '@unseenco/theatre-core/coreExports'
 import type {OnDiskState} from '@unseenco/theatre-core/projects/store/storeTypes'
-import type {Deferred} from '@unseenco/theatre-shared/utils/defer'
-import {defer} from '@unseenco/theatre-shared/utils/defer'
-import type {ProjectId} from '@unseenco/theatre-shared/utils/ids'
+import type {Deferred} from '@unseenco/backstage-shared/utils/defer'
+import {defer} from '@unseenco/backstage-shared/utils/defer'
+import type {ProjectId} from '@unseenco/backstage-shared/utils/ids'
 import shallowEqual from 'shallowequal'
 import {createStore} from './IDBStorage'
 import {
   getAllPossibleAssetIDs,
   isDirectAssetUrl,
-} from '@unseenco/theatre-shared/utils/assets'
+} from '@unseenco/backstage-shared/utils/assets'
 import {notify} from './notify'
 import type {RafDriverPrivateAPI} from '@unseenco/theatre-core/rafDrivers'
 import {syncAllStudioPreviewVariants} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
@@ -43,28 +43,28 @@ const DEFAULT_PERSISTENCE_KEY = 'theatre-0.4'
 
 export type CoreExports = typeof _coreExports
 
-const STUDIO_NOT_INITIALIZED_MESSAGE = `You seem to have imported '@unseenco/theatre-studio' but haven't initialized it. You can initialize the studio by:
+const STUDIO_NOT_INITIALIZED_MESSAGE = `You seem to have imported '@unseenco/backstage/studio' but haven't initialized it. You can initialize the studio by:
 \`\`\`
-import studio from '@unseenco/theatre-studio'
+import studio from '@unseenco/backstage/studio'
 studio.initialize()
 \`\`\`
 
-* If you didn't mean to import '@unseenco/theatre-studio', this means that your bundler is not tree-shaking it. This is most likely a bundler misconfiguration.
+* If you didn't mean to import '@unseenco/backstage/studio', this means that your bundler is not tree-shaking it. This is most likely a bundler misconfiguration.
 
-* If you meant to import '@unseenco/theatre-studio' without showing its UI, you can do that by running:
+* If you meant to import '@unseenco/backstage/studio' without showing its UI, you can do that by running:
 
 \`\`\`
-import studio from '@unseenco/theatre-studio'
+import studio from '@unseenco/backstage/studio'
 studio.initialize()
 studio.ui.hide()
 \`\`\`
 `
 
-const STUDIO_INITIALIZED_LATE_MSG = `You seem to have imported '@unseenco/theatre-studio' but called \`studio.initialize()\` after some delay.
+const STUDIO_INITIALIZED_LATE_MSG = `You seem to have imported '@unseenco/backstage/studio' but called \`studio.initialize()\` after some delay.
 Theatre.js projects remain in pending mode (won't play their sequences) until the studio is initialized, so you should place the \`studio.initialize()\` line right after the import line:
 
 \`\`\`
-import studio from '@unseenco/theatre-studio'
+import studio from '@unseenco/backstage/studio'
 // ... and other imports
 
 studio.initialize()
@@ -108,7 +108,7 @@ export class Studio {
   private _didWarnAboutNotInitializing = false
 
   /**
-   * This will be set as soon as `@unseenco/theatre-core` registers itself on `@unseenco/theatre-studio`
+   * This will be set as soon as `@unseenco/theatre-core` registers itself on `@unseenco/backstage/studio`
    */
   private _coreBits: CoreBits | undefined
 
@@ -150,7 +150,7 @@ export class Studio {
   async initialize(opts?: Parameters<IStudio['initialize']>[0]) {
     if (!this._coreBits) {
       throw new Error(
-        `You seem to have imported \`@unseenco/theatre-studio\` without importing \`@unseenco/theatre-core\`. Make sure to include an import of \`@unseenco/theatre-core\` before calling \`studio.initializer()\`.`,
+        `You seem to have imported \`@unseenco/backstage/studio\` without importing \`@unseenco/theatre-core\`. Make sure to include an import of \`@unseenco/theatre-core\` before calling \`studio.initializer()\`.`,
       )
     }
 
@@ -164,7 +164,7 @@ export class Studio {
 
     if (opts?.mode === 'full' && isTheatreLiteStudioLocked()) {
       console.warn(
-        `@unseenco/theatre-studio-lite always runs in lite mode; ignoring \`{ mode: 'full' }\`.`,
+        `@unseenco/backstage/studio-lite always runs in lite mode; ignoring \`{ mode: 'full' }\`.`,
       )
     }
 
@@ -209,7 +209,7 @@ export class Studio {
       if (!rafDriverPrivateApi) {
         // TODO - need to educate the user about this edge case
         throw new Error(
-          'parameter `rafDriver` in `studio.initialize({__experimental_rafDriver})` seems to come from a different version of `@unseenco/theatre-core` than the version that is attached to `@unseenco/theatre-studio`',
+          'parameter `rafDriver` in `studio.initialize({__experimental_rafDriver})` seems to come from a different version of `@unseenco/theatre-core` than the version that is attached to `@unseenco/backstage/studio`',
         )
       }
       this._rafDriver = rafDriverPrivateApi

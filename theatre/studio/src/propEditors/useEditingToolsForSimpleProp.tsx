@@ -6,15 +6,15 @@ import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import type Scrub from '@unseenco/theatre-studio/Scrub'
 import type {ContextMenuItem} from '@unseenco/theatre-studio/uiComponents/chordial/chordialInternals'
-import getDeep from '@unseenco/theatre-shared/utils/getDeep'
-import {usePrismInstance} from '@unseenco/theatre-react'
+import getDeep from '@unseenco/backstage-shared/utils/getDeep'
+import {usePrismInstance} from '@unseenco/backstage/react'
 import type {
   $IntentionalAny,
   SerializablePrimitive as SerializablePrimitive,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import type {PropTypeConfig_AllSimples} from '@unseenco/theatre-core/propTypes'
-import {isPropConfSequencable} from '@unseenco/theatre-shared/propTypes/utils'
-import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
+import {isPropConfSequencable} from '@unseenco/backstage-shared/propTypes/utils'
+import type {SequenceTrackId} from '@unseenco/backstage-shared/utils/ids'
 import DefaultOrStaticValueIndicator from './DefaultValueIndicator'
 import type {NearbyKeyframes} from './getNearbyKeyframesOfTrack'
 import {getNearbyKeyframesOfTrack} from './getNearbyKeyframesOfTrack'
@@ -23,7 +23,7 @@ import NextPrevKeyframeCursors from './NextPrevKeyframeCursors'
 import type {
   Asset,
   File as AssetFile,
-} from '@unseenco/theatre-shared/utils/assets'
+} from '@unseenco/backstage-shared/utils/assets'
 import {
   getStudioActiveSequenceVariant,
   getStudioSequence,

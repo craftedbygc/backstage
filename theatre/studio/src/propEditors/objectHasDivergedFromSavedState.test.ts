@@ -1,9 +1,9 @@
 /*
  * @jest-environment jsdom
  */
-import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
-import {setupTestSheet} from '@unseenco/theatre-shared/testUtils'
-import {getPropConfigByPath} from '@unseenco/theatre-shared/propTypes/utils'
+import type {ObjectAddressKey} from '@unseenco/backstage-shared/utils/ids'
+import {setupTestSheet} from '@unseenco/backstage-shared/testUtils'
+import {getPropConfigByPath} from '@unseenco/backstage-shared/propTypes/utils'
 import {objectHasDivergedFromSavedState} from './objectHasDivergedFromSavedState'
 import {revertPropToSavedState} from './revertPropToSavedState'
 

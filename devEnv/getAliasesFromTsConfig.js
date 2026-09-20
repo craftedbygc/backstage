@@ -44,12 +44,12 @@ function getAliasesFromTsConfigForRollup() {
   const aliases = []
 
   for (let [key, value] of Object.entries(tsConfigPaths)) {
-    // like '@unseenco/theatre-core/*'
+    // like '@unseenco/backstage/*'
     if (key.match(/\/\*$/)) {
-      key = key.replace(/\/\*$/, '/(.*)')
+      key = key.replace(/\/\*$/, '/([^?]*)')
     } else {
-      // like '@unseenco/theatre-core'
-      key = key + '$'
+      // like '@unseenco/backstage' — allow Vite import queries (`?theatre-lite-peers`, etc.)
+      key = key + '(\\?.*)?$'
     }
     aliases.push({
       find: new RegExp(key),

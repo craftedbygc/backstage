@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react'
 import type {CSSProperties} from 'react'
-import type {IProject} from '@unseenco/theatre-core'
-import {types} from '@unseenco/theatre-core'
+import type {IProject} from '@unseenco/backstage'
+import {types} from '@unseenco/backstage'
 
 const SceneCSS: CSSProperties = {
   overflow: 'hidden',

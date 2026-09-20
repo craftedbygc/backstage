@@ -7,7 +7,7 @@ import type SheetTemplate from '@unseenco/theatre-core/sheets/SheetTemplate'
 import type {$IntentionalAny} from './utils/types'
 
 /**
- * Since \@unseenco/theatre-core and \@unseenco/theatre-studio are separate bundles,
+ * Since \@unseenco/theatre-core and \@unseenco/backstage/studio are separate bundles,
  * they cannot use `x instanceof Y` to detect object types.
  *
  * The functions in this module are supposed to be a replacement for that.

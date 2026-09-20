@@ -1,4 +1,4 @@
-import noop from '@unseenco/theatre-shared/utils/noop'
+import noop from '@unseenco/backstage-shared/utils/noop'
 import React, {createContext, useCallback, useContext, useRef} from 'react'
 import styled from 'styled-components'
 import {zIndexes} from './SequenceEditorPanel'

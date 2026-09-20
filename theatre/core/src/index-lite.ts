@@ -1,5 +1,5 @@
 /**
- * Entry point for `@unseenco/theatre-core-lite` (`dist/index-lite.*`).
+ * Entry point for `@unseenco/theatre-core/core-lite` (`dist/index-lite.*`).
  * Built with `__THEATRE_LITE__: true` — no sequence interpolation or playback.
  *
  * @packageDocumentation
@@ -17,7 +17,7 @@ export type {ISequence} from './sequences/TheatreSequence'
 export type {ISheetObject} from './sheetObjects/TheatreSheetObject'
 export type {ISheet, ISheetObjectOptions} from './sheets/TheatreSheet'
 export type {UnknownShorthandCompoundProps} from './propTypes'
-import * as globalVariableNames from '@unseenco/theatre-shared/globalVariableNames'
+import * as globalVariableNames from '@unseenco/backstage-shared/globalVariableNames'
 import type StudioBundle from '@unseenco/theatre-studio/StudioBundle'
 import CoreBundleLite from './CoreBundleLite'
 import type {TheatreCoreBundle} from './coreBundleTypes'

@@ -42,7 +42,7 @@ Sheets use **time mode** (seconds timeline) by default, or **page mode** (0–10
 Use **`sheet.props(config)`** for parameters that belong to the sheet rather than a scene object—for example global background mode, layout constants, or values shared across sequence variants.
 
 ```ts
-import {types} from '@unseenco/theatre-core'
+import {types} from '@unseenco/backstage'
 
 const sheetProps = sheet.props({
   sceneOpacity: types.number(1, {range: [0, 1]}),

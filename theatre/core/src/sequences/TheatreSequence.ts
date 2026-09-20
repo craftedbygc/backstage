@@ -1,5 +1,5 @@
 import {privateAPI, setPrivateAPI} from '@unseenco/theatre-core/privateAPIs'
-import {defer} from '@unseenco/theatre-shared/utils/defer'
+import {defer} from '@unseenco/backstage-shared/utils/defer'
 import type Sequence from './Sequence'
 import type {IPlaybackDirection, IPlaybackRange} from './Sequence'
 import type {
@@ -7,11 +7,11 @@ import type {
   GsapTimelineChildClip,
   Keyframe,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
-import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
+import type {SequenceTrackId} from '@unseenco/backstage-shared/utils/ids'
 import AudioPlaybackController from './playbackControllers/AudioPlaybackController'
 import {getCoreTicker} from '@unseenco/theatre-core/coreTicker'
 import type {Pointer} from '@unseenco/theatre-dataverse'
-import {notify} from '@unseenco/theatre-shared/notify'
+import {notify} from '@unseenco/backstage-shared/notify'
 import type {IRafDriver} from '@unseenco/theatre-core/rafDrivers'
 
 interface IAttachAudioArgs {
@@ -303,7 +303,7 @@ export default class TheatreSequence implements ISequence {
           "Sequence can't be played",
           'You seem to have called `sequence.play()` before the project has finished loading.\n\n' +
             'This would **not** a problem in production when using `@unseenco/theatre-core`, since Theatre.js loads instantly in core mode. ' +
-            "However, when using `@unseenco/theatre-studio`, it takes a few milliseconds for it to load your project's state, " +
+            "However, when using `@unseenco/theatre-core/studio`, it takes a few milliseconds for it to load your project's state, " +
             `before which your sequences cannot start playing.\n` +
             `\n` +
             'To fix this, simply defer calling `sequence.play()` until after the project is loaded, like this:\n\n' +

@@ -1,16 +1,16 @@
 import gsap from 'gsap'
-import studio from '@unseenco/theatre-studio'
+import studio from '@unseenco/backstage/studio'
 import {
   createRafDriver,
   getProject,
   setCoreRafDriver,
-} from '@unseenco/theatre-core'
+} from '@unseenco/backstage'
 import {
   attachGsapSequenceBridge,
   configureTheatreGsap,
-} from '@unseenco/theatre-gsap'
-import {configureTheatreThreejs} from '@unseenco/theatre-threejs'
-import {buildExtension} from '@unseenco/theatre-threejs/extension'
+} from '@unseenco/backstage/gsap'
+import {configureTheatreThreejs} from '@unseenco/backstage/threejs'
+import {buildExtension} from '@unseenco/backstage/threejs/extension'
 
 const rafDriver = createRafDriver({name: 'compat-full-stack'})
 setCoreRafDriver(rafDriver)
@@ -27,7 +27,7 @@ attachGsapSequenceBridge(sheet)
 // Resolves published extension bundle + studio package exports (subpath shims).
 if (typeof buildExtension !== 'function') {
   throw new Error(
-    'Expected buildExtension from @unseenco/theatre-threejs/extension',
+    'Expected buildExtension from @unseenco/backstage/threejs/extension',
   )
 }
 

@@ -1,5 +1,5 @@
 import {Color} from 'three'
-import {rgba2hex} from '@unseenco/theatre-shared/utils/color'
+import {rgba2hex} from '@unseenco/backstage-shared/utils/color'
 import {applyTheatreRgbaToColor, colorToTheatreRgba} from './colorUtils'
 
 describe('colorUtils', () => {

@@ -56,21 +56,13 @@
     "typescript": "5.3.3"
   },
   "peerDependencies": {
-    "@unseenco/theatre-core": "*",
-    "@unseenco/theatre-core-lite": "*",
-    "@unseenco/theatre-studio": "*",
-    "@unseenco/theatre-studio-lite": "*",
+    "@unseenco/backstage": "*",
     "three": ">=0.150.0"
   },
   "peerDependenciesMeta": {
-    "@unseenco/theatre-core-lite": {
-      "optional": true
-    },
-    "@unseenco/theatre-studio": {
-      "optional": true
-    },
-    "@unseenco/theatre-studio-lite": {
-      "optional": true
+    "@unseenco/backstage": {
+      "optional": false
     }
-  }
+  },
+  "private": true
 }
