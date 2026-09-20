@@ -29,8 +29,6 @@ import type SheetObjectTemplate from './SheetObjectTemplate'
 import TheatreSheetObject from './TheatreSheetObject'
 import {mergeSequencedValuesIntoFinal} from './sheetObjectSequencedFull'
 import {isTheatreLiteMode} from '../utils/isTheatreLiteMode'
-
-
 import {getPropConfigByPath} from '@unseenco/theatre-shared/propTypes/utils'
 import type {PathToProp} from '@unseenco/theatre-shared/utils/addresses'
 import removePathFromObject from '@unseenco/theatre-shared/utils/removePathFromObject'
