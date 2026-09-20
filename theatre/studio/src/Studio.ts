@@ -35,7 +35,7 @@ import {STUDIO_PROJECT_ID} from '@unseenco/theatre-studio/panels/OutlinePanel/ou
 import {val} from '@unseenco/theatre-dataverse'
 import {setStudioAccentHex} from '@unseenco/theatre-studio/uiComponents/studioTokens'
 import {
-  isTheatreLiteStudioCompileTime,
+  isTheatreLiteStudioLocked,
   setRuntimeStudioMode,
 } from '@unseenco/theatre-studio/utils/theatreLiteMode'
 
@@ -162,10 +162,14 @@ export class Studio {
       setStudioAccentHex(opts.accentHex)
     }
 
+    if (opts?.mode === 'full' && isTheatreLiteStudioLocked()) {
+      console.warn(
+        `@unseenco/theatre-studio-lite always runs in lite mode; ignoring \`{ mode: 'full' }\`.`,
+      )
+    }
+
     const studioMode =
-      opts?.mode === 'lite' || isTheatreLiteStudioCompileTime()
-        ? 'lite'
-        : 'full'
+      isTheatreLiteStudioLocked() || opts?.mode === 'lite' ? 'lite' : 'full'
     setRuntimeStudioMode(studioMode)
 
     this._initializeFnCalled = true

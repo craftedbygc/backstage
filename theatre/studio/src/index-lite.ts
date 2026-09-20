@@ -3,5 +3,9 @@
  * Built with `__THEATRE_LITE__: true` — sequencing UI is disabled at compile time.
  */
 import '../../core/src/theatreLiteRuntimeFlag'
+import {setRuntimeStudioMode} from './utils/theatreLiteMode'
+
+setRuntimeStudioMode('lite')
+
 export {default} from './index'
 export * from './index'

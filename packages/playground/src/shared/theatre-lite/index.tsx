@@ -7,7 +7,7 @@ import studio from '@unseenco/theatre-studio-lite'
  * Playground demo for `@unseenco/theatre-studio-lite` + `@unseenco/theatre-core-lite`.
  * Static prop authoring, sheet variants, `onValuesChange`, and export JSON.
  */
-studio.initialize({mode: 'lite', usePersistentStorage: false})
+studio.initialize({usePersistentStorage: false})
 
 const project = getProject('Theatre Lite Playground')
 const sheet = project.sheet('Hero')

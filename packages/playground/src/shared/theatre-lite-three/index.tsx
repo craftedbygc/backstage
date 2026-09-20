@@ -22,7 +22,6 @@ const rafDriver = createRafDriver({name: 'theatre-lite-three'})
 setCoreRafDriver(rafDriver)
 
 studio.initialize({
-  mode: 'lite',
   usePersistentStorage: true,
   __experimental_rafDriver: rafDriver,
 })
