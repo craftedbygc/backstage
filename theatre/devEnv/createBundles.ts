@@ -7,15 +7,15 @@ function writeCorePrivateAPIsShim(pathToPackage: string) {
   const dist = path.join(pathToPackage, 'dist')
   fs.writeFileSync(
     path.join(dist, 'privateAPIs.mjs'),
-    `export { privateAPI, setPrivateAPI } from './index.mjs';\n`,
+    `export { privateAPI, setPrivateAPI, getTheatreCoreRafDriver } from './index.mjs';\n`,
   )
   fs.writeFileSync(
     path.join(dist, 'privateAPIs.js'),
-    `'use strict';\nconst index = require('./index.js');\nexports.privateAPI = index.privateAPI;\nexports.setPrivateAPI = index.setPrivateAPI;\n`,
+    `'use strict';\nconst index = require('./index.js');\nexports.privateAPI = index.privateAPI;\nexports.setPrivateAPI = index.setPrivateAPI;\nexports.getTheatreCoreRafDriver = index.getTheatreCoreRafDriver;\n`,
   )
   fs.writeFileSync(
     path.join(dist, 'privateAPIs.d.ts'),
-    `export { privateAPI, setPrivateAPI } from './index';\n`,
+    `export { privateAPI, setPrivateAPI, getTheatreCoreRafDriver } from './index';\n`,
   )
 }
 
