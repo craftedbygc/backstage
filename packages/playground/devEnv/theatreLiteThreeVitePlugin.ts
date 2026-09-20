@@ -58,12 +58,17 @@ function isTheatreThreejsImport(source: string): boolean {
  * Playground-only: `@unseenco/theatre-threejs` normally imports full core/studio.
  * Lite demos append `?theatre-lite-peers` so the dependency graph uses lite packages.
  */
+/** Rewrite full core/studio imports to lite peers without double `-lite` suffixes. */
 export function rewriteTheatrePeersInSource(code: string): string {
-  let out = code
-  for (const [from, to] of PEER_REWRITES) {
-    out = out.replaceAll(from, to)
-  }
-  return out
+  return code
+    .replace(
+      /@unseenco\/theatre-core(?!-lite)(?=\/|['"])/g,
+      '@unseenco/theatre-core-lite',
+    )
+    .replace(
+      /@unseenco\/theatre-studio(?!-lite)(?=\/|['"])/g,
+      '@unseenco/theatre-studio-lite',
+    )
 }
 
 function shouldRewriteLoadedSource(realId: string): boolean {
@@ -112,7 +117,10 @@ export function theatreLiteThreePeersPlugin(): Plugin {
       }
 
       for (const [from, to] of PEER_REWRITES) {
-        if (source === from || source.startsWith(`${from}/`)) {
+        if (
+          source === from ||
+          (source.startsWith(`${from}/`) && !source.startsWith(`${to}/`))
+        ) {
           const rewritten = source.replace(from, to)
           const resolved = await this.resolve(rewritten, importer, {
             ...options,

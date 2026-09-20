@@ -46,4 +46,13 @@ import type {IStudio} from '@unseenco/theatre-studio/TheatreStudio'`
     expect(out).toContain(`'@unseenco/theatre-studio-lite'`)
     expect(out).toContain(`'@unseenco/theatre-studio-lite/TheatreStudio'`)
   })
+
+  test('rewriteTheatrePeersInSource is idempotent for already-lite imports', () => {
+    const input = `import {types} from '@unseenco/theatre-core-lite'
+import {getStudio} from '@unseenco/theatre-studio-lite'`
+    const out = rewriteTheatrePeersInSource(input)
+    expect(out).not.toContain('core-lite-lite')
+    expect(out).not.toContain('studio-lite-lite')
+    expect(out).toBe(input)
+  })
 })
