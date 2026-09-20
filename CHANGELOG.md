@@ -42,7 +42,7 @@
   - **Shared:** Remote DOM highlight uses a package import path (`@unseenco/backstage-shared/gsap/domElementHighlightTarget`) for lint and bundler resolution.
 - Docs
   - **Guide:** [Sheet sequence modes](./docs/guide/manual/sheet-modes.md) (page mode, scroll drivers, Lenis). [GSAP extension](./docs/guide/extensions/gsap.md) expanded for page mode and ScrollTrigger workflow.
-  - **Links:** User-facing `theatrejs.com` / `docs.theatrejs.com` URLs point to **https://unseen-theatre.netlify.app** (`/docs/` for guides and API; site root for former homepage links) across Studio UI, core JSDoc, READMEs, and package metadata.
+  - **Links:** User-facing `theatrejs.com` / `docs.theatrejs.com` URLs point to **https://backstage.unseen.co** (`/docs/` for guides and API; site root for former homepage links) across Studio UI, core JSDoc, READMEs, and package metadata.
 
 ## 0.4.3
 
@@ -356,7 +356,7 @@ Initial release of the [Unseen Studio fork](https://github.com/craftedbygc/theat
 ## 0.4.5
 
 - New features
-  - `sequence.attachAudio()` now uses an internal `[GainNode](https://developer.mozilla.org/en-US/docs/Web/API/GainNode)` that you can customize by connecting it to your own audio graph. Docs [here](https://unseen-theatre.netlify.app/docs/guide/manual/audio).
+  - `sequence.attachAudio()` now uses an internal `[GainNode](https://developer.mozilla.org/en-US/docs/Web/API/GainNode)` that you can customize by connecting it to your own audio graph. Docs [here](https://backstage.unseen.co/docs/guide/manual/audio).
 
 
 
@@ -378,7 +378,7 @@ Initial release of the [Unseen Studio fork](https://github.com/craftedbygc/theat
 ## 0.4.2
 
 - New features
-  - `sequence.attachAudio` now handles autoplay blocking ([Docs](https://unseen-theatre.netlify.app/docs/guide/manual/audio#attachaudio)).
+  - `sequence.attachAudio` now handles autoplay blocking ([Docs](https://backstage.unseen.co/docs/guide/manual/audio#attachaudio)).
   - `studio.selection` and co have a more [lax](https://github.com/craftedbygc/theatre/commit/dcf90983a565e585661b631b457a807eb4a4d874) type constraint.
 - Bug fixes
   - Fixed the builds of internal examples.

@@ -423,11 +423,11 @@ export default class Sequence implements PointerToPrismProvider {
 To fix this, either set \`conf.range[1]\` to be less the duration of the sequence, or adjust the sequence duration in the UI.`,
           [
             {
-              url: 'https://unseen-theatre.netlify.app/docs/guide/manual/sequences',
+              url: 'https://backstage.unseen.co/docs/guide/manual/sequences',
               title: 'Sequences',
             },
             {
-              url: 'https://unseen-theatre.netlify.app/docs/guide/manual/sequences',
+              url: 'https://backstage.unseen.co/docs/guide/manual/sequences',
               title: 'Playback API',
             },
           ],

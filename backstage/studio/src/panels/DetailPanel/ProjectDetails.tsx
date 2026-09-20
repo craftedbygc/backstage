@@ -131,7 +131,7 @@ const ProjectDetails: React.FC<{
           the assets that you can unpack in your public folder.
         </p>
         <a
-          href="https://unseen-theatre.netlify.app/docs/guide/manual/projects#state"
+          href="https://backstage.unseen.co/docs/guide/manual/projects#state"
           target="_blank"
         >
           Here is a quick guide on how to export to production.

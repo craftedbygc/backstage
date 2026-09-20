@@ -43,7 +43,7 @@ const EmptyState: FC = () => {
       {/* Links like this should probably be managed centrally so that we can
       have a process for updating them when the docs change. */}
       <LinkToDoc
-        href="https://unseen-theatre.netlify.app/docs/guide/manual/objects"
+        href="https://backstage.unseen.co/docs/guide/manual/objects"
         target="_blank"
       >
         Learn more about Objects

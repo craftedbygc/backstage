@@ -1,7 +1,7 @@
 # @unseenco/backstage/dataverse
 
 Dataverse is the reactive dataflow library
-[Backstage.js](https://unseen-theatre.netlify.app) is built on. It is inspired by ideas in
+[Backstage.js](https://backstage.unseen.co) is built on. It is inspired by ideas in
 [functional reactive programming](https://en.wikipedia.org/wiki/Functional_reactive_programming)
 and it is optimised for interactivity and animation.
 

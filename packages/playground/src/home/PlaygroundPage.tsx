@@ -41,7 +41,7 @@ export const PlaygroundPage = ({
           links={[
             {
               label: 'Docs',
-              href: 'https://unseen-theatre.netlify.app/docs/',
+              href: 'https://backstage.unseen.co/docs/',
             },
             {
               label: 'Github',

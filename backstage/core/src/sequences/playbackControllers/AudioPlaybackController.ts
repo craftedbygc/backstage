@@ -199,11 +199,11 @@ is too high for a sequence with audio.
 To fix this, either set \`iterationCount\` to a lower value, or remove the audio from the sequence.`,
         [
           {
-            url: 'https://unseen-theatre.netlify.app/docs/guide/manual/audio',
+            url: 'https://backstage.unseen.co/docs/guide/manual/audio',
             title: 'Using Audio',
           },
           {
-            url: 'https://unseen-theatre.netlify.app/docs/api/backstage-core#sequence.attachaudio',
+            url: 'https://backstage.unseen.co/docs/api/backstage-core#sequence.attachaudio',
             title: 'Audio API',
           },
         ],

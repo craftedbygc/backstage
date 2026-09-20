@@ -1,6 +1,6 @@
 # @unseenco/backstage/react
 
-Utilities for using [Backstage.js](https://unseen-theatre.netlify.app) or
+Utilities for using [Backstage.js](https://backstage.unseen.co) or
 [Dataverse](https://github.com/craftedbygc/backstage/tree/main/packages/dataverse)
 with React.
 

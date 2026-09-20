@@ -89,7 +89,7 @@ export interface ISheetObject<
    * Calls `fn` every time the value of the props change.
    *
    * @param fn - The callback is called every time the value of the props change, plus once at the beginning.
-   * @param rafDriver - (optional) The `rafDriver` to use. Learn how to use `rafDriver`s [from the docs](https://unseen-theatre.netlify.app/docs/guide/manual/advanced#rafdrivers).
+   * @param rafDriver - (optional) The `rafDriver` to use. Learn how to use `rafDriver`s [from the docs](https://backstage.unseen.co/docs/guide/manual/advanced#rafdrivers).
    * @returns an Unsubscribe function
    *
    * @example

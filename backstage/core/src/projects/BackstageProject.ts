@@ -46,7 +46,7 @@ export type ISheetOptions = {
 /** Options passed to {@link getProject} when creating or attaching to a project. */
 export type IProjectConfig = {
   /**
-   * The state of the project, as [exported](https://unseen-theatre.netlify.app/docs/guide/manual/projects#state) by the studio.
+   * The state of the project, as [exported](https://backstage.unseen.co/docs/guide/manual/projects#state) by the studio.
    */
   state?: $IntentionalAny
   assets?: {
@@ -107,7 +107,7 @@ export interface IProject {
    * @param opts - Sheet options such as `{ visible: false }`, `sequenceMode`, or `gsap`
    * @returns The newly created Sheet
    *
-   * **Docs: https://unseen-theatre.netlify.app/docs/guide/manual/sheets**
+   * **Docs: https://backstage.unseen.co/docs/guide/manual/sheets**
    */
   sheet(sheetId: string, instanceIdOrOpts?: string | ISheetOptions): ISheet
   /**

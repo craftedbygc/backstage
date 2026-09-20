@@ -1,6 +1,6 @@
 # @unseenco/backstage/threejs
 
-Three.js helpers and Studio extension for [Backstage.js](https://unseen-theatre.netlify.app).
+Three.js helpers and Studio extension for [Backstage.js](https://backstage.unseen.co).
 
 Runtime helpers (`autoAddObject`, `autoAddMaterial`, `autoAddCamera`, …) import from the package root and do **not** load Studio. Studio devtools (`buildExtension`) import from `@unseenco/backstage/threejs/extension`.
 

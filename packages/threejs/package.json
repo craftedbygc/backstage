@@ -5,7 +5,7 @@
   "description": "Three.js devtools extension for Backstage.js Studio",
   "author": {
     "name": "Unseen Studio",
-    "url": "https://unseen-theatre.netlify.app"
+    "url": "https://backstage.unseen.co"
   },
   "repository": {
     "type": "git",

@@ -89,7 +89,7 @@ export interface ISequence {
     /**
      * Optionally provide a rafDriver to use for the playback. It'll default to
      * the core driver if not provided, which is a `requestAnimationFrame()` driver.
-     * Learn how to use `rafDriver`s [from the docs](https://unseen-theatre.netlify.app/docs/guide/manual/advanced#rafdrivers).
+     * Learn how to use `rafDriver`s [from the docs](https://backstage.unseen.co/docs/guide/manual/advanced#rafdrivers).
      */
     rafDriver?: IRafDriver
   }): Promise<boolean>
@@ -186,7 +186,7 @@ export interface ISequence {
    *
    * @returns A promise that resolves once the audio source is loaded and decoded
    *
-   * Learn more [here](https://unseen-theatre.netlify.app/docs/guide/manual/audio).
+   * Learn more [here](https://backstage.unseen.co/docs/guide/manual/audio).
    *
    * @example
    * Usage:
@@ -314,7 +314,7 @@ export default class BackstageSequence implements ISequence {
             '```',
           [
             {
-              url: 'https://unseen-theatre.netlify.app/docs/api/backstage-core#project.ready',
+              url: 'https://backstage.unseen.co/docs/api/backstage-core#project.ready',
               title: 'Project.ready',
             },
           ],
