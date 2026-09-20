@@ -17,6 +17,7 @@ import {
   Scene,
   WebGLRenderer,
 } from 'three'
+import state from './state.json'
 
 const rafDriver = createRafDriver({name: 'theatre-lite-three'})
 setCoreRafDriver(rafDriver)
@@ -26,7 +27,7 @@ studio.initialize({
   __experimental_rafDriver: rafDriver,
 })
 
-const project = getProject('Theatre Lite Three')
+const project = getProject('Theatre Lite Three', { state })
 const sheet = project.sheet('Cube Scene')
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
