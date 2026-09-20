@@ -132,7 +132,7 @@ export default defineConfig({
     socialLinks: [
       {
         icon: 'github',
-        link: 'https://github.com/@@PRESERVE_CBGC_BACKSTAGE@@',
+        link: 'https://github.com/craftedbygc/backstage',
       },
     ],
   },
