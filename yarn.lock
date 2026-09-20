@@ -4271,6 +4271,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@unseenco/backstage-shared@workspace:theatre/shared":
+  version: 0.0.0-use.local
+  resolution: "@unseenco/backstage-shared@workspace:theatre/shared"
+  dependencies:
+    "@unseenco/theatre-core": "workspace:*"
+    "@unseenco/theatre-studio": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@unseenco/backstage@workspace:*, @unseenco/backstage@workspace:packages/backstage":
   version: 0.0.0-use.local
   resolution: "@unseenco/backstage@workspace:packages/backstage"
@@ -4414,15 +4423,6 @@ __metadata:
   peerDependencies:
     react: "*"
     react-dom: "*"
-  languageName: unknown
-  linkType: soft
-
-"@unseenco/theatre-shared@workspace:theatre/shared":
-  version: 0.0.0-use.local
-  resolution: "@unseenco/theatre-shared@workspace:theatre/shared"
-  dependencies:
-    "@unseenco/theatre-core": "workspace:*"
-    "@unseenco/theatre-studio": "workspace:*"
   languageName: unknown
   linkType: soft
 

@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import {pointerEventsAutoInNormalMode} from '@unseenco/theatre-studio/css'
 import React from 'react'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 
 const Container = styled.div`
   position: absolute;

@@ -1,4 +1,4 @@
-import type {Asset, File} from '@unseenco/theatre-shared/utils/assets'
+import type {Asset, File} from '@unseenco/backstage-shared/utils/assets'
 
 export interface IEditingTools<T> {
   temporarilySetValue(v: T): void

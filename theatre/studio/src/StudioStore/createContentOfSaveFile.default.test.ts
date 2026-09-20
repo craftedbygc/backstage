@@ -1,8 +1,8 @@
 /*
  * @jest-environment jsdom
  */
-import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
-import {setupTestSheet} from '@unseenco/theatre-shared/testUtils'
+import type {ObjectAddressKey} from '@unseenco/backstage-shared/utils/ids'
+import {setupTestSheet} from '@unseenco/backstage-shared/testUtils'
 
 const emptySheetState = {
   staticOverrides: {byObject: {}},

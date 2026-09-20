@@ -1,11 +1,11 @@
 /*
  * @jest-environment jsdom
  */
-import {setupTestSheet} from '@unseenco/theatre-shared/testUtils'
+import {setupTestSheet} from '@unseenco/backstage-shared/testUtils'
 import {privateAPI} from '@unseenco/theatre-core/privateAPIs'
 import {val} from '@unseenco/theatre-dataverse'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
-import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
+import type {ObjectAddressKey} from '@unseenco/backstage-shared/utils/ids'
 import * as t from '@unseenco/theatre-core/propTypes'
 
 describe('ISheetObject.addProps', () => {

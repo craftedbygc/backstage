@@ -31,11 +31,11 @@ import {applyGsapClipTrackToAnimation} from '@unseenco/theatre-studio/gsap/apply
 import {previewGsapClipsAtCurrentPlayhead} from '@unseenco/theatre-studio/gsap/previewGsapClipsAtPlayhead'
 import {gsapClipBarLayoutInScaledSpace} from './gsapClipBarLayout'
 import GsapChildClipTrackRow from './GsapChildClipTrackRow'
-import {getAnimationEntry} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import {getAnimationEntry} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
 import {
   gsapClipTimingDeviatesFromBaseline,
   resolveGsapClipBaselineTiming,
-} from '@unseenco/theatre-shared/gsap/gsapClipBaseline'
+} from '@unseenco/backstage-shared/gsap/gsapClipBaseline'
 import {
   limitGsapClipMoveStart,
   limitGsapClipResizeEndDuration,

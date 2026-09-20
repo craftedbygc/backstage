@@ -7,24 +7,24 @@ import type {
   SheetObjectPropTypeConfig,
 } from '@unseenco/theatre-core/sheets/TheatreSheet'
 import TheatreSheet from '@unseenco/theatre-core/sheets/TheatreSheet'
-import type {SheetAddress} from '@unseenco/theatre-shared/utils/addresses'
+import type {SheetAddress} from '@unseenco/backstage-shared/utils/addresses'
 import {Atom, prism, val} from '@unseenco/theatre-dataverse'
 import type {Prism} from '@unseenco/theatre-dataverse'
 import type SheetTemplate from './SheetTemplate'
 import type {
   ObjectAddressKey,
   SheetInstanceId,
-} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
 import {
   isSheetPropsObjectKey,
   SHEET_PROPS_OBJECT_KEY,
-} from '@unseenco/theatre-shared/utils/sheetProps'
+} from '@unseenco/backstage-shared/utils/sheetProps'
 import type {
   TransientPropPath,
   StaticPropPath,
-} from '@unseenco/theatre-shared/utils/transientPropPaths'
-import type {StrictRecord} from '@unseenco/theatre-shared/utils/types'
-import type {ILogger} from '@unseenco/theatre-shared/logger'
+} from '@unseenco/backstage-shared/utils/transientPropPaths'
+import type {StrictRecord} from '@unseenco/backstage-shared/utils/types'
+import type {ILogger} from '@unseenco/backstage-shared/logger'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import {isTheatreLiteMode} from '@unseenco/theatre-core/utils/isTheatreLiteMode'
 import {getOrCreateFullSequence} from './sheetGetSequenceFull'
@@ -41,7 +41,7 @@ import {
 } from '@unseenco/theatre-core/sequences/sequenceVariants'
 import type {SheetSequenceMode} from '@unseenco/theatre-core/sheets/sheetSequenceMode'
 import type {ScrollDriver} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
-import type {VoidFn} from '@unseenco/theatre-shared/utils/types'
+import type {VoidFn} from '@unseenco/backstage-shared/utils/types'
 
 type SheetObjectMap = StrictRecord<ObjectAddressKey, SheetObject>
 

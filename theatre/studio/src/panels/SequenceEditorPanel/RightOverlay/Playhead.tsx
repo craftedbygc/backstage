@@ -2,7 +2,7 @@ import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/Se
 import RoomToClick from '@unseenco/theatre-studio/uiComponents/RoomToClick'
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
 import {usePrism, useVal} from '@unseenco/backstage/react'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {val} from '@unseenco/theatre-dataverse'
 import clamp from 'lodash-es/clamp'
@@ -27,7 +27,7 @@ import {
   snapToAll,
   snapToNone,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
-import {generateSequenceMarkerId} from '@unseenco/theatre-shared/utils/ids'
+import {generateSequenceMarkerId} from '@unseenco/backstage-shared/utils/ids'
 import useChordial from '@unseenco/theatre-studio/uiComponents/chordial/useChodrial'
 import {mergeRefs} from 'react-merge-refs'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'

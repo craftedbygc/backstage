@@ -1,6 +1,6 @@
 import {stripSequenceDataFromOnDiskState} from './stripSequenceDataFromOnDiskState'
 import type {OnDiskState} from '@unseenco/theatre-core/projects/store/storeTypes'
-import type {SheetId} from '@unseenco/theatre-shared/utils/ids'
+import type {SheetId} from '@unseenco/backstage-shared/utils/ids'
 
 describe('stripSequenceDataFromOnDiskState', () => {
   it('removes sequence fields from each sheet', () => {

@@ -14,7 +14,7 @@ import {
   defaultPageScrollContext,
   resolvePageScrollAxis,
   setActivePageScrollContext,
-} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+} from '@unseenco/backstage-shared/sheets/pageScrollContext'
 import {getTheatreGsapConfig} from './config'
 import {getGsapScrollTriggerPlugin} from './gsapScrollTriggerPlugin'
 

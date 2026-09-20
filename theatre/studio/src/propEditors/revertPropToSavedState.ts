@@ -1,13 +1,13 @@
 import cloneDeep from 'lodash-es/cloneDeep'
 import deepEqual from 'fast-deep-equal'
 import type {BasicKeyframedTrack} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
-import {isBasicKeyframedTrack} from '@unseenco/theatre-shared/sequence/trackData'
+import {isBasicKeyframedTrack} from '@unseenco/backstage-shared/sequence/trackData'
 import type {PropTypeConfig} from '@unseenco/theatre-core/propTypes'
 import type {PropTypeConfig_Compound} from '@unseenco/theatre-core/propTypes'
 import {
   isPropConfigComposite,
   iteratePropType,
-} from '@unseenco/theatre-shared/propTypes/utils'
+} from '@unseenco/backstage-shared/propTypes/utils'
 // eslint-disable-next-line no-restricted-syntax
 import {
   DEFAULT_SEQUENCE_VARIANT,
@@ -19,15 +19,15 @@ import {
 } from '@unseenco/theatre-core/sequences/sequenceVariants'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
-import getDeep from '@unseenco/theatre-shared/utils/getDeep'
-import type {PathToProp} from '@unseenco/theatre-shared/utils/addresses'
-import {encodePathToProp} from '@unseenco/theatre-shared/utils/addresses'
+import getDeep from '@unseenco/backstage-shared/utils/getDeep'
+import type {PathToProp} from '@unseenco/backstage-shared/utils/addresses'
+import {encodePathToProp} from '@unseenco/backstage-shared/utils/addresses'
 import type {
   ObjectAddressKey,
   SequenceTrackId,
-} from '@unseenco/theatre-shared/utils/ids'
-import type {SerializablePrimitive} from '@unseenco/theatre-shared/utils/types'
-import {generateSequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
+import type {SerializablePrimitive} from '@unseenco/backstage-shared/utils/types'
+import {generateSequenceTrackId} from '@unseenco/backstage-shared/utils/ids'
 import type {IStateEditors} from '@unseenco/theatre-studio/store/stateEditors'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import {val} from '@unseenco/theatre-dataverse'

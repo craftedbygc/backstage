@@ -1,4 +1,4 @@
-import type {VoidFn} from '@unseenco/theatre-shared/utils/types'
+import type {VoidFn} from '@unseenco/backstage-shared/utils/types'
 import type {DockedPageViewportRect} from '@unseenco/theatre-studio/UIRoot/syncDockedPageViewport'
 
 export type IDockedViewport = DockedPageViewportRect

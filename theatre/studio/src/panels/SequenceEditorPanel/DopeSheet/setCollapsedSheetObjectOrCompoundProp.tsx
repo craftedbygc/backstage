@@ -1,9 +1,9 @@
-import type {StudioSheetItemKey} from '@unseenco/theatre-shared/utils/ids'
+import type {StudioSheetItemKey} from '@unseenco/backstage-shared/utils/ids'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import type {
   SheetAddress,
   WithoutSheetInstance,
-} from '@unseenco/theatre-shared/utils/addresses'
+} from '@unseenco/backstage-shared/utils/addresses'
 
 export function setCollapsedSheetItem(
   isCollapsed: boolean,

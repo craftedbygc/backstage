@@ -6,8 +6,8 @@ import PopoverPositioner from './PopoverPositioner'
 import {createPortal} from 'react-dom'
 import {useTooltipOpenState} from './TooltipContext'
 import {PortalContext} from 'reakit'
-import noop from '@unseenco/theatre-shared/utils/noop'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import noop from '@unseenco/backstage-shared/utils/noop'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 
 /**
  * Useful helper in development to prevent the tooltips from auto-closing,

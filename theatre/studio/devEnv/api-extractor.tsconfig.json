@@ -9,7 +9,7 @@
       "@unseenco/theatre-studio/*": [
         "../../.temp/declarations/studio/src/*"
       ],
-      "@unseenco/theatre-shared/*": ["../../.temp/declarations/shared/src/*"],
+      "@unseenco/backstage-shared/*": ["../../.temp/declarations/shared/src/*"],
       // not sure why it can't resolve react-icons, but we don't need it in the declarations anyway.
       "react-icons": ["./cantResolve.ignore.ts"]
     }

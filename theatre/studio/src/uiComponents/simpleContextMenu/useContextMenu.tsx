@@ -1,4 +1,4 @@
-import type {VoidFn} from '@unseenco/theatre-shared/utils/types'
+import type {VoidFn} from '@unseenco/backstage-shared/utils/types'
 import React, {useContext, useEffect} from 'react'
 import ContextMenu from './ContextMenu/ContextMenu'
 import type {

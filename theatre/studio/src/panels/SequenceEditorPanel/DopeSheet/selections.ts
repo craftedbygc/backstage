@@ -6,7 +6,7 @@ import type {
   ProjectId,
   SequenceTrackId,
   SheetId,
-} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
 import {
   getSequenceStateFromSheet,
   getSequenceVariantOwningTrackInSheetState,
@@ -18,8 +18,8 @@ import type {Keyframe} from '@unseenco/theatre-core/projects/store/types/SheetSt
 import {
   commonRootOfPathsToProps,
   decodePathToProp,
-} from '@unseenco/theatre-shared/utils/addresses'
-import type {StrictRecord} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/addresses'
+import type {StrictRecord} from '@unseenco/backstage-shared/utils/types'
 import type {KeyframeWithPathToPropFromCommonRoot} from '@unseenco/theatre-studio/store/types'
 
 /**

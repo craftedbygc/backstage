@@ -10,7 +10,7 @@ import GlobalToolbar from '@unseenco/theatre-studio/toolbars/GlobalToolbar'
 import {LayoutModeProvider} from './LayoutModeContext'
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
 import {PortalContext} from 'reakit'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import useKeyboardShortcuts from './useKeyboardShortcuts'
 import PointerEventsHandler from '@unseenco/theatre-studio/uiComponents/PointerEventsHandler'
 import {MountAll} from '@unseenco/theatre-studio/utils/renderInPortalInContext'
@@ -18,7 +18,7 @@ import {PortalLayer, ProvideStyles} from '@unseenco/theatre-studio/css'
 import {
   createTheatreInternalLogger,
   TheatreLoggerLevel,
-} from '@unseenco/theatre-shared/logger'
+} from '@unseenco/backstage-shared/logger'
 import {ProvideLogger} from '@unseenco/theatre-studio/uiComponents/useLogger'
 import {Notifier} from '@unseenco/theatre-studio/notify'
 import {useChordialCaptureEvents} from '@unseenco/theatre-studio/uiComponents/chordial/useChodrial'

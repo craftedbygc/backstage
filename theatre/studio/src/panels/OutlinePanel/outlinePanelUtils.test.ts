@@ -9,7 +9,7 @@ import {
   STUDIO_PROJECT_ID,
 } from './outlinePanelUtils'
 import type {NamespacedObjects} from './outlinePanelUtils'
-import type {SheetId} from '@unseenco/theatre-shared/utils/ids'
+import type {SheetId} from '@unseenco/backstage-shared/utils/ids'
 import {Atom} from '@unseenco/theatre-dataverse'
 
 describe('outlinePanelUtils', () => {

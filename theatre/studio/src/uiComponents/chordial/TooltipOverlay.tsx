@@ -1,5 +1,5 @@
 import React from 'react'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import {val} from '@unseenco/theatre-dataverse'
 import {usePrism, useVal} from '@unseenco/backstage/react'
 import styled from 'styled-components'

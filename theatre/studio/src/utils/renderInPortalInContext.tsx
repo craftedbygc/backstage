@@ -3,7 +3,7 @@ import {useVal} from '@unseenco/backstage/react'
 import type {
   $FixMe,
   $IntentionalAny,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import React from 'react'
 import {createPortal} from 'react-dom'
 

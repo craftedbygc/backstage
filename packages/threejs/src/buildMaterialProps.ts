@@ -1,6 +1,6 @@
 import {types} from '@unseenco/backstage'
-import type {Asset} from '@unseenco/theatre-shared/utils/assets'
-import type {TransientPropPath} from '@unseenco/theatre-shared/utils/transientPropPaths'
+import type {Asset} from '@unseenco/backstage-shared/utils/assets'
+import type {TransientPropPath} from '@unseenco/backstage-shared/utils/transientPropPaths'
 import {
   AdditiveBlending,
   BackSide,

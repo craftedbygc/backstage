@@ -1,14 +1,14 @@
 import type {ISheet} from '@unseenco/backstage'
 import {privateAPI} from '@unseenco/backstage/privateAPIs'
-import {buildGsapSheetObjectKey} from '@unseenco/theatre-shared/gsap/buildGsapSheetObjectKey'
-import {extractScrollTriggerLayout} from '@unseenco/theatre-shared/gsap/extractScrollTriggerLayout'
+import {buildGsapSheetObjectKey} from '@unseenco/backstage-shared/gsap/buildGsapSheetObjectKey'
+import {extractScrollTriggerLayout} from '@unseenco/backstage-shared/gsap/extractScrollTriggerLayout'
 import {
   findScrollTriggerEntryByInstance,
   registerScrollTriggerInRegistry,
   sheetAddressKey,
-} from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
-import type {GsapScrollTriggerRegistryEntry} from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
-import {formatOutlineNamespacePathKey} from '@unseenco/theatre-shared/utils/outlineNamespaces'
+} from '@unseenco/backstage-shared/gsap/scrollTriggerRegistry'
+import type {GsapScrollTriggerRegistryEntry} from '@unseenco/backstage-shared/gsap/scrollTriggerRegistry'
+import {formatOutlineNamespacePathKey} from '@unseenco/backstage-shared/utils/outlineNamespaces'
 import {getTheatreGsapConfig} from './config'
 import {getTheatrePageScrollContext} from './attachTheatrePageScroll'
 import type {GsapScrollTriggerLike} from './gsapScrollTriggerTypes'
@@ -16,7 +16,7 @@ import {
   refreshGsapScrollTriggers,
   requireGsapScrollTriggerPlugin,
 } from './gsapScrollTriggerPlugin'
-import {refreshScrollTriggerLayoutsForSheet} from '@unseenco/theatre-shared/gsap/refreshScrollTriggerLayoutsForSheet'
+import {refreshScrollTriggerLayoutsForSheet} from '@unseenco/backstage-shared/gsap/refreshScrollTriggerLayoutsForSheet'
 import {scheduleGsapTickerRafWarningCheck} from './gsapTickerRafBridge'
 
 export type RegisterGsapScrollTriggerOptions = {

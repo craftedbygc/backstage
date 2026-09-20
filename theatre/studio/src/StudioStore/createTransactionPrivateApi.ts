@@ -1,28 +1,28 @@
 import type {Pointer} from '@unseenco/theatre-dataverse'
-import {isSheetObject} from '@unseenco/theatre-shared/instanceTypes'
+import {isSheetObject} from '@unseenco/backstage-shared/instanceTypes'
 import type {
   $FixMe,
   $IntentionalAny,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import get from 'lodash-es/get'
 import type {ITransactionPrivateApi} from './StudioStore'
-import forEachPropDeep from '@unseenco/theatre-shared/utils/forEachDeep'
-import getDeep from '@unseenco/theatre-shared/utils/getDeep'
-import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
+import forEachPropDeep from '@unseenco/backstage-shared/utils/forEachDeep'
+import getDeep from '@unseenco/backstage-shared/utils/getDeep'
+import type {SequenceTrackId} from '@unseenco/backstage-shared/utils/ids'
 import {getPointerParts} from '@unseenco/theatre-dataverse'
 import type {
   PropTypeConfig,
   PropTypeConfig_AllSimples,
   PropTypeConfig_Compound,
 } from '@unseenco/theatre-core/propTypes'
-import type {PathToProp} from '@unseenco/theatre-shared/src/utils/addresses'
+import type {PathToProp} from '@unseenco/backstage-shared/src/utils/addresses'
 import deepEqual from 'fast-deep-equal'
 import {
   getPropConfigByPath,
   propTypeConfigPersists,
-} from '@unseenco/theatre-shared/propTypes/utils'
+} from '@unseenco/backstage-shared/propTypes/utils'
 import {isPlainObject} from 'lodash-es'
-import userReadableTypeOfValue from '@unseenco/theatre-shared/utils/userReadableTypeOfValue'
+import userReadableTypeOfValue from '@unseenco/backstage-shared/utils/userReadableTypeOfValue'
 import {
   getStudioActiveSequenceVariant,
   getStudioSequence,

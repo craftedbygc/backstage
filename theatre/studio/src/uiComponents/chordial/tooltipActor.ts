@@ -1,4 +1,4 @@
-import {basicFSM} from '@unseenco/theatre-shared/utils/basicFSM'
+import {basicFSM} from '@unseenco/backstage-shared/utils/basicFSM'
 import type {MaybeChodrialEl, ChodrialElement} from './chordialInternals'
 import {prism, val} from '@unseenco/theatre-dataverse'
 import {contextActor} from './contextActor'

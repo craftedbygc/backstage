@@ -1,7 +1,7 @@
 import type {PropTypeConfig} from '@unseenco/theatre-core/propTypes'
 import type {SheetState_Historic} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
-import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
-import {encodePathToProp} from '@unseenco/theatre-shared/utils/addresses'
+import type {ObjectAddressKey} from '@unseenco/backstage-shared/utils/ids'
+import {encodePathToProp} from '@unseenco/backstage-shared/utils/addresses'
 import {
   isPathUnderTransientPrefix,
   normalizeTransientPropPaths,

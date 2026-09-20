@@ -1,21 +1,21 @@
 import type {InterpolationTriple} from '@unseenco/theatre-core/sequences/interpolationTripleAtPosition'
 import interpolationTripleAtPosition from '@unseenco/theatre-core/sequences/interpolationTripleAtPosition'
-import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
-import pointerDeep from '@unseenco/theatre-shared/utils/pointerDeep'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import type {SequenceTrackId} from '@unseenco/backstage-shared/utils/ids'
+import pointerDeep from '@unseenco/backstage-shared/utils/pointerDeep'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import {Atom, prism, val} from '@unseenco/theatre-dataverse'
 import type {Pointer, Prism} from '@unseenco/theatre-dataverse'
 import type {
   Interpolator,
   PropTypeConfig,
 } from '@unseenco/theatre-core/propTypes'
-import {getPropConfigByPath} from '@unseenco/theatre-shared/propTypes/utils'
+import {getPropConfigByPath} from '@unseenco/backstage-shared/propTypes/utils'
 import {pointerToSequenceTrackData} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import {DEFAULT_SEQUENCE_VARIANT} from '@unseenco/theatre-core/sequences/sequenceVariants'
-import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
-import deepMergeWithCache from '@unseenco/theatre-shared/utils/deepMergeWithCache'
-import type {SerializableMap} from '@unseenco/theatre-shared/utils/types'
+import {isSheetPropsObjectKey} from '@unseenco/backstage-shared/utils/sheetProps'
+import deepMergeWithCache from '@unseenco/backstage-shared/utils/deepMergeWithCache'
+import type {SerializableMap} from '@unseenco/backstage-shared/utils/types'
 import type SheetObject from './SheetObject'
 
 type SheetObjectPropsValue = SerializableMap

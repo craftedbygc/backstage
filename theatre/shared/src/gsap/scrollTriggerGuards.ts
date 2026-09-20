@@ -2,7 +2,7 @@ import {readGsapTweenTimelineDuration} from './syncGsapClipProgress'
 import {
   defaultPageScrollContext,
   isVerticalPageScrollTrigger,
-} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+} from '@unseenco/backstage-shared/sheets/pageScrollContext'
 
 export type GsapScrollTriggerSurface = {
   start: number

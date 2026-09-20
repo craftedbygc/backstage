@@ -3,7 +3,7 @@ import type {
   $FixMe,
   $IntentionalAny,
   ReduxReducer,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import jiff from 'jiff'
 import patch from 'json-touch-patch'
 import last from 'lodash-es/last'

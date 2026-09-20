@@ -7,7 +7,7 @@ import type {
   NotificationType,
   Notify,
   Notifiers,
-} from '@unseenco/theatre-shared/notify'
+} from '@unseenco/backstage-shared/notify'
 import {useVal} from '@unseenco/backstage/react'
 import getStudio from './getStudio'
 import {marked} from 'marked'

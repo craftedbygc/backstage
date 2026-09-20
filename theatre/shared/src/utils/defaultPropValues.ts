@@ -1,8 +1,8 @@
 import type {PropTypeConfig} from '@unseenco/theatre-core/propTypes'
 import type {OnDiskState} from '@unseenco/theatre-core/projects/store/storeTypes'
-import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
-import {stripDefaultPropValuesFromMap} from '@unseenco/theatre-shared/propTypes/utils'
-import type {SerializableMap} from '@unseenco/theatre-shared/utils/types'
+import type {ObjectAddressKey} from '@unseenco/backstage-shared/utils/ids'
+import {stripDefaultPropValuesFromMap} from '@unseenco/backstage-shared/propTypes/utils'
+import type {SerializableMap} from '@unseenco/backstage-shared/utils/types'
 import cloneDeep from 'lodash-es/cloneDeep'
 
 export type ObjectPropConfigLookup = (

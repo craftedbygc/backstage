@@ -1,5 +1,5 @@
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import type {CommitOrDiscard} from '@unseenco/theatre-studio/StudioStore/StudioStore'
 import useDrag from '@unseenco/theatre-studio/uiComponents/useDrag'

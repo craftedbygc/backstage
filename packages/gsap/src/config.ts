@@ -1,13 +1,13 @@
-import type {OutlineNamespaceConfig} from '@unseenco/theatre-shared/utils/outlineNamespaces'
+import type {OutlineNamespaceConfig} from '@unseenco/backstage-shared/utils/outlineNamespaces'
 import type {
   PageScrollAxis,
   PageScrollScroller,
-} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+} from '@unseenco/backstage-shared/sheets/pageScrollContext'
 import {
   defaultPageScrollContext,
   setActivePageScrollContext,
-} from '@unseenco/theatre-shared/sheets/pageScrollContext'
-import {setConfiguredGsapSheetObjectNamespace} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
+} from '@unseenco/backstage-shared/sheets/pageScrollContext'
+import {setConfiguredGsapSheetObjectNamespace} from '@unseenco/backstage-shared/gsap/gsapSheetObjectKey'
 import {getGsapScrollTriggerPlugin} from './gsapScrollTriggerPlugin'
 
 export type TheatreGsapPageScrollConfig = {

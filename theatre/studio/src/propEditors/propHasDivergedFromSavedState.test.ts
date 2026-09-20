@@ -1,10 +1,10 @@
 /*
  * @jest-environment jsdom
  */
-import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
-import {setupTestSheet} from '@unseenco/theatre-shared/testUtils'
+import type {ObjectAddressKey} from '@unseenco/backstage-shared/utils/ids'
+import {setupTestSheet} from '@unseenco/backstage-shared/testUtils'
 import {val} from '@unseenco/theatre-dataverse'
-import pointerDeep from '@unseenco/theatre-shared/utils/pointerDeep'
+import pointerDeep from '@unseenco/backstage-shared/utils/pointerDeep'
 import {propHasDivergedFromSavedState} from './propHasDivergedFromSavedState'
 
 const emptySheetState = {

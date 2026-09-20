@@ -52,7 +52,7 @@ const config = ['studio', 'core'].map((which) => {
             replacement: fromPrivatePackage(`.temp/declarations/${which}/src`),
           },
           {
-            find: '@unseenco/theatre-shared',
+            find: '@unseenco/backstage-shared',
             replacement: fromPrivatePackage('.temp/declarations/shared/src'),
           },
         ],

@@ -11,7 +11,7 @@ import useDrag from '@unseenco/theatre-studio/uiComponents/useDrag'
 import {
   DEFAULT_NUMBER_PRECISION,
   roundNumberToPrecision,
-} from '@unseenco/theatre-shared/propTypes/numberPrecision'
+} from '@unseenco/backstage-shared/propTypes/numberPrecision'
 
 const Container = styled.div<{
   $embedded: boolean

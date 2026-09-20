@@ -1,5 +1,5 @@
 import type {StudioPersistentState} from '@unseenco/theatre-studio/store'
-import type {ProjectId, SheetId} from '@unseenco/theatre-shared/utils/ids'
+import type {ProjectId, SheetId} from '@unseenco/backstage-shared/utils/ids'
 import {
   mergePersistentState,
   splitPersistentState,

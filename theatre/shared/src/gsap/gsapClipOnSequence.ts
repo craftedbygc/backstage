@@ -8,8 +8,8 @@ import type {SequenceVariantId} from '@unseenco/theatre-core/sequences/sequenceV
 import type {
   ObjectAddressKey,
   SequenceTrackId,
-} from '@unseenco/theatre-shared/utils/ids'
-import {isGsapClipTrack} from '@unseenco/theatre-shared/sequence/trackData'
+} from '@unseenco/backstage-shared/utils/ids'
+import {isGsapClipTrack} from '@unseenco/backstage-shared/sequence/trackData'
 import {getAnimationEntryForSheetObject} from './gsapAnimationRegistry'
 import {getGsapObjectBinding} from './gsapObjectBinding'
 

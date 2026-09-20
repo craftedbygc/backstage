@@ -1,9 +1,9 @@
 import {privateAPI} from '@unseenco/theatre-core/privateAPIs'
 import type {ISheetObject} from '@unseenco/theatre-core/sheetObjects/TheatreSheetObject'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
-import {isSheetObjectPublicAPI} from '@unseenco/theatre-shared/instanceTypes'
-import {InvalidArgumentError} from '@unseenco/theatre-shared/utils/errors'
-import userReadableTypeOfValue from '@unseenco/theatre-shared/utils/userReadableTypeOfValue'
+import {isSheetObjectPublicAPI} from '@unseenco/backstage-shared/instanceTypes'
+import {InvalidArgumentError} from '@unseenco/backstage-shared/utils/errors'
+import userReadableTypeOfValue from '@unseenco/backstage-shared/utils/userReadableTypeOfValue'
 
 /**
  * Validates and resolves public sheet objects for {@link ISheetObject.showPropsOf}.

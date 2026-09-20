@@ -3,7 +3,7 @@ import type {CommitOrDiscard} from '@unseenco/theatre-studio/StudioStore/StudioS
 import {pointerEventsAutoInNormalMode} from '@unseenco/theatre-studio/css'
 import useDrag from '@unseenco/theatre-studio/uiComponents/useDrag'
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import {clamp} from 'lodash-es'
 import React, {useMemo} from 'react'
 import styled from 'styled-components'

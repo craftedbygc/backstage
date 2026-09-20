@@ -8,10 +8,10 @@ import type {CommitOrDiscard} from '@unseenco/theatre-studio/StudioStore/StudioS
 import useDrag from '@unseenco/theatre-studio/uiComponents/useDrag'
 import useKeyDown from '@unseenco/theatre-studio/uiComponents/useKeyDown'
 import useValToAtom from '@unseenco/theatre-studio/uiComponents/useValToAtom'
-import mutableSetDeep from '@unseenco/theatre-shared/utils/mutableSetDeep'
+import mutableSetDeep from '@unseenco/backstage-shared/utils/mutableSetDeep'
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
 import {usePrism} from '@unseenco/backstage/react'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {val} from '@unseenco/theatre-dataverse'
 import React, {useMemo, useRef} from 'react'
@@ -29,7 +29,7 @@ import type {
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
 import DopeSnap from '@unseenco/theatre-studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
 import {collectAggregateKeyframesInPrism} from './collectAggregateKeyframes'
-import type {ILogger, IUtilLogger} from '@unseenco/theatre-shared/logger'
+import type {ILogger, IUtilLogger} from '@unseenco/backstage-shared/logger'
 import {useLogger} from '@unseenco/theatre-studio/uiComponents/useLogger'
 
 const HITBOX_SIZE_PX = 5

@@ -2,7 +2,7 @@ import {useEffect} from 'react'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import {cmdIsDown} from '@unseenco/theatre-studio/utils/keyboardUtils'
 import {getSelectedSequence} from '@unseenco/theatre-studio/selectors'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import {toggleSequencePlayback} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/PlaybackControls/sequencePlayback'
 
 export {getIsPlayheadAttachedToFocusRange} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/PlaybackControls/sequencePlayback'

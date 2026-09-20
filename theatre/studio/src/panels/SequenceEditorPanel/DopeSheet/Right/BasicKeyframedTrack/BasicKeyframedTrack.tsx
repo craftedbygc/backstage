@@ -13,12 +13,12 @@ import type {IContextMenuItem} from '@unseenco/theatre-studio/uiComponents/simpl
 import useContextMenu from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
 import getStudio from '@unseenco/theatre-studio/getStudio'
-import {arePathsEqual} from '@unseenco/theatre-shared/utils/addresses'
+import {arePathsEqual} from '@unseenco/backstage-shared/utils/addresses'
 import type {KeyframeWithPathToPropFromCommonRoot} from '@unseenco/theatre-studio/store/types'
 import KeyframeSnapTarget, {
   snapPositionsStateD,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/KeyframeSnapTarget'
-import {createStudioSheetItemKey} from '@unseenco/theatre-shared/utils/ids'
+import {createStudioSheetItemKey} from '@unseenco/backstage-shared/utils/ids'
 import {
   getStudioSequence,
   getStudioTrackSequenceVariant,

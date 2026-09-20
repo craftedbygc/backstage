@@ -8,7 +8,7 @@ import {height as itemHeight} from './Item'
 import {PortalContext} from 'reakit'
 import useOnKeyDown from '@unseenco/theatre-studio/uiComponents/useOnKeyDown'
 import BaseMenu from './BaseMenu'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import type {ContextMenuItem} from '@unseenco/theatre-studio/uiComponents/chordial/chordialInternals'
 
 /**

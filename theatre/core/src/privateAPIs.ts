@@ -7,7 +7,7 @@ import type {ISheetObject} from '@unseenco/theatre-core/sheetObjects/TheatreShee
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
 import type {ISheet} from '@unseenco/theatre-core/sheets/TheatreSheet'
 import type {UnknownShorthandCompoundProps} from './propTypes/internals'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import type {IRafDriver, RafDriverPrivateAPI} from './rafDrivers'
 import {getCoreRafDriver} from './coreTicker'
 

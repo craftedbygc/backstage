@@ -2,17 +2,17 @@ import {privateAPI, setPrivateAPI} from '@unseenco/theatre-core/privateAPIs'
 import Project from '@unseenco/theatre-core/projects/Project'
 import type {ISheet} from '@unseenco/theatre-core/sheets/TheatreSheet'
 
-import type {ProjectAddress} from '@unseenco/theatre-shared/utils/addresses'
-import type {Asset, File} from '@unseenco/theatre-shared/utils/assets'
+import type {ProjectAddress} from '@unseenco/backstage-shared/utils/addresses'
+import type {Asset, File} from '@unseenco/backstage-shared/utils/assets'
 import type {
   ProjectId,
   SheetId,
   SheetInstanceId,
-} from '@unseenco/theatre-shared/utils/ids'
-import {validateInstanceId} from '@unseenco/theatre-shared/utils/sanitizers'
-import {validateAndSanitiseSlashedPathOrThrow} from '@unseenco/theatre-shared/utils/slashedPaths'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
-import {notify} from '@unseenco/theatre-shared/notify'
+} from '@unseenco/backstage-shared/utils/ids'
+import {validateInstanceId} from '@unseenco/backstage-shared/utils/sanitizers'
+import {validateAndSanitiseSlashedPathOrThrow} from '@unseenco/backstage-shared/utils/slashedPaths'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
+import {notify} from '@unseenco/backstage-shared/notify'
 import type {SheetSequenceMode} from '@unseenco/theatre-core/sheets/sheetSequenceMode'
 import type {ScrollDriver} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
 

@@ -28,12 +28,12 @@ import {gsapTimelineChildClipInSequenceSpace} from './gsapTimelineChildBarLayout
 import {
   applyTimelineChildTimingToGsap,
   readTimelineSpanSeconds,
-} from '@unseenco/theatre-shared/gsap/applyTimelineChildTiming'
-import {getAnimationEntry} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+} from '@unseenco/backstage-shared/gsap/applyTimelineChildTiming'
+import {getAnimationEntry} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
 import {
   gsapTimelineChildTimingDeviatesFromBaseline,
   resolveGsapClipBaselineTiming,
-} from '@unseenco/theatre-shared/gsap/gsapClipBaseline'
+} from '@unseenco/backstage-shared/gsap/gsapClipBaseline'
 
 const Container = styled.div`
   position: relative;

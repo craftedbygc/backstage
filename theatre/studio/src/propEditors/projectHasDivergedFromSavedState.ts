@@ -1,5 +1,5 @@
 import type Project from '@unseenco/theatre-core/projects/Project'
-import type {SheetId} from '@unseenco/theatre-shared/utils/ids'
+import type {SheetId} from '@unseenco/backstage-shared/utils/ids'
 import {val} from '@unseenco/theatre-dataverse'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import {

@@ -1,4 +1,4 @@
-import type {SerializableMap} from '@unseenco/theatre-shared/utils/types'
+import type {SerializableMap} from '@unseenco/backstage-shared/utils/types'
 import type SheetObject from './SheetObject'
 
 type SheetObjectPropsValue = SerializableMap

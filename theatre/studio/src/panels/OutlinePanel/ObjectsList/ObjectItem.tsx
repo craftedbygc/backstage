@@ -21,8 +21,8 @@ import {ObjectListObjectIcon} from '@unseenco/theatre-studio/uiComponents/icons'
 import {objectHasDivergedFromSavedState} from '@unseenco/theatre-studio/propEditors/objectHasDivergedFromSavedState'
 import {DIVERGED_FROM_SAVED_STATE_TITLE} from '@unseenco/theatre-studio/propEditors/SavedStateDiamondWrapper'
 import {getGsapStudioOutlineMenuItems} from '@unseenco/theatre-studio/gsap/gsapOutlineMenuItems'
-import {isGsapSheetObjectKey} from '@unseenco/theatre-shared/sequence/trackData'
-import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
+import {isGsapSheetObjectKey} from '@unseenco/backstage-shared/sequence/trackData'
+import {gsapStudioRegistryRevisionPointer} from '@unseenco/backstage-shared/gsap/gsapStudioRegistryRevision'
 import {val} from '@unseenco/theatre-dataverse'
 import {
   gsapKindBadgeForSheetObject,

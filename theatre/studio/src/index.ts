@@ -7,8 +7,8 @@
 import {setStudio} from '@unseenco/theatre-studio/getStudio'
 import {Studio} from '@unseenco/theatre-studio/Studio'
 
-import * as globalVariableNames from '@unseenco/theatre-shared/globalVariableNames'
-import type {$FixMe} from '@unseenco/theatre-shared/utils/types'
+import * as globalVariableNames from '@unseenco/backstage-shared/globalVariableNames'
+import type {$FixMe} from '@unseenco/backstage-shared/utils/types'
 import StudioBundle from './StudioBundle'
 import type CoreBundle from '@unseenco/theatre-core/CoreBundle'
 import type {IStudio} from '@unseenco/theatre-studio/TheatreStudio'

@@ -1,12 +1,12 @@
 import type {ISheet, ISheetObject} from '@unseenco/backstage'
 import type {GsapTweenLike} from './gsapTypes'
 import {privateAPI} from '@unseenco/backstage/privateAPIs'
-import {buildGsapSheetObjectKey} from '@unseenco/theatre-shared/gsap/buildGsapSheetObjectKey'
-import {resolveGsapAnimationRegistrationLabel} from '@unseenco/theatre-shared/gsap/gsapAnimationLabel'
-import {getAnimationEntry} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+import {buildGsapSheetObjectKey} from '@unseenco/backstage-shared/gsap/buildGsapSheetObjectKey'
+import {resolveGsapAnimationRegistrationLabel} from '@unseenco/backstage-shared/gsap/gsapAnimationLabel'
+import {getAnimationEntry} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
 import {getTheatreGsapConfig} from './config'
 import {registerAnimationInRegistry} from './animationRegistry'
-import {formatOutlineNamespacePathKey} from '@unseenco/theatre-shared/utils/outlineNamespaces'
+import {formatOutlineNamespacePathKey} from '@unseenco/backstage-shared/utils/outlineNamespaces'
 import {scheduleGsapTickerRafWarningCheck} from './gsapTickerRafBridge'
 
 export type RegisterGsapAnimationOptions = {

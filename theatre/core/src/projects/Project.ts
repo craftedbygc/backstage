@@ -5,7 +5,7 @@ import {applySheetRuntimeOptions} from '@unseenco/theatre-core/sheets/applySheet
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
 import SheetTemplate from '@unseenco/theatre-core/sheets/SheetTemplate'
 import type {Studio} from '@unseenco/theatre-studio/Studio'
-import type {ProjectAddress} from '@unseenco/theatre-shared/utils/addresses'
+import type {ProjectAddress} from '@unseenco/backstage-shared/utils/addresses'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {PointerProxy} from '@unseenco/theatre-dataverse'
 import {Atom} from '@unseenco/theatre-dataverse'
@@ -13,35 +13,35 @@ import initialiseProjectState from './initialiseProjectState'
 import projectsSingleton from './projectsSingleton'
 import RemoteSync from '@unseenco/theatre-core/internal/RemoteSync'
 import type {ProjectState, ProjectAhistoricState} from './store/storeTypes'
-import type {Deferred} from '@unseenco/theatre-shared/utils/defer'
-import {defer} from '@unseenco/theatre-shared/utils/defer'
-import globals from '@unseenco/theatre-shared/globals'
+import type {Deferred} from '@unseenco/backstage-shared/utils/defer'
+import {defer} from '@unseenco/backstage-shared/utils/defer'
+import globals from '@unseenco/backstage-shared/globals'
 import type {
   ObjectAddressKey,
   ProjectId,
   SheetId,
   SheetInstanceId,
-} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
 import type {
   ILogger,
   ITheatreLoggerConfig,
   ITheatreLoggingConfig,
-} from '@unseenco/theatre-shared/logger'
-import type {OutlineNamespaceConfig} from '@unseenco/theatre-shared/utils/outlineNamespaces'
+} from '@unseenco/backstage-shared/logger'
+import type {OutlineNamespaceConfig} from '@unseenco/backstage-shared/utils/outlineNamespaces'
 import {_coreLogger} from '@unseenco/theatre-core/_coreLogger'
-import type {PathToProp_Encoded} from '@unseenco/theatre-shared/utils/addresses'
+import type {PathToProp_Encoded} from '@unseenco/backstage-shared/utils/addresses'
 import type {PropTypeConfig} from '@unseenco/theatre-core/propTypes'
 import {
   isDirectAssetUrl,
   stripImageAssetsFromAhistoricStaticOverrides,
-} from '@unseenco/theatre-shared/utils/assets'
-import {getNonPersistingPropPathEncodings} from '@unseenco/theatre-shared/propTypes/utils'
+} from '@unseenco/backstage-shared/utils/assets'
+import {getNonPersistingPropPathEncodings} from '@unseenco/backstage-shared/propTypes/utils'
 import {
   stripTransientPropsFromObjectInSheetState,
   stripSequenceTracksForPathsFromObjectInSheetState,
   stripTransientPathsFromSerializableMap,
   getOrphanedTopLevelPropPathEncodings,
-} from '@unseenco/theatre-shared/utils/transientPropPaths'
+} from '@unseenco/backstage-shared/utils/transientPropPaths'
 
 type ICoreAssetStorage = {
   /** Returns a URL for the provided asset ID */

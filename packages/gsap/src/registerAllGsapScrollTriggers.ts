@@ -1,13 +1,13 @@
 import type {ISheet} from '@unseenco/backstage'
 import {privateAPI} from '@unseenco/backstage/privateAPIs'
-import {defaultScrollTriggerLabel} from '@unseenco/theatre-shared/gsap/scrollTriggerGuards'
+import {defaultScrollTriggerLabel} from '@unseenco/backstage-shared/gsap/scrollTriggerGuards'
 import {registerOneGsapScrollTriggerOnSheet} from './registerGsapScrollTrigger'
 import type {RegisterGsapScrollTriggerResult} from './registerGsapScrollTrigger'
 import type {GsapScrollTriggerLike} from './gsapScrollTriggerTypes'
 import {
   findScrollTriggerEntryByInstance,
   sheetAddressKey,
-} from '@unseenco/theatre-shared/gsap/scrollTriggerRegistry'
+} from '@unseenco/backstage-shared/gsap/scrollTriggerRegistry'
 import {
   refreshGsapScrollTriggers,
   requireGsapScrollTriggerPlugin,

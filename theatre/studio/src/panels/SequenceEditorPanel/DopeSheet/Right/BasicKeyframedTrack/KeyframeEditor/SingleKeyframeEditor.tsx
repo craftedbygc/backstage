@@ -11,7 +11,7 @@ import styled from 'styled-components'
 import SingleKeyframeConnector from './BasicKeyframeConnector'
 import SingleKeyframeDot from './SingleKeyframeDot'
 import type {TrackWithId} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
-import type {StudioSheetItemKey} from '@unseenco/theatre-shared/utils/ids'
+import type {StudioSheetItemKey} from '@unseenco/backstage-shared/utils/ids'
 
 const SingleKeyframeEditorContainer = styled.div`
   position: absolute;

@@ -11,14 +11,14 @@ import type {
 import type {
   SequenceTrackId,
   StudioSheetItemKey,
-} from '@unseenco/theatre-shared/utils/ids'
-import {createStudioSheetItemKey} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
+import {createStudioSheetItemKey} from '@unseenco/backstage-shared/utils/ids'
 import type {
   BasicKeyframedTrack,
   Keyframe,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
-import {isBasicKeyframedTrack} from '@unseenco/theatre-shared/sequence/trackData'
-import {encodePathToProp} from '@unseenco/theatre-shared/utils/addresses'
+import {isBasicKeyframedTrack} from '@unseenco/backstage-shared/sequence/trackData'
+import {encodePathToProp} from '@unseenco/backstage-shared/utils/addresses'
 import {uniq} from 'lodash-es'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 

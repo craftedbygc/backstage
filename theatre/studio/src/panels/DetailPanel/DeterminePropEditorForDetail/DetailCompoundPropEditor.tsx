@@ -2,8 +2,8 @@ import type {
   PropTypeConfig_Compound,
   PropTypeConfig_Number,
 } from '@unseenco/theatre-core/propTypes'
-import {isPropConfigComposite} from '@unseenco/theatre-shared/propTypes/utils'
-import type {$FixMe} from '@unseenco/theatre-shared/utils/types'
+import {isPropConfigComposite} from '@unseenco/backstage-shared/propTypes/utils'
+import type {$FixMe} from '@unseenco/backstage-shared/utils/types'
 import {Atom, getPointerParts} from '@unseenco/theatre-dataverse'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import last from 'lodash-es/last'
@@ -25,14 +25,14 @@ import {useEditingToolsForSimplePropInDetailsPanel} from '@unseenco/theatre-stud
 import {usePrism} from '@unseenco/backstage/react'
 import {val} from '@unseenco/theatre-dataverse'
 import {HiOutlineChevronRight} from 'react-icons/all'
-import memoizeFn from '@unseenco/theatre-shared/utils/memoizeFn'
+import memoizeFn from '@unseenco/backstage-shared/utils/memoizeFn'
 import {collapsedMap} from './collapsedMap'
 import useChordial from '@unseenco/theatre-studio/uiComponents/chordial/useChodrial'
 import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 import {
   isSheetPropsObjectKey,
   sheetObjectPropsTooltipNamespace,
-} from '@unseenco/theatre-shared/utils/sheetProps'
+} from '@unseenco/backstage-shared/utils/sheetProps'
 
 const Container = styled.div`
   --step: 12px;

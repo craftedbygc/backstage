@@ -1,5 +1,5 @@
 import type {PropTypeConfig_Number} from '@unseenco/theatre-core/propTypes'
-import {getNumberPrecisionFromPropConfig} from '@unseenco/theatre-shared/propTypes/numberPrecision'
+import {getNumberPrecisionFromPropConfig} from '@unseenco/backstage-shared/propTypes/numberPrecision'
 import BasicNumberInput from '@unseenco/theatre-studio/uiComponents/form/BasicNumberInput'
 import React, {useCallback, useMemo} from 'react'
 import type {ISimplePropEditorReactProps} from './ISimplePropEditorReactProps'

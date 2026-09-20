@@ -4,13 +4,13 @@ import type {
   Keyframe,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
-import type {PathToProp} from '@unseenco/theatre-shared/utils/addresses'
-import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
-import {createStudioSheetItemKey} from '@unseenco/theatre-shared/utils/ids'
+import type {PathToProp} from '@unseenco/backstage-shared/utils/addresses'
+import type {SequenceTrackId} from '@unseenco/backstage-shared/utils/ids'
+import {createStudioSheetItemKey} from '@unseenco/backstage-shared/utils/ids'
 import type {
   $IntentionalAny,
   VoidFn,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import React, {useMemo, useRef, useState} from 'react'
 import type {SequenceEditorPanelLayout} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/layout'
@@ -20,7 +20,7 @@ import {
   getPropConfigByPath,
   isPropConfigComposite,
   valueInProp,
-} from '@unseenco/theatre-shared/propTypes/utils'
+} from '@unseenco/backstage-shared/propTypes/utils'
 import type {PropTypeConfig_AllSimples} from '@unseenco/theatre-core/propTypes'
 import {useVal} from '@unseenco/backstage/react'
 

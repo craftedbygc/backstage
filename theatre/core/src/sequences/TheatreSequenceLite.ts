@@ -5,7 +5,7 @@ import type {
   GsapTimelineChildClip,
   Keyframe,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
-import type {SequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
+import type {SequenceTrackId} from '@unseenco/backstage-shared/utils/ids'
 import type {ISequence} from './TheatreSequence'
 
 const LITE_DEFAULT_LENGTH = 10

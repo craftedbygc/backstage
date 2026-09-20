@@ -6,7 +6,7 @@ import ArrowContext from './ArrowContext'
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'
 import useOnClickOutside from '@unseenco/theatre-studio/uiComponents/useOnClickOutside'
 import onPointerOutside from '@unseenco/theatre-studio/uiComponents/onPointerOutside'
-import noop from '@unseenco/theatre-shared/utils/noop'
+import noop from '@unseenco/backstage-shared/utils/noop'
 import {clamp} from 'lodash-es'
 
 const minimumDistanceOfArrowToEdgeOfPopover = 8

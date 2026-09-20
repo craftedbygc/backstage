@@ -1,4 +1,4 @@
-import logger from '@unseenco/theatre-shared/logger'
+import logger from '@unseenco/backstage-shared/logger'
 import type {StudioPersistentState} from '@unseenco/theatre-studio/store'
 import {studioActions} from '@unseenco/theatre-studio/store'
 import type {FullStudioState} from '@unseenco/theatre-studio/store/index'

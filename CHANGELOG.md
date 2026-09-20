@@ -33,7 +33,7 @@
   - **Studio:** Default sequencer zoom is fully zoomed out on first load when no persisted `clippedSpaceRange` exists (`defaultClippedSpaceRange()`).
   - **Studio:** Page-mode transport (jump start/end, step prev/next) syncs page scroll via the sheet `ScrollDriver` (manual playhead scrub already did).
   - **Studio / Remote editor:** Page-mode placeholder, ScrollTrigger layout, scroll sync, and playground GSAP registration in the remote editor shell.
-  - **Shared:** Remote DOM highlight uses a package import path (`@unseenco/theatre-shared/gsap/domElementHighlightTarget`) for lint and bundler resolution.
+  - **Shared:** Remote DOM highlight uses a package import path (`@unseenco/backstage-shared/gsap/domElementHighlightTarget`) for lint and bundler resolution.
 - Docs
   - **Guide:** [Sheet sequence modes](./docs/guide/manual/sheet-modes.md) (page mode, scroll drivers, Lenis). [GSAP extension](./docs/guide/extensions/gsap.md) expanded for page mode and ScrollTrigger workflow.
   - **Links:** User-facing `theatrejs.com` / `docs.theatrejs.com` URLs point to **https://unseen-theatre.netlify.app** (`/docs/` for guides and API; site root for former homepage links) across Studio UI, core JSDoc, READMEs, and package metadata.
@@ -80,7 +80,7 @@
 
 - Bug fixes
   - Three.js Package:
-    - Published `@unseenco/backstage/threejs` runtime bundle no longer imports `@unseenco/backstage/propTypes` or `@unseenco/theatre-shared` subpaths, fixing Vite/Nuxt dependency resolution in consumer apps.
+    - Published `@unseenco/backstage/threejs` runtime bundle no longer imports `@unseenco/backstage/propTypes` or `@unseenco/backstage-shared` subpaths, fixing Vite/Nuxt dependency resolution in consumer apps.
 
 ## 0.2.2
 

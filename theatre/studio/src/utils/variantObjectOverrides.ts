@@ -7,9 +7,9 @@ import getStudio from '@unseenco/theatre-studio/getStudio'
 import type {
   WithoutSheetInstance,
   SheetAddress,
-} from '@unseenco/theatre-shared/utils/addresses'
-import type {ObjectAddressKey} from '@unseenco/theatre-shared/utils/ids'
-import type {StrictRecord} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/addresses'
+import type {ObjectAddressKey} from '@unseenco/backstage-shared/utils/ids'
+import type {StrictRecord} from '@unseenco/backstage-shared/utils/types'
 import {val} from '@unseenco/theatre-dataverse'
 
 export function getVariantObjectOverrides(

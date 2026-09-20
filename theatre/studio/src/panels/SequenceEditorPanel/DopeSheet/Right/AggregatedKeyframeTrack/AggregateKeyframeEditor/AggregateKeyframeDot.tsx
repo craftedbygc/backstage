@@ -13,7 +13,7 @@ import {
   keyframesWithPaths,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/selections'
 import type {KeyframeWithPathToPropFromCommonRoot} from '@unseenco/theatre-studio/store/types/ahistoric'
-import {commonRootOfPathsToProps} from '@unseenco/theatre-shared/utils/addresses'
+import {commonRootOfPathsToProps} from '@unseenco/backstage-shared/utils/addresses'
 import DopeSnap from '@unseenco/theatre-studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
 import type {
   PrimitivePropEditingOptions,

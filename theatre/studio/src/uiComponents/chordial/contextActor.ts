@@ -1,4 +1,4 @@
-import {basicFSM} from '@unseenco/theatre-shared/utils/basicFSM'
+import {basicFSM} from '@unseenco/backstage-shared/utils/basicFSM'
 import type {ChodrialElement} from './chordialInternals'
 import {findChodrialByDomNode} from './chordialInternals'
 import {prism, val} from '@unseenco/theatre-dataverse'

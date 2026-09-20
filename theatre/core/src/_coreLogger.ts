@@ -1,9 +1,9 @@
 import type {
   ITheatreLoggerConfig,
   ITheatreLoggingConfig,
-} from '@unseenco/theatre-shared/logger'
-import {TheatreLoggerLevel} from '@unseenco/theatre-shared/logger'
-import {createTheatreInternalLogger} from '@unseenco/theatre-shared/logger'
+} from '@unseenco/backstage-shared/logger'
+import {TheatreLoggerLevel} from '@unseenco/backstage-shared/logger'
+import {createTheatreInternalLogger} from '@unseenco/backstage-shared/logger'
 
 export type CoreLoggingConfig = Partial<{
   logger: ITheatreLoggerConfig

@@ -9,7 +9,7 @@ import type {
   SequenceEditorTree_Sheet,
   SequenceEditorTree_SheetObject,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/tree'
-import type {VoidFn} from '@unseenco/theatre-shared/utils/types'
+import type {VoidFn} from '@unseenco/backstage-shared/utils/types'
 import React, {useState} from 'react'
 import {HiOutlineChevronRight} from 'react-icons/all'
 import styled from 'styled-components'

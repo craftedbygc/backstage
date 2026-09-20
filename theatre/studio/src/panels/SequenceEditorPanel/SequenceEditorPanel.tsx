@@ -1,6 +1,6 @@
 import {resolveSequenceEditorSheet} from '@unseenco/theatre-studio/selectors'
 import {usePrism} from '@unseenco/backstage/react'
-import {valToAtom} from '@unseenco/theatre-shared/utils/valToAtom'
+import {valToAtom} from '@unseenco/backstage-shared/utils/valToAtom'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {prism, val} from '@unseenco/theatre-dataverse'
 import React, {useState} from 'react'
@@ -24,7 +24,7 @@ import {
   TitleBar_Piece,
   TitleBar_Punctuation,
 } from '@unseenco/theatre-studio/panels/BasePanel/common'
-import type {UIPanelId} from '@unseenco/theatre-shared/utils/ids'
+import type {UIPanelId} from '@unseenco/backstage-shared/utils/ids'
 import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 import {usePresenceListenersOnRootElement} from '@unseenco/theatre-studio/uiComponents/usePresence'
 import {useLayoutMode} from '@unseenco/theatre-studio/UIRoot/LayoutModeContext'

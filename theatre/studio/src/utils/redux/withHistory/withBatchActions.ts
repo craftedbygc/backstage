@@ -3,7 +3,7 @@ import type {
   $FixMe,
   GenericAction,
   ReduxReducer,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 
 export const batchedAction = actionCreator(
   '@@batched',

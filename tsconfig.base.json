@@ -40,7 +40,7 @@
       "@unseenco/theatre-dataverse/*": ["./packages/dataverse/*"],
       "@unseenco/theatre-studio": ["./theatre/studio/src/index.ts"],
       "@unseenco/theatre-studio/*": ["./theatre/studio/src/*"],
-      "@unseenco/theatre-shared/*": ["./theatre/shared/src/*"]
+      "@unseenco/backstage-shared/*": ["./theatre/shared/src/*"]
     },
     "forceConsistentCasingInFileNames": true
   },

@@ -1,10 +1,10 @@
-import forEachPropDeep from '@unseenco/theatre-shared/utils/forEachDeep'
-import type {$FixMe} from '@unseenco/theatre-shared/utils/types'
+import forEachPropDeep from '@unseenco/backstage-shared/utils/forEachDeep'
+import type {$FixMe} from '@unseenco/backstage-shared/utils/types'
 import type {Pointer} from '@unseenco/theatre-dataverse'
 import {getPointerParts} from '@unseenco/theatre-dataverse'
 import type {Studio} from './Studio'
 import type {CommitOrDiscard} from './StudioStore/StudioStore'
-import {isSheetObject} from '@unseenco/theatre-shared/instanceTypes'
+import {isSheetObject} from '@unseenco/backstage-shared/instanceTypes'
 
 type State_Captured = {
   type: 'Captured'

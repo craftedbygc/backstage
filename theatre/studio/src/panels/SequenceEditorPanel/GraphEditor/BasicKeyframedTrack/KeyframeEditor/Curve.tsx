@@ -1,4 +1,4 @@
-import {valueInProp} from '@unseenco/theatre-shared/propTypes/utils'
+import {valueInProp} from '@unseenco/backstage-shared/propTypes/utils'
 import getStudio from '@unseenco/theatre-studio/getStudio'
 import useContextMenu from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
 import useRefAndState from '@unseenco/theatre-studio/utils/useRefAndState'

@@ -8,7 +8,7 @@ import type {
 import ToolbarIconButton from '@unseenco/theatre-studio/uiComponents/toolbar/ToolbarIconButton'
 import BaseMenu from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/ContextMenu/BaseMenu'
 import usePopover from '@unseenco/theatre-studio/uiComponents/Popover/usePopover'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import FlyoutMenuLabel from './FlyoutMenuLabel'
 import UnsavedChangesDot, {
   statusDotTopLeft,

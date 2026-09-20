@@ -5,38 +5,38 @@ import type {
   SheetObjectActionsConfig,
   SheetObjectPropTypeConfig,
 } from '@unseenco/theatre-core/sheets/TheatreSheet'
-import {emptyArray} from '@unseenco/theatre-shared/utils'
+import {emptyArray} from '@unseenco/backstage-shared/utils'
 import type {
   PathToProp,
   PathToProp_Encoded,
   SheetObjectAddress,
   WithoutSheetInstance,
-} from '@unseenco/theatre-shared/utils/addresses'
-import getDeep from '@unseenco/theatre-shared/utils/getDeep'
+} from '@unseenco/backstage-shared/utils/addresses'
+import getDeep from '@unseenco/backstage-shared/utils/getDeep'
 import type {
   ObjectAddressKey,
   SequenceTrackId,
-} from '@unseenco/theatre-shared/utils/ids'
-import SimpleCache from '@unseenco/theatre-shared/utils/SimpleCache'
+} from '@unseenco/backstage-shared/utils/ids'
+import SimpleCache from '@unseenco/backstage-shared/utils/SimpleCache'
 import type {
   $FixMe,
   $IntentionalAny,
   SerializableMap,
   SerializablePrimitive,
   SerializableValue,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import type {Prism, Pointer} from '@unseenco/theatre-dataverse'
 import {Atom, getPointerParts, prism, val} from '@unseenco/theatre-dataverse'
 import set from 'lodash-es/set'
 import getPropDefaultsOfSheetObject from './getPropDefaultsOfSheetObject'
 import SheetObject from './SheetObject'
-import logger from '@unseenco/theatre-shared/logger'
+import logger from '@unseenco/backstage-shared/logger'
 import {
   getPropConfigByPath,
   isPropConfSequencable,
   propTypeConfigPersists,
   stripNonPersistingPropValuesFromMap,
-} from '@unseenco/theatre-shared/propTypes/utils'
+} from '@unseenco/backstage-shared/propTypes/utils'
 import getOrderingOfPropTypeConfig from './getOrderingOfPropTypeConfig'
 import type {SheetState_Historic} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
 import type {SheetAhistoricState} from '@unseenco/theatre-core/projects/store/storeTypes'
@@ -52,20 +52,20 @@ import {cloneDeep, unset} from 'lodash-es'
 import type {
   TransientPropPath,
   StaticPropPath,
-} from '@unseenco/theatre-shared/utils/transientPropPaths'
-import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
+} from '@unseenco/backstage-shared/utils/transientPropPaths'
+import {isSheetPropsObjectKey} from '@unseenco/backstage-shared/utils/sheetProps'
 import {
   isPathUnderTransientPrefix,
   normalizeTransientPropPaths,
   normalizeStaticPropPaths,
   registerObjectTransientPropPaths,
   stripTransientPathsFromSerializableMap,
-} from '@unseenco/theatre-shared/utils/transientPropPaths'
-import {registerObjectPropConfig} from '@unseenco/theatre-shared/utils/defaultPropValues'
-import {InvalidArgumentError} from '@unseenco/theatre-shared/utils/errors'
+} from '@unseenco/backstage-shared/utils/transientPropPaths'
+import {registerObjectPropConfig} from '@unseenco/backstage-shared/utils/defaultPropValues'
+import {InvalidArgumentError} from '@unseenco/backstage-shared/utils/errors'
 import type {UnknownShorthandCompoundProps} from '@unseenco/theatre-core/propTypes/internals'
 import {compound, compoundFromSanitizedProps} from '@unseenco/theatre-core/propTypes'
-import {applyNumberPrecisionDefaultsToPropConfig} from '@unseenco/theatre-shared/propTypes/numberPrecision'
+import {applyNumberPrecisionDefaultsToPropConfig} from '@unseenco/backstage-shared/propTypes/numberPrecision'
 
 function isObjectEmpty(obj: unknown): boolean {
   return (

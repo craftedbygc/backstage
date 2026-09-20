@@ -11,7 +11,7 @@ module.exports = {
             path: path.resolve(__dirname, './core/src'),
           },
           {
-            name: '@unseenco/theatre-shared',
+            name: '@unseenco/backstage-shared',
             path: path.resolve(__dirname, './shared/src'),
           },
           {

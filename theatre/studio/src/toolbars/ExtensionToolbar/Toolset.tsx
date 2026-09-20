@@ -1,6 +1,6 @@
-import didYouMean from '@unseenco/theatre-shared/utils/didYouMean'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
-import userReadableTypeOfValue from '@unseenco/theatre-shared/utils/userReadableTypeOfValue'
+import didYouMean from '@unseenco/backstage-shared/utils/didYouMean'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
+import userReadableTypeOfValue from '@unseenco/backstage-shared/utils/userReadableTypeOfValue'
 import type {
   ToolConfig,
   ToolsetConfig,

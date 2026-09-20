@@ -1,6 +1,6 @@
 import type {Keyframe} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
-import type {StudioSheetItemKey} from '@unseenco/theatre-shared/utils/ids'
-import type {VoidFn} from '@unseenco/theatre-shared/utils/types'
+import type {StudioSheetItemKey} from '@unseenco/backstage-shared/utils/ids'
+import type {VoidFn} from '@unseenco/backstage-shared/utils/types'
 import {pointerEventsAutoInNormalMode} from '@unseenco/theatre-studio/css'
 import {transparentize} from 'polished'
 import React from 'react'

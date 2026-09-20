@@ -5,13 +5,13 @@ import {prism} from '@unseenco/theatre-dataverse'
 import type {
   PropAddress,
   WithoutSheetInstance,
-} from '@unseenco/theatre-shared/utils/addresses'
+} from '@unseenco/backstage-shared/utils/addresses'
 
-import pointerDeep from '@unseenco/theatre-shared/utils/pointerDeep'
+import pointerDeep from '@unseenco/backstage-shared/utils/pointerDeep'
 import type {
   $IntentionalAny,
   VoidFn,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import lodashSet from 'lodash-es/set'
 
 /** constant global manager */

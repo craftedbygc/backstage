@@ -12,12 +12,12 @@ import {
   applyGsapTimelineChildBaselineToTrack,
   buildGsapClipBaselineTiming,
   resolveGsapClipBaselineTiming,
-} from '@unseenco/theatre-shared/gsap/gsapClipBaseline'
-import {getAnimationEntryForAddress} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
+} from '@unseenco/backstage-shared/gsap/gsapClipBaseline'
+import {getAnimationEntryForAddress} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
 import {
   gsapClipEndTime,
   isBasicKeyframedTrack,
-} from '@unseenco/theatre-shared/sequence/trackData'
+} from '@unseenco/backstage-shared/sequence/trackData'
 import type {SheetAhistoricState} from '@unseenco/theatre-core/projects/store/storeTypes'
 import {isTheatreLiteStudio} from '@unseenco/theatre-studio/utils/theatreLiteMode'
 // stateEditors mutates core historic sheet state, so it needs these runtime helpers.
@@ -41,10 +41,10 @@ import type {
   SheetAddress,
   SheetObjectAddress,
   WithoutSheetInstance,
-} from '@unseenco/theatre-shared/utils/addresses'
-import {commonRootOfPathsToProps} from '@unseenco/theatre-shared/utils/addresses'
-import {encodePathToProp} from '@unseenco/theatre-shared/utils/addresses'
-import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
+} from '@unseenco/backstage-shared/utils/addresses'
+import {commonRootOfPathsToProps} from '@unseenco/backstage-shared/utils/addresses'
+import {encodePathToProp} from '@unseenco/backstage-shared/utils/addresses'
+import {isSheetPropsObjectKey} from '@unseenco/backstage-shared/utils/sheetProps'
 import type {
   StudioSheetItemKey,
   KeyframeId,
@@ -53,19 +53,19 @@ import type {
   SequenceTrackId,
   SheetInstanceId,
   UIPanelId,
-} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
 import {
   generateKeyframeId,
   generateSequenceTrackId,
-} from '@unseenco/theatre-shared/utils/ids'
-import removePathFromObject from '@unseenco/theatre-shared/utils/removePathFromObject'
-import {transformNumber} from '@unseenco/theatre-shared/utils/transformNumber'
+} from '@unseenco/backstage-shared/utils/ids'
+import removePathFromObject from '@unseenco/backstage-shared/utils/removePathFromObject'
+import {transformNumber} from '@unseenco/backstage-shared/utils/transformNumber'
 import type {
   IRange,
   SerializableMap,
   SerializablePrimitive,
   SerializableValue,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import {current} from 'immer'
 import findLastIndex from 'lodash-es/findLastIndex'
 import keyBy from 'lodash-es/keyBy'
@@ -102,11 +102,11 @@ import {
   isSheetObject,
   isSheetObjectTemplate,
   isSheetTemplate,
-} from '@unseenco/theatre-shared/instanceTypes'
+} from '@unseenco/backstage-shared/instanceTypes'
 import type SheetTemplate from '@unseenco/theatre-core/sheets/SheetTemplate'
 import type SheetObjectTemplate from '@unseenco/theatre-core/sheetObjects/SheetObjectTemplate'
 import type {PropTypeConfig} from '@unseenco/theatre-core/propTypes'
-import {pointableSetUtil} from '@unseenco/theatre-shared/utils/PointableSet'
+import {pointableSetUtil} from '@unseenco/backstage-shared/utils/PointableSet'
 
 function effectiveSequenceVariantForObjectKey(
   objectKey: ObjectAddressKey,

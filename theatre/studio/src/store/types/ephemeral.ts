@@ -3,11 +3,11 @@ import type {
   ObjectAddressKey,
   ProjectId,
   SheetId,
-} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
 import type {
   SerializableMap,
   StrictRecord,
-} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/types'
 import type {
   IExtension,
   PaneClassDefinition,

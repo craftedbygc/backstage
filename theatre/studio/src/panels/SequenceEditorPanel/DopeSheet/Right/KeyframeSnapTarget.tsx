@@ -8,14 +8,14 @@ import {DopeSnapHitZoneUI} from '@unseenco/theatre-studio/panels/SequenceEditorP
 import type {
   ObjectAddressKey,
   SequenceTrackId,
-} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/ids'
 import type {
   BasicKeyframedTrack,
   GsapClipTrack,
   HistoricPositionalSequence,
   Keyframe,
 } from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
-import {isGsapClipTrack} from '@unseenco/theatre-shared/sequence/trackData'
+import {isGsapClipTrack} from '@unseenco/backstage-shared/sequence/trackData'
 import {gsapTimelineChildClipInSequenceSpace} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/Right/GsapClipTrack/gsapTimelineChildBarLayout'
 import {uniq} from 'lodash-es'
 

@@ -2,11 +2,11 @@ import projectsSingleton from './projects/projectsSingleton'
 import type {OnDiskState} from './projects/store/storeTypes'
 import type {IProject, IProjectConfig} from './projects/TheatreProject'
 import TheatreProject from './projects/TheatreProject'
-import globals from '@unseenco/theatre-shared/globals'
+import globals from '@unseenco/backstage-shared/globals'
 import * as types from './propTypes'
-import {InvalidArgumentError} from '@unseenco/theatre-shared/utils/errors'
-import {validateName} from '@unseenco/theatre-shared/utils/sanitizers'
-import userReadableTypeOfValue from '@unseenco/theatre-shared/utils/userReadableTypeOfValue'
+import {InvalidArgumentError} from '@unseenco/backstage-shared/utils/errors'
+import {validateName} from '@unseenco/backstage-shared/utils/sanitizers'
+import userReadableTypeOfValue from '@unseenco/backstage-shared/utils/userReadableTypeOfValue'
 import deepEqual from 'fast-deep-equal'
 import type {PointerType, Prism} from '@unseenco/theatre-dataverse'
 import {isPointer} from '@unseenco/theatre-dataverse'
@@ -14,13 +14,13 @@ import {isPrism, pointerToPrism} from '@unseenco/theatre-dataverse'
 import type {
   $IntentionalAny,
   VoidFn,
-} from '@unseenco/theatre-shared/utils/types'
-import type {ProjectId} from '@unseenco/theatre-shared/utils/ids'
+} from '@unseenco/backstage-shared/utils/types'
+import type {ProjectId} from '@unseenco/backstage-shared/utils/ids'
 import {_coreLogger} from './_coreLogger'
 import {getCoreTicker} from './coreTicker'
 import type {IRafDriver} from './rafDrivers'
 import {privateAPI} from './privateAPIs'
-export {notify} from '@unseenco/theatre-shared/notify'
+export {notify} from '@unseenco/backstage-shared/notify'
 /**
  * Prop type factories (`number`, `rgba`, `compound`, etc.) for {@link ISheet.object} definitions.
  * (api-extractor does not attach this comment to the synthesized `types` namespace node.)

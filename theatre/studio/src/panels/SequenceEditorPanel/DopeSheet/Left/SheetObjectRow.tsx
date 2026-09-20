@@ -6,7 +6,7 @@ import GsapChildClipLeftRow from './GsapChildClipRow'
 import GsapScrollTriggerChildLeftRow from './GsapScrollTriggerChildRow'
 import {setCollapsedSheetItem} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/setCollapsedSheetObjectOrCompoundProp'
 import getStudio from '@unseenco/theatre-studio/getStudio'
-import {createStudioSheetItemKey} from '@unseenco/theatre-shared/utils/ids'
+import {createStudioSheetItemKey} from '@unseenco/backstage-shared/utils/ids'
 import {
   gsapKindBadgeForSheetObject,
   renderGsapListLabel,

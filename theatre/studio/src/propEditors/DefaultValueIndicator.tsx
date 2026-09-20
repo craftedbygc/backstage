@@ -2,14 +2,14 @@ import {transparentize} from 'polished'
 import React from 'react'
 import styled from 'styled-components'
 import getStudio from '@unseenco/theatre-studio/getStudio'
-import type {PathToProp} from '@unseenco/theatre-shared/utils/addresses'
+import type {PathToProp} from '@unseenco/backstage-shared/utils/addresses'
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import type {PropTypeConfig} from '@unseenco/theatre-core/propTypes'
 import {nextPrevCursorsTheme} from './NextPrevKeyframeCursors'
 import {
   isPropConfigComposite,
   iteratePropType,
-} from '@unseenco/theatre-shared/propTypes/utils'
+} from '@unseenco/backstage-shared/propTypes/utils'
 import {getStudioActiveSequenceVariant} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 import SavedStateDiamondWrapper, {
   DIVERGED_FROM_SAVED_STATE_TITLE,

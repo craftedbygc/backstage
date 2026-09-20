@@ -1,8 +1,8 @@
 import type Sheet from '@unseenco/theatre-core/sheets/Sheet'
-import type {SheetObjectAddress} from '@unseenco/theatre-shared/utils/addresses'
-import deepMergeWithCache from '@unseenco/theatre-shared/utils/deepMergeWithCache'
-import pointerDeep from '@unseenco/theatre-shared/utils/pointerDeep'
-import SimpleCache from '@unseenco/theatre-shared/utils/SimpleCache'
+import type {SheetObjectAddress} from '@unseenco/backstage-shared/utils/addresses'
+import deepMergeWithCache from '@unseenco/backstage-shared/utils/deepMergeWithCache'
+import pointerDeep from '@unseenco/backstage-shared/utils/pointerDeep'
+import SimpleCache from '@unseenco/backstage-shared/utils/SimpleCache'
 import type {
   $FixMe,
   $IntentionalAny,
@@ -10,8 +10,8 @@ import type {
   SerializableMap,
   SerializableValue,
   VoidFn,
-} from '@unseenco/theatre-shared/utils/types'
-import {valToAtom} from '@unseenco/theatre-shared/utils/valToAtom'
+} from '@unseenco/backstage-shared/utils/types'
+import {valToAtom} from '@unseenco/backstage-shared/utils/valToAtom'
 import type {
   PointerToPrismProvider,
   Prism,
@@ -29,15 +29,15 @@ import type SheetObjectTemplate from './SheetObjectTemplate'
 import TheatreSheetObject from './TheatreSheetObject'
 import {mergeSequencedValuesIntoFinal} from './sheetObjectSequencedFull'
 import {isTheatreLiteMode} from '@unseenco/theatre-core/utils/isTheatreLiteMode'
-import {getPropConfigByPath} from '@unseenco/theatre-shared/propTypes/utils'
-import type {PathToProp} from '@unseenco/theatre-shared/utils/addresses'
-import removePathFromObject from '@unseenco/theatre-shared/utils/removePathFromObject'
-import setDeepImmutable from '@unseenco/theatre-shared/utils/setDeepImmutable'
+import {getPropConfigByPath} from '@unseenco/backstage-shared/propTypes/utils'
+import type {PathToProp} from '@unseenco/backstage-shared/utils/addresses'
+import removePathFromObject from '@unseenco/backstage-shared/utils/removePathFromObject'
+import setDeepImmutable from '@unseenco/backstage-shared/utils/setDeepImmutable'
 import {cloneDeep} from 'lodash-es'
-import type {ILogger, IUtilContext} from '@unseenco/theatre-shared/logger'
+import type {ILogger, IUtilContext} from '@unseenco/backstage-shared/logger'
 import {DEFAULT_SEQUENCE_VARIANT} from '@unseenco/theatre-core/sequences/sequenceVariants'
 import {onChange} from '@unseenco/theatre-core/coreExports'
-import {isSheetPropsObjectKey} from '@unseenco/theatre-shared/utils/sheetProps'
+import {isSheetPropsObjectKey} from '@unseenco/backstage-shared/utils/sheetProps'
 
 /**
  * Internally, the sheet's actual configured value is not a specific type, since we

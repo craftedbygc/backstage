@@ -3,7 +3,7 @@ import {Package, Trash} from '@unseenco/theatre-studio/uiComponents/icons'
 import React, {useCallback, useEffect} from 'react'
 import styled, {css} from 'styled-components'
 import type {ISimplePropEditorReactProps} from './ISimplePropEditorReactProps'
-import type {$FixMe} from '@unseenco/theatre-shared/utils/types'
+import type {$FixMe} from '@unseenco/backstage-shared/utils/types'
 
 const Container = styled.div<{empty: boolean}>`
   display: flex;

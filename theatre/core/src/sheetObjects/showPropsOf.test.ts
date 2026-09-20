@@ -1,7 +1,7 @@
 /*
  * @jest-environment jsdom
  */
-import {setupTestSheet} from '@unseenco/theatre-shared/testUtils'
+import {setupTestSheet} from '@unseenco/backstage-shared/testUtils'
 import {privateAPI} from '@unseenco/theatre-core/privateAPIs'
 
 describe('showPropsOf', () => {

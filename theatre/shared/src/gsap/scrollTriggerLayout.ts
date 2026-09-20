@@ -1,8 +1,8 @@
 import type {
   PageScrollAxis,
   PageScrollScroller,
-} from '@unseenco/theatre-shared/sheets/pageScrollContext'
-import {isNativeDocumentScroller} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+} from '@unseenco/backstage-shared/sheets/pageScrollContext'
+import {isNativeDocumentScroller} from '@unseenco/backstage-shared/sheets/pageScrollContext'
 
 /** Minimum clip duration in sequence units (page mode uses 0–100). */
 const MIN_SEQUENCE_DURATION = 0.01

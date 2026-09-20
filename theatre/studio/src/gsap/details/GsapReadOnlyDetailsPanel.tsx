@@ -1,15 +1,15 @@
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
-import {getAnimationEntryForSheetObject} from '@unseenco/theatre-shared/gsap/gsapAnimationRegistry'
-import {gsapStudioRegistryRevisionPointer} from '@unseenco/theatre-shared/gsap/gsapStudioRegistryRevision'
-import {introspectGsapAnimationDetails} from '@unseenco/theatre-shared/gsap/introspectGsapTweenDetails'
+import {getAnimationEntryForSheetObject} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
+import {gsapStudioRegistryRevisionPointer} from '@unseenco/backstage-shared/gsap/gsapStudioRegistryRevision'
+import {introspectGsapAnimationDetails} from '@unseenco/backstage-shared/gsap/introspectGsapTweenDetails'
 import {
   getScrollTriggerEntryForSheetObject,
   introspectScrollTriggerDetails,
-} from '@unseenco/theatre-shared/gsap/introspectScrollTriggerDetails'
+} from '@unseenco/backstage-shared/gsap/introspectScrollTriggerDetails'
 import {
   isGsapScrollTriggerSheetObjectKey,
   isGsapSheetObjectKey,
-} from '@unseenco/theatre-shared/gsap/gsapSheetObjectKey'
+} from '@unseenco/backstage-shared/gsap/gsapSheetObjectKey'
 import {usePrism} from '@unseenco/backstage/react'
 import {val} from '@unseenco/theatre-dataverse'
 import React from 'react'

@@ -10,7 +10,7 @@ import type {PropHighlighted} from '@unseenco/theatre-studio/panels/SequenceEdit
 import {rowIndentationFormulaCSS} from './rowIndentationFormulaCSS'
 import {useVal} from '@unseenco/backstage/react'
 import useChordial from '@unseenco/theatre-studio/uiComponents/chordial/useChodrial'
-import type {$FixMe} from '@unseenco/theatre-shared/utils/types'
+import type {$FixMe} from '@unseenco/backstage-shared/utils/types'
 import {studioChipSurfaceCss} from '@unseenco/theatre-studio/uiComponents/studioTokens'
 
 const Container = styled.div<{

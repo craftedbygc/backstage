@@ -11,7 +11,7 @@
         "../../.temp/declarations/dataverse/src/*"
       ],
       "@unseenco/theatre-studio/*": ["../../studio/src/*"],
-      "@unseenco/theatre-shared/*": ["../../.temp/declarations/shared/src/*"]
+      "@unseenco/backstage-shared/*": ["../../.temp/declarations/shared/src/*"]
     }
   }
 }

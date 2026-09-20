@@ -1,15 +1,15 @@
 /*
  * @jest-environment jsdom
  */
-import {setupTestSheet} from '@unseenco/theatre-shared/testUtils'
+import {setupTestSheet} from '@unseenco/backstage-shared/testUtils'
 import {privateAPI} from '@unseenco/theatre-core/privateAPIs'
-import {encodePathToProp} from '@unseenco/theatre-shared/utils/addresses'
-import {asSequenceTrackId} from '@unseenco/theatre-shared/utils/ids'
+import {encodePathToProp} from '@unseenco/backstage-shared/utils/addresses'
+import {asSequenceTrackId} from '@unseenco/backstage-shared/utils/ids'
 import type {
   ObjectAddressKey,
   SequenceTrackId,
-} from '@unseenco/theatre-shared/utils/ids'
-import type {$IntentionalAny} from '@unseenco/theatre-shared/utils/types'
+} from '@unseenco/backstage-shared/utils/ids'
+import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import {val} from '@unseenco/theatre-dataverse'
 
 describe('ISheetObject.reconfigure', () => {

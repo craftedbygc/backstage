@@ -1,5 +1,5 @@
-import type {GsapTargetDescriptor} from '@unseenco/theatre-shared/gsap/introspectGsapTweenDetails'
-import {readGsapObjectPreviewEntries} from '@unseenco/theatre-shared/gsap/introspectGsapTweenDetails'
+import type {GsapTargetDescriptor} from '@unseenco/backstage-shared/gsap/introspectGsapTweenDetails'
+import {readGsapObjectPreviewEntries} from '@unseenco/backstage-shared/gsap/introspectGsapTweenDetails'
 import {useDomElementHighlight} from '@unseenco/theatre-studio/gsap/useDomElementHighlight'
 import useTooltip from '@unseenco/theatre-studio/uiComponents/Popover/useTooltip'
 import React from 'react'

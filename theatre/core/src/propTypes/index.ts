@@ -1,16 +1,16 @@
 import type {
   $FixMe,
   $IntentionalAny,
-} from '@unseenco/theatre-shared/utils/types'
-import userReadableTypeOfValue from '@unseenco/theatre-shared/utils/userReadableTypeOfValue'
-import type {Rgba} from '@unseenco/theatre-shared/utils/color'
+} from '@unseenco/backstage-shared/utils/types'
+import userReadableTypeOfValue from '@unseenco/backstage-shared/utils/userReadableTypeOfValue'
+import type {Rgba} from '@unseenco/backstage-shared/utils/color'
 import {
   decorateRgba,
   linearSrgbToOklab,
   oklabToLinearSrgb,
   srgbToLinearSrgb,
   linearSrgbToSrgb,
-} from '@unseenco/theatre-shared/utils/color'
+} from '@unseenco/backstage-shared/utils/color'
 import {clamp, mapValues} from 'lodash-es'
 import type {
   UnknownShorthandCompoundProps,
@@ -20,7 +20,7 @@ import type {
 import {propTypeSymbol, sanitizeCompoundProps} from './internals'
 // eslint-disable-next-line unused-imports/no-unused-imports
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
-import type {Asset, File} from '@unseenco/theatre-shared/utils/assets'
+import type {Asset, File} from '@unseenco/backstage-shared/utils/assets'
 
 // Notes on naming:
 // As of now, prop types are either `simple` or `composite`.

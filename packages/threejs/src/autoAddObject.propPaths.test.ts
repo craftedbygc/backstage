@@ -4,7 +4,7 @@
 import {privateAPI} from '@unseenco/backstage/privateAPIs'
 import {BoxGeometry, Mesh, MeshPhongMaterial} from 'three'
 import {autoAddObject, configureTheatreThreejs} from './index'
-import {setupTestSheet} from '@unseenco/theatre-shared/testUtils'
+import {setupTestSheet} from '@unseenco/backstage-shared/testUtils'
 
 async function setupSheet() {
   const {sheet} = await setupTestSheet({

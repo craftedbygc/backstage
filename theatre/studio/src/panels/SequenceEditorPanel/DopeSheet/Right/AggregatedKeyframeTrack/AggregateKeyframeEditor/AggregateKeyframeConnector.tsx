@@ -19,7 +19,7 @@ import {
   keyframesWithPaths,
 } from '@unseenco/theatre-studio/panels/SequenceEditorPanel/DopeSheet/selections'
 import useContextMenu from '@unseenco/theatre-studio/uiComponents/simpleContextMenu/useContextMenu'
-import {commonRootOfPathsToProps} from '@unseenco/theatre-shared/utils/addresses'
+import {commonRootOfPathsToProps} from '@unseenco/backstage-shared/utils/addresses'
 import type {KeyframeWithPathToPropFromCommonRoot} from '@unseenco/theatre-studio/store/types'
 import {getStudioSequence} from '@unseenco/theatre-studio/utils/activeSequenceVariant'
 import {sequenceEditorAggregateViewModelSheetAddress} from '@unseenco/theatre-studio/panels/SequenceEditorPanel/layout/sequenceEditorAggregateViewModel'

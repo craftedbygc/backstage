@@ -1,9 +1,9 @@
-import {encodeDomElementHighlightTarget} from '@unseenco/theatre-shared/gsap/domElementHighlightTarget'
+import {encodeDomElementHighlightTarget} from '@unseenco/backstage-shared/gsap/domElementHighlightTarget'
 import {
   onRemoteDomElementHighlightChange,
   postRemoteDomHighlightBroadcast,
   postRemoteDomHighlightClear,
-} from '@unseenco/theatre-shared/sheets/remoteDomElementHighlight'
+} from '@unseenco/backstage-shared/sheets/remoteDomElementHighlight'
 import {getSequenceEditorProjectId} from '@unseenco/theatre-studio/selectors'
 import {isRemoteEditorWindow} from '@unseenco/theatre-studio/remoteEditor'
 import React, {

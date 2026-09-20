@@ -1,7 +1,7 @@
 import type SheetObject from '@unseenco/theatre-core/sheetObjects/SheetObject'
 import type {GsapTimelineChildClip} from '@unseenco/theatre-core/projects/store/types/SheetState_Historic'
-import type {SheetAddress} from '@unseenco/theatre-shared/utils/addresses'
-import type {SheetInstanceId} from '@unseenco/theatre-shared/utils/ids'
+import type {SheetAddress} from '@unseenco/backstage-shared/utils/addresses'
+import type {SheetInstanceId} from '@unseenco/backstage-shared/utils/ids'
 import {isGsapScrollTriggerSheetObjectKey} from './gsapSheetObjectKey'
 import {bumpGsapStudioRegistryRevision} from './gsapStudioRegistryRevision'
 
