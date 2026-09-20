@@ -1,5 +1,8 @@
 import type {OutlineNamespaceConfig} from '@unseenco/theatre-shared/utils/outlineNamespaces'
-import type {PageScrollScroller} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+import type {
+  PageScrollAxis,
+  PageScrollScroller,
+} from '@unseenco/theatre-shared/sheets/pageScrollContext'
 import {
   defaultPageScrollContext,
   setActivePageScrollContext,
@@ -8,8 +11,10 @@ import {setConfiguredGsapSheetObjectNamespace} from '@unseenco/theatre-shared/gs
 import {getGsapScrollTriggerPlugin} from './gsapScrollTriggerPlugin'
 
 export type TheatreGsapPageScrollConfig = {
-  /** Default scroller for ScrollTrigger layout and guards; `null` = document vertical. */
+  /** Default scroller for ScrollTrigger layout and guards; `null` = native document. */
   scroller?: PageScrollScroller
+  /** Page scroll axis (default vertical). */
+  axis?: PageScrollAxis
   /**
    * @deprecated ScrollTrigger.defaults is applied automatically when `pageScroll` is configured.
    */
@@ -33,12 +38,24 @@ let activeConfig: TheatreGsapConfig = {
 
 setConfiguredGsapSheetObjectNamespace(activeConfig.namespace!)
 
+function pageScrollContextFromConfig(pageScroll: TheatreGsapPageScrollConfig): {
+  scroller: PageScrollScroller
+  axis: PageScrollAxis
+} {
+  return {
+    scroller: pageScroll.scroller ?? defaultPageScrollContext.scroller,
+    axis: pageScroll.axis ?? defaultPageScrollContext.axis ?? 'vertical',
+  }
+}
+
 function applyScrollTriggerDefaultsForPageScroll(
-  scroller: PageScrollScroller | undefined,
+  pageScroll: TheatreGsapPageScrollConfig,
 ): void {
   const ScrollTrigger = getGsapScrollTriggerPlugin()
+  const {scroller, axis} = pageScrollContextFromConfig(pageScroll)
   ScrollTrigger?.defaults?.({
     scroller: scroller ?? undefined,
+    ...(axis === 'horizontal' ? {horizontal: true} : {}),
   })
 }
 
@@ -56,12 +73,9 @@ export function configureTheatreGsap(config: TheatreGsapConfig): {
   setConfiguredGsapSheetObjectNamespace(activeConfig.namespace ?? 'GSAP')
 
   if (config.pageScroll !== undefined) {
-    setActivePageScrollContext({
-      scroller: config.pageScroll.scroller ?? defaultPageScrollContext.scroller,
-    })
-    applyScrollTriggerDefaultsForPageScroll(
-      config.pageScroll.scroller ?? defaultPageScrollContext.scroller,
-    )
+    const ctx = pageScrollContextFromConfig(config.pageScroll)
+    setActivePageScrollContext(ctx)
+    applyScrollTriggerDefaultsForPageScroll(config.pageScroll)
   }
 
   return {
@@ -69,13 +83,9 @@ export function configureTheatreGsap(config: TheatreGsapConfig): {
       activeConfig = prev
       setConfiguredGsapSheetObjectNamespace(prev.namespace ?? 'GSAP')
       if (prev.pageScroll !== undefined) {
-        setActivePageScrollContext({
-          scroller:
-            prev.pageScroll.scroller ?? defaultPageScrollContext.scroller,
-        })
-        applyScrollTriggerDefaultsForPageScroll(
-          prev.pageScroll.scroller ?? defaultPageScrollContext.scroller,
-        )
+        const ctx = pageScrollContextFromConfig(prev.pageScroll)
+        setActivePageScrollContext(ctx)
+        applyScrollTriggerDefaultsForPageScroll(prev.pageScroll)
       } else {
         setActivePageScrollContext(defaultPageScrollContext)
       }

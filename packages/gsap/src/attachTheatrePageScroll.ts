@@ -12,6 +12,7 @@ import {
 } from '@unseenco/theatre-core'
 import {
   defaultPageScrollContext,
+  resolvePageScrollAxis,
   setActivePageScrollContext,
 } from '@unseenco/theatre-shared/sheets/pageScrollContext'
 import {getTheatreGsapConfig} from './config'
@@ -22,7 +23,11 @@ function applyScrollTriggerDefaultsFromGsapConfig(): void {
   if (!pageScroll) return
   const ScrollTrigger = getGsapScrollTriggerPlugin()
   if (!ScrollTrigger?.defaults) return
-  ScrollTrigger.defaults({scroller: pageScroll.scroller ?? undefined})
+  const axis = pageScroll.axis ?? defaultPageScrollContext.axis ?? 'vertical'
+  ScrollTrigger.defaults({
+    scroller: pageScroll.scroller ?? undefined,
+    ...(axis === 'horizontal' ? {horizontal: true} : {}),
+  })
 }
 
 export function getTheatrePageScrollContext(): PageScrollContext {
@@ -31,6 +36,7 @@ export function getTheatrePageScrollContext(): PageScrollContext {
   if (pageScroll) {
     const ctx = {
       scroller: pageScroll.scroller ?? defaultPageScrollContext.scroller,
+      axis: pageScroll.axis ?? defaultPageScrollContext.axis,
     }
     setActivePageScrollContext(ctx)
     return ctx
@@ -41,7 +47,8 @@ export function getTheatrePageScrollContext(): PageScrollContext {
 export function createDefaultPageScrollDriver(
   scroller: PageScrollScroller = getTheatrePageScrollContext().scroller,
 ): ScrollDriver {
-  return createDefaultPageScrollDriverCore(scroller)
+  const ctx = getTheatrePageScrollContext()
+  return createDefaultPageScrollDriverCore(scroller, resolvePageScrollAxis(ctx))
 }
 
 export type {AttachTheatrePageScrollOptions}

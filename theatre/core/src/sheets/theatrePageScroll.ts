@@ -1,25 +1,38 @@
 import type {ISheet} from '@unseenco/theatre-core/sheets/TheatreSheet'
 import {
+  createElementHorizontalScrollDriver,
   createElementScrollDriver,
+  createNativeDocumentHorizontalScrollDriver,
   createNativeDocumentScrollDriver,
 } from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
 import type {ScrollDriver} from '@unseenco/theatre-core/sheets/attachSheetScrollDriver'
 import {
   defaultPageScrollContext,
   isNativeDocumentScroller,
+  resolvePageScrollAxis,
   setActivePageScrollContext,
 } from '@unseenco/theatre-core/sheets/pageScrollContext'
 import type {
+  PageScrollAxis,
   PageScrollContext,
   PageScrollScroller,
 } from '@unseenco/theatre-core/sheets/pageScrollContext'
 
 export type TheatrePageScrollConfig = {
-  /** Default scroller for page-mode layout helpers; `null` = document vertical. */
+  /** Default scroller for page-mode layout helpers; `null` = native document. */
   scroller?: PageScrollScroller
+  /** Scroll axis (default vertical). */
+  axis?: PageScrollAxis
 }
 
 let pageScrollConfig: TheatrePageScrollConfig = {}
+
+function buildPageScrollContextFromConfig(): PageScrollContext {
+  return {
+    scroller: pageScrollConfig.scroller ?? defaultPageScrollContext.scroller,
+    axis: pageScrollConfig.axis ?? defaultPageScrollContext.axis,
+  }
+}
 
 export function configureTheatrePageScroll(config: TheatrePageScrollConfig): {
   reset: () => void
@@ -27,19 +40,19 @@ export function configureTheatrePageScroll(config: TheatrePageScrollConfig): {
   const prev = pageScrollConfig
   pageScrollConfig = {
     scroller: config.scroller ?? prev.scroller,
+    axis: config.axis ?? prev.axis,
   }
-  if (config.scroller !== undefined) {
-    setActivePageScrollContext({
-      scroller: config.scroller ?? defaultPageScrollContext.scroller,
-    })
+  if (config.scroller !== undefined || config.axis !== undefined) {
+    setActivePageScrollContext(buildPageScrollContextFromConfig())
   }
   return {
     reset() {
       pageScrollConfig = prev
       setActivePageScrollContext(
-        prev.scroller !== undefined
+        prev.scroller !== undefined || prev.axis !== undefined
           ? {
               scroller: prev.scroller ?? defaultPageScrollContext.scroller,
+              axis: prev.axis ?? defaultPageScrollContext.axis,
             }
           : defaultPageScrollContext,
       )
@@ -51,17 +64,16 @@ export function getTheatrePageScrollConfig(): TheatrePageScrollConfig {
   return pageScrollConfig
 }
 
-/** Active page scroll context (scroller) from {@link configureTheatrePageScroll}. */
+/** Active page scroll context from {@link configureTheatrePageScroll}. */
 export function getTheatrePageScrollContext(): PageScrollContext {
-  const scroller =
-    pageScrollConfig.scroller ?? defaultPageScrollContext.scroller
-  const ctx = {scroller}
+  const ctx = buildPageScrollContextFromConfig()
   setActivePageScrollContext(ctx)
   return ctx
 }
 
 export function createDefaultPageScrollDriver(
   scroller: PageScrollScroller = getTheatrePageScrollContext().scroller,
+  axis: PageScrollAxis = resolvePageScrollAxis(getTheatrePageScrollContext()),
 ): ScrollDriver {
   if (
     typeof document !== 'undefined' &&
@@ -69,9 +81,13 @@ export function createDefaultPageScrollDriver(
     !isNativeDocumentScroller(scroller) &&
     scroller instanceof HTMLElement
   ) {
-    return createElementScrollDriver(scroller)
+    return axis === 'horizontal'
+      ? createElementHorizontalScrollDriver(scroller)
+      : createElementScrollDriver(scroller)
   }
-  return createNativeDocumentScrollDriver()
+  return axis === 'horizontal'
+    ? createNativeDocumentHorizontalScrollDriver()
+    : createNativeDocumentScrollDriver()
 }
 
 export type AttachTheatrePageScrollOptions = {
@@ -86,9 +102,10 @@ export function attachTheatrePageScroll(
   sheet: ISheet,
   options: AttachTheatrePageScrollOptions = {},
 ): () => void {
+  const ctx = getTheatrePageScrollContext()
   const driver =
     options.driver ??
-    createDefaultPageScrollDriver(getTheatrePageScrollContext().scroller)
+    createDefaultPageScrollDriver(ctx.scroller, resolvePageScrollAxis(ctx))
   sheet.setPageScrollDriver(driver)
   return () => {
     sheet.setPageScrollDriver(undefined)

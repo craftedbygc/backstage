@@ -1,4 +1,7 @@
-import type {PageScrollScroller} from '@unseenco/theatre-shared/sheets/pageScrollContext'
+import type {
+  PageScrollAxis,
+  PageScrollScroller,
+} from '@unseenco/theatre-shared/sheets/pageScrollContext'
 import {isNativeDocumentScroller} from '@unseenco/theatre-shared/sheets/pageScrollContext'
 
 /** Minimum clip duration in sequence units (page mode uses 0–100). */
@@ -37,27 +40,39 @@ export function scrollPixelsToPageUnits(
 }
 
 /** Matches {@link createNativeDocumentScrollDriver} max scroll. */
-export function getNativeDocumentMaxScroll(): number {
+export function getNativeDocumentMaxScroll(
+  axis: PageScrollAxis = 'vertical',
+): number {
   if (typeof document === 'undefined' || typeof window === 'undefined') {
     return 0
   }
   const el = document.documentElement
+  if (axis === 'horizontal') {
+    return Math.max(0, el.scrollWidth - window.innerWidth)
+  }
   return Math.max(0, el.scrollHeight - window.innerHeight)
 }
 
-export function getMaxScrollForScroller(scroller: PageScrollScroller): number {
+export function getMaxScrollForScroller(
+  scroller: PageScrollScroller,
+  axis: PageScrollAxis = 'vertical',
+): number {
   if (typeof document === 'undefined' || typeof window === 'undefined') {
     return 0
   }
   if (isNativeDocumentScroller(scroller)) {
-    return getNativeDocumentMaxScroll()
+    return getNativeDocumentMaxScroll(axis)
   }
   const el = scroller as HTMLElement
+  if (axis === 'horizontal') {
+    return Math.max(0, el.scrollWidth - el.clientWidth)
+  }
   return Math.max(0, el.scrollHeight - el.clientHeight)
 }
 
 export function getMaxScrollForPageScrollContext(
   scroller: PageScrollScroller,
+  axis: PageScrollAxis = 'vertical',
 ): number {
-  return getMaxScrollForScroller(scroller)
+  return getMaxScrollForScroller(scroller, axis)
 }

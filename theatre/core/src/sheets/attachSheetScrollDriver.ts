@@ -98,6 +98,24 @@ export function createNativeDocumentScrollDriver(): ScrollDriver {
   )
 }
 
+/** Native `window` / `documentElement` horizontal scroll. */
+export function createNativeDocumentHorizontalScrollDriver(): ScrollDriver {
+  const getMaxScroll = (): number => {
+    const el = document.documentElement
+    return Math.max(0, el.scrollWidth - window.innerWidth)
+  }
+
+  return createScrollDriverFromElement(
+    getMaxScroll,
+    () => window.scrollX,
+    (x) => window.scrollTo({left: x, behavior: 'instant'}),
+    (handler) => {
+      window.addEventListener('scroll', handler, {passive: true})
+      return () => window.removeEventListener('scroll', handler)
+    },
+  )
+}
+
 /** Vertical scroll on a custom overflow element. */
 export function createElementScrollDriver(element: HTMLElement): ScrollDriver {
   const getMaxScroll = (): number =>
@@ -108,6 +126,26 @@ export function createElementScrollDriver(element: HTMLElement): ScrollDriver {
     () => element.scrollTop,
     (y) => {
       element.scrollTop = y
+    },
+    (handler) => {
+      element.addEventListener('scroll', handler, {passive: true})
+      return () => element.removeEventListener('scroll', handler)
+    },
+  )
+}
+
+/** Horizontal scroll on a custom overflow element. */
+export function createElementHorizontalScrollDriver(
+  element: HTMLElement,
+): ScrollDriver {
+  const getMaxScroll = (): number =>
+    Math.max(0, element.scrollWidth - element.clientWidth)
+
+  return createScrollDriverFromElement(
+    getMaxScroll,
+    () => element.scrollLeft,
+    (x) => {
+      element.scrollLeft = x
     },
     (handler) => {
       element.addEventListener('scroll', handler, {passive: true})

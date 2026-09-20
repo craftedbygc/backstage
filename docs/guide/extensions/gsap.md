@@ -112,7 +112,7 @@ const sheet = getProject('My project').sheet('Main', {
 })
 ```
 
-Playground: **`/shared/gsap-page-mode/`** (native scroll), **`/shared/gsap-page-mode-lenis/`** (Lenis + ScrollTrigger proxy + Theatre).
+Playground: **`/shared/gsap-page-mode/`** (native vertical scroll), **`/shared/gsap-page-mode-horizontal/`** (native horizontal scroll), **`/shared/gsap-page-mode-lenis/`** (Lenis + ScrollTrigger proxy + Theatre).
 
 ## registerGsapAnimation
 
@@ -136,7 +136,7 @@ Animations are **paused** on registration so Theatre can set `progress` during s
 
 ## ScrollTrigger (page mode, read-only sequencer)
 
-Requires **`sequenceMode: 'page'`**, `gsap.registerPlugin(ScrollTrigger)`, and a **vertical** ScrollTrigger whose **scroller matches** `configureTheatreGsap({ pageScroll: { scroller } })` (default: document). Theatre maps each trigger’s resolved **`start` / `end`** scroll pixels to **0–100%** on the sequence. Bars are **read-only** in Studio; GSAP still drives scrubbing on scroll.
+Requires **`sequenceMode: 'page'`**, `gsap.registerPlugin(ScrollTrigger)`, and a ScrollTrigger whose **scroller and axis** match `configureTheatreGsap({ pageScroll: { scroller, axis } })` (default: document, vertical). Set **`horizontal: true`** on triggers (or **`pageScroll: { axis: 'horizontal' }`**, which applies `ScrollTrigger.defaults({ horizontal: true })`). Theatre maps each trigger’s resolved **`start` / `end`** scroll pixels along that axis to **0–100%** on the sequence. Bars are **read-only** in Studio; GSAP still drives scrubbing on scroll.
 
 ```ts
 import gsap from 'gsap'
@@ -181,8 +181,8 @@ configureTheatreGsap({
   namespace: 'GSAP',
   outlineNamespace: {defaultCollapsed: true},
   pageScroll: {
-    scroller: null, // document vertical (default)
-    applyScrollTriggerDefaults: false,
+    scroller: null, // native document (default)
+    axis: 'vertical', // or 'horizontal' — sets ScrollTrigger.defaults scroller + horizontal
   },
   suppressGsapTickerRafWarning: false,
 })
@@ -210,7 +210,7 @@ Ship **`@unseenco/theatre-gsap`** and **`@unseenco/theatre-core`** in production
 
 `yarn playground` → **`/shared/gsap-time-mode/`** — panel show/hide tweens, box motion, nested `UI / …` labels, and a rebuildable timeline choreo.
 
-**`/shared/gsap-page-mode/`** — native document scroll. **`/shared/gsap-page-mode-lenis/`** — Lenis smooth scroll + custom `ScrollDriver`.
+**`/shared/gsap-page-mode/`** — native vertical document scroll. **`/shared/gsap-page-mode-horizontal/`** — native horizontal scroll + horizontal ScrollTrigger. **`/shared/gsap-page-mode-lenis/`** — Lenis smooth scroll + custom `ScrollDriver`.
 
 ## API reference
 
