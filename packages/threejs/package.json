@@ -1,6 +1,6 @@
 {
   "name": "@unseenco/backstage-threejs",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "license": "AGPL-3.0-only",
   "description": "Three.js devtools extension for Backstage.js Studio",
   "author": {
