@@ -316,32 +316,56 @@ export const calculateSequenceEditorTree = (
   )
   tree.heightIncludingChildren = topSoFar - tree.top
 
+  function sequenceVariantForObject(sheetObject: SheetObject) {
+    return isSheetPropsObjectKey(sheetObject.address.objectKey)
+      ? DEFAULT_SEQUENCE_VARIANT
+      : activeSequenceVariant
+  }
+
+  function readHistoricSheetStateForObject(sheetObject: SheetObject) {
+    return val(
+      studio.atomP.historic.coreByProject[sheetObject.address.projectId]
+        .sheetsById[sheetObject.address.sheetId],
+    )
+  }
+
+  /**
+   * Orphan GSAP clip rows need historic track data; plain prop-keyframed objects do not.
+   */
+  function gsapClipEntriesForTreeRow(
+    sheetObject: SheetObject,
+    trackSetups: Record<string, unknown>,
+  ) {
+    const sequenceVariant = sequenceVariantForObject(sheetObject)
+    if (
+      isGsapSheetObjectKey(sheetObject.address.objectKey) ||
+      Object.keys(trackSetups).length === 0
+    ) {
+      return listGsapClipTracksForObject(
+        readHistoricSheetStateForObject(sheetObject),
+        sheetObject,
+        sequenceVariant,
+      )
+    }
+    return []
+  }
+
   function sheetObjectHasSequenceEditorContent(
     sheetObject: SheetObject,
   ): boolean {
     const trackSetups = val(
       sheetObject.template.getMapOfValidSequenceTracks_forStudio(
-        isSheetPropsObjectKey(sheetObject.address.objectKey)
-          ? DEFAULT_SEQUENCE_VARIANT
-          : activeSequenceVariant,
+        sequenceVariantForObject(sheetObject),
       ),
     )
-    const sheetState = val(
-      studio.atomP.historic.coreByProject[sheetObject.address.projectId]
-        .sheetsById[sheetObject.address.sheetId],
-    )
-    const gsapClipEntries = listGsapClipTracksForObject(
-      sheetState,
-      sheetObject,
-      isSheetPropsObjectKey(sheetObject.address.objectKey)
-        ? DEFAULT_SEQUENCE_VARIANT
-        : activeSequenceVariant,
-    )
-    return (
-      Object.keys(trackSetups).length > 0 ||
-      gsapClipEntries.length > 0 ||
-      isRegisteredScrollTriggerSheetObject(sheetObject)
-    )
+    if (Object.keys(trackSetups).length > 0) {
+      return true
+    }
+    if (isRegisteredScrollTriggerSheetObject(sheetObject)) {
+      return true
+    }
+    const gsapClipEntries = gsapClipEntriesForTreeRow(sheetObject, trackSetups)
+    return gsapClipEntries.length > 0
   }
 
   function appendNamespacedObjectsToTree(
@@ -443,17 +467,7 @@ export const calculateSequenceEditorTree = (
     )
     const objectConfig = val(sheetObject.template.configPointer)
 
-    const sheetState = val(
-      studio.atomP.historic.coreByProject[sheetObject.address.projectId]
-        .sheetsById[sheetObject.address.sheetId],
-    )
-    const gsapClipEntries = listGsapClipTracksForObject(
-      sheetState,
-      sheetObject,
-      isSheetPropsObjectKey(sheetObject.address.objectKey)
-        ? DEFAULT_SEQUENCE_VARIANT
-        : activeSequenceVariant,
-    )
+    const gsapClipEntries = gsapClipEntriesForTreeRow(sheetObject, trackSetups)
 
     const isCollapsedP =
       collapsableItemSetP.byId[

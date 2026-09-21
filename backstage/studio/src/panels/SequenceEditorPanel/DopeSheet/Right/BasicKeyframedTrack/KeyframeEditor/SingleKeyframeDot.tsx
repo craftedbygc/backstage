@@ -12,7 +12,7 @@ import {useLockFrameStampPosition} from '@unseenco/backstage/studio/panels/Seque
 import {useCssCursorLock} from '@unseenco/backstage/studio/uiComponents/PointerEventsHandler'
 import DopeSnap from '@unseenco/backstage/studio/panels/SequenceEditorPanel/RightOverlay/DopeSnap'
 
-import type {ISingleKeyframeEditorProps} from './SingleKeyframeEditor'
+import type {ISingleKeyframeEditorProps} from './singleKeyframeEditorTypes'
 import {absoluteDims} from '@unseenco/backstage/studio/utils/absoluteDims'
 import {useLogger} from '@unseenco/backstage/studio/uiComponents/useLogger'
 import type {ILogger} from '@unseenco/backstage-shared/logger'
@@ -36,6 +36,7 @@ import {clampSequenceEditorPosition} from '@unseenco/backstage/studio/panels/Seq
 import {valTracksByObjectForSheetVariant} from '@unseenco/backstage/studio/utils/sequenceVariantHelpers'
 import {selectSheetObjectInOutline} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selectSheetObjectInOutline'
 import {shouldDeferToDopeSheetMarqueeSelection} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/shouldDeferToDopeSheetMarqueeSelection'
+import {singleKeyframeEditorPropsAreEqual} from './keyframeDopeSheetVisualEqual'
 
 export const DOT_SIZE_PX = 6
 const DOT_HOVER_SIZE_PX = DOT_SIZE_PX + 2
@@ -69,35 +70,43 @@ type IDiamond = {
   flag: PresenceFlag | undefined
 }
 
+function diamondVisualStyle({
+  isSelected,
+  isInlineEditorPopoverOpen,
+  flag,
+}: IDiamond): React.CSSProperties {
+  return {
+    background: selectBackgroundForDiamond({
+      isSelected,
+      isInlineEditorPopoverOpen,
+      flag,
+    }),
+    ...(flag === PresenceFlag.Primary
+      ? {outline: '2px solid white'}
+      : undefined),
+  }
+}
+
 /** The keyframe diamond ◆ */
-const Diamond = styled.div<IDiamond>`
+const Diamond = styled.div`
   position: absolute;
   ${absoluteDims(DOT_SIZE_PX)}
 
-  background: ${(props) => selectBackgroundForDiamond(props)};
   transform: rotateZ(45deg);
-
-  ${(props) =>
-    props.flag === PresenceFlag.Primary ? 'outline: 2px solid white;' : ''};
 
   z-index: 1;
   pointer-events: none;
 `
 
-const Square = styled.div<IDiamond>`
+const Square = styled.div`
   position: absolute;
   ${absoluteDims(DOT_SIZE_PX * 1.5)}
 
-  background: ${(props) => selectBackgroundForDiamond(props)};
-
-  ${(props) =>
-    props.flag === PresenceFlag.Primary ? 'outline: 2px solid white;' : ''};
-
   z-index: 1;
   pointer-events: none;
 `
 
-const HitZone = styled.div<{isInlineEditorPopoverOpen: boolean}>`
+const HitZone = styled.div`
   z-index: 1;
   cursor: ew-resize;
 
@@ -106,11 +115,14 @@ const HitZone = styled.div<{isInlineEditorPopoverOpen: boolean}>`
   ${pointerEventsAutoInNormalMode};
 
   & + ${Diamond} {
-    ${(props) =>
-      props.isInlineEditorPopoverOpen ? absoluteDims(DOT_HOVER_SIZE_PX) : ''}
+    ${absoluteDims(DOT_SIZE_PX)}
   }
 
   &:hover + ${Diamond} {
+    ${absoluteDims(DOT_HOVER_SIZE_PX)}
+  }
+
+  &[data-inline-editor-open=''] + ${Diamond} {
     ${absoluteDims(DOT_HOVER_SIZE_PX)}
   }
 `
@@ -118,60 +130,69 @@ const HitZone = styled.div<{isInlineEditorPopoverOpen: boolean}>`
 type ISingleKeyframeDotProps = ISingleKeyframeEditorProps
 
 /** The ◆ you can grab onto in "keyframe editor" (aka "dope sheet" in other programs) */
-const SingleKeyframeDot: React.VFC<ISingleKeyframeDotProps> = (props) => {
-  const logger = useLogger('SingleKeyframeDot', props.keyframe.id)
-  const presence = usePresence(props.itemKey)
-  const [ref, node] = useRefAndState<HTMLDivElement | null>(null)
+const SingleKeyframeDot: React.VFC<ISingleKeyframeDotProps> = React.memo(
+  (props) => {
+    const logger = useLogger('SingleKeyframeDot', props.keyframe.id)
+    const presence = usePresence(props.itemKey)
+    const [ref, node] = useRefAndState<HTMLDivElement | null>(null)
 
-  const [contextMenu] = useSingleKeyframeContextMenu(node, logger, props)
-  const {
-    node: inlineEditorPopover,
-    toggle: toggleEditor,
-    isOpen: isInlineEditorPopoverOpen,
-  } = useKeyframeInlineEditorPopover([
-    {
-      type: 'primitiveProp',
-      keyframe: props.keyframe,
-      pathToProp: props.leaf.pathToProp,
-      propConfig: props.leaf.propConf,
-      sheetObject: props.leaf.sheetObject,
-      trackId: props.leaf.trackId,
-    },
-  ])
-  const [isDragging] = useDragForSingleKeyframeDot(node, props, {
-    onClickFromDrag(dragStartEvent) {
-      selectSheetObjectInOutline(props.leaf.sheetObject)
-      toggleEditor(dragStartEvent, ref.current!)
-    },
-  })
+    const [contextMenu] = useSingleKeyframeContextMenu(node, logger, props)
+    const {
+      node: inlineEditorPopover,
+      toggle: toggleEditor,
+      isOpen: isInlineEditorPopoverOpen,
+    } = useKeyframeInlineEditorPopover([
+      {
+        type: 'primitiveProp',
+        keyframe: props.keyframe,
+        pathToProp: props.leaf.pathToProp,
+        propConfig: props.leaf.propConf,
+        sheetObject: props.leaf.sheetObject,
+        trackId: props.leaf.trackId,
+      },
+    ])
+    const [isDragging] = useDragForSingleKeyframeDot(node, props, {
+      onClickFromDrag(dragStartEvent) {
+        selectSheetObjectInOutline(props.leaf.sheetObject)
+        toggleEditor(dragStartEvent, ref.current!)
+      },
+    })
 
-  const showDiamond = !props.keyframe.type || props.keyframe.type === 'bezier'
+    const showDiamond = !props.keyframe.type || props.keyframe.type === 'bezier'
 
-  return (
-    <>
-      <HitZone
-        ref={ref}
-        isInlineEditorPopoverOpen={isInlineEditorPopoverOpen}
-        {...presence.attrs}
-      />
-      {showDiamond ? (
-        <Diamond
-          isSelected={!!props.selection}
-          isInlineEditorPopoverOpen={isInlineEditorPopoverOpen}
-          flag={presence.flag}
+    return (
+      <>
+        <HitZone
+          ref={ref}
+          data-inline-editor-open={isInlineEditorPopoverOpen ? '' : undefined}
+          {...presence.attrs}
         />
-      ) : (
-        <Square
-          isSelected={!!props.selection}
-          isInlineEditorPopoverOpen={isInlineEditorPopoverOpen}
-          flag={presence.flag}
-        />
-      )}
-      {inlineEditorPopover}
-      {contextMenu}
-    </>
-  )
-}
+        {showDiamond ? (
+          <Diamond
+            style={diamondVisualStyle({
+              isSelected: !!props.selection,
+              isInlineEditorPopoverOpen,
+              flag: presence.flag,
+            })}
+          />
+        ) : (
+          <Square
+            style={diamondVisualStyle({
+              isSelected: !!props.selection,
+              isInlineEditorPopoverOpen,
+              flag: presence.flag,
+            })}
+          />
+        )}
+        {inlineEditorPopover}
+        {contextMenu}
+      </>
+    )
+  },
+  singleKeyframeEditorPropsAreEqual,
+)
+
+SingleKeyframeDot.displayName = 'SingleKeyframeDot'
 
 export default SingleKeyframeDot
 

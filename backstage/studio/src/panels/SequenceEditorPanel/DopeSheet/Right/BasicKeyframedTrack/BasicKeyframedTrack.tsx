@@ -24,6 +24,8 @@ import {
   getStudioTrackSequenceVariant,
 } from '@unseenco/backstage/studio/utils/activeSequenceVariant'
 
+import {basicKeyframedTracksEqualForDopeSheetChrome} from './KeyframeEditor/keyframeDopeSheetVisualEqual'
+
 const Container = styled.div`
   position: relative;
   height: 100%;
@@ -34,6 +36,17 @@ type BasicKeyframedTracksProps = {
   leaf: SequenceEditorTree_PrimitiveProp
   layoutP: Pointer<SequenceEditorPanelLayout>
   trackData: BasicKeyframedTrack
+}
+
+function basicKeyframedTrackPropsAreEqual(
+  prev: BasicKeyframedTracksProps,
+  next: BasicKeyframedTracksProps,
+): boolean {
+  return (
+    prev.layoutP === next.layoutP &&
+    prev.leaf === next.leaf &&
+    basicKeyframedTracksEqualForDopeSheetChrome(prev.trackData, next.trackData)
+  )
 }
 
 const BasicKeyframedTrack: React.VFC<BasicKeyframedTracksProps> = React.memo(
@@ -139,6 +152,7 @@ const BasicKeyframedTrack: React.VFC<BasicKeyframedTracksProps> = React.memo(
       </Container>
     )
   },
+  basicKeyframedTrackPropsAreEqual,
 )
 
 BasicKeyframedTrack.displayName = `BasicKeyframedTrack`

@@ -59,13 +59,7 @@ export const StaticDiamondWithOuterSvg: React.FC<{
   variant: 'filled' | 'outline'
   title?: string
 }> = ({variant, title}) => (
-  <Svg
-    width="8"
-    height="8"
-    viewBox="0 0 8 8"
-    fill="none"
-    aria-hidden={!title}
-  >
+  <Svg width="8" height="8" viewBox="0 0 8 8" fill="none" aria-hidden={!title}>
     {title ? <title>{title}</title> : null}
     <path
       d={OUTER_DIAMOND}
@@ -82,18 +76,20 @@ export const StaticDiamondWithOuterSvg: React.FC<{
   </Svg>
 )
 
-export const ChevronPrevSvg: React.FC = () => (
+export const ChevronPrevSvg: React.FC = React.memo(() => (
   <Svg width="12" height="12" viewBox="0 0 12 12" fill="none">
     <g transform="translate(6 3)">
       <path d="M4 1L1 4L4 7" stroke="currentColor" />
     </g>
   </Svg>
-)
+))
+ChevronPrevSvg.displayName = 'ChevronPrevSvg'
 
-export const ChevronNextSvg: React.FC = () => (
+export const ChevronNextSvg: React.FC = React.memo(() => (
   <Svg width="12" height="12" viewBox="0 0 12 12" fill="none">
     <g transform="translate(1 3)">
       <path d="M1 1L4 4L1 7" stroke="currentColor" />
     </g>
   </Svg>
-)
+))
+ChevronNextSvg.displayName = 'ChevronNextSvg'
