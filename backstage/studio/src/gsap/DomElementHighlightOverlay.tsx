@@ -97,7 +97,7 @@ export function useDomElementHighlight(): DomElementHighlightContextValue {
 }
 
 /** Above `#pointer-root` shell (z-index 50) when highlight renders as its sibling. */
-const HIGHLIGHT_Z_INDEX = 51
+const HIGHLIGHT_Z_INDEX = 49
 
 const EdgeArrow = styled.div<{
   $edge: 'top' | 'bottom' | 'left' | 'right'
