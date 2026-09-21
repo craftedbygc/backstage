@@ -34,6 +34,7 @@ import {
 } from '@unseenco/backstage/studio/utils/activeSequenceVariant'
 import {clampSequenceEditorPosition} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/sequenceEditLimits'
 import {valTracksByObjectForSheetVariant} from '@unseenco/backstage/studio/utils/sequenceVariantHelpers'
+import {selectSheetObjectInOutline} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selectSheetObjectInOutline'
 
 export const DOT_SIZE_PX = 6
 const DOT_HOVER_SIZE_PX = DOT_SIZE_PX + 2
@@ -137,6 +138,7 @@ const SingleKeyframeDot: React.VFC<ISingleKeyframeDotProps> = (props) => {
   ])
   const [isDragging] = useDragForSingleKeyframeDot(node, props, {
     onClickFromDrag(dragStartEvent) {
+      selectSheetObjectInOutline(props.leaf.sheetObject)
       toggleEditor(dragStartEvent, ref.current!)
     },
   })

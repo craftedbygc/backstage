@@ -5,6 +5,10 @@ import {BaseHeader, LeftRowContainer} from './AnyCompositeRow'
 import {propNameTextCSS} from '@unseenco/backstage/studio/propEditors/utils/propNameTextCSS'
 import {renderGsapListLabel} from '@unseenco/backstage/studio/gsap/GsapKindBadge'
 import {useGsapSequencerRowElementHighlight} from '@unseenco/backstage/studio/gsap/useGsapSequencerRowElementHighlight'
+import {
+  sequencerLeftHierarchyBranchBeforeCss,
+  sequencerLeftLabelAlignedPaddingLeftPx,
+} from './sequencerLeftPanelLayout'
 
 const Label = styled.span`
   ${propNameTextCSS};
@@ -12,8 +16,11 @@ const Label = styled.span`
   font-size: 11px;
 `
 
-const Header = styled(BaseHeader)`
-  padding-left: calc(0px + var(--depth) * 20px);
+const Header = styled(BaseHeader)<{$depth: number}>`
+  padding-left: ${(props) =>
+    sequencerLeftLabelAlignedPaddingLeftPx(props.$depth)}px;
+  position: relative;
+  ${(props) => sequencerLeftHierarchyBranchBeforeCss(props.$depth)}
   display: flex;
   align-items: center;
   box-sizing: border-box;
@@ -32,6 +39,7 @@ const GsapScrollTriggerChildLeftRow: React.VFC<{
       <Header
         ref={setHeaderEl}
         isEven={leaf.n % 2 === 0}
+        $depth={leaf.depth}
         style={{height: leaf.nodeHeight + 'px'}}
       >
         <Label title={leaf.childId}>

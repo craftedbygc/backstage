@@ -1,6 +1,12 @@
 import type {SequenceEditorTree_Row} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/tree'
+import type SheetObject from '@unseenco/backstage/sheetObjects/SheetObject'
 import React from 'react'
 import styled from 'styled-components'
+import {
+  SequencerTrackEmphasisProvider,
+  SequencerTrackVisuals,
+  useSequencerTrackEmphasis,
+} from './sequencerTrackEmphasis'
 
 const RightRowContainer = styled.li<{}>`
   margin: 0;
@@ -35,6 +41,22 @@ const RightRowChildren = styled.ul`
   list-style: none;
 `
 
+function sheetObjectFromSequenceEditorRow(
+  leaf: SequenceEditorTree_Row<string>,
+): SheetObject | undefined {
+  if ('sheetObject' in leaf) {
+    return leaf.sheetObject
+  }
+  return undefined
+}
+
+const RightRowTrackVisuals: React.FC<{children: React.ReactNode}> = ({
+  children,
+}) => {
+  const emphasis = useSequencerTrackEmphasis()
+  return <SequencerTrackVisuals $emphasis={emphasis}>{children}</SequencerTrackVisuals>
+}
+
 /**
  * @remarks
  * Right now, we're rendering a hierarchical dom tree that reflects the hierarchy of
@@ -54,17 +76,20 @@ const RightRow: React.FC<{
   children?: React.ReactNode | undefined
 }> = ({leaf, children, node, isCollapsed}) => {
   const hasChildren = Array.isArray(children) && children.length > 0
+  const sheetObject = sheetObjectFromSequenceEditorRow(leaf)
 
   return leaf.shouldRender ? (
-    <RightRowContainer>
-      <RightRowNodeWrapper
-        style={{height: leaf.nodeHeight + 'px'}}
-        isEven={leaf.n % 2 === 0}
-      >
-        {node}
-      </RightRowNodeWrapper>
-      {hasChildren && <RightRowChildren>{children}</RightRowChildren>}
-    </RightRowContainer>
+    <SequencerTrackEmphasisProvider sheetObject={sheetObject}>
+      <RightRowContainer>
+        <RightRowNodeWrapper
+          style={{height: leaf.nodeHeight + 'px'}}
+          isEven={leaf.n % 2 === 0}
+        >
+          <RightRowTrackVisuals>{node}</RightRowTrackVisuals>
+        </RightRowNodeWrapper>
+        {hasChildren && <RightRowChildren>{children}</RightRowChildren>}
+      </RightRowContainer>
+    </SequencerTrackEmphasisProvider>
   ) : null
 }
 

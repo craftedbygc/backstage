@@ -129,6 +129,7 @@ const BasicKeyframedTrack: React.VFC<BasicKeyframedTracksProps> = React.memo(
         ref={containerRef}
         style={{
           background: isOpen ? '#444850 ' : 'unset',
+          ['--sequencer-track-row-height' as string]: `${leaf.nodeHeight}px`,
         }}
       >
         {keyframeEditors}

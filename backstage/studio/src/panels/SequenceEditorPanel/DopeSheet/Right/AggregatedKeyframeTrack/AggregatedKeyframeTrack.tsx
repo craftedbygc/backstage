@@ -139,6 +139,7 @@ function AggregatedKeyframeTrack_memo(props: IAggregatedKeyframeTracksProps) {
       ref={containerRef}
       style={{
         background: isOpen ? '#444850 ' : 'unset',
+        ['--sequencer-track-row-height' as string]: `${viewModel.nodeHeight}px`,
       }}
     >
       <AggregateKeyframeSpanBar

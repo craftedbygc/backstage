@@ -29,6 +29,7 @@ import useContextMenu from '@unseenco/backstage/studio/uiComponents/simpleContex
 import type {IContextMenuItem} from '@unseenco/backstage/studio/uiComponents/simpleContextMenu/useContextMenu'
 import {applyGsapClipTrackToAnimation} from '@unseenco/backstage/studio/gsap/applyGsapClipTrackToAnimation'
 import {previewGsapClipsAtCurrentPlayhead} from '@unseenco/backstage/studio/gsap/previewGsapClipsAtPlayhead'
+import {selectSheetObjectInOutline} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selectSheetObjectInOutline'
 import {gsapClipBarLayoutInScaledSpace} from './gsapClipBarLayout'
 import GsapChildClipTrackRow from './GsapChildClipTrackRow'
 import {getAnimationEntry} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
@@ -191,6 +192,7 @@ const GsapClipTrackBar: React.VFC<{
     return {
       debugName: 'gsapClipMove',
       onDragStart() {
+        selectSheetObjectInOutline(leaf.sheetObject)
         beginGsapClipSnapTargets()
         return {
           onDrag(dx: number, _dy: number, event: MouseEvent) {
@@ -248,6 +250,7 @@ const GsapClipTrackBar: React.VFC<{
     return {
       debugName: 'gsapClipResizeStart',
       onDragStart() {
+        selectSheetObjectInOutline(leaf.sheetObject)
         beginGsapClipSnapTargets()
         return {
           onDrag(dx: number, _dy: number, event: MouseEvent) {
@@ -310,6 +313,7 @@ const GsapClipTrackBar: React.VFC<{
     return {
       debugName: 'gsapClipResize',
       onDragStart() {
+        selectSheetObjectInOutline(leaf.sheetObject)
         beginGsapClipSnapTargets()
         return {
           onDrag(dx: number, _dy: number, event: MouseEvent) {

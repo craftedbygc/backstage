@@ -4,13 +4,10 @@ import useContextMenu from '@unseenco/backstage/studio/uiComponents/simpleContex
 import useDrag from '@unseenco/backstage/studio/uiComponents/useDrag'
 import useRefAndState from '@unseenco/backstage/studio/utils/useRefAndState'
 import {val} from '@unseenco/backstage/dataverse'
-import React from 'react'
-import {useMemo, useRef} from 'react'
+import React, {useMemo, useRef} from 'react'
 import usePopover from '@unseenco/backstage/studio/uiComponents/Popover/usePopover'
 import BasicPopover from '@unseenco/backstage/studio/uiComponents/Popover/BasicPopover'
-import CurveEditorPopover, {
-  isConnectionEditingInCurvePopover,
-} from './CurveEditorPopover/CurveEditorPopover'
+import CurveEditorPopover from './CurveEditorPopover/CurveEditorPopover'
 import type {Keyframe} from '@unseenco/backstage/projects/store/types/SheetState_Historic'
 import type {ISingleKeyframeEditorProps} from './SingleKeyframeEditor'
 import {ConnectorLine} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/Right/keyframeRowUI/ConnectorLine'
@@ -20,9 +17,9 @@ import type {KeyframeConnectionWithAddress} from '@unseenco/backstage/studio/pan
 import {copyableKeyframesFromSelection} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selections'
 import {selectedKeyframeConnections} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selections'
 import TweenNameEditorPopover from './TweenNameEditorPopover'
-
 import styled from 'styled-components'
 import {getStudioSequence} from '@unseenco/backstage/studio/utils/activeSequenceVariant'
+import {selectSheetObjectInOutline} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selectSheetObjectInOutline'
 
 const POPOVER_MARGIN = 5
 
@@ -48,6 +45,7 @@ const BasicKeyframeConnector: React.VFC<IBasicKeyframeConnectorProps> = (
     node: popoverNode,
     toggle: togglePopover,
     close: closePopover,
+    isOpen: isEasingPopoverOpen,
   } = usePopover(
     () => {
       const rightDims = val(props.layoutP.rightDims)
@@ -102,31 +100,20 @@ const BasicKeyframeConnector: React.VFC<IBasicKeyframeConnectorProps> = (
 
   const connectorLengthInUnitSpace = next.position - cur.position
 
-  const isInCurveEditorPopoverSelection = usePrism(
-    () =>
-      isConnectionEditingInCurvePopover({
-        ...props.leaf.sheetObject.address,
-        trackId: props.leaf.trackId,
-        left: cur,
-        right: next,
-      }),
-    [props.leaf.sheetObject.address, props.leaf.trackId, cur, next],
-  )
-
   return (
     <>
       <ConnectorLine
         ref={nodeRef}
         connectorLengthInUnitSpace={connectorLengthInUnitSpace}
         tweenLabel={cur.tweenLabel}
-        isPopoverOpen={isInCurveEditorPopoverSelection}
-        isSelected={props.selection !== undefined}
+        isPopoverOpen={isEasingPopoverOpen}
+        isSelected={false}
         openPopover={(e) => {
+          selectSheetObjectInOutline(props.leaf.sheetObject)
           if (node) togglePopover(e, node)
         }}
-      >
-        {popoverNode}
-      </ConnectorLine>
+      />
+      {popoverNode}
       {namePopoverNode}
       {/* contextMenu is placed outside of the ConnectorLine so that clicking on
       the contextMenu does not count as clicking on the ConnectorLine */}

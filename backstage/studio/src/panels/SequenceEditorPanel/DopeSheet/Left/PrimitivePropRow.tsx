@@ -12,6 +12,10 @@ import {useEditingToolsForSimplePropInDetailsPanel} from '@unseenco/backstage/st
 import {nextPrevCursorsTheme} from '@unseenco/backstage/studio/propEditors/NextPrevKeyframeCursors'
 import {graphEditorColors} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/GraphEditor/GraphEditor'
 import {BaseHeader, LeftRowContainer as BaseContainer} from './AnyCompositeRow'
+import {
+  sequencerLeftHierarchyBranchBeforeCss,
+  sequencerLeftLabelAlignedPaddingLeftPx,
+} from './sequencerLeftPanelLayout'
 import {propNameTextCSS} from '@unseenco/backstage/studio/propEditors/utils/propNameTextCSS'
 import {usePropHighlightMouseEnter} from './usePropHighlightMouseEnter'
 import {useSequenceEditorPaneLayout} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/SequenceEditorPaneLayoutContext'
@@ -29,15 +33,28 @@ const PrimitivePropRowHead = styled(BaseHeader)<{
   isSelected: boolean
   isEven: boolean
   $docked?: boolean
+  $depth: number
 }>`
   display: flex;
   color: ${theme.label.color};
   padding-right: ${(props) => (props.$docked ? '8px' : '12px')};
+  padding-left: ${(props) =>
+    sequencerLeftLabelAlignedPaddingLeftPx(props.$depth)}px;
+  position: relative;
+  ${(props) => sequencerLeftHierarchyBranchBeforeCss(props.$depth)}
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   box-sizing: border-box;
   min-width: 0;
   overflow: ${(props) => (props.$docked ? 'hidden' : 'visible')};
+`
+
+const PrimitivePropRowHeadTrailing = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  flex: 0 0 auto;
+  min-width: 0;
 `
 
 const PrimitivePropRowIconContainer = styled.button<{
@@ -53,7 +70,7 @@ const PrimitivePropRowIconContainer = styled.button<{
   font-size: 14px;
   align-items: center;
   height: 100%;
-  margin-left: ${(props) => (props.$docked ? '8px' : '12px')};
+  margin-left: 4px;
   flex: 0 0 auto;
   color: ${(props) =>
     props.isSelected
@@ -168,25 +185,28 @@ const PrimitivePropRow: React.FC<{
         }}
         isSelected={isSelected === true}
         $docked={isDocked}
+        $depth={leaf.depth}
         onClick={selectParentObject}
       >
         <PrimitivePropRowHead_Label>{label}</PrimitivePropRowHead_Label>
-        {controlIndicators.type === NextPrevKeyframeCursors
-          ? React.cloneElement(controlIndicators, {compact: isDocked})
-          : controlIndicators}
-        <PrimitivePropRowIconContainer
-          onClick={(e) => {
-            e.stopPropagation()
-            toggleSelect()
-          }}
-          isSelected={isSelected === true}
-          graphEditorColor={possibleColor ?? '1'}
-          style={{opacity: isSelectable ? 1 : 0.25}}
-          disabled={!isSelectable}
-          $docked={isDocked}
-        >
-          <GraphIcon />
-        </PrimitivePropRowIconContainer>
+        <PrimitivePropRowHeadTrailing>
+          {controlIndicators.type === NextPrevKeyframeCursors
+            ? React.cloneElement(controlIndicators, {compact: isDocked})
+            : controlIndicators}
+          <PrimitivePropRowIconContainer
+            onClick={(e) => {
+              e.stopPropagation()
+              toggleSelect()
+            }}
+            isSelected={isSelected === true}
+            graphEditorColor={possibleColor ?? '1'}
+            style={{opacity: isSelectable ? 1 : 0.25}}
+            disabled={!isSelectable}
+            $docked={isDocked}
+          >
+            <GraphIcon />
+          </PrimitivePropRowIconContainer>
+        </PrimitivePropRowHeadTrailing>
       </PrimitivePropRowHead>
     </PrimitivePropRowContainer>
   )

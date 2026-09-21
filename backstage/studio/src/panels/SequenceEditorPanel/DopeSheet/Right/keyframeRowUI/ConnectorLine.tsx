@@ -1,19 +1,20 @@
 import {lighten, saturate} from 'polished'
-import React from 'react'
+import React, {useLayoutEffect, useRef, useState} from 'react'
 import styled from 'styled-components'
 import {mergeRefs} from 'react-merge-refs'
-import {DOT_SIZE_PX} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/Right/BasicKeyframedTrack/KeyframeEditor/SingleKeyframeDot'
 import useTooltip from '@unseenco/backstage/studio/uiComponents/Popover/useTooltip'
 import MinimalTooltip from '@unseenco/backstage/studio/uiComponents/Popover/MinimalTooltip'
 import {studioAccent} from '@unseenco/backstage/studio/uiComponents/studioTokens'
 
-const CONNECTOR_HEIGHT = DOT_SIZE_PX / 2 + 1
+const CONNECTOR_HEIGHT = 2
+const CONNECTOR_HEIGHT_HOVER = 4
 const CONNECTOR_HEIGHT_WITH_LABEL = 12
 
 export type IConnectorThemeValues = {
   isPopoverOpen: boolean
   isSelected: boolean
   hasTweenLabel: boolean
+  isHovered: boolean
 }
 
 export const CONNECTOR_THEME = {
@@ -37,34 +38,48 @@ export const CONNECTOR_THEME = {
   },
 }
 
-const Container = styled.div<IConnectorThemeValues>`
+function connectorVisualHeight(values: IConnectorThemeValues): number {
+  if (values.hasTweenLabel) {
+    return CONNECTOR_HEIGHT_WITH_LABEL
+  }
+  if (values.isHovered && !values.isPopoverOpen) {
+    return CONNECTOR_HEIGHT_HOVER
+  }
+  return CONNECTOR_HEIGHT
+}
+
+function connectorVisualBackground(values: IConnectorThemeValues): string {
+  if (values.isPopoverOpen) {
+    return CONNECTOR_THEME.barColor(values)
+  }
+  if (values.isHovered) {
+    return CONNECTOR_THEME.hoverColor(values)
+  }
+  return CONNECTOR_THEME.barColor(values)
+}
+
+const HitTarget = styled.div`
   position: absolute;
-  background: ${CONNECTOR_THEME.barColor};
-  height: ${(props) =>
-    props.hasTweenLabel ? CONNECTOR_HEIGHT_WITH_LABEL : CONNECTOR_HEIGHT}px;
   left: 0;
-  top: ${(props) =>
-    props.hasTweenLabel
-      ? -(CONNECTOR_HEIGHT_WITH_LABEL / 2)
-      : -(CONNECTOR_HEIGHT / 2)}px;
-  transform-origin: top left;
+  top: 0;
+  height: var(--sequencer-track-row-height, 28px);
+  transform: translateY(calc(-1 * var(--sequencer-track-row-height, 28px) / 2));
   z-index: 0;
   cursor: ew-resize;
+`
+
+const VisualBar = styled.div<IConnectorThemeValues>`
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: ${(props) => connectorVisualBackground(props)};
+  height: ${(props) => connectorVisualHeight(props)}px;
+  width: 100%;
+  transform-origin: center center;
+  transition: height 0.08s ease-out, background 0.08s ease-out;
   overflow: hidden;
-
-  &:after {
-    display: block;
-    position: absolute;
-    content: ' ';
-    top: -4px;
-    bottom: -4px;
-    left: 0;
-    right: 0;
-  }
-
-  &:hover {
-    background: ${CONNECTOR_THEME.hoverColor};
-  }
+  pointer-events: none;
 `
 
 const Label = styled.div`
@@ -105,11 +120,26 @@ export const ConnectorLine = React.forwardRef<
   IConnectorLineProps
 >((props, ref) => {
   const hasTweenLabel = !!props.tweenLabel
+  const [isHovered, setIsHovered] = useState(false)
+  const wasPopoverOpenRef = useRef(props.isPopoverOpen)
+  /** Skips one `mouseenter` after the ease popover closes (overlay removal refires it). */
+  const ignoreNextMouseEnterRef = useRef(false)
+
+  useLayoutEffect(() => {
+    if (props.isPopoverOpen) {
+      setIsHovered(false)
+    } else if (wasPopoverOpenRef.current) {
+      setIsHovered(false)
+      ignoreNextMouseEnterRef.current = true
+    }
+    wasPopoverOpenRef.current = props.isPopoverOpen
+  }, [props.isPopoverOpen])
 
   const themeValues: IConnectorThemeValues = {
     isPopoverOpen: props.isPopoverOpen,
     isSelected: props.isSelected,
     hasTweenLabel,
+    isHovered,
   }
 
   const [tooltipNode, tooltipTargetRef] = useTooltip(
@@ -119,23 +149,44 @@ export const ConnectorLine = React.forwardRef<
 
   return (
     <>
-      <Container
-        {...themeValues}
+      <HitTarget
         ref={mergeRefs([ref, tooltipTargetRef])}
         style={{
           width: `calc(var(--unitSpaceToScaledSpaceMultiplier) * ${props.connectorLengthInUnitSpace}px)`,
         }}
+        onMouseEnter={() => {
+          if (ignoreNextMouseEnterRef.current) {
+            ignoreNextMouseEnterRef.current = false
+            return
+          }
+          setIsHovered(true)
+        }}
+        onMouseMove={() => {
+          if (ignoreNextMouseEnterRef.current) {
+            ignoreNextMouseEnterRef.current = false
+          }
+          if (!props.isPopoverOpen) {
+            setIsHovered(true)
+          }
+        }}
+        onMouseLeave={() => {
+          setIsHovered(false)
+          ignoreNextMouseEnterRef.current = false
+        }}
         onClick={(e) => {
+          setIsHovered(false)
           props.openPopover?.(e)
         }}
       >
-        {hasTweenLabel ? (
-          <Label>
-            <LabelText>{props.tweenLabel}</LabelText>
-          </Label>
-        ) : undefined}
-        {props.children}
-      </Container>
+        <VisualBar {...themeValues}>
+          {hasTweenLabel ? (
+            <Label>
+              <LabelText>{props.tweenLabel}</LabelText>
+            </Label>
+          ) : undefined}
+        </VisualBar>
+      </HitTarget>
+      {props.children}
       {tooltipNode}
     </>
   )

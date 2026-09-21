@@ -34,6 +34,7 @@ import {
   gsapTimelineChildTimingDeviatesFromBaseline,
   resolveGsapClipBaselineTiming,
 } from '@unseenco/backstage-shared/gsap/gsapClipBaseline'
+import {selectSheetObjectInOutline} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selectSheetObjectInOutline'
 
 const Container = styled.div`
   position: relative;
@@ -189,6 +190,7 @@ const GsapChildClipBar: React.VFC<{
     return {
       debugName: 'gsapChildClipMove',
       onDragStart() {
+        selectSheetObjectInOutline(leaf.sheetObject)
         beginSnapTargets()
         return {
           onDrag(dx: number, _dy: number, event: MouseEvent) {
@@ -248,6 +250,7 @@ const GsapChildClipBar: React.VFC<{
     return {
       debugName: 'gsapChildClipResizeStart',
       onDragStart() {
+        selectSheetObjectInOutline(leaf.sheetObject)
         beginSnapTargets()
         return {
           onDrag(dx: number) {
@@ -302,6 +305,7 @@ const GsapChildClipBar: React.VFC<{
     return {
       debugName: 'gsapChildClipResizeEnd',
       onDragStart() {
+        selectSheetObjectInOutline(leaf.sheetObject)
         beginSnapTargets()
         return {
           onDrag(dx: number, _dy: number, event: MouseEvent) {

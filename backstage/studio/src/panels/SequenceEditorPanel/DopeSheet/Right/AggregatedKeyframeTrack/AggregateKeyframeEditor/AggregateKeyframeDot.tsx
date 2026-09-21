@@ -31,6 +31,7 @@ import {
   isSequenceEditorSheetScopedAggregateViewModel,
   sequenceEditorAggregateViewModelSheetAddress,
 } from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/sequenceEditorAggregateViewModel'
+import {selectSheetObjectInOutlineForAggregateViewModel} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selectSheetObjectInOutline'
 
 type IAggregateKeyframeDotProps = {
   editorProps: IAggregateKeyframeEditorProps
@@ -143,13 +144,18 @@ export function AggregateKeyframeDot(
         // Need this for the dragging logic to be able to get the keyframe props
         // based on the position.
         {...DopeSnap.includePositionSnapAttrs(cur.position)}
-        onClick={(e) =>
-          !isSequenceEditorSheetScopedAggregateViewModel(
+        onClick={(e) => {
+          selectSheetObjectInOutlineForAggregateViewModel(
             props.editorProps.viewModel,
           )
-            ? inlineEditorPopover.open(e, ref.current!)
-            : null
-        }
+          if (
+            !isSequenceEditorSheetScopedAggregateViewModel(
+              props.editorProps.viewModel,
+            )
+          ) {
+            inlineEditorPopover.open(e, ref.current!)
+          }
+        }}
       />
       {!props.hideVisualDot && (
         <AggregateKeyframeVisualDot

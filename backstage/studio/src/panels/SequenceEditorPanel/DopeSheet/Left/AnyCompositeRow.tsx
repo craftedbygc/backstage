@@ -16,6 +16,11 @@ import styled from 'styled-components'
 import {propNameTextCSS} from '@unseenco/backstage/studio/propEditors/utils/propNameTextCSS'
 import {usePropHighlightMouseEnter} from './usePropHighlightMouseEnter'
 import {useGsapSequencerRowElementHighlight} from '@unseenco/backstage/studio/gsap/useGsapSequencerRowElementHighlight'
+import {
+  SEQUENCER_LEFT_DEPTH_INDENT_PX,
+  SEQUENCER_LEFT_HIERARCHY_LINE_COLOR,
+  sequencerLeftHierarchyLineLeftPx,
+} from './sequencerLeftPanelLayout'
 
 export const LeftRowContainer = styled.li<{depth: number}>`
   --depth: ${(props) => props.depth};
@@ -32,7 +37,7 @@ const LeftRowHeader = styled(BaseHeader)<{
   isSelectable: boolean
   isSelected: boolean
 }>`
-  padding-left: calc(0px + var(--depth) * 20px);
+  padding-left: calc(var(--depth) * ${SEQUENCER_LEFT_DEPTH_INDENT_PX}px);
 
   display: flex;
   align-items: stretch;
@@ -84,10 +89,22 @@ const LeftRowHead_Icon = styled.span<{isCollapsed: boolean}>`
   }
 `
 
-const LeftRowChildren = styled.ul`
+const LeftRowChildren = styled.ul<{$childDepth: number}>`
   margin: 0;
   padding: 0;
   list-style: none;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: ${(props) => sequencerLeftHierarchyLineLeftPx(props.$childDepth)}px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: ${SEQUENCER_LEFT_HIERARCHY_LINE_COLOR};
+    pointer-events: none;
+  }
 `
 
 const AnyCompositeRow: React.FC<{
@@ -151,7 +168,9 @@ const AnyCompositeRow: React.FC<{
         )}
         <LeftRowHead_Label>{label}</LeftRowHead_Label>
       </LeftRowHeader>
-      {hasChildren && <LeftRowChildren>{children}</LeftRowChildren>}
+      {hasChildren && (
+        <LeftRowChildren $childDepth={leaf.depth + 1}>{children}</LeftRowChildren>
+      )}
     </LeftRowContainer>
   ) : null
 }

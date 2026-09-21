@@ -22,6 +22,7 @@ import useContextMenu from '@unseenco/backstage/studio/uiComponents/simpleContex
 import {commonRootOfPathsToProps} from '@unseenco/backstage-shared/utils/addresses'
 import type {KeyframeWithPathToPropFromCommonRoot} from '@unseenco/backstage/studio/store/types'
 import {getStudioSequence} from '@unseenco/backstage/studio/utils/activeSequenceVariant'
+import {selectSheetObjectInOutlineForAggregateViewModel} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selectSheetObjectInOutline'
 import {sequenceEditorAggregateViewModelSheetAddress} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/sequenceEditorAggregateViewModel'
 import TweenNameEditorPopover, {
   getSharedTweenLabel,
@@ -106,6 +107,7 @@ export const AggregateKeyframeConnector: React.VFC<IAggregateKeyframeConnectorPr
       node: popoverNode,
       toggle: togglePopover,
       close: closePopover,
+      isOpen: isEasingPopoverOpen,
     } = usePopover(
       () => {
         const rightDims = val(editorProps.layoutP.rightDims)
@@ -128,7 +130,7 @@ export const AggregateKeyframeConnector: React.VFC<IAggregateKeyframeConnectorPr
       },
     )
 
-    const {connected, isAggregateEditingInCurvePopover} = props.utils
+    const {connected} = props.utils
 
     // We don't want to interrupt an existing drag, so in order to persist the dragged
     // html node, we just set the connector length to 0, but we don't remove it yet.
@@ -138,9 +140,12 @@ export const AggregateKeyframeConnector: React.VFC<IAggregateKeyframeConnectorPr
           ref={nodeRef}
           connectorLengthInUnitSpace={connected ? connected.length : 0}
           isSelected={connected ? connected.selected : false}
-          isPopoverOpen={isAggregateEditingInCurvePopover}
+          isPopoverOpen={isEasingPopoverOpen}
           tweenLabel={tweenLabel}
           openPopover={(e) => {
+            selectSheetObjectInOutlineForAggregateViewModel(
+              editorProps.viewModel,
+            )
             if (node) togglePopover(e, node)
           }}
         />

@@ -45,6 +45,7 @@ import {
   clampAggregateSpanResizeStart,
   limitAggregateSpanMoveDelta,
 } from './aggregateKeyframeSpanDrag'
+import {selectSheetObjectInOutlineForAggregateViewModel} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selectSheetObjectInOutline'
 
 const AggregateKeyframeSpanBar: React.VFC<{
   viewModel: SequenceEditorAggregateViewModel
@@ -117,6 +118,7 @@ const AggregateKeyframeSpanBar: React.VFC<{
     return {
       debugName: 'aggregateSpanBarMove',
       onDragStart() {
+        selectSheetObjectInOutlineForAggregateViewModel(viewModel)
         beginSnapTargets()
         return {
           onDrag(dx: number, _dy: number, event: MouseEvent) {
@@ -175,6 +177,7 @@ const AggregateKeyframeSpanBar: React.VFC<{
     return {
       debugName: 'aggregateSpanBarResizeStart',
       onDragStart() {
+        selectSheetObjectInOutlineForAggregateViewModel(viewModel)
         const keyframesAtDragStart =
           allKeyframeWithTracksInAggregate(aggregatedKeyframes)
         beginSnapTargets()
@@ -249,6 +252,7 @@ const AggregateKeyframeSpanBar: React.VFC<{
     return {
       debugName: 'aggregateSpanBarResizeEnd',
       onDragStart() {
+        selectSheetObjectInOutlineForAggregateViewModel(viewModel)
         const keyframesAtDragStart =
           allKeyframeWithTracksInAggregate(aggregatedKeyframes)
         beginSnapTargets()
