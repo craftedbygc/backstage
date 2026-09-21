@@ -1,5 +1,17 @@
 # Backstage.js changelog
 
+## 0.7.2
+
+- New features
+  - **Studio:** Sequencer **outline-driven track emphasis** — tracks for selected sheet objects stay full color; others deemphasize via CSS variables (no filter). Selecting the **sheet** or **project** in the outline mutes all object tracks. The top-level **sheet** row is omitted unless sheet props have sequenced content; child rows align flush when it is hidden.
+  - **Studio:** **Multi-object keyframe marquee** — shift+drag selects keyframes across objects; each affected object is highlighted in the sequencer left column and outline. Clearing the marquee (shift+click empty space or an empty box) deselects keyframes and restores **sheet** selection in the outline so the sequencer stays visible.
+  - **Studio:** **Edge auto-scroll** during shift+drag marquee when the pointer nears the horizontal or vertical edge of the dope sheet (timeline pan + vertical list scroll).
+  - **Studio:** **ScrollTrigger** bars in the sequencer are clickable (select the object in the outline) with a pointer cursor on hover.
+- Bug fixes
+  - **Studio:** Shift+drag marquee selection works on connector and clip hit targets again (those drags defer while Shift is held; marquee hit-testing walks tree rows when the sheet row is not rendered).
+  - **Studio:** Keyframe **connector** lines stay accent blue when emphasized or selected instead of turning gold.
+  - **Studio:** Left sequencer labels use correct indent when the sheet row is hidden.
+
 ## 0.7.0
 
 - Breaking changes
