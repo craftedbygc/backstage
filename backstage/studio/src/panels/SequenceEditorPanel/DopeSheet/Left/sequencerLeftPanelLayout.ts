@@ -6,6 +6,9 @@ export const SEQUENCER_LEFT_DEPTH_INDENT_PX = 20
 export const SEQUENCER_LEFT_CHEVRON_WIDTH_PX = 18
 export const SEQUENCER_LEFT_LABEL_GAP_AFTER_HIERARCHY_PX = 4
 export const SEQUENCER_LEFT_HIERARCHY_LINE_COLOR = 'rgb(209 209 209 / 10%)'
+/** Matches `--sequencer-left-pane-bg` on the dope sheet container (floating vs docked). */
+export const SEQUENCER_LEFT_PANE_BG_VAR =
+  'var(--sequencer-left-pane-bg, #282b2f)'
 
 /** Padding for composite rows (objects, compound props) with a chevron column. */
 export function sequencerLeftCompositePaddingLeftPx(depth: number): number {
@@ -56,6 +59,7 @@ export function sequencerLeftHierarchyBranchBeforeCss(depth: number) {
       height: 1px;
       background: ${SEQUENCER_LEFT_HIERARCHY_LINE_COLOR};
       pointer-events: none;
+      z-index: 2;
     }
   `
 }
@@ -84,7 +88,7 @@ export function sequencerLeftHierarchyGroupSpineBeforeCss(childDepth: number) {
  */
 export function sequencerLeftHierarchyLastLeafSpineCoverAfterCss(
   childDepth: number,
-  coverBackground: string,
+  coverBackground: string = SEQUENCER_LEFT_PANE_BG_VAR,
 ) {
   if (childDepth <= 0) {
     return css``
@@ -94,7 +98,7 @@ export function sequencerLeftHierarchyLastLeafSpineCoverAfterCss(
     content: '';
     position: absolute;
     left: ${lineLeft}px;
-    top: calc(var(--sequencer-left-row-header-height, 28px) / 2);
+    top: calc(var(--sequencer-left-row-header-height, 28px) / 2 + 1px);
     bottom: 0;
     width: 2px;
     margin-left: -0.5px;

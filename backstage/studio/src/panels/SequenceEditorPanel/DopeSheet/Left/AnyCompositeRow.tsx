@@ -102,10 +102,7 @@ const LeftRowChildren = styled.ul<{$childDepth: number}>`
 
   & > li:last-child:not(:has(> ul))::after {
     ${(props) =>
-      sequencerLeftHierarchyLastLeafSpineCoverAfterCss(
-        props.$childDepth,
-        theme.panel.bg,
-      )}
+      sequencerLeftHierarchyLastLeafSpineCoverAfterCss(props.$childDepth)}
   }
 `
 
