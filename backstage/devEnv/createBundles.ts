@@ -104,6 +104,26 @@ function writeStudioSubpathShims(
   )
 }
 
+/** Lite bundles are emitted as `index-lite.*` then published as `index.*`; fix map URLs. */
+function copyRenamedLiteIndexArtifact(from: string, to: string) {
+  const base = path.basename(to)
+  if (base.endsWith('.map')) {
+    const map = JSON.parse(fs.readFileSync(from, 'utf8')) as {file?: string}
+    if (map.file?.startsWith('index-lite.')) {
+      map.file = map.file.replace(/^index-lite\./, 'index.')
+    }
+    fs.writeFileSync(to, JSON.stringify(map))
+    return
+  }
+
+  const text = fs.readFileSync(from, 'utf8')
+  const rewritten = text.replace(
+    /\/\/# sourceMappingURL=index-lite\.(mjs|js)\.map/g,
+    '//# sourceMappingURL=index.$1.map',
+  )
+  fs.writeFileSync(to, rewritten)
+}
+
 function copyCoreLitePackageArtifacts(coreDist: string, coreLiteDist: string) {
   fs.mkdirSync(coreLiteDist, {recursive: true})
   const liteArtifacts = [
@@ -116,7 +136,7 @@ function copyCoreLitePackageArtifacts(coreDist: string, coreLiteDist: string) {
     const from = path.join(coreDist, file)
     if (fs.existsSync(from)) {
       const toName = file.replace('index-lite', 'index')
-      fs.copyFileSync(from, path.join(coreLiteDist, toName))
+      copyRenamedLiteIndexArtifact(from, path.join(coreLiteDist, toName))
     }
   }
   const indexDts = path.join(coreDist, 'index-lite.d.ts')
@@ -153,7 +173,7 @@ function copyStudioLitePackageArtifacts(
     const from = path.join(studioDist, file)
     if (fs.existsSync(from)) {
       const toName = file.replace('index-lite', 'index')
-      fs.copyFileSync(from, path.join(studioLiteDist, toName))
+      copyRenamedLiteIndexArtifact(from, path.join(studioLiteDist, toName))
     }
   }
   const indexDts = path.join(studioDist, 'index-lite.d.ts')
