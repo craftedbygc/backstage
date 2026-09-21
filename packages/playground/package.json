@@ -10,7 +10,9 @@
   "scripts": {
     "serve": "vite",
     "build": "vite build --force",
+    "build:dist": "vite build --force --mode playground-dist",
     "build:static": "echo 'building for vercel' && yarn run build",
+    "preview": "vite preview --port 8082",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
