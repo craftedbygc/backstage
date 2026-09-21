@@ -41,11 +41,15 @@ const RightRowChildren = styled.ul`
   list-style: none;
 `
 
+type SequenceEditorTreeRowWithSheetObject = SequenceEditorTree_Row<string> & {
+  sheetObject: SheetObject
+}
+
 function sheetObjectFromSequenceEditorRow(
   leaf: SequenceEditorTree_Row<string>,
 ): SheetObject | undefined {
   if ('sheetObject' in leaf) {
-    return leaf.sheetObject
+    return (leaf as SequenceEditorTreeRowWithSheetObject).sheetObject
   }
   return undefined
 }
