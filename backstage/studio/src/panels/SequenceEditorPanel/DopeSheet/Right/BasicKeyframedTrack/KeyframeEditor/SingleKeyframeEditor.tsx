@@ -1,33 +1,19 @@
 import type {Keyframe} from '@unseenco/backstage/projects/store/types/SheetState_Historic'
-import type {
-  DopeSheetSelection,
-  SequenceEditorPanelLayout,
-} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/layout'
-import type {SequenceEditorTree_PrimitiveProp} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/tree'
-import type {Pointer} from '@unseenco/backstage/dataverse'
 import {val} from '@unseenco/backstage/dataverse'
 import React from 'react'
 import styled from 'styled-components'
 import SingleKeyframeConnector from './BasicKeyframeConnector'
 import SingleKeyframeDot from './SingleKeyframeDot'
-import type {TrackWithId} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/Right/collectAggregateKeyframes'
-import type {StudioSheetItemKey} from '@unseenco/backstage-shared/utils/ids'
+import {singleKeyframeEditorPropsAreEqual} from './keyframeDopeSheetVisualEqual'
+import type {ISingleKeyframeEditorProps} from './singleKeyframeEditorTypes'
+
+export type {ISingleKeyframeEditorProps} from './singleKeyframeEditorTypes'
 
 const SingleKeyframeEditorContainer = styled.div`
   position: absolute;
 `
 
 const noConnector = <></>
-
-export type ISingleKeyframeEditorProps = {
-  index: number
-  keyframe: Keyframe
-  track: TrackWithId
-  itemKey: StudioSheetItemKey
-  layoutP: Pointer<SequenceEditorPanelLayout>
-  leaf: SequenceEditorTree_PrimitiveProp
-  selection: undefined | DopeSheetSelection
-}
 
 const SingleKeyframeEditor: React.VFC<ISingleKeyframeEditorProps> = React.memo(
   (props) => {
@@ -56,6 +42,7 @@ const SingleKeyframeEditor: React.VFC<ISingleKeyframeEditorProps> = React.memo(
       </SingleKeyframeEditorContainer>
     )
   },
+  singleKeyframeEditorPropsAreEqual,
 )
 
 export default SingleKeyframeEditor

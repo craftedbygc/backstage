@@ -52,7 +52,7 @@ const AggregateKeyframeSpanBar: React.VFC<{
   viewModel: SequenceEditorAggregateViewModel
   aggregatedKeyframes: AggregatedKeyframes
   layoutP: Pointer<SequenceEditorPanelLayout>
-}> = ({viewModel, aggregatedKeyframes, layoutP}) => {
+}> = React.memo(({viewModel, aggregatedKeyframes, layoutP}) => {
   const scaledSpace = useVal(layoutP.scaledSpace)
   const sheet = useVal(layoutP.sheet)
   const layout = useMemo(
@@ -351,6 +351,8 @@ const AggregateKeyframeSpanBar: React.VFC<{
       <SequencerClipBarEdgeHandle ref={endHandleRef} $side="right" />
     </SequencerClipBar>
   )
-}
+})
+
+AggregateKeyframeSpanBar.displayName = 'AggregateKeyframeSpanBar'
 
 export default AggregateKeyframeSpanBar
