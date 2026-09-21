@@ -1,5 +1,10 @@
 # Backstage.js changelog
 
+## 0.7.4
+
+- Bug fixes
+  - **Lite bundles:** `@unseenco/backstage/core-lite` and `studio-lite` ship source maps that match the published `index.*` filenames, so tools like Vite no longer warn about missing `index-lite.*.map` files.
+
 ## 0.7.3
 
 - Bug fixes
