@@ -24,11 +24,17 @@ type ReceiveVerticalWheelEventFn = (ev: Pick<WheelEvent, 'deltaY'>) => void
 
 const ctx = createContext<ReceiveVerticalWheelEventFn>(noop)
 
+const scrollByContext = createContext<(deltaY: number) => void>(noop)
+
 /**
  * See {@link VerticalScrollContainer} and references for how to use this.
  */
 export const useReceiveVerticalWheelEvent = (): ReceiveVerticalWheelEventFn =>
   useContext(ctx)
+
+export function useVerticalScrollContainerScrollBy(): (deltaY: number) => void {
+  return useContext(scrollByContext)
+}
 
 /**
  * This is used in the sequence editor where we block wheel events to handle
@@ -50,9 +56,17 @@ const VerticalScrollContainer: React.FC<{
   )
 
   return (
-    <ctx.Provider value={receiveVerticalWheelEvent}>
-      <Container ref={ref}>{props.children}</Container>
-    </ctx.Provider>
+    <scrollByContext.Provider
+      value={(deltaY) => {
+        ref.current?.scrollBy(0, deltaY)
+      }}
+    >
+      <ctx.Provider value={receiveVerticalWheelEvent}>
+        <Container ref={ref} data-sequence-editor-vertical-scroll="">
+          {props.children}
+        </Container>
+      </ctx.Provider>
+    </scrollByContext.Provider>
   )
 }
 

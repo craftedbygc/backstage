@@ -117,6 +117,7 @@ const RightPropWithChildrenRow: React.VFC<{
     return (
       <ProvideLogger logger={logger}>
         <RightRow
+          layoutP={layoutP}
           leaf={viewModel}
           node={node}
           isCollapsed={viewModel.isCollapsed}

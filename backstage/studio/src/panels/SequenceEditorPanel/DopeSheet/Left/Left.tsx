@@ -36,7 +36,7 @@ const Left: React.VFC<{
         style={{width: width + 'px', top: tree.top + 'px'}}
       >
         <ListContainer>
-          <SheetRow leaf={tree} />
+          <SheetRow leaf={tree} layoutP={layoutP} />
         </ListContainer>
       </Container>
     )

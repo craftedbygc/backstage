@@ -40,7 +40,12 @@ const PrimitivePropRow: React.VFC<{
         `trackData type ${trackData?.type} is not yet supported on the sequence editor`,
       )
       return (
-        <RightRow leaf={leaf} isCollapsed={false} node={<div />}></RightRow>
+        <RightRow
+          layoutP={layoutP}
+          leaf={leaf}
+          isCollapsed={false}
+          node={<div />}
+        ></RightRow>
       )
     } else {
       const node = (
@@ -51,7 +56,14 @@ const PrimitivePropRow: React.VFC<{
         />
       )
 
-      return <RightRow leaf={leaf} isCollapsed={false} node={node}></RightRow>
+      return (
+        <RightRow
+          layoutP={layoutP}
+          leaf={leaf}
+          isCollapsed={false}
+          node={node}
+        ></RightRow>
+      )
     }
   }, [leaf, layoutP])
 }

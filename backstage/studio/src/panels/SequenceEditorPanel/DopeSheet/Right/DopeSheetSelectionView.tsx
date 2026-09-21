@@ -31,6 +31,17 @@ import DopeSnap from '@unseenco/backstage/studio/panels/SequenceEditorPanel/Righ
 import {collectAggregateKeyframesInPrism} from './collectAggregateKeyframes'
 import type {ILogger, IUtilLogger} from '@unseenco/backstage-shared/logger'
 import {useLogger} from '@unseenco/backstage/studio/uiComponents/useLogger'
+import {
+  dopeSheetSelectionHasAnyKeyframes,
+  getDopeSheetSelectionFromLayoutP,
+  selectSheetInOutlineAfterDopeSheetKeyframeDeselect,
+  syncOutlineSelectionFromDopeSheetKeyframeSelection,
+} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/dopeSheetSelectionHighlight'
+import {
+  applyMarqueeSelectionEdgeScroll,
+  SEQUENCE_EDITOR_VERTICAL_SCROLL_ATTR,
+} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/Right/marqueeSelectionEdgeScroll'
+import {useVerticalScrollContainerScrollBy} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/VerticalScrollContainer'
 
 const HITBOX_SIZE_PX = 5
 
@@ -47,7 +58,12 @@ const DopeSheetSelectionView: React.FC<{
     null,
   )
   const isShiftDown = useKeyDown('Shift')
-  const selectionBounds = useCaptureSelection(layoutP, containerNode)
+  const scrollVerticalBy = useVerticalScrollContainerScrollBy()
+  const selectionBounds = useCaptureSelection(
+    layoutP,
+    containerNode,
+    scrollVerticalBy,
+  )
   const selectionBoundsRef = useRef<typeof selectionBounds>(selectionBounds)
   selectionBoundsRef.current = selectionBounds
 
@@ -85,10 +101,13 @@ type SelectionBounds = {
 function useCaptureSelection(
   layoutP: Pointer<SequenceEditorPanelLayout>,
   containerNode: HTMLDivElement | null,
+  scrollVerticalBy: (deltaY: number) => void,
 ) {
   const [ref, state] = useRefAndState<SelectionBounds | null>(null)
 
   const logger = useLogger('useCaptureSelection')
+  const scrollVerticalByRef = useRef(scrollVerticalBy)
+  scrollVerticalByRef.current = scrollVerticalBy
 
   useDrag(
     containerNode,
@@ -101,7 +120,10 @@ function useCaptureSelection(
           if (!event.shiftKey || event.target instanceof HTMLInputElement) {
             return false
           }
-          const rect = containerNode!.getBoundingClientRect()
+          if (!containerNode) {
+            return false
+          }
+          const rect = containerNode.getBoundingClientRect()
 
           // all the `val()` calls here are meant to be read cold
 
@@ -120,42 +142,84 @@ function useCaptureSelection(
             v: [event.clientY - rect.top, event.clientY - rect.top],
           }
 
+          const previousSelection = getDopeSheetSelectionFromLayoutP(layoutP)
+          if (dopeSheetSelectionHasAnyKeyframes(previousSelection)) {
+            selectSheetInOutlineAfterDopeSheetKeyframeDeselect(
+              val(layoutP.sheet),
+            )
+          }
+
           val(layoutP.selectionAtom).set({current: undefined})
 
+          let rafId = 0
+          let latestPointerEvent: MouseEvent | null = null
+
+          const updateSelectionFromPointer = (pointerEvent: MouseEvent) => {
+            if (!containerNode || !ref.current) {
+              return
+            }
+            const containerRect = containerNode.getBoundingClientRect()
+
+            const pointerInScaledSpace =
+              pointerEvent.clientX -
+              containerRect.left -
+              val(layoutP.scaledSpace.leftPadding)
+
+            const pointerInUnitSpace = val(layoutP.scaledSpace.toUnitSpace)(
+              pointerInScaledSpace,
+            )
+
+            ref.current = {
+              h: [ref.current.h[0], pointerInUnitSpace],
+              v: [ref.current.v[0], pointerEvent.clientY - containerRect.top],
+            }
+
+            const selection = utils.boundsToSelection(
+              logger,
+              val(layoutP),
+              ref.current,
+            )
+            val(layoutP.selectionAtom).set({current: selection})
+          }
+
+          const tick = () => {
+            if (latestPointerEvent && containerNode) {
+              applyMarqueeSelectionEdgeScroll({
+                layoutP,
+                clientX: latestPointerEvent.clientX,
+                clientY: latestPointerEvent.clientY,
+                horizontalViewportEl: containerNode.parentElement,
+                verticalViewportEl: containerNode.closest(
+                  `[${SEQUENCE_EDITOR_VERTICAL_SCROLL_ATTR}]`,
+                ) as HTMLElement | null,
+                scrollVerticalBy: (deltaY) =>
+                  scrollVerticalByRef.current(deltaY),
+              })
+              updateSelectionFromPointer(latestPointerEvent)
+            }
+            rafId = requestAnimationFrame(tick)
+          }
+          rafId = requestAnimationFrame(tick)
+
           return {
-            onDrag(_dx, _dy, event) {
-              // const state = ref.current!
-              const rect = containerNode!.getBoundingClientRect()
-
-              const posInScaledSpace =
-                event.clientX -
-                rect.left -
-                // selection is happening in left padded space, convert it to normal space
-                val(layoutP.scaledSpace.leftPadding)
-
-              const posInUnitSpace = val(layoutP.scaledSpace.toUnitSpace)(
-                posInScaledSpace,
-              )
-
-              ref.current = {
-                h: [ref.current!.h[0], posInUnitSpace],
-                v: [ref.current!.v[0], event.clientY - rect.top],
-              }
-
-              const selection = utils.boundsToSelection(
-                logger,
-                val(layoutP),
-                ref.current,
-              )
-              val(layoutP.selectionAtom).set({current: selection})
+            onDrag(_dx, _dy, pointerEvent) {
+              latestPointerEvent = pointerEvent
+              updateSelectionFromPointer(pointerEvent)
             },
             onDragEnd(_dragHappened) {
+              cancelAnimationFrame(rafId)
+              latestPointerEvent = null
+              const layout = val(layoutP)
+              syncOutlineSelectionFromDopeSheetKeyframeSelection(
+                layout.sheet,
+                getDopeSheetSelectionFromLayoutP(layoutP),
+              )
               ref.current = null
             },
           }
         },
       }
-    }, [layoutP, containerNode, ref]),
+    }, [layoutP, containerNode, ref, logger]),
   )
 
   return state
@@ -326,8 +390,11 @@ namespace utils {
     bounds: SelectionBounds,
     selectionByObjectKey: DopeSheetSelection['byObjectKey'],
   ) {
-    // don't collect from non rendered
-    if (!leaf.shouldRender) return
+    // don't collect from non rendered rows, but still walk their children
+    if (!leaf.shouldRender) {
+      collectChildren(logger, layout, leaf, bounds, selectionByObjectKey)
+      return
+    }
 
     if (
       bounds.v[0] > leaf.top + leaf.heightIncludingChildren ||

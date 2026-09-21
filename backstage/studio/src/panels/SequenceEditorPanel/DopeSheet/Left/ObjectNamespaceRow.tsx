@@ -1,4 +1,6 @@
 import type {SequenceEditorTree_ObjectNamespace} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/tree'
+import type {SequenceEditorPanelLayout} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/layout'
+import type {Pointer} from '@unseenco/backstage/dataverse'
 import React from 'react'
 import AnyCompositeRow from './AnyCompositeRow'
 import {setCollapsedSheetItem} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/setCollapsedSheetObjectOrCompoundProp'
@@ -6,7 +8,8 @@ import {decideLeftSheetChildRow} from '@unseenco/backstage/studio/panels/Sequenc
 
 const LeftObjectNamespaceRow: React.VFC<{
   leaf: SequenceEditorTree_ObjectNamespace
-}> = ({leaf}) => {
+  layoutP: Pointer<SequenceEditorPanelLayout>
+}> = ({leaf, layoutP}) => {
   return (
     <AnyCompositeRow
       leaf={leaf}
@@ -20,7 +23,7 @@ const LeftObjectNamespaceRow: React.VFC<{
         })
       }
     >
-      {leaf.children.map((child) => decideLeftSheetChildRow(child))}
+      {leaf.children.map((child) => decideLeftSheetChildRow(child, layoutP))}
     </AnyCompositeRow>
   )
 }

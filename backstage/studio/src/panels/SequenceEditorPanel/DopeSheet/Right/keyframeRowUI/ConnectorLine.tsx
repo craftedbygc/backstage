@@ -1,10 +1,8 @@
-import {lighten, saturate} from 'polished'
 import React, {useLayoutEffect, useRef, useState} from 'react'
 import styled from 'styled-components'
 import {mergeRefs} from 'react-merge-refs'
 import useTooltip from '@unseenco/backstage/studio/uiComponents/Popover/useTooltip'
 import MinimalTooltip from '@unseenco/backstage/studio/uiComponents/Popover/MinimalTooltip'
-import {studioAccent} from '@unseenco/backstage/studio/uiComponents/studioTokens'
 
 const CONNECTOR_HEIGHT = 2
 const CONNECTOR_HEIGHT_HOVER = 4
@@ -17,25 +15,17 @@ export type IConnectorThemeValues = {
   isHovered: boolean
 }
 
-export const CONNECTOR_THEME = {
-  get normalColor() {
-    return studioAccent.softDark
-  },
-  selectedColor: `#8A7842`,
-  barColor: (values: IConnectorThemeValues) => {
-    const base = values.isSelected
-      ? CONNECTOR_THEME.selectedColor
-      : CONNECTOR_THEME.normalColor
-    return values.isPopoverOpen ? saturate(0.2, lighten(0.2, base)) : base
-  },
-  hoverColor: (values: IConnectorThemeValues) => {
-    const base = values.isSelected
-      ? CONNECTOR_THEME.selectedColor
-      : CONNECTOR_THEME.normalColor
-    return values.isPopoverOpen
-      ? saturate(0.2, lighten(0.2, base))
-      : saturate(0.1, lighten(0.1, base))
-  },
+function connectorVisualBackground(values: IConnectorThemeValues): string {
+  if (values.isPopoverOpen) {
+    return 'var(--sequencer-connector-hover)'
+  }
+  if (values.isHovered) {
+    return 'var(--sequencer-connector-hover)'
+  }
+  if (values.isSelected) {
+    return 'var(--sequencer-connector-selected)'
+  }
+  return 'var(--sequencer-connector-normal)'
 }
 
 function connectorVisualHeight(values: IConnectorThemeValues): number {
@@ -46,16 +36,6 @@ function connectorVisualHeight(values: IConnectorThemeValues): number {
     return CONNECTOR_HEIGHT_HOVER
   }
   return CONNECTOR_HEIGHT
-}
-
-function connectorVisualBackground(values: IConnectorThemeValues): string {
-  if (values.isPopoverOpen) {
-    return CONNECTOR_THEME.barColor(values)
-  }
-  if (values.isHovered) {
-    return CONNECTOR_THEME.hoverColor(values)
-  }
-  return CONNECTOR_THEME.barColor(values)
 }
 
 const HitTarget = styled.div`

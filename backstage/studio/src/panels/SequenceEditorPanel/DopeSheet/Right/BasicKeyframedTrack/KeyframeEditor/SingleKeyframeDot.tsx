@@ -35,15 +35,17 @@ import {
 import {clampSequenceEditorPosition} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/sequenceEditLimits'
 import {valTracksByObjectForSheetVariant} from '@unseenco/backstage/studio/utils/sequenceVariantHelpers'
 import {selectSheetObjectInOutline} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selectSheetObjectInOutline'
+import {shouldDeferToDopeSheetMarqueeSelection} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/shouldDeferToDopeSheetMarqueeSelection'
 
 export const DOT_SIZE_PX = 6
 const DOT_HOVER_SIZE_PX = DOT_SIZE_PX + 2
 
 const dotTheme = {
-  normalColor: 'var(--studio-accent-soft)',
-  selectedColor: '#F2C95C',
-  inlineEditorOpenColor: '#FCF3DC',
-  selectedAndInlineEditorOpenColor: 'var(--studio-accent-soft-tint)',
+  normalColor: 'var(--sequencer-kf-dot-normal, var(--studio-accent-soft))',
+  selectedColor: 'var(--sequencer-kf-dot-selected, #F2C95C)',
+  inlineEditorOpenColor: 'var(--sequencer-kf-dot-inline-open, #FCF3DC)',
+  selectedAndInlineEditorOpenColor:
+    'var(--sequencer-kf-dot-selected-inline-open, var(--studio-accent-soft-tint))',
 }
 
 const selectBackgroundForDiamond = ({
@@ -260,6 +262,9 @@ function useDragForSingleKeyframeDot(
     return {
       debugName: 'KeyframeDot/useDragKeyframe',
       onDragStart(event) {
+        if (shouldDeferToDopeSheetMarqueeSelection(event)) {
+          return false
+        }
         const props = propsRef.current
 
         const sheetStatePointer =

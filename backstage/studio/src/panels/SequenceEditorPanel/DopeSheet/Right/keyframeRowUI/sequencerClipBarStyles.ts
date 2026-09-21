@@ -4,18 +4,19 @@ import {pointerEventsAutoInNormalMode} from '@unseenco/backstage/studio/css'
 export type SequencerClipBarColorScheme = 'gsap' | 'gsapTimeline' | 'backstage'
 
 const gsapTweenBarColors = css`
-  background: #6b8f71;
-  border: 1px solid #8fb396;
+  background: var(--sequencer-clip-gsap-bg, #6b8f71);
+  border: 1px solid var(--sequencer-clip-gsap-border, #8fb396);
 `
 
 const gsapTimelineBarColors = css`
-  background: #5a735e;
-  border: 1px solid #8fb396;
+  background: var(--sequencer-clip-gsap-timeline-bg, #5a735e);
+  border: 1px solid var(--sequencer-clip-gsap-timeline-border, #8fb396);
 `
 
 const backstageBarColors = css`
-  background: var(--studio-accent);
-  border: 1px solid var(--studio-accent-hover);
+  background: var(--sequencer-clip-backstage-bg, var(--studio-accent));
+  border: 1px solid
+    var(--sequencer-clip-backstage-border, var(--studio-accent-hover));
 `
 
 export const SequencerClipBarTrackContainer = styled.div`

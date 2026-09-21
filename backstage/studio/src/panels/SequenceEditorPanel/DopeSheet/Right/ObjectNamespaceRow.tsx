@@ -24,7 +24,12 @@ const RightObjectNamespaceRow: React.VFC<{
     )
 
     return (
-      <RightRow leaf={leaf} node={node} isCollapsed={leaf.isCollapsed}>
+      <RightRow
+        layoutP={layoutP}
+        leaf={leaf}
+        node={node}
+        isCollapsed={leaf.isCollapsed}
+      >
         {leaf.children.map((child) => decideRightSheetChildRow(child, layoutP))}
       </RightRow>
     )

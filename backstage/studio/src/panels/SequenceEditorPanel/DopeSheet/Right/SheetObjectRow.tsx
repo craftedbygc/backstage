@@ -58,7 +58,12 @@ const RightSheetObjectRow: React.VFC<{
       : leaf.isCollapsed
 
     return (
-      <RightRow leaf={leaf} node={node} isCollapsed={rowIsCollapsed}>
+      <RightRow
+        layoutP={layoutP}
+        leaf={leaf}
+        node={node}
+        isCollapsed={rowIsCollapsed}
+      >
         {leaf.children.map((child) => {
           if (child.type === 'gsapChildClip' && gsapClipLeaf) {
             return (

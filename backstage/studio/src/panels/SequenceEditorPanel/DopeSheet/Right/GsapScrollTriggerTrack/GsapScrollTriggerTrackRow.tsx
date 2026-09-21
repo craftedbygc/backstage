@@ -10,6 +10,9 @@ import React from 'react'
 import styled from 'styled-components'
 import RightRow from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/Right/Row'
 import {gsapClipBarLayoutInScaledSpace} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/Right/GsapClipTrack/gsapClipBarLayout'
+import {pointerEventsAutoInNormalMode} from '@unseenco/backstage/studio/css'
+import type SheetObject from '@unseenco/backstage/sheetObjects/SheetObject'
+import {selectSheetObjectInOutline} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selectSheetObjectInOutline'
 
 const Container = styled.div`
   position: relative;
@@ -23,15 +26,22 @@ const ScrollTriggerBar = styled.div<{$variant: 'parent' | 'child'}>`
   transform: translateY(-50%);
   height: ${(p) => (p.$variant === 'parent' ? '14px' : '10px')};
   border-radius: 3px;
-  background: ${(p) => (p.$variant === 'parent' ? '#4a5a8f' : '#3d4d72')};
-  border: 1px solid ${(p) => (p.$variant === 'parent' ? '#7a8fc4' : '#5a6a94')};
+  background: ${(p) =>
+    p.$variant === 'parent'
+      ? 'var(--sequencer-st-parent-bg, #4a5a8f)'
+      : 'var(--sequencer-st-child-bg, #3d4d72)'};
+  border: 1px solid
+    ${(p) =>
+      p.$variant === 'parent'
+        ? 'var(--sequencer-st-parent-border, #7a8fc4)'
+        : 'var(--sequencer-st-child-border, #5a6a94)'};
   box-sizing: border-box;
-  cursor: default;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  pointer-events: none;
+  ${pointerEventsAutoInNormalMode};
 `
 
 const BarLabel = styled.span`
@@ -50,7 +60,8 @@ const ReadOnlyBar: React.VFC<{
   layoutP: Pointer<SequenceEditorPanelLayout>
   label?: string
   variant: 'parent' | 'child'
-}> = ({layout, layoutP, label, variant}) => {
+  sheetObject: SheetObject
+}> = ({layout, layoutP, label, variant, sheetObject}) => {
   const scaledSpace = usePrism(
     () => ({
       fromUnitSpace: val(layoutP.scaledSpace.fromUnitSpace),
@@ -65,6 +76,11 @@ const ReadOnlyBar: React.VFC<{
       <ScrollTriggerBar
         $variant={variant}
         style={{left: leftPx + 'px', width: widthPx + 'px'}}
+        onClick={() => {
+          selectSheetObjectInOutline(sheetObject)
+        }}
+        role="button"
+        tabIndex={-1}
       >
         {label ? <BarLabel>{label}</BarLabel> : null}
       </ScrollTriggerBar>
@@ -81,6 +97,7 @@ export const GsapScrollTriggerTrackBarForTreeLeaf: React.VFC<{
     layoutP={layoutP}
     label={leaf.displayLabel}
     variant="parent"
+    sheetObject={leaf.sheetObject}
   />
 )
 
@@ -93,7 +110,12 @@ const GsapScrollTriggerTrackRow: React.VFC<{
       <GsapScrollTriggerTrackBarForTreeLeaf leaf={leaf} layoutP={layoutP} />
     )
     return (
-      <RightRow leaf={leaf} isCollapsed={leaf.isCollapsed} node={node}>
+      <RightRow
+        layoutP={layoutP}
+        leaf={leaf}
+        isCollapsed={leaf.isCollapsed}
+        node={node}
+      >
         {leaf.children.map((child) => (
           <GsapScrollTriggerChildTrackRow
             key={child.childId}
@@ -117,9 +139,12 @@ const GsapScrollTriggerChildTrackRow: React.VFC<{
         layoutP={layoutP}
         label={leaf.displayLabel}
         variant="child"
+        sheetObject={leaf.sheetObject}
       />
     )
-    return <RightRow leaf={leaf} isCollapsed={false} node={node} />
+    return (
+      <RightRow layoutP={layoutP} leaf={leaf} isCollapsed={false} node={node} />
+    )
   }, [leaf, layoutP])
 }
 

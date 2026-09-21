@@ -1,4 +1,6 @@
 import type {SequenceEditorTree_Sheet} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/tree'
+import type {SequenceEditorPanelLayout} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/layout'
+import type {Pointer} from '@unseenco/backstage/dataverse'
 import {usePrism} from '@unseenco/backstage/react'
 import React from 'react'
 import AnyCompositeRow from './AnyCompositeRow'
@@ -7,8 +9,17 @@ import {decideLeftSheetChildRow} from '@unseenco/backstage/studio/panels/Sequenc
 
 const SheetRow: React.VFC<{
   leaf: SequenceEditorTree_Sheet
-}> = ({leaf}) => {
+  layoutP: Pointer<SequenceEditorPanelLayout>
+}> = ({leaf, layoutP}) => {
   return usePrism(() => {
+    const childRows = leaf.children.map((child) =>
+      decideLeftSheetChildRow(child, layoutP),
+    )
+
+    if (!leaf.shouldRender) {
+      return <>{childRows}</>
+    }
+
     return (
       <AnyCompositeRow
         leaf={leaf}
@@ -21,10 +32,10 @@ const SheetRow: React.VFC<{
           })
         }}
       >
-        {leaf.children.map((child) => decideLeftSheetChildRow(child))}
+        {childRows}
       </AnyCompositeRow>
     )
-  }, [leaf])
+  }, [leaf, layoutP])
 }
 
 export default SheetRow

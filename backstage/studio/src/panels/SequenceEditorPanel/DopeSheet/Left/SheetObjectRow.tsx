@@ -1,5 +1,8 @@
 import type {SequenceEditorTree_SheetObject} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/tree'
+import type {SequenceEditorPanelLayout} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/layout'
+import type {Pointer} from '@unseenco/backstage/dataverse'
 import React from 'react'
+import {usePrism} from '@unseenco/backstage/react'
 import AnyCompositeRow from './AnyCompositeRow'
 import {decideSheetObjectChildRow} from './PropWithChildrenRow'
 import GsapChildClipLeftRow from './GsapChildClipRow'
@@ -11,10 +14,15 @@ import {
   gsapKindBadgeForSheetObject,
   renderGsapListLabel,
 } from '@unseenco/backstage/studio/gsap/GsapKindBadge'
+import {
+  getDopeSheetSelectionFromLayoutP,
+  isSheetObjectSequencerSelected,
+} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/dopeSheetSelectionHighlight'
 
 const LeftSheetObjectRow: React.VFC<{
   leaf: SequenceEditorTree_SheetObject
-}> = ({leaf}) => {
+  layoutP: Pointer<SequenceEditorPanelLayout>
+}> = ({leaf, layoutP}) => {
   const gsapClip = leaf.gsapClip
   const gsapScrollTrigger = leaf.gsapScrollTrigger
   const hasGsapClipTimelineChildren =
@@ -59,11 +67,21 @@ const LeftSheetObjectRow: React.VFC<{
   const rowLabel = leaf.displayLabel ?? leaf.sheetObject.address.objectKey
   const gsapKind = gsapKindBadgeForSheetObject(leaf.sheetObject)
 
+  const isSelected = usePrism(
+    () =>
+      isSheetObjectSequencerSelected(
+        leaf.sheetObject,
+        getDopeSheetSelectionFromLayoutP(layoutP),
+      ),
+    [leaf.sheetObject, layoutP],
+  )
+
   return (
     <AnyCompositeRow
       leaf={leaf}
       label={renderGsapListLabel(gsapKind, rowLabel)}
       isCollapsed={isCollapsed}
+      isSelected={isSelected}
       toggleSelect={() => {
         // set selection to this sheet object on click
         getStudio().transaction(({stateEditors}) => {

@@ -20,6 +20,7 @@ import TweenNameEditorPopover from './TweenNameEditorPopover'
 import styled from 'styled-components'
 import {getStudioSequence} from '@unseenco/backstage/studio/utils/activeSequenceVariant'
 import {selectSheetObjectInOutline} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selectSheetObjectInOutline'
+import {shouldDeferToDopeSheetMarqueeSelection} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/shouldDeferToDopeSheetMarqueeSelection'
 
 const POPOVER_MARGIN = 5
 
@@ -181,6 +182,9 @@ function useDragKeyframe(
       debugName: 'useDragKeyframe',
       lockCSSCursorTo: 'ew-resize',
       onDragStart(event) {
+        if (shouldDeferToDopeSheetMarqueeSelection(event)) {
+          return false
+        }
         const props = propsRef.current
         let tempTransaction: CommitOrDiscard | undefined
 

@@ -13,6 +13,14 @@ const SheetRow: React.FC<{
   layoutP: Pointer<SequenceEditorPanelLayout>
 }> = ({leaf, layoutP}) => {
   return usePrism(() => {
+    const childRows = leaf.children.map((child) =>
+      decideRightSheetChildRow(child, layoutP),
+    )
+
+    if (!leaf.shouldRender) {
+      return <>{childRows}</>
+    }
+
     const aggregatedKeyframes = collectAggregateKeyframesInPrism(leaf)
 
     const node = (
@@ -24,8 +32,13 @@ const SheetRow: React.FC<{
     )
 
     return (
-      <RightRow leaf={leaf} node={node} isCollapsed={leaf.isCollapsed}>
-        {leaf.children.map((child) => decideRightSheetChildRow(child, layoutP))}
+      <RightRow
+        layoutP={layoutP}
+        leaf={leaf}
+        node={node}
+        isCollapsed={leaf.isCollapsed}
+      >
+        {childRows}
       </RightRow>
     )
   }, [leaf, layoutP])

@@ -23,11 +23,12 @@ import {commonRootOfPathsToProps} from '@unseenco/backstage-shared/utils/address
 import type {KeyframeWithPathToPropFromCommonRoot} from '@unseenco/backstage/studio/store/types'
 import {getStudioSequence} from '@unseenco/backstage/studio/utils/activeSequenceVariant'
 import {selectSheetObjectInOutlineForAggregateViewModel} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selectSheetObjectInOutline'
+import {shouldDeferToDopeSheetMarqueeSelection} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/shouldDeferToDopeSheetMarqueeSelection'
 import {sequenceEditorAggregateViewModelSheetAddress} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/sequenceEditorAggregateViewModel'
 import TweenNameEditorPopover, {
   getSharedTweenLabel,
-  type TweenNameEditorTarget,
 } from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/Right/BasicKeyframedTrack/KeyframeEditor/TweenNameEditorPopover'
+import type {TweenNameEditorTarget} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/Right/BasicKeyframedTrack/KeyframeEditor/TweenNameEditorPopover'
 
 const POPOVER_MARGIN_PX = 5
 const EasingPopoverWrapper = styled(BasicPopover)`
@@ -173,6 +174,9 @@ function useDragKeyframe(
       debugName: 'useDragKeyframe',
       lockCSSCursorTo: 'ew-resize',
       onDragStart(event) {
+        if (shouldDeferToDopeSheetMarqueeSelection(event)) {
+          return false
+        }
         const props = propsRef.current
         let tempTransaction: CommitOrDiscard | undefined
 

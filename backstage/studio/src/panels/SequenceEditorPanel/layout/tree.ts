@@ -245,11 +245,15 @@ export const calculateSequenceEditorTree = (
 ): SequenceEditorTree => {
   prism.ensurePrism()
   val(gsapStudioRegistryRevisionPointer)
-  const rootShouldRender = true
+  const sheetPropsObject = sheet.getSheetPropsObject()
+  const showSheetRow = Boolean(
+    sheetPropsObject && sheetObjectHasSequenceEditorContent(sheetPropsObject),
+  )
+
   let topSoFar =
     transportStripHeight +
     titleBarHeight +
-    (rootShouldRender ? HEIGHT_OF_ANY_TITLE : 0)
+    (showSheetRow ? HEIGHT_OF_ANY_TITLE : 0)
   let nSoFar = 0
 
   const collapsableItemSetP =
@@ -268,19 +272,18 @@ export const calculateSequenceEditorTree = (
     sheet,
     children: [],
     sheetItemKey: createStudioSheetItemKey.forSheet(),
-    shouldRender: rootShouldRender,
+    shouldRender: showSheetRow,
     top: transportStripHeight + titleBarHeight,
     depth: 0,
     n: nSoFar,
-    nodeHeight: rootShouldRender ? HEIGHT_OF_ANY_TITLE : 0,
+    nodeHeight: showSheetRow ? HEIGHT_OF_ANY_TITLE : 0,
     heightIncludingChildren: -1, // calculated below
   }
 
-  if (rootShouldRender) {
+  if (showSheetRow) {
     nSoFar += 1
   }
 
-  // Sheet props are edited in the detail panel; omit them here (same as outline visibility).
   const objectsForNamespace: SheetObject[] = []
   for (const sheetObject of Object.values(val(sheet.objectsP))) {
     if (
@@ -292,12 +295,24 @@ export const calculateSequenceEditorTree = (
     }
   }
   const namespaceRoot = buildSequenceEditorNamespaceMap(objectsForNamespace)
+  const treeChildrenShouldRender = showSheetRow ? !isCollapsed : true
+  const treeChildDepth = showSheetRow ? tree.depth + 1 : tree.depth
+
+  if (showSheetRow && sheetPropsObject) {
+    addObject(
+      sheetPropsObject,
+      tree.children,
+      treeChildDepth,
+      treeChildrenShouldRender,
+    )
+  }
+
   appendNamespacedObjectsToTree(
     namespaceRoot,
     [],
     tree.children,
-    tree.depth + 1,
-    rootShouldRender && !isCollapsed,
+    treeChildDepth,
+    treeChildrenShouldRender,
   )
   tree.heightIncludingChildren = topSoFar - tree.top
 

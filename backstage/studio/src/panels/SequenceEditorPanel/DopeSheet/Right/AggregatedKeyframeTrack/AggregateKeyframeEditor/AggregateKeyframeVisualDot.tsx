@@ -58,9 +58,11 @@ type IDotThemeValues = {
   isSelected: AggregateKeyframePositionIsSelected | undefined
   flag: PresenceFlag | undefined
 }
-const SELECTED_COLOR = '#F2C95C'
-const DEFAULT_PRIMARY_COLOR = 'var(--studio-accent-soft)'
-const DEFAULT_SECONDARY_COLOR = 'var(--studio-accent-secondary)'
+const SELECTED_COLOR = 'var(--sequencer-agg-kf-selected, #F2C95C)'
+const DEFAULT_PRIMARY_COLOR =
+  'var(--sequencer-agg-kf-primary, var(--studio-accent-soft))'
+const DEFAULT_SECONDARY_COLOR =
+  'var(--sequencer-agg-kf-secondary, var(--studio-accent-secondary))'
 const selectionColorAll = (theme: IDotThemeValues) =>
   theme.isSelected === AggregateKeyframePositionIsSelected.AllSelected
     ? SELECTED_COLOR

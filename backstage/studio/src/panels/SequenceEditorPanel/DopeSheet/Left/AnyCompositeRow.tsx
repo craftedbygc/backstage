@@ -45,7 +45,7 @@ const LeftRowHeader = styled(BaseHeader)<{
 
   box-sizing: border-box;
 
-  ${(props) => props.isSelected && `background: blue`};
+  ${(props) => props.isSelected && `background: var(--studio-surface-active)`};
 `
 
 const LeftRowHead_Label = styled.span`
@@ -169,7 +169,9 @@ const AnyCompositeRow: React.FC<{
         <LeftRowHead_Label>{label}</LeftRowHead_Label>
       </LeftRowHeader>
       {hasChildren && (
-        <LeftRowChildren $childDepth={leaf.depth + 1}>{children}</LeftRowChildren>
+        <LeftRowChildren $childDepth={leaf.depth + 1}>
+          {children}
+        </LeftRowChildren>
       )}
     </LeftRowContainer>
   ) : null

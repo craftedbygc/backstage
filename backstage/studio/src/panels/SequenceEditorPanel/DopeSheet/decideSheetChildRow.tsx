@@ -10,20 +10,21 @@ import uniqueKeyForAnyObject from '@unseenco/backstage-shared/utils/uniqueKeyFor
 
 export function decideLeftSheetChildRow(
   child: SequenceEditorTree_SheetChild,
+  layoutP: Pointer<SequenceEditorPanelLayout>,
 ): React.ReactElement {
   if (child.type === 'objectNamespace') {
     return (
       <LeftObjectNamespaceRow
         key={'objectNamespace-' + child.namespacePath.join('/')}
+        layoutP={layoutP}
         leaf={child}
       />
     )
   }
   return (
     <LeftSheetObjectRow
-      key={
-        'sheetObject-' + uniqueKeyForAnyObject(child.sheetObject)
-      }
+      key={'sheetObject-' + uniqueKeyForAnyObject(child.sheetObject)}
+      layoutP={layoutP}
       leaf={child}
     />
   )

@@ -46,6 +46,7 @@ import {
   limitAggregateSpanMoveDelta,
 } from './aggregateKeyframeSpanDrag'
 import {selectSheetObjectInOutlineForAggregateViewModel} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selectSheetObjectInOutline'
+import {shouldDeferToDopeSheetMarqueeSelection} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/shouldDeferToDopeSheetMarqueeSelection'
 
 const AggregateKeyframeSpanBar: React.VFC<{
   viewModel: SequenceEditorAggregateViewModel
@@ -117,7 +118,10 @@ const AggregateKeyframeSpanBar: React.VFC<{
     const toUnitSpace = val(layoutP.scaledSpace.toUnitSpace)
     return {
       debugName: 'aggregateSpanBarMove',
-      onDragStart() {
+      onDragStart(event: MouseEvent) {
+        if (shouldDeferToDopeSheetMarqueeSelection(event)) {
+          return false
+        }
         selectSheetObjectInOutlineForAggregateViewModel(viewModel)
         beginSnapTargets()
         return {
@@ -176,7 +180,10 @@ const AggregateKeyframeSpanBar: React.VFC<{
     const toUnitSpace = val(layoutP.scaledSpace.toUnitSpace)
     return {
       debugName: 'aggregateSpanBarResizeStart',
-      onDragStart() {
+      onDragStart(event: MouseEvent) {
+        if (shouldDeferToDopeSheetMarqueeSelection(event)) {
+          return false
+        }
         selectSheetObjectInOutlineForAggregateViewModel(viewModel)
         const keyframesAtDragStart =
           allKeyframeWithTracksInAggregate(aggregatedKeyframes)
@@ -251,7 +258,10 @@ const AggregateKeyframeSpanBar: React.VFC<{
     const toUnitSpace = val(layoutP.scaledSpace.toUnitSpace)
     return {
       debugName: 'aggregateSpanBarResizeEnd',
-      onDragStart() {
+      onDragStart(event: MouseEvent) {
+        if (shouldDeferToDopeSheetMarqueeSelection(event)) {
+          return false
+        }
         selectSheetObjectInOutlineForAggregateViewModel(viewModel)
         const keyframesAtDragStart =
           allKeyframeWithTracksInAggregate(aggregatedKeyframes)

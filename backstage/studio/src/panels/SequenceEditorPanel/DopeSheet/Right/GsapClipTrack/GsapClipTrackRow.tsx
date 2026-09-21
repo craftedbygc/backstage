@@ -30,6 +30,7 @@ import type {IContextMenuItem} from '@unseenco/backstage/studio/uiComponents/sim
 import {applyGsapClipTrackToAnimation} from '@unseenco/backstage/studio/gsap/applyGsapClipTrackToAnimation'
 import {previewGsapClipsAtCurrentPlayhead} from '@unseenco/backstage/studio/gsap/previewGsapClipsAtPlayhead'
 import {selectSheetObjectInOutline} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/selectSheetObjectInOutline'
+import {shouldDeferToDopeSheetMarqueeSelection} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/shouldDeferToDopeSheetMarqueeSelection'
 import {gsapClipBarLayoutInScaledSpace} from './gsapClipBarLayout'
 import GsapChildClipTrackRow from './GsapChildClipTrackRow'
 import {getAnimationEntry} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
@@ -105,7 +106,12 @@ const GsapClipTrackRow: React.VFC<{
     const node = <GsapClipTrackBarForTreeLeaf leaf={leaf} layoutP={layoutP} />
 
     return (
-      <RightRow leaf={leaf} isCollapsed={leaf.isCollapsed} node={node}>
+      <RightRow
+        layoutP={layoutP}
+        leaf={leaf}
+        isCollapsed={leaf.isCollapsed}
+        node={node}
+      >
         {leaf.children.map((child) => (
           <GsapChildClipTrackRow
             key={child.childId}
@@ -191,7 +197,10 @@ const GsapClipTrackBar: React.VFC<{
     const toUnitSpace = val(layoutP.scaledSpace.toUnitSpace)
     return {
       debugName: 'gsapClipMove',
-      onDragStart() {
+      onDragStart(event) {
+        if (shouldDeferToDopeSheetMarqueeSelection(event)) {
+          return false
+        }
         selectSheetObjectInOutline(leaf.sheetObject)
         beginGsapClipSnapTargets()
         return {
@@ -249,7 +258,10 @@ const GsapClipTrackBar: React.VFC<{
     const toUnitSpace = val(layoutP.scaledSpace.toUnitSpace)
     return {
       debugName: 'gsapClipResizeStart',
-      onDragStart() {
+      onDragStart(event) {
+        if (shouldDeferToDopeSheetMarqueeSelection(event)) {
+          return false
+        }
         selectSheetObjectInOutline(leaf.sheetObject)
         beginGsapClipSnapTargets()
         return {
@@ -312,7 +324,10 @@ const GsapClipTrackBar: React.VFC<{
     const toUnitSpace = val(layoutP.scaledSpace.toUnitSpace)
     return {
       debugName: 'gsapClipResize',
-      onDragStart() {
+      onDragStart(event) {
+        if (shouldDeferToDopeSheetMarqueeSelection(event)) {
+          return false
+        }
         selectSheetObjectInOutline(leaf.sheetObject)
         beginGsapClipSnapTargets()
         return {
