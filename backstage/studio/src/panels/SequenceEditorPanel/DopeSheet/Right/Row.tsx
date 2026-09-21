@@ -1,7 +1,6 @@
 import type {Pointer} from '@unseenco/backstage/dataverse'
 import type {SequenceEditorPanelLayout} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/layout'
 import type {SequenceEditorTree_Row} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/layout/tree'
-import type SheetObject from '@unseenco/backstage/sheetObjects/SheetObject'
 import React from 'react'
 import styled from 'styled-components'
 import {
@@ -43,19 +42,6 @@ const RightRowChildren = styled.ul`
   list-style: none;
 `
 
-type SequenceEditorTreeRowWithSheetObject = SequenceEditorTree_Row<string> & {
-  sheetObject: SheetObject
-}
-
-function sheetObjectFromSequenceEditorRow(
-  leaf: SequenceEditorTree_Row<string>,
-): SheetObject | undefined {
-  if ('sheetObject' in leaf) {
-    return (leaf as SequenceEditorTreeRowWithSheetObject).sheetObject
-  }
-  return undefined
-}
-
 const RightRowTrackVisuals: React.FC<{children: React.ReactNode}> = ({
   children,
 }) => {
@@ -87,10 +73,9 @@ const RightRow: React.FC<{
   children?: React.ReactNode | undefined
 }> = ({leaf, layoutP, children, node, isCollapsed}) => {
   const hasChildren = Array.isArray(children) && children.length > 0
-  const sheetObject = sheetObjectFromSequenceEditorRow(leaf)
 
   return leaf.shouldRender ? (
-    <SequencerTrackEmphasisProvider sheetObject={sheetObject} layoutP={layoutP}>
+    <SequencerTrackEmphasisProvider leaf={leaf} layoutP={layoutP}>
       <RightRowContainer>
         <RightRowNodeWrapper
           style={{height: leaf.nodeHeight + 'px'}}
