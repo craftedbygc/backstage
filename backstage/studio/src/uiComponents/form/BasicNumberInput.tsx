@@ -1,6 +1,6 @@
 import {clamp, isInteger} from 'lodash-es'
 import type {MutableRefObject} from 'react'
-import {useEffect} from 'react'
+import {useEffect, useLayoutEffect} from 'react'
 import {useState} from 'react'
 import React, {useMemo, useRef} from 'react'
 import styled from 'styled-components'
@@ -155,14 +155,25 @@ const LabelText = styled.div`
   pointer-events: none;
 `
 
-const ValueSlot = styled.div`
-  margin-left: auto;
+const ValueSlot = styled.div<{
+  $followHandle: boolean
+}>`
+  margin-left: ${(p) => (p.$followHandle ? '0' : 'auto')};
   /* Hug the digits only — empty chip space must hit DragSurface for scrubbing. */
   flex: 0 0 auto;
-  position: relative;
+  position: ${(p) => (p.$followHandle ? 'absolute' : 'relative')};
   display: flex;
   align-items: center;
   height: 16px;
+  ${(p) =>
+    p.$followHandle
+      ? `
+    top: 0;
+    bottom: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+  `
+      : ''}
   /* Always receive hits so only the value (not the whole chip) enters edit. */
   pointer-events: auto;
   cursor: text;
@@ -265,6 +276,94 @@ function isBoundedNumberRange(
   return !!range && Number.isFinite(range[0]) && Number.isFinite(range[1])
 }
 
+const HANDLE_HALF_WIDTH_PX = 1.5
+/** Gap between handle edge and where the value would sit when right-anchored. */
+const VALUE_ANCHOR_GAP_PX = 10
+/** Extra travel before flipping back to right anchor (avoids flicker at the threshold). */
+const VALUE_ANCHOR_HYSTERESIS_PX = 8
+
+type ValueAnchorLayout = {
+  containerWidth: number
+  contentPadLeft: number
+  contentPadRight: number
+  valueWidth: number
+}
+
+function rightAnchoredValueLeftEdge(layout: ValueAnchorLayout): number {
+  const contentWidth =
+    layout.containerWidth - layout.contentPadLeft - layout.contentPadRight
+  return layout.contentPadLeft + contentWidth - layout.valueWidth
+}
+
+function shouldFollowHandle(
+  handleCenterX: number,
+  layout: ValueAnchorLayout,
+): boolean {
+  const valueLeft = rightAnchoredValueLeftEdge(layout)
+  return handleCenterX + HANDLE_HALF_WIDTH_PX + VALUE_ANCHOR_GAP_PX >= valueLeft
+}
+
+function shouldAnchorValueToRight(
+  handleCenterX: number,
+  layout: ValueAnchorLayout,
+): boolean {
+  const valueLeft = rightAnchoredValueLeftEdge(layout)
+  return (
+    handleCenterX +
+      HANDLE_HALF_WIDTH_PX +
+      VALUE_ANCHOR_GAP_PX +
+      VALUE_ANCHOR_HYSTERESIS_PX <
+    valueLeft
+  )
+}
+
+/** Left edge of the value box when it sits just left of the scrub handle. */
+function valueLeftPxBesideHandle(
+  percentage: number,
+  layout: ValueAnchorLayout,
+): number {
+  const handleCenterX = percentage * layout.containerWidth
+  return (
+    handleCenterX -
+    layout.contentPadLeft -
+    HANDLE_HALF_WIDTH_PX -
+    VALUE_ANCHOR_GAP_PX -
+    layout.valueWidth
+  )
+}
+
+function valueAnchorLayoutsEqual(
+  a: ValueAnchorLayout,
+  b: ValueAnchorLayout,
+): boolean {
+  return (
+    a.containerWidth === b.containerWidth &&
+    a.contentPadLeft === b.contentPadLeft &&
+    a.contentPadRight === b.contentPadRight &&
+    a.valueWidth === b.valueWidth
+  )
+}
+
+/** Hysteresis mode for value placement; updated during render when percentage changes. */
+function updateValueAnchorMode(
+  modeRef: MutableRefObject<'right' | 'handle'>,
+  percentage: number,
+  layout: ValueAnchorLayout,
+): 'right' | 'handle' {
+  const handleCenterX = percentage * layout.containerWidth
+  let mode = modeRef.current
+  if (mode === 'right' && shouldFollowHandle(handleCenterX, layout)) {
+    mode = 'handle'
+  } else if (
+    mode === 'handle' &&
+    shouldAnchorValueToRight(handleCenterX, layout)
+  ) {
+    mode = 'right'
+  }
+  modeRef.current = mode
+  return mode
+}
+
 export type BasicNumberInputNudgeFn = (params: {
   deltaX: number
   deltaFraction: number
@@ -313,6 +412,11 @@ const BasicNumberInput: React.FC<{
 
   const inputRef = useRef<HTMLInputElement | null>(null)
   const containerRef = useRef<HTMLDivElement | null>(null)
+  const contentRef = useRef<HTMLDivElement | null>(null)
+  const valueSlotRef = useRef<HTMLDivElement | null>(null)
+  const valueAnchorLayoutRef = useRef<ValueAnchorLayout | null>(null)
+  const valueAnchorModeRef = useRef<'right' | 'handle'>('right')
+  const [, setLayoutEpoch] = useState(0)
   // While dragging on touch, React must not push new `value` props into the input —
   // that re-sync cancels the active pointer gesture. We freeze the prop and update
   // the DOM directly instead.
@@ -614,6 +718,56 @@ const BasicNumberInput: React.FC<{
     ? clamp((num - range[0]) / (range[1] - range[0] || 1), 0, 1)
     : 0
 
+  useLayoutEffect(() => {
+    if (!hasBoundedRange) {
+      valueAnchorLayoutRef.current = null
+      valueAnchorModeRef.current = 'right'
+      return
+    }
+
+    const container = containerRef.current
+    const content = contentRef.current
+    const valueSlot = valueSlotRef.current
+    if (!container || !content || !valueSlot) {
+      return
+    }
+
+    const measure = () => {
+      const containerRect = container.getBoundingClientRect()
+      const contentRect = content.getBoundingClientRect()
+      const next: ValueAnchorLayout = {
+        containerWidth: containerRect.width,
+        contentPadLeft: contentRect.left - containerRect.left,
+        contentPadRight: containerRect.right - contentRect.right,
+        valueWidth: valueSlot.offsetWidth,
+      }
+      const prev = valueAnchorLayoutRef.current
+      if (prev && valueAnchorLayoutsEqual(prev, next)) {
+        return
+      }
+      valueAnchorLayoutRef.current = next
+      setLayoutEpoch((n) => n + 1)
+    }
+
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(container)
+    ro.observe(valueSlot)
+    return () => ro.disconnect()
+  }, [hasBoundedRange, contentPadding, propsA.label])
+
+  const valueAnchorLayout = valueAnchorLayoutRef.current
+  const valueAnchor =
+    hasBoundedRange && valueAnchorLayout && valueAnchorLayout.valueWidth > 0
+      ? updateValueAnchorMode(valueAnchorModeRef, percentage, valueAnchorLayout)
+      : 'right'
+
+  const valueFollowsHandle = valueAnchor === 'handle'
+  const valueSlotStyle: React.CSSProperties | undefined =
+    valueFollowsHandle && valueAnchorLayout
+      ? {left: valueLeftPxBesideHandle(percentage, valueAnchorLayout)}
+      : undefined
+
   const showChrome =
     isHot ||
     stateRef.current.mode === 'dragging' ||
@@ -647,10 +801,14 @@ const BasicNumberInput: React.FC<{
       {hasBoundedRange ? <Hashmarks $visible={showChrome} /> : null}
       {hasBoundedRange ? <Handle $visible={showChrome} /> : null}
       {!isEditing ? <DragSurface ref={setDragNode} /> : null}
-      <Content $padding={contentPadding}>
+      <Content ref={contentRef} $padding={contentPadding}>
         <TextRow>
           {propsA.label ? <LabelText>{propsA.label}</LabelText> : null}
-          <ValueSlot>
+          <ValueSlot
+            ref={valueSlotRef}
+            $followHandle={valueFollowsHandle}
+            style={valueSlotStyle}
+          >
             {!isEditing ? <ValueText>{value}</ValueText> : null}
             {theInput}
           </ValueSlot>
