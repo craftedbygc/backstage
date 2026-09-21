@@ -18,8 +18,8 @@ import {usePropHighlightMouseEnter} from './usePropHighlightMouseEnter'
 import {useGsapSequencerRowElementHighlight} from '@unseenco/backstage/studio/gsap/useGsapSequencerRowElementHighlight'
 import {
   SEQUENCER_LEFT_DEPTH_INDENT_PX,
-  SEQUENCER_LEFT_HIERARCHY_LINE_COLOR,
-  sequencerLeftHierarchyLineLeftPx,
+  sequencerLeftHierarchyGroupSpineBeforeCss,
+  sequencerLeftHierarchyLastLeafSpineCoverAfterCss,
 } from './sequencerLeftPanelLayout'
 
 export const LeftRowContainer = styled.li<{depth: number}>`
@@ -27,6 +27,7 @@ export const LeftRowContainer = styled.li<{depth: number}>`
   margin: 0;
   padding: 0;
   list-style: none;
+  position: relative;
 `
 
 export const BaseHeader = styled.div<{isEven: boolean}>`
@@ -96,14 +97,15 @@ const LeftRowChildren = styled.ul<{$childDepth: number}>`
   position: relative;
 
   &::before {
-    content: '';
-    position: absolute;
-    left: ${(props) => sequencerLeftHierarchyLineLeftPx(props.$childDepth)}px;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: ${SEQUENCER_LEFT_HIERARCHY_LINE_COLOR};
-    pointer-events: none;
+    ${(props) => sequencerLeftHierarchyGroupSpineBeforeCss(props.$childDepth)}
+  }
+
+  & > li:last-child:not(:has(> ul))::after {
+    ${(props) =>
+      sequencerLeftHierarchyLastLeafSpineCoverAfterCss(
+        props.$childDepth,
+        theme.panel.bg,
+      )}
   }
 `
 
@@ -142,7 +144,14 @@ const AnyCompositeRow: React.FC<{
   useGsapSequencerRowElementHighlight(rowHeaderEl, leaf)
 
   return leaf.shouldRender ? (
-    <LeftRowContainer depth={leaf.depth}>
+    <LeftRowContainer
+      depth={leaf.depth}
+      style={
+        {
+          '--sequencer-left-row-header-height': `${leaf.nodeHeight}px`,
+        } as React.CSSProperties
+      }
+    >
       <LeftRowHeader
         ref={setRowHeaderEl}
         style={{

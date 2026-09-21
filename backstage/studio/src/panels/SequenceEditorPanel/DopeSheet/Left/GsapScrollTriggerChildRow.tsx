@@ -35,7 +35,14 @@ const GsapScrollTriggerChildLeftRow: React.VFC<{
   useGsapSequencerRowElementHighlight(headerEl, leaf)
 
   return (
-    <LeftRowContainer depth={leaf.depth}>
+    <LeftRowContainer
+      depth={leaf.depth}
+      style={
+        {
+          '--sequencer-left-row-header-height': `${leaf.nodeHeight}px`,
+        } as React.CSSProperties
+      }
+    >
       <Header
         ref={setHeaderEl}
         isEven={leaf.n % 2 === 0}

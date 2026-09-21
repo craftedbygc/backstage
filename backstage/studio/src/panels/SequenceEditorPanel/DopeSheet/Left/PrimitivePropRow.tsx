@@ -176,7 +176,14 @@ const PrimitivePropRow: React.FC<{
   }, [leaf.sheetObject])
 
   return (
-    <PrimitivePropRowContainer depth={leaf.depth}>
+    <PrimitivePropRowContainer
+      depth={leaf.depth}
+      style={
+        {
+          '--sequencer-left-row-header-height': `${leaf.nodeHeight}px`,
+        } as React.CSSProperties
+      }
+    >
       <PrimitivePropRowHead
         ref={headRef}
         isEven={leaf.n % 2 === 0}

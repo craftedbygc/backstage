@@ -44,17 +44,62 @@ export function sequencerLeftHierarchyBranchBeforeCss(depth: number) {
   }
   const lineLeft = sequencerLeftHierarchyLineLeftPx(depth)
   const labelLeft = sequencerLeftLabelAlignedPaddingLeftPx(depth)
-  const branchEndPx =
-    labelLeft - SEQUENCER_LEFT_LABEL_GAP_AFTER_HIERARCHY_PX
+  const branchEndPx = labelLeft - SEQUENCER_LEFT_LABEL_GAP_AFTER_HIERARCHY_PX
   return css`
     &::before {
       content: '';
       position: absolute;
       left: ${lineLeft}px;
+      top: calc(var(--sequencer-left-row-header-height, 28px) / 2);
+      transform: translateY(-50%);
       width: ${Math.max(0, branchEndPx - lineLeft)}px;
       height: 1px;
       background: ${SEQUENCER_LEFT_HIERARCHY_LINE_COLOR};
       pointer-events: none;
     }
+  `
+}
+
+/** Full-height vertical spine for an expanded group's child list. */
+export function sequencerLeftHierarchyGroupSpineBeforeCss(childDepth: number) {
+  if (childDepth <= 0) {
+    return css``
+  }
+  const lineLeft = sequencerLeftHierarchyLineLeftPx(childDepth)
+  return css`
+    content: '';
+    position: absolute;
+    left: ${lineLeft}px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: ${SEQUENCER_LEFT_HIERARCHY_LINE_COLOR};
+    pointer-events: none;
+  `
+}
+
+/**
+ * Hides the group spine below the last leaf row's horizontal branch (L-shaped corner).
+ * Only applied when the last sibling has no nested child list.
+ */
+export function sequencerLeftHierarchyLastLeafSpineCoverAfterCss(
+  childDepth: number,
+  coverBackground: string,
+) {
+  if (childDepth <= 0) {
+    return css``
+  }
+  const lineLeft = sequencerLeftHierarchyLineLeftPx(childDepth)
+  return css`
+    content: '';
+    position: absolute;
+    left: ${lineLeft}px;
+    top: calc(var(--sequencer-left-row-header-height, 28px) / 2);
+    bottom: 0;
+    width: 2px;
+    margin-left: -0.5px;
+    background: ${coverBackground};
+    pointer-events: none;
+    z-index: 1;
   `
 }
