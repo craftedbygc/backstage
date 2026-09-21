@@ -1,5 +1,12 @@
 # Backstage.js changelog
 
+## 0.7.3
+
+- Bug fixes
+  - **Studio:** **Object namespace** and other non–sheet-object sequencer rows no longer stay emphasized when an unrelated object is selected in the outline; aggregate bars follow descendant selection.
+  - **Studio:** Sequencer left **hierarchy guides** — parent vertical lines span the full expanded group; the last leaf prop in each list ends with an L-shaped corner instead of a line continuing below it.
+  - **Studio:** GSAP **DOM element highlight** overlay sits below the Studio UI shell so it no longer draws on top of panels and controls.
+
 ## 0.7.2
 
 - New features
