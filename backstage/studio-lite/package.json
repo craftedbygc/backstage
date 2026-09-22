@@ -1,6 +1,6 @@
 {
   "name": "@unseenco/backstage-studio-lite",
-  "version": "0.7.5",
+  "version": "0.7.6",
   "license": "AGPL-3.0-only",
   "description": "Static authoring editor for Backstage.js (no sequencing UI)",
   "repository": {
