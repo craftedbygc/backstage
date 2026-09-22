@@ -1,0 +1,39 @@
+---
+import '../styles/global.css'
+import Logo from '../assets/svg/logo.svg'
+
+interface Props {
+  title?: string
+}
+
+const {title = 'Backstage.js'} = Astro.props
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen bg-[#0f1115] text-[#e8eaed] antialiased">
+    <header
+      class="border-b border-[#2a2f3a] bg-[#0f1115]/90 backdrop-blur"
+    >
+      <nav
+        class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4"
+      >
+        <a href="/" class="text-[#F7F7F7]">
+          <Logo class="block w-auto h-6" />
+        </a>
+        <div class="flex gap-6 text-sm text-[#9aa0a6]">
+          <a href="/docs/" class="hover:text-white">API docs</a>
+          <a href="/playground/" class="hover:text-white">Playground</a>
+        </div>
+      </nav>
+    </header>
+    <main class="mx-auto max-w-5xl px-6 py-8">
+      <slot />
+    </main>
+  </body>
+</html>

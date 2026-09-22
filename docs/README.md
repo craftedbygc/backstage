@@ -48,13 +48,21 @@ The playground dev server (`yarn playground`) keeps Vite `base: '/'` so demos st
 
 ## Unified site build (Netlify)
 
-One Netlify site serves both docs and playground from the **`deploy/`** output:
+One Netlify site serves the landing page, docs, and playground from the **`deploy/`** output:
 
 ```bash
 yarn build:site
 ```
 
-This runs VitePress into `deploy/docs/` and the playground MPA into `deploy/playground/`, plus a minimal `deploy/index.html` linking to both.
+This builds the **`site/`** workspace (Astro + Tailwind) into `deploy/`, with a vanilla `index.js` entry that bundles `@unseenco/backstage` from monorepo source (same Vite aliases as the playground). Then VitePress goes to `deploy/docs/` and the playground MPA to `deploy/playground/`.
+
+Local landing dev (Studio + GSAP demo at `/`):
+
+```bash
+yarn site:dev
+```
+
+Docs and playground still use `yarn docs:dev` and `yarn playground` separately in development.
 
 ## Netlify deploy previews
 
@@ -70,7 +78,7 @@ The build runs `yarn build:site` after `yarn install`. Deploy previews rebuild o
 
 Example paths on a deploy preview:
 
-- `/` — landing links
+- `/` — Astro landing (Backstage × GSAP demo)
 - `/docs/` — API documentation
 - `/playground/` — playground home
 - `/playground/shared/dom/` — DOM demo

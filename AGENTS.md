@@ -22,7 +22,8 @@ Concise agent-facing notes for the Backstage.js monorepo. Read `CONTRIBUTING.md`
 | Single test file | `yarn test path/to/file.test.ts` |
 | Compat tests | `yarn test:compat:install` then `yarn test:compat:run` (two-step; install runs a local verdaccio) |
 | Docs (VitePress) | `yarn docs:dev` / `yarn docs:build` |
-| Unified static site (Netlify) | `yarn build:site` → `deploy/` (docs + playground) |
+| Unified static site (Netlify) | `yarn build:site` → `deploy/` (landing + docs + playground) |
+| Dev landing site | `yarn site:dev` (= `yarn workspace @unseenco/backstage-site run dev`, Astro at `/`) |
 | Dev playground | `yarn playground` (= `yarn workspace playground run serve`, Vite, rebuilds packages on the fly) |
 | Release | `yarn cli release x.y.z[-dev|rc.w]` (maintainers only; needs clean git tree) |
 

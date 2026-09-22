@@ -7,13 +7,15 @@
     "examples/*",
     "backstage",
     "compat-tests",
-    "docs"
+    "docs",
+    "site"
   ],
   "scripts": {
     "cli": "node -r esbuild-register devEnv/cli.ts",
     "docs:dev": "yarn workspace @unseenco/backstage-docs run dev",
     "docs:build": "yarn workspace @unseenco/backstage-docs run build",
     "build:site": "node -r esbuild-register devEnv/build-site.ts",
+    "site:dev": "yarn workspace @unseenco/backstage-site run dev",
     "playground": "yarn workspace playground run serve",
     "typecheck": "yarn run build:ts",
     "build:ts": "tsc --build ./devEnv/typecheck-all-projects/tsconfig.all.json",

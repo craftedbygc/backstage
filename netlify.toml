@@ -1,4 +1,4 @@
-# Unified static site: VitePress API docs at /docs/ and playground MPA at /playground/.
+# Unified static site: Astro landing at /, VitePress API docs at /docs/, playground MPA at /playground/.
 # Each PR gets a Netlify Deploy Preview; merges to main update production.
 #
 # Netlify UI (Site configuration → Build & deploy → Build settings):

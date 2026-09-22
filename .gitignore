@@ -28,3 +28,4 @@
 /compat-tests/*/build
 
 /deploy
+/site/dist

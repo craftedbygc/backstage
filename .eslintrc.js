@@ -48,7 +48,7 @@ module.exports = {
       },
     ],
   },
-  ignorePatterns: ['*.d.ts', '*.ignore.ts', 'compat-tests/*'],
+  ignorePatterns: ['*.d.ts', '*.ignore.ts', 'compat-tests/*', 'site/dist/**'],
   overrides: [
     {
       files: ['*.ts', '*.tsx'],
