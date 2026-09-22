@@ -1,5 +1,11 @@
 # Backstage.js changelog
 
+## 0.7.6
+
+- Bug fixes
+  - **Studio:** **Keyframe diamond** prev/next chevrons on hover sit at the edges of the chip again (details panel and sequencer left column) instead of overlapping the diamond.
+  - **Studio:** **Graph editor** ease curves line up with keyframe positions when panning the timeline; the horizontal scroll region is no longer double-inset under the sequencer left column.
+
 ## 0.7.5
 
 - New features
