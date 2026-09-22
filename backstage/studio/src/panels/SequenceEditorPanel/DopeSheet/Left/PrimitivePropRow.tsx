@@ -19,7 +19,6 @@ import {
 import {propNameTextCSS} from '@unseenco/backstage/studio/propEditors/utils/propNameTextCSS'
 import {usePropHighlightMouseEnter} from './usePropHighlightMouseEnter'
 import {useSequenceEditorPaneLayout} from '@unseenco/backstage/studio/panels/SequenceEditorPanel/DopeSheet/SequenceEditorPaneLayoutContext'
-import NextPrevKeyframeCursors from '@unseenco/backstage/studio/propEditors/NextPrevKeyframeCursors'
 
 const theme = {
   label: {
@@ -46,7 +45,7 @@ const PrimitivePropRowHead = styled(BaseHeader)<{
   justify-content: flex-start;
   box-sizing: border-box;
   min-width: 0;
-  overflow: ${(props) => (props.$docked ? 'hidden' : 'visible')};
+  overflow: visible;
 `
 
 const PrimitivePropRowHeadTrailing = styled.div`
@@ -55,6 +54,9 @@ const PrimitivePropRowHeadTrailing = styled.div`
   margin-left: auto;
   flex: 0 0 auto;
   min-width: 0;
+  overflow: visible;
+  position: relative;
+  z-index: 1;
 `
 
 const PrimitivePropRowIconContainer = styled.button<{
@@ -102,6 +104,11 @@ const GraphIcon = React.memo(function GraphIcon() {
 
 const PrimitivePropRowHead_Label = styled.span`
   margin-right: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   ${propNameTextCSS};
 
   ${PrimitivePropRowHead}:hover & {
@@ -199,9 +206,7 @@ const PrimitivePropRow: React.FC<{
       >
         <PrimitivePropRowHead_Label>{label}</PrimitivePropRowHead_Label>
         <PrimitivePropRowHeadTrailing>
-          {controlIndicators.type === NextPrevKeyframeCursors
-            ? React.cloneElement(controlIndicators, {compact: isDocked})
-            : controlIndicators}
+          {controlIndicators}
           <PrimitivePropRowIconContainer
             onClick={(e) => {
               e.stopPropagation()

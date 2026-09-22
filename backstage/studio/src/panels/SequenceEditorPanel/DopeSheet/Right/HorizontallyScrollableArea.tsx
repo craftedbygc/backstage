@@ -36,15 +36,21 @@ const HorizontallyScrollableArea: React.FC<{
   layoutP: Pointer<SequenceEditorPanelLayout>
   height: number
   children: React.ReactNode
-}> = React.memo(({layoutP, children, height}) => {
+  /**
+   * Absolute `left` within the positioned parent. Defaults to the sequencer
+   * left-column width; use `0` when the parent is already inset (graph editor).
+   */
+  absoluteLeft?: number
+}> = React.memo(({layoutP, children, height, absoluteLeft}) => {
   const {leftWidth, unitSpaceToScaledSpaceMultiplier} = usePrism(
     () => ({
-      leftWidth: val(layoutP.leftDims.width),
+      leftWidth:
+        absoluteLeft !== undefined ? absoluteLeft : val(layoutP.leftDims.width),
       unitSpaceToScaledSpaceMultiplier: val(layoutP.scaledSpace.fromUnitSpace)(
         1,
       ),
     }),
-    [layoutP],
+    [layoutP, absoluteLeft],
   )
 
   const [containerRef, containerNode] = useRefAndState<HTMLDivElement | null>(

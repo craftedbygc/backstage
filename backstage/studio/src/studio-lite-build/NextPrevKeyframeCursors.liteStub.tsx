@@ -10,7 +10,6 @@ export const nextPrevCursorsTheme = {
 
 const NextPrevKeyframeCursors: React.FC<{
   nearbyKeyframes: NearbyKeyframesControls
-  compact?: boolean
 }> = () => null
 
 export default NextPrevKeyframeCursors

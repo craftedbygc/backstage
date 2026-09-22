@@ -24,7 +24,7 @@ export type NearbyKeyframesControls = {
   }
 }
 
-const Container = styled.div<{$compact?: boolean}>`
+const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -37,14 +37,15 @@ const Container = styled.div<{$compact?: boolean}>`
   height: 12px;
   margin: 0 0 0 2px;
   position: relative;
-  overflow: ${(props) => (props.$compact ? 'hidden' : 'visible')};
+  /* Chevrons extend past the 16px layout slot on hover; clip at row/gutter ancestors. */
+  overflow: visible;
   z-index: 0;
 
   &:after {
     position: absolute;
     /* Keep horizontal overflow tight so hover chrome clears the pane’s left edge. */
-    left: ${(props) => (props.$compact ? -4 : -8)}px;
-    right: ${(props) => (props.$compact ? -2 : -8)}px;
+    left: -8px;
+    right: -8px;
     /* Optical icon center is ~1px below geometric mid (SVG content at y=7/12) */
     top: -3px;
     height: 20px;
@@ -161,13 +162,13 @@ const PrevOrNextButton = styled(Button)<{
   }
 `
 
-const prevHoverTranslateX = (compact: boolean) => (compact ? -4 : -11)
-const nextHoverTranslateX = (compact: boolean) => (compact ? 2 : 11)
+/** Push chevrons to the hover-chip edges (clear the 8px center diamond). */
+const prevHoverTranslateX = () => -11
+const nextHoverTranslateX = () => 11
 
 const Prev = styled(PrevOrNextButton)<{
   available: boolean
   flag: PresenceFlag | undefined
-  $compact: boolean
 }>`
   ${hideWhenIdle};
   position: absolute;
@@ -176,13 +177,12 @@ const Prev = styled(PrevOrNextButton)<{
   transform: translate(-2px, -50%);
   ${Container}:hover & {
     /* Clear the diamond tip; may sit slightly past the tight hover chrome. */
-    transform: translate(${({$compact}) => prevHoverTranslateX($compact)}px, -50%);
+    transform: translate(${prevHoverTranslateX()}px, -50%);
   }
 `
 const Next = styled(PrevOrNextButton)<{
   available: boolean
   flag: PresenceFlag | undefined
-  $compact: boolean
 }>`
   ${hideWhenIdle};
   position: absolute;
@@ -190,18 +190,15 @@ const Next = styled(PrevOrNextButton)<{
   top: 50%;
   transform: translate(2px, -50%);
   ${Container}:hover & {
-    transform: translate(${({$compact}) => nextHoverTranslateX($compact)}px, -50%);
+    transform: translate(${nextHoverTranslateX()}px, -50%);
   }
 `
 
 const NextPrevKeyframeCursors: React.VFC<
   NearbyKeyframesControls & {
     hasDivergedFromSavedState?: boolean
-    /** Tighter hover expansion (e.g. docked sequence left column). */
-    compact?: boolean
   }
 > = (props) => {
-  const compact = props.compact === true
   const prevPresence = usePresence(props.prev?.itemKey)
   const curPresence = usePresence(
     props.cur?.type === 'on' ? props.cur.itemKey : undefined,
@@ -209,12 +206,11 @@ const NextPrevKeyframeCursors: React.VFC<
   const nextPresence = usePresence(props.next?.itemKey)
 
   return (
-    <Container $compact={compact}>
+    <Container>
       <Prev
         available={!!props.prev}
         onClick={props.prev?.jump}
         flag={prevPresence.flag}
-        $compact={compact}
         {...prevPresence.attrs}
       >
         <ChevronPrevSvg />
@@ -234,7 +230,6 @@ const NextPrevKeyframeCursors: React.VFC<
         available={!!props.next}
         onClick={props.next?.jump}
         flag={nextPresence.flag}
-        $compact={compact}
         {...nextPresence.attrs}
       >
         <ChevronNextSvg />

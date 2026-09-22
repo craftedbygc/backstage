@@ -103,7 +103,11 @@ const GraphEditor: React.FC<{
         }}
       >
         <FrameGrid layoutP={layoutP} width={width} height={height} />
-        <HorizontallyScrollableArea layoutP={layoutP} height={height}>
+        <HorizontallyScrollableArea
+          layoutP={layoutP}
+          height={height}
+          absoluteLeft={0}
+        >
           <SVGContainer
             width={contentWidth}
             height={height}
