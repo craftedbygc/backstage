@@ -1,5 +1,14 @@
 # Backstage.js changelog
 
+## 0.7.5
+
+- New features
+  - **Studio:** **Ranged number sliders** in the details panel keep the value readout beside the handle when scrubbing near the maximum (`ResizeObserver` layout measurement with ref caching for smooth drags).
+- Bug fixes
+  - **Playground:** **Studio** loads again in production **`vite preview`** builds — the home page no longer glob-imports demo HTML (so Vite emits script tags on each MPA entry), preview base path and Windows entry paths are fixed, and **`build:dist`** / **`preview`** scripts bundle from package **`dist/`** when testing consumer builds.
+- Performance
+  - **Studio:** Scrubbing keyframe and prop values in the **details** panel triggers less **sequencer** work — narrower tree invalidation, less layout thrash on keyframe updates, and dope-sheet chrome that does not depend on animated values is skipped during reconciliation.
+
 ## 0.7.4
 
 - Bug fixes
