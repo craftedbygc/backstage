@@ -1,5 +1,13 @@
+import {privateAPI} from '@unseenco/backstage/privateAPIs'
 import type {ISheet} from '@unseenco/backstage/sheets/BackstageSheet'
+import type {ISequence} from '@unseenco/backstage/sequences/BackstageSequence'
 import {val} from '@unseenco/backstage/dataverse'
+
+function getEffectiveSequence(sheet: ISheet): ISequence {
+  const host = privateAPI(sheet)
+  const variant = val(host.effectiveActiveSequenceVariantD)
+  return host.getSequence(variant).publicApi
+}
 
 /** Maps page scroll progress (0–1) to sequence position and back. */
 export type ScrollDriver = {
@@ -201,7 +209,7 @@ export function attachSheetScrollDriver(
   driver: ScrollDriver = createNativeDocumentScrollDriver(),
 ): () => void {
   rememberSheetScrollDriver(sheet, driver)
-  const sequence = sheet.sequence
+  const sequence = getEffectiveSequence(sheet)
 
   const syncPositionFromScroll = (progress: number) => {
     const length = val(sequence.pointer.length)

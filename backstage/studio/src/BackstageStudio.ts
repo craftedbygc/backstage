@@ -281,7 +281,7 @@ export interface _StudioInitializeOpts {
   /**
    * The local storage key to use to persist the state.
    *
-   * Default: "backstagejs:0.4"
+   * Default: `"backstage-0.4"`
    */
   persistenceKey?: string
   /**

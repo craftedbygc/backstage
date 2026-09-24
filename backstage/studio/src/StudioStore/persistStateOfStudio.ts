@@ -24,6 +24,12 @@ const lastStateByStore = new WeakMap<
   LastPersistedSplit
 >()
 
+/** Default Studio `persistenceKey` in {@link Studio.initialize}. */
+export const BACKSTAGE_DEFAULT_PERSISTENCE_PREFIX = 'backstage-0.4'
+
+/** Theatre.js 0.4 localStorage prefix migrated on first load. */
+export const THEATRE_LEGACY_PERSISTENCE_PREFIX = 'theatre-0.4'
+
 export const persistStateOfStudio = (
   reduxStore: Store<FullStudioState>,
   onInitialize: () => void,
@@ -84,10 +90,47 @@ export const persistStateOfStudio = (
           localStorage.setItem(studioStorageKey, JSON.stringify(studio))
           localStorage.setItem(projectStorageKey, JSON.stringify(project))
           localStorage.removeItem(legacyStorageKey)
+        } else if (
+          localStoragePrefix === BACKSTAGE_DEFAULT_PERSISTENCE_PREFIX
+        ) {
+          loadTheatreJs040PersistentState()
         }
       }
     } finally {
       onInitialize()
+    }
+  }
+
+  function loadTheatreJs040PersistentState() {
+    const theatreStudioKey = getStudioStorageKey(
+      THEATRE_LEGACY_PERSISTENCE_PREFIX,
+    )
+    const theatreProjectKey = getProjectStorageKey(
+      THEATRE_LEGACY_PERSISTENCE_PREFIX,
+    )
+    const theatreStudio = loadJsonFromStorage<StudioOnlyPersistentState>(
+      theatreStudioKey,
+    )
+    const theatreProject = loadJsonFromStorage<ProjectOnlyPersistentState>(
+      theatreProjectKey,
+    )
+
+    if (theatreStudio || theatreProject) {
+      const merged = mergePersistentState(theatreStudio, theatreProject)
+      if (merged) {
+        loadState(merged)
+      }
+      return
+    }
+
+    const theatreLegacyKey = getLegacyStorageKey(
+      THEATRE_LEGACY_PERSISTENCE_PREFIX,
+    )
+    const theatreLegacy = loadJsonFromStorage<StudioPersistentState>(
+      theatreLegacyKey,
+    )
+    if (theatreLegacy) {
+      loadState(theatreLegacy)
     }
   }
 }

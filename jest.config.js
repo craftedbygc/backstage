@@ -3,7 +3,6 @@ module.exports = {
   testMatch: [
     '<rootDir>/packages/*/src/**/*.test.ts',
     '<rootDir>/backstage/*/src/**/*.test.ts',
-    '<rootDir>/backstage/*/src/**/*.test.ts',
     '<rootDir>/devEnv/**/*.test.ts',
   ],
   moduleNameMapper: {

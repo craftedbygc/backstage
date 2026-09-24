@@ -31,15 +31,15 @@ function writeCorePrivateAPIsShim(pathToPackage: string) {
   const dist = path.join(pathToPackage, 'dist')
   fs.writeFileSync(
     path.join(dist, 'privateAPIs.mjs'),
-    `export { privateAPI, setPrivateAPI, getBackstageCoreRafDriver } from './index.mjs';\n`,
+    `export { privateAPI, setPrivateAPI, getBackstageCoreRafDriver, peekBackstageCoreRafDriver } from './index.mjs';\n`,
   )
   fs.writeFileSync(
     path.join(dist, 'privateAPIs.js'),
-    `'use strict';\nconst index = require('./index.js');\nexports.privateAPI = index.privateAPI;\nexports.setPrivateAPI = index.setPrivateAPI;\nexports.getBackstageCoreRafDriver = index.getBackstageCoreRafDriver;\n`,
+    `'use strict';\nconst index = require('./index.js');\nexports.privateAPI = index.privateAPI;\nexports.setPrivateAPI = index.setPrivateAPI;\nexports.getBackstageCoreRafDriver = index.getBackstageCoreRafDriver;\nexports.peekBackstageCoreRafDriver = index.peekBackstageCoreRafDriver;\n`,
   )
   fs.writeFileSync(
     path.join(dist, 'privateAPIs.d.ts'),
-    `export { privateAPI, setPrivateAPI, getBackstageCoreRafDriver } from './index';\n`,
+    `export { privateAPI, setPrivateAPI, getBackstageCoreRafDriver, peekBackstageCoreRafDriver } from './index';\n`,
   )
 }
 

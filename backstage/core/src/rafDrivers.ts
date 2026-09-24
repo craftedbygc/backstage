@@ -93,26 +93,32 @@ let lastDriverId = 0
  *
  * function createBasicRafDriver(): IRafDriver {
  *   let rafId: number | null = null
+ *   let running = false
+ *   const onAnimationFrame = (t: number) => {
+ *     if (!running) return
+ *     driver.tick(t)
+ *     rafId = window.requestAnimationFrame(onAnimationFrame)
+ *   }
  *   const start = (): void => {
+ *     if (running) return
+ *     running = true
  *     if (typeof window !== 'undefined') {
- *       const onAnimationFrame = (t: number) => {
- *         driver.tick(t)
- *         rafId = window.requestAnimationFrame(onAnimationFrame)
- *       }
  *       rafId = window.requestAnimationFrame(onAnimationFrame)
  *     } else {
  *       driver.tick(0)
- *       setTimeout(() => driver.tick(1), 0)
+ *       setTimeout(() => {
+ *         if (running) driver.tick(1)
+ *       }, 0)
  *     }
  *   }
  *
  *   const stop = (): void => {
+ *     running = false
  *     if (typeof window !== 'undefined') {
  *       if (rafId !== null) {
  *         window.cancelAnimationFrame(rafId)
+ *         rafId = null
  *       }
- *     } else {
- *       // nothing to do in SSR
  *     }
  *   }
  *

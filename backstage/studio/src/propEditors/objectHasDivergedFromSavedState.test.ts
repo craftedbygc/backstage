@@ -11,7 +11,10 @@ const emptySheetState = {
   staticOverrides: {byObject: {}},
 }
 
-describe('objectHasDivergedFromSavedState', () => {
+const describeFull =
+  process.env.BACKSTAGE_LITE_TEST === '1' ? describe.skip : describe
+
+describeFull('objectHasDivergedFromSavedState', () => {
   test('returns false when in-memory state matches the loaded json state', async () => {
     const sheetState = {
       staticOverrides: {

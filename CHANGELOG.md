@@ -1,5 +1,16 @@
 # Backstage.js changelog
 
+## Unreleased
+
+- Bug fixes
+  - **Core:** Default core `requestAnimationFrame` driver no longer leaks callbacks after the ticker goes dormant; `stop()` clears pending frames and `start()` is idempotent.
+  - **Core:** Page scroll and GSAP sequence bridges follow the effective active sequence variant (including Studio preview overrides).
+  - **Core:** Remote sync `BroadcastChannel` is created only after a project attaches to Studio (no channel in Node or before Studio loads). Pre-attach sheet objects register for editor broadcast once Studio attaches.
+  - **GSAP:** Ticker warning checks use `peekBackstageCoreRafDriver()` so registering GSAP animations does not create the default core driver before `setCoreRafDriver()`.
+  - **Studio:** Migrates Theatre.js `theatre-0.4` localStorage and `theatrejs-` IndexedDB asset stores to Backstage `backstage-0.4` / `backstagejs-` prefixes.
+- API / behaviour
+  - **Remote editor:** Canonical URL hash is `#backstage-editor` (legacy `#editor` still supported). `#editorial` and similar hashes are no longer treated as the remote editor.
+
 ## 0.7.6
 
 - Bug fixes

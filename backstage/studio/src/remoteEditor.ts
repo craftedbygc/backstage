@@ -4,16 +4,7 @@ import {
   enableVisibilityToggleKeyboardShortcut,
 } from './UIRoot/useKeyboardShortcuts'
 
-/**
- * A window is considered the "remote editor" when its URL contains the
- * `editor` hash. Mirrors `@unseenco/backstage`'s `isRemoteEditorWindow()`.
- */
-export function isRemoteEditorWindow(): boolean {
-  return (
-    typeof document !== 'undefined' &&
-    document.location.hash.indexOf('editor') !== -1
-  )
-}
+export {isRemoteEditorWindow} from '@unseenco/backstage-shared/remoteEditorWindow'
 
 let remoteEditorWindow: Window | null = null
 let pollIntervalId: number | undefined
@@ -56,7 +47,7 @@ export function openRemoteEditorWindow(): void {
   }
 
   const url = new URL(window.location.href)
-  url.hash = 'editor'
+  url.hash = 'backstage-editor'
   // Note: no noopener/noreferrer, since we need the returned reference to
   // detect when the popup closes. This is a same-origin popup of the app's
   // own URL, not a third-party link, so the tabnabbing risk doesn't apply.

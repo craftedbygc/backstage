@@ -9,26 +9,34 @@ import {createRafDriver} from './rafDrivers'
  */
 function createBasicRafDriver(): IRafDriver {
   let rafId: number | null = null
+  let running = false
+
+  const onAnimationFrame = (t: number) => {
+    if (!running) return
+    driver.tick(t)
+    rafId = window.requestAnimationFrame(onAnimationFrame)
+  }
+
   const start = (): void => {
+    if (running) return
+    running = true
     if (typeof window !== 'undefined') {
-      const onAnimationFrame = (t: number) => {
-        driver.tick(t)
-        rafId = window.requestAnimationFrame(onAnimationFrame)
-      }
       rafId = window.requestAnimationFrame(onAnimationFrame)
     } else {
       driver.tick(0)
-      setTimeout(() => driver.tick(1), 0)
+      setTimeout(() => {
+        if (running) driver.tick(1)
+      }, 0)
     }
   }
 
   const stop = (): void => {
+    running = false
     if (typeof window !== 'undefined') {
       if (rafId !== null) {
         window.cancelAnimationFrame(rafId)
+        rafId = null
       }
-    } else {
-      // nothing to do in SSR
     }
   }
 
@@ -91,4 +99,18 @@ export function setCoreRafDriver(driver: IRafDriver) {
   }
   const driverPrivateApi = privateAPI(driver)
   coreRafDriver = driverPrivateApi
+}
+
+/**
+ * Returns the core rAF driver if one has been created or set; otherwise `undefined`.
+ * Unlike {@link getCoreRafDriver}, does not create the default driver.
+ */
+export function peekCoreRafDriver(): RafDriverPrivateAPI | undefined {
+  return coreRafDriver
+}
+
+/** @internal Reset between unit tests. */
+export function resetCoreRafDriverForTests(): void {
+  coreRafDriver?.stop?.()
+  coreRafDriver = undefined
 }

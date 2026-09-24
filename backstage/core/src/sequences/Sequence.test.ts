@@ -12,7 +12,10 @@ import type {
   SequenceTrackId,
 } from '@unseenco/backstage-shared/utils/ids'
 
-describe(`Sequence`, () => {
+const describeFull =
+  process.env.BACKSTAGE_LITE_TEST === '1' ? describe.skip : describe
+
+describeFull(`Sequence`, () => {
   test('sequence.getKeyframesOfSimpleProp()', async () => {
     const {objPublicAPI, sheet} = await setupTestSheet({
       staticOverrides: {

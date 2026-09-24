@@ -9,7 +9,7 @@ import type {ISheet} from '@unseenco/backstage/sheets/BackstageSheet'
 import type {UnknownShorthandCompoundProps} from './propTypes/internals'
 import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import type {IRafDriver, RafDriverPrivateAPI} from './rafDrivers'
-import {getCoreRafDriver} from './coreTicker'
+import {getCoreRafDriver, peekCoreRafDriver} from './coreTicker'
 
 const publicAPIToPrivateAPIMap = new WeakMap()
 
@@ -51,4 +51,9 @@ export function setPrivateAPI(pub: {}, priv: {}): void {
 /** Used by `@unseenco/backstage/gsap` to inspect which driver drives the core ticker. */
 export function getBackstageCoreRafDriver(): IRafDriver {
   return getCoreRafDriver().publicApi
+}
+
+/** Like {@link getBackstageCoreRafDriver} but does not create the default driver. */
+export function peekBackstageCoreRafDriver(): IRafDriver | undefined {
+  return peekCoreRafDriver()?.publicApi
 }

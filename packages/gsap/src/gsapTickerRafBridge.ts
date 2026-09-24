@@ -1,5 +1,5 @@
 import type {IRafDriver} from '@unseenco/backstage'
-import {getBackstageCoreRafDriver} from '@unseenco/backstage/privateAPIs'
+import {peekBackstageCoreRafDriver} from '@unseenco/backstage/privateAPIs'
 import {getBackstageGsapConfig} from './config'
 
 const gsapTickerDrivenDriverIds = new Set<number>()
@@ -58,7 +58,8 @@ export function warnIfGsapTickerNotDrivingBackstageRaf(): void {
   if (getBackstageGsapConfig().suppressGsapTickerRafWarning) return
   if (hasWarnedGsapTickerRaf) return
 
-  const coreDriver = getBackstageCoreRafDriver()
+  const coreDriver = peekBackstageCoreRafDriver()
+  if (!coreDriver) return
   if (!isRafDriverDrivenByGsapTicker(coreDriver)) {
     hasWarnedGsapTickerRaf = true
     console.warn(
