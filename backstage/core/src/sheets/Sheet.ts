@@ -29,6 +29,10 @@ import type {SequenceVariantId} from '@unseenco/backstage/sequences/sequenceVari
 import {isBackstageLiteMode} from '@unseenco/backstage/utils/isBackstageLiteMode'
 import {getOrCreateFullSequence} from './sheetGetSequenceFull'
 import {
+  clearGsapRegistriesForSheetAddress,
+  clearGsapRegistriesForSheetObject,
+} from '@unseenco/backstage-shared/gsap/clearGsapRegistriesForSheet'
+import {
   disposeRuntimeIntegrationsForSheet,
   enableGsapSequenceBridgeForSheet,
   reattachGsapBridgeForSheet,
@@ -168,6 +172,7 @@ export default class Sheet {
       return newState
     })
     if (obj) {
+      clearGsapRegistriesForSheetObject(obj)
       this.project._remoteSync.unregisterObject(obj)
     }
   }
@@ -177,6 +182,7 @@ export default class Sheet {
    * this sheet instance from the project. Persisted state is kept.
    */
   unload() {
+    clearGsapRegistriesForSheetAddress(this.address)
     this.disposeRuntimeIntegrations()
     if (!isBackstageLiteMode()) {
       for (const sequence of Object.values(this._sequences)) {

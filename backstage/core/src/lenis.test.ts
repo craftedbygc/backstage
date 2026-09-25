@@ -1,7 +1,10 @@
+/*
+ * @jest-environment jsdom
+ */
 import {createLenisScrollDriver} from './lenis'
 
 describe('createLenisScrollDriver', () => {
-  test('maps scroll position to 0–1 progress', () => {
+  test('maps scroll position to 0–1 progress', async () => {
     const listeners: Array<() => void> = []
     const lenis = {
       scroll: 250,
@@ -24,6 +27,18 @@ describe('createLenisScrollDriver', () => {
 
     driver.setProgress(0.5)
     expect(lenis.scroll).toBe(500)
+
+    let echoCount = 0
+    const echoUnsub = driver.subscribe(() => {
+      echoCount++
+    })
+    driver.setProgress(0.5)
+    listeners.forEach((l) => l())
+    expect(echoCount).toBe(0)
+    echoUnsub()
+    await new Promise<void>((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+    })
 
     let last = -1
     const unsub = driver.subscribe((p) => {

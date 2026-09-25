@@ -1,5 +1,6 @@
 import logger from './logger'
 import * as globalVariableNames from './globalVariableNames'
+import {crossBundleSingleton} from '@unseenco/backstage-shared/utils/crossBundleSingleton'
 
 export type Notification = {title: string; message: string}
 export type NotificationType = 'info' | 'success' | 'warning' | 'error'
@@ -78,18 +79,40 @@ export const notify: Notifiers = {
   error: createHandler('error'),
 }
 
-if (typeof window !== 'undefined') {
-  window.addEventListener('error', (e) => {
-    notify.error(
-      `An error occurred`,
-      `<pre>${e.message}</pre>\n\nSee **console** for details.`,
-    )
-  })
+/** Escape text before embedding in notification markdown/HTML. */
+export function escapeNotificationText(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
 
-  window.addEventListener('unhandledrejection', (e) => {
-    notify.error(
-      `An error occurred`,
-      `<pre>${e.reason}</pre>\n\nSee **console** for details.`,
-    )
+function formatUncaughtErrorMessage(reason: unknown): string {
+  const raw =
+    reason instanceof Error
+      ? reason.message
+      : typeof reason === 'string'
+        ? reason
+        : String(reason)
+  return `<pre>${escapeNotificationText(raw)}</pre>\n\nSee **console** for details.`
+}
+
+/**
+ * Installs global `error` / `unhandledrejection` listeners once (Studio init only).
+ */
+export function installStudioGlobalErrorNotificationListeners(): void {
+  if (typeof window === 'undefined') return
+
+  crossBundleSingleton('studio_global_error_notification_listeners', () => {
+    window.addEventListener('error', (e) => {
+      notify.error(`An error occurred`, formatUncaughtErrorMessage(e.message))
+    })
+
+    window.addEventListener('unhandledrejection', (e) => {
+      notify.error(`An error occurred`, formatUncaughtErrorMessage(e.reason))
+    })
+
+    return true
   })
 }

@@ -142,4 +142,36 @@ describe('persistStateOfStudio theatre → backstage migration', () => {
       ),
     ).toBe(true)
   })
+
+  test('SecurityError on read still calls onInitialize', () => {
+    const getItem = jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new DOMException('denied', 'SecurityError')
+    })
+    const onInitialize = jest.fn()
+    const store = createTestStore()
+    persistStateOfStudio(store, onInitialize, BACKSTAGE_DEFAULT_PERSISTENCE_PREFIX)
+    expect(onInitialize).toHaveBeenCalled()
+    getItem.mockRestore()
+  })
+
+  test('quota error on write does not throw on repeated persist attempts', () => {
+    jest.useFakeTimers()
+    const setItem = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('quota', 'QuotaExceededError')
+    })
+
+    const store = createTestStore()
+    persistStateOfStudio(store, () => {}, BACKSTAGE_DEFAULT_PERSISTENCE_PREFIX)
+    store.dispatch(
+      studioActions.replacePersistentState({
+        studio: {},
+        project: {},
+      } as never),
+    )
+    expect(() => jest.advanceTimersByTime(2000)).not.toThrow()
+    expect(() => jest.advanceTimersByTime(2000)).not.toThrow()
+
+    setItem.mockRestore()
+    jest.useRealTimers()
+  })
 })

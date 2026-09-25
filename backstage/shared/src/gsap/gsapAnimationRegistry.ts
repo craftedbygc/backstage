@@ -1,5 +1,6 @@
 import type {GsapClipBaselineTiming} from '@unseenco/backstage/projects/store/types/SheetState_Historic'
 import type SheetObject from '@unseenco/backstage/sheetObjects/SheetObject'
+import type {SheetAddress} from '@unseenco/backstage-shared/utils/addresses'
 import type {
   ObjectAddressKey,
   ProjectId,
@@ -9,7 +10,10 @@ import type {
 
 const DEFAULT_SHEET_INSTANCE_ID = 'default' as SheetInstanceId
 import {buildGsapClipBaselineTiming} from './gsapClipBaseline'
-import {registerGsapObjectBinding} from './gsapObjectBinding'
+import {
+  registerGsapObjectBinding,
+  unregisterGsapObjectBinding,
+} from './gsapObjectBinding'
 import {bumpGsapStudioRegistryRevision} from './gsapStudioRegistryRevision'
 import {
   introspectGsapTimelineChildren,
@@ -174,4 +178,73 @@ export function listAnimationEntries(): GsapAnimationRegistryEntry[] {
 
 export function clearAnimationRegistryForTests(): void {
   getStore().bySheetAddress.clear()
+}
+
+function sheetAddressPrefix(address: SheetAddress): string {
+  const sheetInstanceId = address.sheetInstanceId ?? DEFAULT_SHEET_INSTANCE_ID
+  return `${address.projectId}|${address.sheetId}|${sheetInstanceId}|`
+}
+
+export function clearAnimationRegistryForSheetObject(
+  sheetObject: SheetObject,
+  animationId?: string,
+): void {
+  const sheetKey = sheetObjectAddressKey(sheetObject)
+  const map = getStore().bySheetAddress.get(sheetKey)
+  if (!map) return
+
+  let removed = false
+  if (animationId !== undefined) {
+    const entry = map.get(animationId)
+    if (entry?.sheetObject === sheetObject && map.delete(animationId)) {
+      removed = true
+    }
+  } else {
+    for (const [id, entry] of [...map.entries()]) {
+      if (entry.sheetObject === sheetObject) {
+        map.delete(id)
+        removed = true
+      }
+    }
+  }
+
+  if (map.size === 0) {
+    getStore().bySheetAddress.delete(sheetKey)
+  }
+  if (removed) {
+    unregisterGsapObjectBinding(sheetObject)
+    bumpGsapStudioRegistryRevision()
+  }
+}
+
+export function unregisterAnimationOnSheet(
+  address: SheetAddress,
+  animationId: string,
+): void {
+  const prefix = sheetAddressPrefix(address)
+  for (const [sheetKey, map] of getStore().bySheetAddress) {
+    if (!sheetKey.startsWith(prefix)) continue
+    const entry = map.get(animationId)
+    if (entry?.sheetObject) {
+      clearAnimationRegistryForSheetObject(entry.sheetObject, animationId)
+      return
+    }
+  }
+}
+
+export function clearAnimationRegistryEntriesForSheetAddress(
+  address: SheetAddress,
+): void {
+  const prefix = sheetAddressPrefix(address)
+  const store = getStore()
+  let removed = false
+  for (const key of [...store.bySheetAddress.keys()]) {
+    if (key.startsWith(prefix)) {
+      store.bySheetAddress.delete(key)
+      removed = true
+    }
+  }
+  if (removed) {
+    bumpGsapStudioRegistryRevision()
+  }
 }

@@ -16,6 +16,9 @@ export type LenisScrollDriverSource = {
 export function createLenisScrollDriver(
   lenis: LenisScrollDriverSource,
 ): ScrollDriver {
+  let suppressScrollEvents = false
+  let suppressGeneration = 0
+
   const readProgress = (): number => {
     const limit = lenis.limit
     if (limit <= 0) return 0
@@ -28,10 +31,19 @@ export function createLenisScrollDriver(
     setProgress(progress: number) {
       const limit = lenis.limit
       const clamped = Math.max(0, Math.min(1, progress))
+      const gen = ++suppressGeneration
+      suppressScrollEvents = true
       lenis.scrollTo(clamped * limit, {immediate: true})
+      const release = () => {
+        if (gen === suppressGeneration) {
+          suppressScrollEvents = false
+        }
+      }
+      requestAnimationFrame(() => requestAnimationFrame(release))
     },
     subscribe(onChange) {
       const handler = () => {
+        if (suppressScrollEvents) return
         onChange(readProgress())
       }
       lenis.on('scroll', handler)

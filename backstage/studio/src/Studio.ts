@@ -29,6 +29,7 @@ import {
   isDirectAssetUrl,
 } from '@unseenco/backstage-shared/utils/assets'
 import {notify} from './notify'
+import {installStudioGlobalErrorNotificationListeners} from '@unseenco/backstage-shared/notify'
 import type {RafDriverPrivateAPI} from '@unseenco/backstage/rafDrivers'
 import {syncAllStudioPreviewVariants} from '@unseenco/backstage/studio/utils/activeSequenceVariant'
 import {STUDIO_PROJECT_ID} from '@unseenco/backstage/studio/panels/OutlinePanel/outlinePanelUtils'
@@ -173,6 +174,7 @@ export class Studio {
     setRuntimeStudioMode(studioMode)
 
     this._initializeFnCalled = true
+    installStudioGlobalErrorNotificationListeners()
 
     if (this._didWarnAboutNotInitializing) {
       console.warn(STUDIO_INITIALIZED_LATE_MSG)

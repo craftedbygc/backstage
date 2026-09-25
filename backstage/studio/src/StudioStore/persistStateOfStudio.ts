@@ -1,4 +1,5 @@
 import logger from '@unseenco/backstage-shared/logger'
+import {notify} from '@unseenco/backstage-shared/notify'
 import type {StudioPersistentState} from '@unseenco/backstage/studio/store'
 import {studioActions} from '@unseenco/backstage/studio/store'
 import type {FullStudioState} from '@unseenco/backstage/studio/store/index'
@@ -23,6 +24,8 @@ const lastStateByStore = new WeakMap<
   Store<FullStudioState>,
   LastPersistedSplit
 >()
+
+let persistQuotaErrorNotified = false
 
 /** Default Studio `persistenceKey` in {@link Studio.initialize}. */
 export const BACKSTAGE_DEFAULT_PERSISTENCE_PREFIX = 'backstage-0.4'
@@ -58,8 +61,18 @@ export const persistStateOfStudio = (
       return
     }
     lastStateByStore.set(reduxStore, {studio, project})
-    localStorage.setItem(studioStorageKey, JSON.stringify(studio))
-    localStorage.setItem(projectStorageKey, JSON.stringify(project))
+    try {
+      localStorage.setItem(studioStorageKey, JSON.stringify(studio))
+      localStorage.setItem(projectStorageKey, JSON.stringify(project))
+    } catch (e) {
+      if (isStorageQuotaExceeded(e) && !persistQuotaErrorNotified) {
+        persistQuotaErrorNotified = true
+        notify.warning(
+          `Could not save Studio settings`,
+          `Your browser storage is full, so Backstage could not persist recent Studio changes. Free some space or export your project, then reload.`,
+        )
+      }
+    }
   }
   reduxStore.subscribe(debounce(persist, 1000))
   if (window) {
@@ -95,6 +108,14 @@ export const persistStateOfStudio = (
         ) {
           loadTheatreJs040PersistentState()
         }
+      }
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'SecurityError') {
+        logger.warn(
+          `Could not read Backstage Studio persistence from localStorage (${e.message}). Studio will start with default settings.`,
+        )
+      } else {
+        throw e
       }
     } finally {
       onInitialize()
@@ -135,8 +156,25 @@ export const persistStateOfStudio = (
   }
 }
 
+function isStorageQuotaExceeded(error: unknown): boolean {
+  if (!(error instanceof DOMException)) return false
+  return (
+    error.name === 'QuotaExceededError' ||
+    error.code === 22 ||
+    error.code === 1014
+  )
+}
+
 function loadJsonFromStorage<T>(storageKey: string): T | null {
-  const persistedS = localStorage.getItem(storageKey)
+  let persistedS: string | null
+  try {
+    persistedS = localStorage.getItem(storageKey)
+  } catch (e) {
+    if (e instanceof DOMException && e.name === 'SecurityError') {
+      return null
+    }
+    throw e
+  }
   if (!persistedS) return null
 
   try {
