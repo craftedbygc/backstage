@@ -13,6 +13,11 @@
   - **GSAP:** `sheet.unload()` and `sheet.detachObject()` clear GSAP animation and ScrollTrigger registry entries for that sheet or object.
   - **Studio:** Global uncaught error notifications are installed once from Studio init; error text is HTML-escaped before rendering.
   - **Core:** Lenis scroll drivers suppress echo scroll events after programmatic `setProgress`, matching native scroll drivers.
+- Performance
+  - **GSAP / Studio:** Runtime GSAP sequence bridge is the single playhead sync when enabled; Studio no longer double-syncs clips on sheets with `gsap: true`.
+  - **GSAP:** Playhead sync precomputes clip groupings and skips unchanged same-target groups between frames; timeline child timing is applied only when timings or animation instances change.
+  - **Studio:** Hiding Studio unmounts panels, toolbar, and sequencer (notifications, shortcuts, and remote DOM highlight stay active).
+  - **Studio:** Replaced `blob-compare` asset deduplication and `@react-spring/web` chordial tooltips with lighter in-repo implementations.
 - API / behaviour
   - **Remote editor:** Canonical URL hash is `#backstage-editor` (legacy `#editor` still supported). `#editorial` and similar hashes are no longer treated as the remote editor. Opening the editor from a tab uses `#backstage-editor=<tabId>` so sync targets the correct window.
   - **GSAP:** `unregisterGsapAnimation()` and `unregisterGsapScrollTrigger()` remove registry entries explicitly.

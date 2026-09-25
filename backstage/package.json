@@ -23,7 +23,6 @@
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.18.11",
-    "@react-spring/web": "^9.7.3",
     "@rollup/plugin-alias": "^3.1.5",
     "@rollup/plugin-multi-entry": "^4.1.0",
     "@rollup/plugin-replace": "^2.4.2",
@@ -44,7 +43,6 @@
     "@types/styled-components": "^5.1.26",
     "@types/uuid": "^8.3.0",
     "@unseenco/backstage": "workspace:*",
-    "blob-compare": "1.1.0",
     "cross-env": "^7.0.3",
     "esbuild": "^0.25.0",
     "esbuild-register": "^2.5.0",

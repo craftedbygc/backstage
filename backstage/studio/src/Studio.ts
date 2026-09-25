@@ -21,6 +21,7 @@ import type * as _coreExports from '@unseenco/backstage/coreExports'
 import type {OnDiskState} from '@unseenco/backstage/projects/store/storeTypes'
 import type {Deferred} from '@unseenco/backstage-shared/utils/defer'
 import {defer} from '@unseenco/backstage-shared/utils/defer'
+import {blobsEqual} from '@unseenco/backstage-shared/utils/blobsEqual'
 import type {ProjectId} from '@unseenco/backstage-shared/utils/ids'
 import shallowEqual from 'shallowequal'
 import {createStore, migrateTheatreIdbStoreIfNeeded} from './IDBStorage'
@@ -559,10 +560,7 @@ export class Studio {
           }
 
           if (existingAsset) {
-            const blobCompare = (await import('blob-compare')).default
-
-            // @ts-ignore
-            sameSame = await blobCompare.isEqual(asset, existingAsset)
+            sameSame = await blobsEqual(asset, existingAsset)
 
             // if same same, we do nothing
             if (sameSame) {

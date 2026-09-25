@@ -62,7 +62,3 @@ declare module 'timing-function/lib/UnitBezier' {
 }
 declare module 'circular-dependency-plugin'
 declare module 'merge-deep'
-declare module 'blob-compare' {
-  const compare: (left: File | Blob, right: File | Blob) => Promise<boolean>
-  export default compare
-}

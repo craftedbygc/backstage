@@ -2934,72 +2934,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-spring/animated@npm:~9.7.5":
-  version: 9.7.5
-  resolution: "@react-spring/animated@npm:9.7.5"
-  dependencies:
-    "@react-spring/shared": ~9.7.5
-    "@react-spring/types": ~9.7.5
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: e28662a659933ceab30849dd6574f7c06554a76996bad03fabdbc145cef2a3242495695cfec5b9c9cac049ff72d2917dfd61304c2d17ff899cbdefb09f53bbeb
-  languageName: node
-  linkType: hard
-
-"@react-spring/core@npm:~9.7.5":
-  version: 9.7.5
-  resolution: "@react-spring/core@npm:9.7.5"
-  dependencies:
-    "@react-spring/animated": ~9.7.5
-    "@react-spring/shared": ~9.7.5
-    "@react-spring/types": ~9.7.5
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: 60c0151547073edf35e0de0e066983096aefff7a5ecf83bf54c7a9a9807220c4212f0ccdf353ef63131652667105ba70cd7188dc31de32aab30e3cc095663a38
-  languageName: node
-  linkType: hard
-
-"@react-spring/rafz@npm:~9.7.5":
-  version: 9.7.5
-  resolution: "@react-spring/rafz@npm:9.7.5"
-  checksum: adbffdf25942a66802363f979f07e04c81abf19b49c55e62336220450f393d57ebe1c906694485d6d89e85a13fd223da3bdea22a955307eaecefaf59ea7ec7f9
-  languageName: node
-  linkType: hard
-
-"@react-spring/shared@npm:~9.7.5":
-  version: 9.7.5
-  resolution: "@react-spring/shared@npm:9.7.5"
-  dependencies:
-    "@react-spring/rafz": ~9.7.5
-    "@react-spring/types": ~9.7.5
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: 374ee7bece09895b1102c68acd0d47cf0d6f6201f77956aeac5eba7a3ee3190f509172990febfdde1bd91f79dabbaa42d3adc31c221511746575b23dadda038d
-  languageName: node
-  linkType: hard
-
-"@react-spring/types@npm:~9.7.5":
-  version: 9.7.5
-  resolution: "@react-spring/types@npm:9.7.5"
-  checksum: f9d2dea0ea6afb6d81dc0275cf2554b20d7eef8bafac99fc0de5b728f1ad5a5c02438932dc70a360686b34166124b13900788ece09af3cee96ce585ba168480e
-  languageName: node
-  linkType: hard
-
-"@react-spring/web@npm:^9.7.3":
-  version: 9.7.5
-  resolution: "@react-spring/web@npm:9.7.5"
-  dependencies:
-    "@react-spring/animated": ~9.7.5
-    "@react-spring/core": ~9.7.5
-    "@react-spring/shared": ~9.7.5
-    "@react-spring/types": ~9.7.5
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: 4da57c7d2bf4cf76cedd1c57986ba85e839aaec45e247f75b7d12d777f6054fe77446e95a18080db5e714b0a5386a07e617c36592506554abfd2c301c50e66cc
-  languageName: node
-  linkType: hard
-
 "@rollup/plugin-alias@npm:^3.1.5":
   version: 3.1.5
   resolution: "@rollup/plugin-alias@npm:3.1.5"
@@ -5585,7 +5519,6 @@ __metadata:
   resolution: "backstage@workspace:backstage"
   dependencies:
     "@microsoft/api-extractor": ^7.18.11
-    "@react-spring/web": ^9.7.3
     "@rollup/plugin-alias": ^3.1.5
     "@rollup/plugin-multi-entry": ^4.1.0
     "@rollup/plugin-replace": ^2.4.2
@@ -5606,7 +5539,6 @@ __metadata:
     "@types/styled-components": ^5.1.26
     "@types/uuid": ^8.3.0
     "@unseenco/backstage": "workspace:*"
-    blob-compare: 1.1.0
     cross-env: ^7.0.3
     esbuild: ^0.25.0
     esbuild-register: ^2.5.0
@@ -5686,15 +5618,6 @@ __metadata:
   version: 2.9.0
   resolution: "birpc@npm:2.9.0"
   checksum: 499cba9d33ae6749c199b4dc1fc30faeb72aabd41d5c75d73d1d415691f65f0b613d787f21aa2369607a555a5e09c55e437e02b14bc6bad67bb657f8ae58f3dd
-  languageName: node
-  linkType: hard
-
-"blob-compare@npm:1.1.0":
-  version: 1.1.0
-  resolution: "blob-compare@npm:1.1.0"
-  dependencies:
-    webworker-promise: ^0.4.2
-  checksum: 28cb1f5c6dc53195e67bb2765ec5a1aa7f1123460d9ccf64116aebf3ed36a3f4df5f065ac5ec4caf5da4fbbb5e944bca5c7296b960f693bea70dc4118953539d
   languageName: node
   linkType: hard
 
@@ -15209,13 +15132,6 @@ __metadata:
   version: 7.0.0
   resolution: "webidl-conversions@npm:7.0.0"
   checksum: f05588567a2a76428515333eff87200fae6c83c3948a7482ebb109562971e77ef6dc49749afa58abb993391227c5697b3ecca52018793e0cb4620a48f10bd21b
-  languageName: node
-  linkType: hard
-
-"webworker-promise@npm:^0.4.2":
-  version: 0.4.4
-  resolution: "webworker-promise@npm:0.4.4"
-  checksum: 6edb84c235ff49e437c3cfd8c10b75a202911c78e92050dbfad79d051d4df3ea7abbd2e16e0056e46ce0eaf53441105902647bd2b7cca4bc7c0c4f8dfd6b6da7
   languageName: node
   linkType: hard
 
