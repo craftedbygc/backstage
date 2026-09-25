@@ -1,3 +1,5 @@
+import {formatRemoteEditorHash} from '@unseenco/backstage-shared/remoteEditorWindow'
+import {getBackstageWindowTabId} from '@unseenco/backstage-shared/utils/backstageWindowTabId'
 import getStudio from './getStudio'
 import {
   disableVisibilityToggleKeyboardShortcut,
@@ -47,7 +49,7 @@ export function openRemoteEditorWindow(): void {
   }
 
   const url = new URL(window.location.href)
-  url.hash = 'backstage-editor'
+  url.hash = formatRemoteEditorHash(getBackstageWindowTabId()).slice(1)
   // Note: no noopener/noreferrer, since we need the returned reference to
   // detect when the popup closes. This is a same-origin popup of the app's
   // own URL, not a third-party link, so the tabnabbing risk doesn't apply.

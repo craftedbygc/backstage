@@ -29,10 +29,17 @@ import {
   createDebouncedCallback,
   type DebouncedCallback,
 } from './createDebouncedCallback'
-import {isRemoteEditorWindow} from '@unseenco/backstage-shared/remoteEditorWindow'
+import {
+  isRemoteEditorWindow,
+  parseRemoteEditorOpenerTabId,
+} from '@unseenco/backstage-shared/remoteEditorWindow'
+import {getBackstageWindowTabId} from '@unseenco/backstage-shared/utils/backstageWindowTabId'
 
 /** Delay before pushing historic state from the remote editor to listener windows. */
 export const REMOTE_HISTORIC_SYNC_DEBOUNCE_MS = 100
+
+/** Bump when changing remote sync message shape or routing rules. */
+export const REMOTE_SYNC_PROTOCOL_VERSION = 1
 
 /**
  * When applying an incoming `updateTimeline` message, only the main (listener)
@@ -58,6 +65,9 @@ type BroadcastDataEvent =
   | 'disconnect'
 
 interface BroadcastData {
+  protocolVersion: number
+  senderId: string
+  targetId?: string
   event: BroadcastDataEvent
   data: any
 }
@@ -93,6 +103,9 @@ export default class RemoteSync {
   private listenerTimelineUnsub: (() => void) | undefined
   private listenerMetricsUnsubs: Array<() => void> = []
   private broadcastPageScrollMetrics: (() => void) | undefined
+  private editorTimelinePositionUnsub: (() => void) | undefined
+  private pagehideDisposer: (() => void) | undefined
+  private disposed = false
 
   constructor(private readonly project: Project) {}
 
@@ -115,26 +128,95 @@ export default class RemoteSync {
           this._broadcastTimelineFromListener(sheet, position)
         },
       )
-    } else {
-      const channel = this.channel
-      window.addEventListener('pagehide', () => {
-        this.historicSyncDebounce?.flush()
-
-        const data = this._readHistoricSnapshotFromStudio()
-        if (
-          data &&
-          this.lastBroadcastHistoricFingerprint ===
-            fingerprintHistoricSnapshot(data)
-        ) {
-          channel.postMessage({event: 'disconnect', data: {}})
-          return
-        }
-
-        channel.postMessage({event: 'disconnect', data: data ?? {}})
-      })
     }
 
+    this.pagehideDisposer = () => {
+      window.removeEventListener('pagehide', this._onPageHide)
+    }
+    window.addEventListener('pagehide', this._onPageHide)
+
     return this.channel
+  }
+
+  private readonly _onPageHide = () => {
+    if (this.isEditor) {
+      this.historicSyncDebounce?.flush()
+
+      const data = this._readHistoricSnapshotFromStudio()
+      if (
+        data &&
+        this.lastBroadcastHistoricFingerprint ===
+          fingerprintHistoricSnapshot(data)
+      ) {
+        this._post('disconnect', {})
+        return
+      }
+
+      this._post('disconnect', data ?? {})
+    }
+    this.dispose()
+  }
+
+  dispose(): void {
+    if (this.disposed) return
+    this.disposed = true
+
+    this.pagehideDisposer?.()
+    this.pagehideDisposer = undefined
+
+    this.listenerTimelineUnsub?.()
+    this.listenerTimelineUnsub = undefined
+
+    for (const unsub of this.listenerMetricsUnsubs) {
+      unsub()
+    }
+    this.listenerMetricsUnsubs = []
+
+    for (const unsub of this.historicSyncUnsubs) {
+      unsub()
+    }
+    this.historicSyncUnsubs = []
+
+    this.historicSyncDebounce?.cancel?.()
+    this.historicSyncDebounce = undefined
+
+    this.editorTimelinePositionUnsub?.()
+    this.editorTimelinePositionUnsub = undefined
+
+    for (const unsub of this.objectUnsubs.values()) {
+      unsub()
+    }
+    this.objectUnsubs.clear()
+
+    this.channel?.close()
+    this.channel = undefined
+  }
+
+  private _shouldHandleMessage(msg: BroadcastData): boolean {
+    if (msg.protocolVersion !== REMOTE_SYNC_PROTOCOL_VERSION) {
+      return false
+    }
+    const tabId = getBackstageWindowTabId()
+    if (msg.targetId && msg.targetId !== tabId) {
+      return false
+    }
+    return true
+  }
+
+  private _post(
+    event: BroadcastDataEvent,
+    data: unknown,
+    targetId?: string,
+  ): void {
+    if (!this.channel) return
+    const message: BroadcastData = {
+      protocolVersion: REMOTE_SYNC_PROTOCOL_VERSION,
+      senderId: getBackstageWindowTabId(),
+      targetId,
+      event,
+      data,
+    }
+    this.channel.postMessage(message)
   }
 
   registerSheet(sheet: Sheet) {
@@ -172,11 +254,10 @@ export default class RemoteSync {
     if (this.objectUnsubs.has(id)) return
 
     const unsubscribe = obj.onFinalValueChange((values) => {
-      const message: BroadcastData = {
-        event: 'updateSheetObject',
-        data: {sheetObject: id, values: JSON.parse(JSON.stringify(values))},
-      }
-      channel.postMessage(message)
+      this._post('updateSheetObject', {
+        sheetObject: id,
+        values: JSON.parse(JSON.stringify(values)),
+      })
     })
     this.objectUnsubs.set(id, unsubscribe)
   }
@@ -207,7 +288,8 @@ export default class RemoteSync {
       return
     }
 
-    channel.postMessage({event: 'editorHello', data: {}})
+    const openerTabId = parseRemoteEditorOpenerTabId()
+    this._post('editorHello', {}, openerTabId)
     const projectId = this.project.address.projectId
 
     studio.publicApi.onSelectionChange((selection) => {
@@ -215,40 +297,23 @@ export default class RemoteSync {
         if (item.address.projectId !== projectId) continue
 
         if (item.type === 'Backstage_Sheet_PublicAPI') {
-          this.activeSheet = this.sheets.get(item.address.sheetId)
-          const message: BroadcastData = {
-            event: 'setSheet',
-            data: {sheet: item.address.sheetId},
-          }
-          channel.postMessage(message)
+          const sheet = this.sheets.get(item.address.sheetId)
+          this.activeSheet = sheet
+          this._attachEditorTimelinePositionSync()
+          this._post('setSheet', {sheet: item.address.sheetId})
         } else if (item.type === 'Backstage_SheetObject_PublicAPI') {
-          this.activeSheet = this.sheets.get(item.address.sheetId)
-          const message: BroadcastData = {
-            event: 'setSheetObject',
-            data: {sheet: item.address.sheetId, key: item.address.objectKey},
-          }
-          channel.postMessage(message)
+          const sheet = this.sheets.get(item.address.sheetId)
+          this.activeSheet = sheet
+          this._attachEditorTimelinePositionSync()
+          this._post('setSheetObject', {
+            sheet: item.address.sheetId,
+            key: item.address.objectKey,
+          })
         }
       }
     })
 
-    let lastPosition: number | undefined
-    const ticker = getCoreTicker()
-    const pollTimelinePosition = () => {
-      if (this.activeSheet && !this.suppressTimelineBroadcast) {
-        const position = this.activeSheet.publicApi.sequence.position
-        if (position !== lastPosition) {
-          lastPosition = position
-          const message: BroadcastData = {
-            event: 'updateTimeline',
-            data: {sheet: this.activeSheet.address.sheetId, position},
-          }
-          channel.postMessage(message)
-        }
-      }
-      ticker.onNextTick(pollTimelinePosition)
-    }
-    ticker.onNextTick(pollTimelinePosition)
+    this._attachEditorTimelinePositionSync()
 
     this.historicSyncDebounce = createDebouncedCallback(() => {
       this._broadcastHistoricSnapshot()
@@ -295,7 +360,10 @@ export default class RemoteSync {
     return data
   }
 
-  private _broadcastHistoricSnapshot(options?: {force?: boolean}) {
+  private _broadcastHistoricSnapshot(options?: {
+    force?: boolean
+    targetId?: string
+  }) {
     if (!this.channel) return
 
     const data = this._readHistoricSnapshotFromStudio()
@@ -310,8 +378,33 @@ export default class RemoteSync {
     }
 
     this.lastBroadcastHistoricFingerprint = fingerprint
-    const message: BroadcastData = {event: 'updateHistoric', data}
-    this.channel.postMessage(message)
+    this._post('updateHistoric', data, options?.targetId)
+  }
+
+  private _attachEditorTimelinePositionSync(): void {
+    this.editorTimelinePositionUnsub?.()
+    this.editorTimelinePositionUnsub = undefined
+
+    const sheet = this.activeSheet
+    if (!sheet || !this.isEditor) return
+
+    const sequence = getEffectiveEditorSequence(sheet)
+    let lastPosition: number | undefined
+    this.editorTimelinePositionUnsub = pointerToPrism(
+      sequence.pointer.position,
+    ).onChange(
+      getCoreTicker(),
+      (position) => {
+        if (this.suppressTimelineBroadcast) return
+        if (position === lastPosition) return
+        lastPosition = position
+        this._post('updateTimeline', {
+          sheet: sheet.address.sheetId,
+          position,
+        })
+      },
+      false,
+    )
   }
 
   private _applyHistoricSnapshot(
@@ -344,11 +437,7 @@ export default class RemoteSync {
     const registered = this.sheets.get(sheet.address.sheetId)
     if (!registered || registered.getSequenceMode() !== 'page') return
 
-    const message: BroadcastData = {
-      event: 'updateTimeline',
-      data: {sheet: sheet.address.sheetId, position},
-    }
-    this.channel.postMessage(message)
+    this._post('updateTimeline', {sheet: sheet.address.sheetId, position})
   }
 
   private _postPageScrollMetrics() {
@@ -356,11 +445,7 @@ export default class RemoteSync {
     const ctx = getActivePageScrollContext()
     const axis = resolvePageScrollAxis(ctx)
     const maxScroll = getMaxScrollForPageScrollContext(ctx.scroller, axis)
-    const message: BroadcastData = {
-      event: 'pageScrollMetrics',
-      data: {maxScroll, axis},
-    }
-    this.channel.postMessage(message)
+    this._post('pageScrollMetrics', {maxScroll, axis})
   }
 
   private _attachListenerPageScrollMetricsBroadcast() {
@@ -394,13 +479,20 @@ export default class RemoteSync {
   }
 
   private _handleIncoming(msg: BroadcastData) {
+    if (!this._shouldHandleMessage(msg)) {
+      return
+    }
+
     switch (msg.event) {
       case 'editorHello': {
         if (this.isEditor) break
         this.remoteEditorActive = true
         this.broadcastPageScrollMetrics?.()
         // Bootstrap remote Studio from main's project state (no duplicate DOM/GSAP).
-        this._broadcastHistoricSnapshot({force: true})
+        this._broadcastHistoricSnapshot({
+          force: true,
+          targetId: msg.senderId,
+        })
         break
       }
       case 'setSheet': {
@@ -495,4 +587,9 @@ export default class RemoteSync {
 
 function fingerprintHistoricSnapshot(data: HistoricSnapshotPayload): string {
   return JSON.stringify(data)
+}
+
+function getEffectiveEditorSequence(sheet: Sheet) {
+  const variant = val(sheet.effectiveActiveSequenceVariantD)
+  return sheet.getSequence(variant).publicApi
 }

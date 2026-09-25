@@ -28,6 +28,10 @@ export function getGsapObjectBinding(
   return getStore().get(addressKey(sheetObject))
 }
 
+export function unregisterGsapObjectBinding(sheetObject: SheetObject): void {
+  getStore().delete(addressKey(sheetObject))
+}
+
 export function clearGsapObjectBindingsForTests(): void {
   getStore().clear()
 }

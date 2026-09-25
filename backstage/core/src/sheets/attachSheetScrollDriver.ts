@@ -226,6 +226,9 @@ export function attachSheetScrollDriver(
 
   return () => {
     untapScroll()
+    if (sheetScrollDrivers.get(sheet) === driver) {
+      sheetScrollDrivers.delete(sheet)
+    }
   }
 }
 

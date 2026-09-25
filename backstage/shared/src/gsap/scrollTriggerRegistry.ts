@@ -127,3 +127,54 @@ export function getScrollTriggerEntry(
 export function clearScrollTriggerRegistryForTests(): void {
   getStore().bySheetAddress.clear()
 }
+
+export function clearScrollTriggerRegistryForSheetObject(
+  sheetObject: SheetObject,
+  scrollTriggerId?: string,
+): void {
+  const sheetKey = sheetAddressKey(sheetObject.address)
+  const map = getStore().bySheetAddress.get(sheetKey)
+  if (!map) return
+
+  let removed = false
+  if (scrollTriggerId !== undefined) {
+    const entry = map.get(scrollTriggerId)
+    if (entry?.sheetObject === sheetObject && map.delete(scrollTriggerId)) {
+      removed = true
+    }
+  } else {
+    for (const [id, entry] of [...map.entries()]) {
+      if (entry.sheetObject === sheetObject) {
+        map.delete(id)
+        removed = true
+      }
+    }
+  }
+
+  if (map.size === 0) {
+    getStore().bySheetAddress.delete(sheetKey)
+  }
+  if (removed) {
+    bumpGsapStudioRegistryRevision()
+  }
+}
+
+export function unregisterScrollTriggerOnSheet(
+  address: SheetAddress,
+  scrollTriggerId: string,
+): void {
+  const sheetKey = sheetAddressKey(address)
+  const entry = getStore().bySheetAddress.get(sheetKey)?.get(scrollTriggerId)
+  if (entry?.sheetObject) {
+    clearScrollTriggerRegistryForSheetObject(entry.sheetObject, scrollTriggerId)
+  }
+}
+
+export function clearScrollTriggerRegistryForSheetAddress(
+  address: SheetAddress,
+): void {
+  const key = sheetAddressKey(address)
+  if (getStore().bySheetAddress.delete(key)) {
+    bumpGsapStudioRegistryRevision()
+  }
+}

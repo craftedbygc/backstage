@@ -1,9 +1,13 @@
 export {registerGsapAnimation} from './registerGsapAnimation'
+export {unregisterGsapAnimation} from './unregisterGsapAnimation'
+export type {UnregisterGsapAnimationOptions} from './unregisterGsapAnimation'
 export type {
   RegisterGsapAnimationOptions,
   RegisterGsapAnimationResult,
 } from './registerGsapAnimation'
 export {registerGsapScrollTrigger} from './registerGsapScrollTrigger'
+export {unregisterGsapScrollTrigger} from './unregisterGsapScrollTrigger'
+export type {UnregisterGsapScrollTriggerOptions} from './unregisterGsapScrollTrigger'
 export type {
   RegisterGsapScrollTriggerOptions,
   RegisterGsapScrollTriggerResult,
