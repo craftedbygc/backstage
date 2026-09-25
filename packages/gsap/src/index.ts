@@ -33,5 +33,6 @@ export {
   getAnimationEntryById,
   getAnimationEntryForSheetObject,
   listAnimationEntries,
+  registerAnimationInRegistry,
 } from './animationRegistry'
 export type {GsapAnimationRegistryEntry} from './animationRegistry'

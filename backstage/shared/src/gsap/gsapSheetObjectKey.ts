@@ -1,20 +1,24 @@
-const GSAP_NAMESPACE_STORE_KEY = '__unseenco_backstage_gsap_configuredNamespace__'
+import {crossBundleSingleton} from '@unseenco/backstage-shared/utils/crossBundleSingleton'
 
 /** Default GSAP outline namespace segment (first path component). */
 export const DEFAULT_GSAP_SHEET_OBJECT_NAMESPACE = 'GSAP'
 
+type ConfiguredNamespaceStore = {
+  namespace: string
+}
+
+function getNamespaceStore(): ConfiguredNamespaceStore {
+  return crossBundleSingleton('gsap_configuredNamespace', () => ({
+    namespace: DEFAULT_GSAP_SHEET_OBJECT_NAMESPACE,
+  }))
+}
+
 export function setConfiguredGsapSheetObjectNamespace(namespace: string): void {
-  const g = globalThis as typeof globalThis & {
-    [GSAP_NAMESPACE_STORE_KEY]?: string
-  }
-  g[GSAP_NAMESPACE_STORE_KEY] = namespace.trim()
+  getNamespaceStore().namespace = namespace.trim()
 }
 
 export function getConfiguredGsapSheetObjectNamespace(): string {
-  const g = globalThis as typeof globalThis & {
-    [GSAP_NAMESPACE_STORE_KEY]?: string
-  }
-  return g[GSAP_NAMESPACE_STORE_KEY] ?? DEFAULT_GSAP_SHEET_OBJECT_NAMESPACE
+  return getNamespaceStore().namespace
 }
 
 /** First segment of a Backstage slashed object key (`foo / bar` → `foo`). */

@@ -1,11 +1,10 @@
 import type SheetObject from '@unseenco/backstage/sheetObjects/SheetObject'
+import {crossBundleSingleton} from '@unseenco/backstage-shared/utils/crossBundleSingleton'
 
 export type GsapObjectBinding = {
   gsapAnimationId: string
   defaultDuration: number
 }
-
-const STORE_KEY = '__unseenco_backstage_gsap_objectBindings__'
 
 function addressKey(sheetObject: SheetObject): string {
   const a = sheetObject.address
@@ -13,13 +12,7 @@ function addressKey(sheetObject: SheetObject): string {
 }
 
 function getStore(): Map<string, GsapObjectBinding> {
-  const g = globalThis as typeof globalThis & {
-    [STORE_KEY]?: Map<string, GsapObjectBinding>
-  }
-  if (!g[STORE_KEY]) {
-    g[STORE_KEY] = new Map()
-  }
-  return g[STORE_KEY]!
+  return crossBundleSingleton('gsap_objectBindings', () => new Map())
 }
 
 export function registerGsapObjectBinding(

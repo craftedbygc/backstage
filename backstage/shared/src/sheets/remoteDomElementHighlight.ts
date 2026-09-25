@@ -1,6 +1,17 @@
 import type {RemoteDomHighlightTarget} from '@unseenco/backstage-shared/gsap/domElementHighlightTarget'
+import {crossBundleSingleton} from '@unseenco/backstage-shared/utils/crossBundleSingleton'
 
-const channelCache = new Map<string, BroadcastChannel>()
+type RemoteDomElementHighlightStore = {
+  channelCache: Map<string, BroadcastChannel>
+  listeners: Set<(element: Element | null) => void>
+}
+
+function getStore(): RemoteDomElementHighlightStore {
+  return crossBundleSingleton('remote_dom_element_highlight', () => ({
+    channelCache: new Map<string, BroadcastChannel>(),
+    listeners: new Set<(element: Element | null) => void>(),
+  }))
+}
 
 function getRemoteBroadcastChannel(
   projectId: string,
@@ -8,10 +19,11 @@ function getRemoteBroadcastChannel(
   if (typeof BroadcastChannel === 'undefined') {
     return undefined
   }
-  let channel = channelCache.get(projectId)
+  const store = getStore()
+  let channel = store.channelCache.get(projectId)
   if (!channel) {
     channel = new BroadcastChannel(`backstage-remote:${projectId}`)
-    channelCache.set(projectId, channel)
+    store.channelCache.set(projectId, channel)
   }
   return channel
 }
@@ -44,11 +56,9 @@ export function postRemoteDomHighlightClear(projectId: string): void {
   channel?.postMessage(message)
 }
 
-const listeners = new Set<(element: Element | null) => void>()
-
 /** Main preview window: apply highlight from remote editor hover. */
 export function setRemoteDomElementHighlight(element: Element | null): void {
-  for (const listener of listeners) {
+  for (const listener of getStore().listeners) {
     listener(element)
   }
 }
@@ -56,8 +66,9 @@ export function setRemoteDomElementHighlight(element: Element | null): void {
 export function onRemoteDomElementHighlightChange(
   listener: (element: Element | null) => void,
 ): () => void {
-  listeners.add(listener)
+  const store = getStore()
+  store.listeners.add(listener)
   return () => {
-    listeners.delete(listener)
+    store.listeners.delete(listener)
   }
 }

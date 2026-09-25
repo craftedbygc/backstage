@@ -1,3 +1,5 @@
+import {crossBundleSingleton} from '@unseenco/backstage-shared/utils/crossBundleSingleton'
+
 /** `null` = native document scroll (window / documentElement). */
 export type PageScrollScroller = Window | Element | null
 
@@ -14,17 +16,25 @@ export const defaultPageScrollContext: PageScrollContext = {
   axis: 'vertical',
 }
 
-let activePageScrollContext: PageScrollContext = defaultPageScrollContext
+type ActivePageScrollContextStore = {
+  context: PageScrollContext
+}
+
+function getActivePageScrollContextStore(): ActivePageScrollContextStore {
+  return crossBundleSingleton('active_page_scroll_context', () => ({
+    context: defaultPageScrollContext,
+  }))
+}
 
 export function setActivePageScrollContext(context: PageScrollContext): void {
-  activePageScrollContext = {
+  getActivePageScrollContextStore().context = {
     scroller: context.scroller,
     axis: context.axis ?? 'vertical',
   }
 }
 
 export function getActivePageScrollContext(): PageScrollContext {
-  return activePageScrollContext
+  return getActivePageScrollContextStore().context
 }
 
 export function resolvePageScrollAxis(

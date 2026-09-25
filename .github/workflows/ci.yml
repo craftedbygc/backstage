@@ -23,6 +23,7 @@ jobs:
       - uses: ./.github/actions/yarn-nm-install
 
       - run: yarn cli build
+      - run: node -r esbuild-register devEnv/checkCrossBundleState.ts
   Docs:
     name: Documentation site
     runs-on: ubuntu-latest

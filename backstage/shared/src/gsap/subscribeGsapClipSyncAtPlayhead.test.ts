@@ -5,7 +5,7 @@ describe('subscribeGsapClipSyncAtPlayhead', () => {
   const SHEET_KEY = 'p|s|si|gsap'
 
   const g = globalThis as typeof globalThis & {
-    __unseenco_backstage_gsap_animationRegistry__?: {
+    __unseenco_backstage_gsap_animationRegistry_v1__?: {
       bySheetAddress: Map<
         string,
         Map<string, {id: string; label: string; animation: unknown}>
@@ -22,7 +22,7 @@ describe('subscribeGsapClipSyncAtPlayhead', () => {
         {id, label: id, animation},
       ]),
     )
-    g.__unseenco_backstage_gsap_animationRegistry__ = {
+    g.__unseenco_backstage_gsap_animationRegistry_v1__ = {
       bySheetAddress: new Map([[SHEET_KEY, byAnim]]),
     }
     for (const [, {animation, targets}] of Object.entries(entries)) {

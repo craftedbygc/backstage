@@ -1,3 +1,4 @@
+import {crossBundleSingleton} from '@unseenco/backstage-shared/utils/crossBundleSingleton'
 import type {PageScrollAxis} from './pageScrollContext'
 
 export type RemotePageScrollMetrics = {
@@ -5,35 +6,45 @@ export type RemotePageScrollMetrics = {
   axis: PageScrollAxis
 }
 
-let remoteMetrics: RemotePageScrollMetrics | undefined
+type RemotePageScrollMetricsStore = {
+  remoteMetrics: RemotePageScrollMetrics | undefined
+  listeners: Set<() => void>
+}
 
-const listeners = new Set<() => void>()
+function getStore(): RemotePageScrollMetricsStore {
+  return crossBundleSingleton('remote_page_scroll_metrics', () => ({
+    remoteMetrics: undefined,
+    listeners: new Set<() => void>(),
+  }))
+}
 
 export function setRemotePageScrollMetrics(
   metrics: RemotePageScrollMetrics | undefined,
 ): void {
-  const prev = remoteMetrics
-  remoteMetrics = metrics
+  const store = getStore()
+  const prev = store.remoteMetrics
+  store.remoteMetrics = metrics
   if (
     prev?.maxScroll !== metrics?.maxScroll ||
     prev?.axis !== metrics?.axis
   ) {
-    for (const listener of listeners) {
+    for (const listener of store.listeners) {
       listener()
     }
   }
 }
 
 export function getRemotePageScrollMetrics(): RemotePageScrollMetrics | undefined {
-  return remoteMetrics
+  return getStore().remoteMetrics
 }
 
 export function onRemotePageScrollMetricsChange(
   listener: () => void,
 ): () => void {
-  listeners.add(listener)
+  const store = getStore()
+  store.listeners.add(listener)
   return () => {
-    listeners.delete(listener)
+    store.listeners.delete(listener)
   }
 }
 
@@ -48,7 +59,7 @@ export function resolveMaxScrollPxForPageLayout(
   if (localMaxScrollPx > 0) {
     return localMaxScrollPx
   }
-  const remote = remoteMetrics
+  const remote = getStore().remoteMetrics
   if (remote && remote.axis === axis && remote.maxScroll > 0) {
     return remote.maxScroll
   }
