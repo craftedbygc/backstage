@@ -2,7 +2,7 @@ import getStudio from '@unseenco/backstage/studio/getStudio'
 import {isRemoteEditorWindow} from '@unseenco/backstage/studio/remoteEditor'
 import {usePrism, useVal} from '@unseenco/backstage/react'
 import {val} from '@unseenco/backstage/dataverse'
-import React, {useEffect} from 'react'
+import React, {useEffect, useMemo} from 'react'
 import styled, {createGlobalStyle} from 'styled-components'
 import PanelsRoot from './PanelsRoot'
 import DockedPanelsRoot from './DockedPanelsRoot'
@@ -38,17 +38,30 @@ const Container = styled(PointerEventsHandler)`
   z-index: 50;
   position: fixed;
   inset: 0;
+`
 
-  &.invisible {
-    pointer-events: none !important;
-    opacity: 0;
-    transform: translateX(1000000px);
-  }
+const HiddenChrome = styled.div`
+  z-index: 50;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
 `
 
 const INTERNAL_LOGGING = /Playground.+Backstage\.js/.test(
   (typeof document !== 'undefined' ? document?.title : null) ?? '',
 )
+
+function useUIRootLogger() {
+  return useMemo(() => {
+    const uiRootLogger = createBackstageInternalLogger()
+    uiRootLogger.configureLogging({
+      min: BackstageLoggerLevel.DEBUG,
+      dev: INTERNAL_LOGGING,
+      internal: INTERNAL_LOGGING,
+    })
+    return uiRootLogger.getLogger().named('Backstage.js UIRoot')
+  }, [])
+}
 
 export default function UIRoot(props: {
   containerShadow: ShadowRoot & HTMLElement
@@ -58,13 +71,7 @@ export default function UIRoot(props: {
     undefined as $IntentionalAny,
   )
 
-  const uiRootLogger = createBackstageInternalLogger()
-  uiRootLogger.configureLogging({
-    min: BackstageLoggerLevel.DEBUG,
-    dev: INTERNAL_LOGGING,
-    internal: INTERNAL_LOGGING,
-  })
-  const logger = uiRootLogger.getLogger().named('Backstage.js UIRoot')
+  const logger = useUIRootLogger()
 
   useKeyboardShortcuts()
 
@@ -102,25 +109,32 @@ export default function UIRoot(props: {
             <>
               <MakeRootHostContainStatic />
               <DomElementHighlightProvider>
-                <Container
-                  className={isStudioHidden ? 'invisible' : ''}
-                  // @ts-ignore
-                  ref={chordialRootRef}
-                >
-                  <PortalLayer ref={portalLayerRef} />
-                  <ChordialOverlay />
-                  <LayoutModeProvider>
-                    {dockedMode ? (
-                      <DockedPanelsRoot />
-                    ) : (
-                      <>
-                        <GlobalToolbar />
-                        <PanelsRoot />
-                      </>
-                    )}
-                    <Notifier />
-                  </LayoutModeProvider>
-                </Container>
+                {isStudioHidden ? (
+                  <HiddenChrome aria-hidden>
+                    <LayoutModeProvider>
+                      <Notifier />
+                    </LayoutModeProvider>
+                  </HiddenChrome>
+                ) : (
+                  <Container
+                    // @ts-ignore
+                    ref={chordialRootRef}
+                  >
+                    <PortalLayer ref={portalLayerRef} />
+                    <ChordialOverlay />
+                    <LayoutModeProvider>
+                      {dockedMode ? (
+                        <DockedPanelsRoot />
+                      ) : (
+                        <>
+                          <GlobalToolbar />
+                          <PanelsRoot />
+                        </>
+                      )}
+                      <Notifier />
+                    </LayoutModeProvider>
+                  </Container>
+                )}
               </DomElementHighlightProvider>
             </>
           </ProvideStyles>

@@ -2,9 +2,8 @@ import React from 'react'
 import type {$IntentionalAny} from '@unseenco/backstage-shared/utils/types'
 import {val} from '@unseenco/backstage/dataverse'
 import {usePrism, useVal} from '@unseenco/backstage/react'
-import styled from 'styled-components'
+import styled, {keyframes} from 'styled-components'
 import usePopoverPosition from '@unseenco/backstage/studio/uiComponents/Popover/usePopoverPosition'
-import {useTransition, animated, easings} from '@react-spring/web'
 import {pointerEventsAutoInNormalMode} from '@unseenco/backstage/studio/css'
 import {tooltipTarget} from './tooltipActor'
 
@@ -27,80 +26,62 @@ export const TooltipOverlay: React.FC<{}> = () => {
     target: currentTarget?.target,
   })
 
-  const data: Array<{
-    key: string
-    title: React.ReactNode
-    positioning: {left: number; top: number}
-  }> = []
-
   const chordial = currentTarget
-  if (chordial && positioning && !tooltipDisabled) {
-    data.push({
-      key: chordial.id,
-      title,
-      positioning,
-    })
-  }
-
-  const transitions = useTransition(data, {
-    from: {
-      opacity: 0.5,
-      transform: `translateY(0px) perspective(200px) scale(0.95) rotateX(-45deg) `,
-    },
-    enter: {
-      opacity: 1,
-      transform: `translateY(0px) perspective(200px) scale(1) rotateX(0deg) `,
-    },
-    leave: {
-      opacity: 0,
-      transform: `translateY(0px) perspective(200px) scale(0.9) rotateX(-10deg) `,
-    },
-    keys: (item) => item.key,
-    config: (item, index, phase) => (key) => {
-      return {
-        // velocity: phase === 'leave' ? 0.5 : 6,
-        duration: phase === 'leave' ? 33 * 3 : 33 * 4,
-        easing: easings.easeOutCubic,
-      }
-    },
-  })
+  const visible = Boolean(chordial && positioning && !tooltipDisabled)
 
   return (
     <>
       {title && (
-        <Container
+        <MeasureContainer
           ref={popoverContainerRef as React.MutableRefObject<$IntentionalAny>}
-          style={{opacity: 0}}
         >
           <Title>{title}</Title>
-        </Container>
+        </MeasureContainer>
       )}
 
-      {transitions((style, item) => {
-        return (
-          <Container
-            style={{
-              ...style,
-              left: item.positioning.left + 'px',
-              top: item.positioning.top + 'px',
-              willChange: 'transform, opacity',
-            }}
-          >
-            <Title>{item.title}</Title>
-          </Container>
-        )
-      })}
+      {visible && positioning && (
+        <TooltipContainer
+          $visible={visible}
+          style={{
+            left: positioning.left + 'px',
+            top: positioning.top + 'px',
+          }}
+        >
+          <Title>{title}</Title>
+        </TooltipContainer>
+      )}
     </>
   )
 }
 
-const Container = styled(animated.div)`
+const tooltipEnter = keyframes`
+  from {
+    opacity: 0.5;
+    transform: translateY(0px) perspective(200px) scale(0.95) rotateX(-45deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px) perspective(200px) scale(1) rotateX(0deg);
+  }
+`
+
+const MeasureContainer = styled.div`
   display: flex;
   align-items: center;
   height: 30px;
-  position: relative;
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+`
+
+const TooltipContainer = styled.div<{$visible: boolean}>`
+  display: flex;
+  align-items: center;
+  height: 30px;
   position: absolute;
   transform-origin: top center;
+  animation: ${tooltipEnter} 132ms ease-out;
+  opacity: ${(p) => (p.$visible ? 1 : 0)};
 
   cursor: default;
   ${pointerEventsAutoInNormalMode};
@@ -114,8 +95,6 @@ const Container = styled(animated.div)`
   z-index: 10000;
   padding: 8px 8px;
   font-size: 10px;
-
-  z-index: 10000;
 
   & a {
     color: inherit;

@@ -1,6 +1,5 @@
 import {usePrism} from '@unseenco/backstage/react'
-import {sheetObjectAddressKeyFromParts} from '@unseenco/backstage-shared/gsap/gsapAnimationRegistry'
-import type {ObjectAddressKey} from '@unseenco/backstage-shared/utils/ids'
+import {buildGsapClipTimingsFromSequence} from '@unseenco/backstage-shared/gsap/buildGsapClipTimingsFromSequence'
 import {subscribeGsapClipSyncAtPlayhead} from '@unseenco/backstage-shared/gsap/subscribeGsapClipSyncAtPlayhead'
 import {resolveSequenceEditorSheet} from '@unseenco/backstage/studio/selectors'
 import {getStudioSequence} from '@unseenco/backstage/studio/utils/activeSequenceVariant'
@@ -8,8 +7,8 @@ import type React from 'react'
 import {useLayoutEffect} from 'react'
 
 /**
- * Keeps GSAP clip previews in sync when Studio moves the playhead (scrub,
- * jumps, numeric edits) without relying on the runtime sequence bridge alone.
+ * Keeps GSAP clip previews in sync when Studio moves the playhead for sheets
+ * that do not have the runtime {@link Sheet.enableGsapSequenceBridge} attached.
  */
 const GsapClipPlayheadSync: React.VFC = () => {
   const sheet = usePrism(
@@ -19,6 +18,9 @@ const GsapClipPlayheadSync: React.VFC = () => {
 
   useLayoutEffect(() => {
     if (!sheet) return
+    if (sheet._gsapBridgeDisposer) {
+      return
+    }
 
     const sequence = getStudioSequence(sheet)
     const sheetAddress = sheet.address
@@ -26,19 +28,10 @@ const GsapClipPlayheadSync: React.VFC = () => {
     return subscribeGsapClipSyncAtPlayhead({
       pointer: sequence.publicApi.pointer,
       getGsapClipTimings: () =>
-        sequence.publicApi
-          .__experimental_getGsapClips()
-          .map(({objectKey, clip}) => ({
-            sheetObjectAddressKey: sheetObjectAddressKeyFromParts({
-              projectId: sheetAddress.projectId,
-              sheetId: sheetAddress.sheetId,
-              sheetInstanceId: sheetAddress.sheetInstanceId,
-              objectKey: objectKey as ObjectAddressKey,
-            }),
-            gsapAnimationId: clip.gsapAnimationId,
-            start: clip.start,
-            duration: clip.duration,
-          })),
+        buildGsapClipTimingsFromSequence(
+          sheetAddress,
+          sequence.publicApi.__experimental_getGsapClips(),
+        ),
     })
   }, [sheet])
 

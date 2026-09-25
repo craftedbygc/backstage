@@ -1,7 +1,12 @@
 import type {Pointer} from '@unseenco/backstage/dataverse'
 import {pointerToPrism, prism, val} from '@unseenco/backstage/dataverse'
+import {gsapStudioRegistryRevisionPointer} from './gsapStudioRegistryRevision'
+import {
+  createGsapClipSyncFrameCache,
+  prepareGsapClipSyncGroups,
+  syncPreparedGsapClipGroupsAtPosition,
+} from './prepareGsapClipSync'
 import type {GsapClipTimingSource} from './syncGsapClipsAtSequencePosition'
-import {syncGsapClipsAtSequencePosition} from './syncGsapClipsAtSequencePosition'
 
 export type GsapClipSyncSequenceSource = {
   readonly pointer: {readonly position: Pointer<number>}
@@ -18,16 +23,35 @@ export function subscribeGsapClipSyncAtPlayhead(
   const positionPointer = source.pointer.position
   const positionPrism = pointerToPrism(positionPointer)
 
-  const clipsPrism = prism(() => source.getGsapClipTimings())
+  const clipsPrism = prism(() => {
+    val(gsapStudioRegistryRevisionPointer)
+    return source.getGsapClipTimings()
+  })
+
+  const preparedPrism = prism(() => {
+    const clips = clipsPrism.getValue()
+    return prepareGsapClipSyncGroups(clips)
+  })
+
+  const frameCache = createGsapClipSyncFrameCache()
 
   const syncNow = () => {
-    const clips = clipsPrism.getValue()
-    if (clips.length === 0) return
-    syncGsapClipsAtSequencePosition(val(positionPointer), clips)
+    const groups = preparedPrism.getValue()
+    if (groups.length === 0) return
+    syncPreparedGsapClipGroupsAtPosition(
+      val(positionPointer),
+      groups,
+      frameCache,
+    )
   }
 
   const untapPosition = positionPrism.onStale(syncNow)
-  const untapClips = clipsPrism.onStale(syncNow)
+  const untapClips = clipsPrism.onStale(() => {
+    frameCache.lastProgressByClipKey.clear()
+    frameCache.lastTimelineTimingSignatureByClipKey.clear()
+    frameCache.lastTimelineAnimationByClipKey.clear()
+    syncNow()
+  })
 
   syncNow()
 
