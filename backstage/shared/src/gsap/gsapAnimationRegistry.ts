@@ -17,8 +17,7 @@ import {
   linkGsapTimelineChildAnimations,
 } from './introspectGsapTimelineChildren'
 import {readGsapTweenTimelineDuration} from './syncGsapClipProgress'
-
-const REGISTRY_KEY = '__unseenco_backstage_gsap_animationRegistry__'
+import {crossBundleSingleton} from '@unseenco/backstage-shared/utils/crossBundleSingleton'
 
 export type GsapAnimationRegistryEntry = {
   id: string
@@ -57,15 +56,9 @@ export function sheetObjectAddressKey(sheetObject: SheetObject): string {
 }
 
 function getStore(): RegistryStore {
-  const g = globalThis as typeof globalThis & {
-    [REGISTRY_KEY]?: RegistryStore
-  }
-  if (!g[REGISTRY_KEY]) {
-    g[REGISTRY_KEY] = {
-      bySheetAddress: new Map(),
-    }
-  }
-  return g[REGISTRY_KEY]!
+  return crossBundleSingleton('gsap_animationRegistry', () => ({
+    bySheetAddress: new Map(),
+  }))
 }
 
 function getSheetEntryMap(

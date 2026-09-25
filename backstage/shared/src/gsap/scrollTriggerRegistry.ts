@@ -4,9 +4,9 @@ import type {SheetAddress} from '@unseenco/backstage-shared/utils/addresses'
 import type {SheetInstanceId} from '@unseenco/backstage-shared/utils/ids'
 import {isGsapScrollTriggerSheetObjectKey} from './gsapSheetObjectKey'
 import {bumpGsapStudioRegistryRevision} from './gsapStudioRegistryRevision'
+import {crossBundleSingleton} from '@unseenco/backstage-shared/utils/crossBundleSingleton'
 
 const DEFAULT_SHEET_INSTANCE_ID = 'default' as SheetInstanceId
-const REGISTRY_KEY = '__unseenco_backstage_gsap_scrollTriggerRegistry__'
 
 export type GsapScrollTriggerLayout = {
   start: number
@@ -34,13 +34,9 @@ export function sheetAddressKey(address: SheetAddress): string {
 }
 
 function getStore(): RegistryStore {
-  const g = globalThis as typeof globalThis & {
-    [REGISTRY_KEY]?: RegistryStore
-  }
-  if (!g[REGISTRY_KEY]) {
-    g[REGISTRY_KEY] = {bySheetAddress: new Map()}
-  }
-  return g[REGISTRY_KEY]!
+  return crossBundleSingleton('gsap_scrollTriggerRegistry', () => ({
+    bySheetAddress: new Map(),
+  }))
 }
 
 function getSheetMap(key: string): Map<string, GsapScrollTriggerRegistryEntry> {

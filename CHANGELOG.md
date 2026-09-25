@@ -8,6 +8,7 @@
   - **Core:** Remote sync `BroadcastChannel` is created only after a project attaches to Studio (no channel in Node or before Studio loads). Pre-attach sheet objects register for editor broadcast once Studio attaches.
   - **GSAP:** Ticker warning checks use `peekBackstageCoreRafDriver()` so registering GSAP animations does not create the default core driver before `setCoreRafDriver()`.
   - **Studio:** Migrates Theatre.js `theatre-0.4` localStorage and `theatrejs-` IndexedDB asset stores to Backstage `backstage-0.4` / `backstagejs-` prefixes.
+  - **GSAP / core:** Shared runtime state (page scroll context, GSAP registries, remote editor metrics/highlight, Studio GSAP registry revision) is stored on `globalThis` so separate published bundles see one instance in production.
 - API / behaviour
   - **Remote editor:** Canonical URL hash is `#backstage-editor` (legacy `#editor` still supported). `#editorial` and similar hashes are no longer treated as the remote editor.
 
