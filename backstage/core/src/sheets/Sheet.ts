@@ -77,6 +77,8 @@ export default class Sheet {
   _customPageScrollDriver: ScrollDriver | undefined
   /** @internal */
   _gsapBridgeDisposer: VoidFn | undefined
+  /** @internal */
+  _effectiveVariantRuntimeSyncDisposer: VoidFn | undefined
   readonly activeSequenceVariantP = this._activeSequenceVariant.pointer
   readonly effectiveActiveSequenceVariantD: Prism<SequenceVariantId>
   readonly address: SheetAddress

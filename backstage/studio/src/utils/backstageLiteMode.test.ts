@@ -4,6 +4,9 @@ import {
   setRuntimeStudioMode,
 } from '@unseenco/backstage/studio/utils/backstageLiteMode'
 
+const describeFull =
+  process.env.BACKSTAGE_LITE_TEST === '1' ? describe.skip : describe
+
 describe('backstageLiteMode', () => {
   const forceLiteKey = '__BACKSTAGE_FORCE_LITE__' as const
 
@@ -21,12 +24,14 @@ describe('backstageLiteMode', () => {
     ]
   })
 
+  describeFull('runtime mode (full bundle only)', () => {
   test('runtime mode lite gates sequencing UI helpers', () => {
     expect(isBackstageLiteStudio()).toBe(false)
     setRuntimeStudioMode('lite')
     expect(isBackstageLiteStudio()).toBe(true)
     setRuntimeStudioMode('full')
     expect(isBackstageLiteStudio()).toBe(false)
+  })
   })
 
   test('__BACKSTAGE_FORCE_LITE__ locks lite studio (studio-lite source entry)', () => {

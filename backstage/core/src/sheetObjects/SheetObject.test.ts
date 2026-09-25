@@ -14,7 +14,10 @@ import type {
 import {iterateOver, prism} from '@unseenco/backstage/dataverse'
 import type {SheetState_Historic} from '@unseenco/backstage/projects/store/types/SheetState_Historic'
 
-describe(`SheetObject`, () => {
+const describeFull =
+  process.env.BACKSTAGE_LITE_TEST === '1' ? describe.skip : describe
+
+describeFull(`SheetObject`, () => {
   describe('static overrides', () => {
     const setup = async (
       staticOverrides: SheetState_Historic['staticOverrides']['byObject'][ObjectAddressKey] = {},

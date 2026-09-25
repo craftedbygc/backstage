@@ -23,7 +23,7 @@ import type {Deferred} from '@unseenco/backstage-shared/utils/defer'
 import {defer} from '@unseenco/backstage-shared/utils/defer'
 import type {ProjectId} from '@unseenco/backstage-shared/utils/ids'
 import shallowEqual from 'shallowequal'
-import {createStore} from './IDBStorage'
+import {createStore, migrateTheatreIdbStoreIfNeeded} from './IDBStorage'
 import {
   getAllPossibleAssetIDs,
   isDirectAssetUrl,
@@ -449,6 +449,7 @@ export class Studio {
       }
     }
 
+    await migrateTheatreIdbStoreIfNeeded(`${project.address.projectId}-assets`)
     const idb = createStore(`${project.address.projectId}-assets`)
 
     const resolvedBaseUrl = baseUrl ?? project.config.assets?.baseUrl

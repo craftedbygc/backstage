@@ -1,8 +1,8 @@
 import type {IRafDriver} from '@unseenco/backstage'
-const mockGetBackstageCoreRafDriver = jest.fn()
+const mockPeekBackstageCoreRafDriver = jest.fn()
 
 jest.doMock('@unseenco/backstage/privateAPIs', () => ({
-  getBackstageCoreRafDriver: () => mockGetBackstageCoreRafDriver(),
+  peekBackstageCoreRafDriver: () => mockPeekBackstageCoreRafDriver(),
 }))
 
 import type * as GsapTickerRafBridgeModule from './gsapTickerRafBridge'
@@ -49,7 +49,7 @@ describe('gsapTickerRafBridge', () => {
   let bridge: BridgeModule
 
   beforeEach(() => {
-    mockGetBackstageCoreRafDriver.mockReset()
+    mockPeekBackstageCoreRafDriver.mockReset()
     Object.defineProperty(globalThis, 'window', {
       value: {
         addEventListener: jest.fn(),
@@ -102,7 +102,7 @@ describe('gsapTickerRafBridge', () => {
       name: 'DefaultCoreRafDriver',
       id: 1,
     })
-    mockGetBackstageCoreRafDriver.mockReturnValue(publicApi)
+    mockPeekBackstageCoreRafDriver.mockReturnValue(publicApi)
 
     bridge.warnIfGsapTickerNotDrivingBackstageRaf()
 
@@ -114,7 +114,7 @@ describe('gsapTickerRafBridge', () => {
   test('warnIfGsapTickerNotDrivingBackstageRaf warns when custom driver is not gsap-bound', () => {
     const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
     const publicApi = createMockRafDriver({name: 'custom', id: 2})
-    mockGetBackstageCoreRafDriver.mockReturnValue(publicApi)
+    mockPeekBackstageCoreRafDriver.mockReturnValue(publicApi)
 
     bridge.warnIfGsapTickerNotDrivingBackstageRaf()
     expect(warn).toHaveBeenCalledTimes(1)
@@ -125,17 +125,17 @@ describe('gsapTickerRafBridge', () => {
     const publicApi = createMockRafDriver({name: 'gsap-time-mode', id: 3})
     const gsap = createMockGsapTicker()
     bridge.bindGsapTickerToRafDriver(publicApi, gsap)
-    mockGetBackstageCoreRafDriver.mockReturnValue(publicApi)
+    mockPeekBackstageCoreRafDriver.mockReturnValue(publicApi)
     expect(bridge.isRafDriverDrivenByGsapTicker(publicApi)).toBe(true)
 
     bridge.warnIfGsapTickerNotDrivingBackstageRaf()
-    expect(mockGetBackstageCoreRafDriver).toHaveBeenCalled()
+    expect(mockPeekBackstageCoreRafDriver).toHaveBeenCalled()
     expect(warn).not.toHaveBeenCalled()
   })
 
   test('suppressGsapTickerRafWarning skips warning', () => {
     const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
-    mockGetBackstageCoreRafDriver.mockReturnValue(
+    mockPeekBackstageCoreRafDriver.mockReturnValue(
       createMockRafDriver({name: 'DefaultCoreRafDriver'}),
     )
 
@@ -158,7 +158,7 @@ describe('gsapTickerRafBridge', () => {
     const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
     const publicApi = createMockRafDriver({name: 'gsap-time-mode', id: 4})
     const gsap = createMockGsapTicker()
-    mockGetBackstageCoreRafDriver.mockReturnValue(publicApi)
+    mockPeekBackstageCoreRafDriver.mockReturnValue(publicApi)
 
     bridge.scheduleGsapTickerRafWarningCheck()
     bridge.bindGsapTickerToRafDriver(publicApi, gsap)
@@ -169,7 +169,7 @@ describe('gsapTickerRafBridge', () => {
 
   test('scheduleGsapTickerRafWarningCheck warns when bind is missing', async () => {
     const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
-    mockGetBackstageCoreRafDriver.mockReturnValue(
+    mockPeekBackstageCoreRafDriver.mockReturnValue(
       createMockRafDriver({name: 'DefaultCoreRafDriver', id: 5}),
     )
 

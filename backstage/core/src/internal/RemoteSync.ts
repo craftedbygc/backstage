@@ -29,7 +29,7 @@ import {
   createDebouncedCallback,
   type DebouncedCallback,
 } from './createDebouncedCallback'
-import {isRemoteEditorWindow} from './remoteEditor'
+import {isRemoteEditorWindow} from '@unseenco/backstage-shared/remoteEditorWindow'
 
 /** Delay before pushing historic state from the remote editor to listener windows. */
 export const REMOTE_HISTORIC_SYNC_DEBOUNCE_MS = 100
@@ -73,13 +73,13 @@ type HistoricSnapshotPayload = {
  * a "remote editor" window (see `isRemoteEditorWindow()`) can drive every
  * other window's `sheet.object(...)` values with no app code changes.
  *
- * Every `Project` owns exactly one of these. It's a no-op (beyond one idle
- * `BroadcastChannel` listener) unless a remote editor window is actually
- * open somewhere.
+ * Every `Project` owns exactly one of these. The `BroadcastChannel` is created
+ * lazily when the project attaches to Studio (not in Node or before Studio loads).
  */
 export default class RemoteSync {
   private readonly isEditor = isRemoteEditorWindow()
-  private readonly channel: BroadcastChannel | undefined
+  private channel: BroadcastChannel | undefined
+  private channelReady = false
   private readonly sheets = new Map<string, Sheet>()
   private readonly objects = new Map<string, SheetObject>()
   private readonly objectUnsubs = new Map<string, () => void>()
@@ -94,11 +94,15 @@ export default class RemoteSync {
   private listenerMetricsUnsubs: Array<() => void> = []
   private broadcastPageScrollMetrics: (() => void) | undefined
 
-  constructor(private readonly project: Project) {
-    if (typeof BroadcastChannel === 'undefined') return
+  constructor(private readonly project: Project) {}
+
+  private _ensureChannel(): BroadcastChannel | undefined {
+    if (this.channelReady) return this.channel
+    this.channelReady = true
+    if (typeof BroadcastChannel === 'undefined') return undefined
 
     this.channel = new BroadcastChannel(
-      `backstage-remote:${project.address.projectId}`,
+      `backstage-remote:${this.project.address.projectId}`,
     )
 
     this.channel.onmessage = (event: MessageEvent<BroadcastData>) => {
@@ -112,10 +116,6 @@ export default class RemoteSync {
         },
       )
     } else {
-      // Before disconnecting, push the editor's project state to listeners so
-      // they keep the edits made in the remote window (not just the transient
-      // override layer). Then drop overrides (see `'disconnect'` in
-      // `_handleIncoming`).
       const channel = this.channel
       window.addEventListener('pagehide', () => {
         this.historicSyncDebounce?.flush()
@@ -133,6 +133,8 @@ export default class RemoteSync {
         channel.postMessage({event: 'disconnect', data: data ?? {}})
       })
     }
+
+    return this.channel
   }
 
   registerSheet(sheet: Sheet) {
@@ -159,20 +161,24 @@ export default class RemoteSync {
     this.objects.set(id, obj)
 
     if (this.isEditor && this.channel) {
-      const channel = this.channel
-      const unsubscribe = obj.onFinalValueChange((values) => {
-        const message: BroadcastData = {
-          event: 'updateSheetObject',
-          // Some prop values (e.g. rgba colors) are class instances with
-          // methods attached, which `postMessage`'s structured clone can't
-          // serialize. Round-tripping through JSON reduces them to plain,
-          // cloneable data.
-          data: {sheetObject: id, values: JSON.parse(JSON.stringify(values))},
-        }
-        channel.postMessage(message)
-      })
-      this.objectUnsubs.set(id, unsubscribe)
+      this._attachEditorObjectBroadcast(obj)
     }
+  }
+
+  private _attachEditorObjectBroadcast(obj: SheetObject) {
+    const channel = this.channel
+    if (!channel) return
+    const id = `${obj.address.sheetId}_${obj.address.objectKey}`
+    if (this.objectUnsubs.has(id)) return
+
+    const unsubscribe = obj.onFinalValueChange((values) => {
+      const message: BroadcastData = {
+        event: 'updateSheetObject',
+        data: {sheetObject: id, values: JSON.parse(JSON.stringify(values))},
+      }
+      channel.postMessage(message)
+    })
+    this.objectUnsubs.set(id, unsubscribe)
   }
 
   unregisterObject(obj: SheetObject) {
@@ -187,14 +193,20 @@ export default class RemoteSync {
 
   attachStudio(studio: Studio) {
     this.studio = studio
-    if (!this.channel) return
+    const channel = this._ensureChannel()
+    if (!channel) return
+
+    if (this.isEditor) {
+      for (const obj of this.objects.values()) {
+        this._attachEditorObjectBroadcast(obj)
+      }
+    }
 
     if (!this.isEditor) {
       this._attachListenerPageScrollMetricsBroadcast()
       return
     }
 
-    const channel = this.channel
     channel.postMessage({event: 'editorHello', data: {}})
     const projectId = this.project.address.projectId
 

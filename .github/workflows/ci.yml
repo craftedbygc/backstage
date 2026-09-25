@@ -75,6 +75,7 @@ jobs:
       - uses: ./.github/actions/yarn-nm-install
 
       - run: yarn test
+      - run: BACKSTAGE_LITE_TEST=1 yarn test
   Typecheck:
     runs-on: ubuntu-latest
 

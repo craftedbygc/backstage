@@ -241,4 +241,9 @@ export function val<T>(pointer: PointerType<T>): T {
  * @internal Used by extension packages (`@unseenco/backstage/gsap`, etc.). Not part of the
  * public API; exported only so published subpath `./privateAPIs` shares the main bundle singleton.
  */
-export {privateAPI, setPrivateAPI, getBackstageCoreRafDriver} from './privateAPIs'
+export {
+  privateAPI,
+  setPrivateAPI,
+  getBackstageCoreRafDriver,
+  peekBackstageCoreRafDriver,
+} from './privateAPIs'

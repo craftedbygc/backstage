@@ -1,3 +1,4 @@
+import {getCoreTicker} from '@unseenco/backstage/coreTicker'
 import {attachGsapSequenceBridge} from '@unseenco/backstage/gsap/attachGsapSequenceBridge'
 import type {ScrollDriver} from '@unseenco/backstage/sheets/attachSheetScrollDriver'
 import {
@@ -6,6 +7,24 @@ import {
 } from '@unseenco/backstage/sheets/attachSheetScrollDriver'
 import type Sheet from './Sheet'
 
+function subscribeEffectiveVariantRuntimeSync(host: Sheet): void {
+  if (host._effectiveVariantRuntimeSyncDisposer) return
+  host._effectiveVariantRuntimeSyncDisposer =
+    host.effectiveActiveSequenceVariantD.onChange(
+      getCoreTicker(),
+      () => {
+        syncPageScrollDriverForSheet(host)
+        reattachGsapBridgeForSheet(host)
+      },
+      false,
+    )
+}
+
+function unsubscribeEffectiveVariantRuntimeSync(host: Sheet): void {
+  host._effectiveVariantRuntimeSyncDisposer?.()
+  host._effectiveVariantRuntimeSyncDisposer = undefined
+}
+
 export function syncPageScrollDriverForSheet(host: Sheet): void {
   host._pageScrollDisposer?.()
   host._pageScrollDisposer = undefined
@@ -13,6 +32,7 @@ export function syncPageScrollDriverForSheet(host: Sheet): void {
     const driver =
       host._customPageScrollDriver ?? createNativeDocumentScrollDriver()
     host._pageScrollDisposer = attachSheetScrollDriver(host.publicApi, driver)
+    subscribeEffectiveVariantRuntimeSync(host)
   }
 }
 
@@ -27,9 +47,11 @@ export function enableGsapSequenceBridgeForSheet(host: Sheet): void {
   if (host._gsapBridgeDisposer) return
   host._gsapBridgeDisposer = attachGsapSequenceBridge(host.publicApi)
   syncPageScrollDriverForSheet(host)
+  subscribeEffectiveVariantRuntimeSync(host)
 }
 
 export function disposeRuntimeIntegrationsForSheet(host: Sheet): void {
+  unsubscribeEffectiveVariantRuntimeSync(host)
   host._pageScrollDisposer?.()
   host._pageScrollDisposer = undefined
   host._gsapBridgeDisposer?.()

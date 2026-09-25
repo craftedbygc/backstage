@@ -27,7 +27,10 @@ import {
   useNotifications,
   useEmptyNotificationsTooltip,
 } from '@unseenco/backstage/studio/notify'
-import {openRemoteEditorWindow} from '@unseenco/backstage/studio/remoteEditor'
+import {
+  isRemoteEditorWindow,
+  openRemoteEditorWindow,
+} from '@unseenco/backstage/studio/remoteEditor'
 import {useLayoutMode} from '@unseenco/backstage/studio/UIRoot/LayoutModeContext'
 import {
   DOCKED_TOOLBAR_BUTTON_SIZE,
@@ -248,7 +251,7 @@ const GlobalToolbar: React.FC = () => {
         >
           <DockLayout docked={dockedMode} />
         </ToolbarIconButton>
-        {window.location.hash !== '#editor' && (
+        {!isRemoteEditorWindow() && (
           <ToolbarIconButton
             onClick={openRemoteEditorWindow}
             title="Open remote editor window"
